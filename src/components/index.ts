@@ -1,3 +1,3 @@
-import Login from "./Login-button";
+import {Navbar} from "./Navbar"
 
-export default Login
+export {Navbar}
