@@ -1,16 +1,13 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useLanguageSwitcher } from "../../hooks/index";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const Navbar = () => {
-  const { t, i18n } = useTranslation();
-
-  const changeLanguage = (language) => {
-    i18n.changeLanguage(language);
-  };
-
+  const { t } = useTranslation();
+  const { changeLanguage } = useLanguageSwitcher();
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
