@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./pages/App.jsx";
 
 import "./18n.js";
+import { ruRU } from "@clerk/localizations";
 
 const router = createBrowserRouter([
   {
@@ -16,7 +17,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-// Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
@@ -25,7 +25,11 @@ if (!PUBLISHABLE_KEY) {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    <ClerkProvider
+      publishableKey={PUBLISHABLE_KEY}
+      afterSignOutUrl="/"
+      localization={ruRU}
+    >
       <RouterProvider router={router} />
     </ClerkProvider>
   </StrictMode>
