@@ -2,6 +2,12 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLanguageSwitcher } from "../../hooks/index";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
@@ -62,7 +68,7 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        <div className="d-flex align-items-center absolute top-0 right-0 m-3">
+        <div className="d-flex align-items-center absolute top-0 right-12 m-3">
           <div className="dropdown me-2">
             <button
               className="btn btn-secondary dropdown-toggle"
@@ -94,12 +100,17 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
-          <button type="button" className="btn btn-primary me-2">
-            {t("login")}
-          </button>
           <button type="button" className="btn btn-warning">
             {t("premium")}
           </button>
+          <div className="d-flex ml-5">
+            <SignedOut>
+              <SignInButton className="btn btn-primary" />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
         </div>
       </div>
 
@@ -200,9 +211,12 @@ const Navbar = () => {
                   </li>
                 </ul>
               </div>
-              <button type="button" className="btn btn-primary">
-                {t("login")}
-              </button>
+              <SignedOut>
+                <SignInButton className="btn btn-primary" />
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
               <button type="button" className="btn btn-warning">
                 {t("premium")}
               </button>
