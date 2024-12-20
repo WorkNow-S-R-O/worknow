@@ -1,9 +1,9 @@
+// src/components/Navbar.jsx
+
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useContext } from "react";
 import { useTranslation } from "react-i18next";
-import { useLanguageSwitcher } from "../hooks/index";
-import { LanguageContext } from "../main";
+import useLanguageStore from "../store/languageStore"; // Импортируем Zustand хранилище
 import {
   SignedIn,
   SignedOut,
@@ -14,14 +14,18 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const Navbar = () => {
-  const { t } = useTranslation();
-  const { changeLanguage } = useLanguageSwitcher();
+  const { t, i18n } = useTranslation();
+
+  // Используем отдельные селекторы для language и changeLanguage
+  const language = useLanguageStore((state) => state.language);
+  const changeLanguage = useLanguageStore((state) => state.changeLanguage);
+
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { changeClerkLanguage } = useContext(LanguageContext);
-
+  // Обработчик смены языка
   const handleLanguageChange = (lang) => {
-    changeClerkLanguage(lang);
+    changeLanguage(lang); // Обновляем Zustand хранилище
+    i18n.changeLanguage(lang); // Обновляем i18n
   };
 
   return (
@@ -77,34 +81,24 @@ const Navbar = () => {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Language
+              {language === "en" ? "English" : "Russian"}
             </button>
             <ul className="dropdown-menu" aria-labelledby="languageDropdown">
               <li>
-                <a
-                  id="english"
-                  onClick={() => {
-                    handleLanguageChange("en");
-                    changeLanguage("en");
-                  }}
+                <button
+                  onClick={() => handleLanguageChange("en")}
                   className="dropdown-item"
-                  href="#"
                 >
                   English
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  id="russian"
-                  onClick={() => {
-                    handleLanguageChange("ru");
-                    changeLanguage("ru");
-                  }}
+                <button
+                  onClick={() => handleLanguageChange("ru")}
                   className="dropdown-item"
-                  href="#"
                 >
                   Russian
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -185,35 +179,27 @@ const Navbar = () => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Language
+                  {language === "en" ? "English" : "Russian"}
                 </button>
                 <ul
                   className="dropdown-menu"
                   aria-labelledby="mobileLanguageDropdown"
                 >
                   <li>
-                    <a
-                      onClick={() => {
-                        handleLanguageChange("en");
-                        changeLanguage("en");
-                      }}
+                    <button
+                      onClick={() => handleLanguageChange("en")}
                       className="dropdown-item"
-                      href="#"
                     >
                       English
-                    </a>
+                    </button>
                   </li>
                   <li>
-                    <a
-                      onClick={() => {
-                        handleLanguageChange("ru");
-                        changeLanguage("ru");
-                      }}
+                    <button
+                      onClick={() => handleLanguageChange("ru")}
                       className="dropdown-item"
-                      href="#"
                     >
                       Russian
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>
