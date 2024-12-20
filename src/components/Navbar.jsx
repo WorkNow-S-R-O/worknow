@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useContext } from "react";
 import { useTranslation } from "react-i18next";
-import { useLanguageSwitcher } from "../../hooks/index";
+import { useLanguageSwitcher } from "../hooks/index";
+import { LanguageContext } from "../main";
 import {
   SignedIn,
   SignedOut,
@@ -15,6 +17,12 @@ const Navbar = () => {
   const { t } = useTranslation();
   const { changeLanguage } = useLanguageSwitcher();
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const { changeClerkLanguage } = useContext(LanguageContext);
+
+  const handleLanguageChange = (lang) => {
+    changeClerkLanguage(lang);
+  };
 
   return (
     <>
@@ -39,7 +47,7 @@ const Navbar = () => {
                 to="/"
                 className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
               >
-                {t("community")}
+                {t("vacancies")}
               </Link>
             </li>
             <li className="mr-3">
@@ -58,14 +66,6 @@ const Navbar = () => {
                 {t("facebookgroups")}
               </Link>
             </li>
-            <li>
-              <Link
-                to="/salaries"
-                className="text-lg m-2.5 font-normal text-gray-600 hover:text-gray-900 no-underline"
-              >
-                {t("salaries")}
-              </Link>
-            </li>
           </ul>
         </div>
         <div className="d-flex align-items-center absolute top-0 right-12 m-3">
@@ -82,7 +82,11 @@ const Navbar = () => {
             <ul className="dropdown-menu" aria-labelledby="languageDropdown">
               <li>
                 <a
-                  onClick={() => changeLanguage("en")}
+                  id="english"
+                  onClick={() => {
+                    handleLanguageChange("en");
+                    changeLanguage("en");
+                  }}
                   className="dropdown-item"
                   href="#"
                 >
@@ -91,7 +95,11 @@ const Navbar = () => {
               </li>
               <li>
                 <a
-                  onClick={() => changeLanguage("ru")}
+                  id="russian"
+                  onClick={() => {
+                    handleLanguageChange("ru");
+                    changeLanguage("ru");
+                  }}
                   className="dropdown-item"
                   href="#"
                 >
@@ -147,7 +155,7 @@ const Navbar = () => {
                   className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
                   to="/"
                 >
-                  {t("community")}
+                  {t("vacancies")}
                 </Link>
               </li>
               <li className="nav-item">
@@ -164,14 +172,6 @@ const Navbar = () => {
                   to="/facebook"
                 >
                   {t("facebookgroups")}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
-                  to="/salaries"
-                >
-                  {t("salaries")}
                 </Link>
               </li>
             </ul>
