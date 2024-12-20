@@ -37,8 +37,8 @@ const Navbar = () => {
             className="d-flex align-items-center no-underline text-black"
           >
             <img
-              className="w-12 bottom-2 relative ml-0"
-              src="/assets/images/worker.png"
+              className="w-12 bottom-2 relative ml-0 me-2"
+              src="/assets/images/WORKNOW LOGO.svg"
               alt="Logo"
             />
             <h1 className="text-3xl ml-0">worknow</h1>
@@ -126,7 +126,7 @@ const Navbar = () => {
           <Link className="navbar-brand d-flex align-items-center" to="/">
             <img
               className="w-12 me-2"
-              src="/assets/images/worker.png"
+              src="/assets/images/WORKNOW LOGO.svg"
               alt="Logo"
             />
             <h1 className="text-3xl m-0">worknow</h1>
