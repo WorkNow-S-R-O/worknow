@@ -193,7 +193,10 @@ const Navbar = () => {
                 >
                   <li>
                     <a
-                      onClick={() => changeLanguage("en")}
+                      onClick={() => {
+                        handleLanguageChange("en");
+                        changeLanguage("en");
+                      }}
                       className="dropdown-item"
                       href="#"
                     >
@@ -202,7 +205,10 @@ const Navbar = () => {
                   </li>
                   <li>
                     <a
-                      onClick={() => changeLanguage("ru")}
+                      onClick={() => {
+                        handleLanguageChange("ru");
+                        changeLanguage("ru");
+                      }}
                       className="dropdown-item"
                       href="#"
                     >
