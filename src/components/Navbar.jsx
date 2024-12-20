@@ -1,5 +1,3 @@
-// src/components/Navbar.jsx
-
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -103,11 +101,17 @@ const Navbar = () => {
             </ul>
           </div>
           <button type="button" className="btn btn-warning">
+            <i className="bi bi-gem me-2"></i>
             {t("premium")}
           </button>
           <div className="d-flex ml-5">
             <SignedOut>
-              <SignInButton className="btn btn-primary" />
+              <SignInButton>
+                <span className="btn btn-primary d-flex align-items-center">
+                  <i className="bi bi-person-circle me-2"></i>
+                  {t("signin")}
+                </span>
+              </SignInButton>
             </SignedOut>
             <SignedIn>
               <UserButton />
@@ -204,12 +208,18 @@ const Navbar = () => {
                 </ul>
               </div>
               <SignedOut>
-                <SignInButton className="btn btn-primary" />
+                <SignInButton>
+                  <span className="btn btn-primary d-flex align-items-center justify-content-center">
+                    <i className="bi bi-person-circle me-2"></i>
+                    {t("signin")}
+                  </span>
+                </SignInButton>
               </SignedOut>
               <SignedIn>
                 <UserButton />
               </SignedIn>
               <button type="button" className="btn btn-warning">
+                <i className="bi bi-gem me-2"></i>
                 {t("premium")}
               </button>
             </div>
