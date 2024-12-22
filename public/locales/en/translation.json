@@ -1,10 +1,11 @@
 {
   "login": "Login",
   "premium": "Premium",
-  "vacancies": "Vacancies",
+  "vacancies": "Jobs",
   "jobs": "My advertisements",
   "facebookgroups": "Facebook groups",
   "salaries": "Salaries",
   "backtohome": "Back to home",
-  "signin": "Sign in"
+  "signin": "Sign in",
+  "jobsworknow": "Jobs | Worknow"
 }

@@ -2,15 +2,16 @@ import { useMemo } from "react";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { RouterProvider } from "react-router-dom";
 import useLanguageStore from "./store/languageStore";
+import { HelmetProvider } from "react-helmet-async";
 import { createBrowserRouter } from "react-router-dom";
-import App from "./pages/App.jsx";
+import Home from "./pages/Home.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import "./18n.ts";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Home />,
     errorElement: <NotFoundPage />,
   },
 ]);
@@ -32,7 +33,9 @@ const MainApp = () => {
       afterSignOutUrl="/"
       localization={memoizedLocalization}
     >
-      <RouterProvider router={router} />
+      <HelmetProvider>
+        <RouterProvider router={router} />
+      </HelmetProvider>
     </ClerkProvider>
   );
 };

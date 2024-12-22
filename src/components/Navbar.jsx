@@ -54,7 +54,7 @@ const Navbar = () => {
             </li>
             <li className="mr-3">
               <Link
-                to="/jobs"
+                to="/my-advertisements"
                 className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
               >
                 {t("jobs")}
@@ -62,7 +62,7 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                to="/facebook"
+                to="/facebook-groups"
                 className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
               >
                 {t("facebookgroups")}
@@ -159,7 +159,7 @@ const Navbar = () => {
               <li className="nav-item">
                 <Link
                   className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
-                  to="/jobs"
+                  to="/my-advertisements"
                 >
                   {t("jobs")}
                 </Link>
@@ -167,7 +167,7 @@ const Navbar = () => {
               <li className="nav-item">
                 <Link
                   className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
-                  to="/facebook"
+                  to="/facebook-groups"
                 >
                   {t("facebookgroups")}
                 </Link>
