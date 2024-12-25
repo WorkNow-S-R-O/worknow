@@ -7,5 +7,17 @@
   "backtohome": "Вернуться на главную",
   "signin": "Войти",
   "jobsworknow": "Вакансии | Worknow",
-  "myads": "Мои обьявления | Worknow"
+  "myads": "Мои обьявления | Worknow",
+  "create_new_advertisement": "Создать новое обьявление",
+  "job_title": "Название вакансии",
+  "write_job_title": "Введите название вакансии",
+  "salary_per_hour": "Зарплата в час",
+  "write_salary": "Введите зарплату",
+  "location": "Местоположение",
+  "write_city_or_detailed_address": "Введите город или точный адрес",
+  "description": "Описание",
+  "write_job_description": "Введите описание вакансии",
+  "create": "Создать",
+  "button_create_new_advertisement": "Создать новое обьявление",
+  "create_new_advertisement_tab": "Создать новое обьявление | Worknow"
 }

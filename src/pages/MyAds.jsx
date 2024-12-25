@@ -1,7 +1,7 @@
 import { Navbar } from "../components/index";
-import { JobForm } from "../components/index";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { Button } from "../components/ui/index";
 
 function MyAds() {
   const { t } = useTranslation();
@@ -10,10 +10,10 @@ function MyAds() {
     <>
       <Helmet>
         <title>{t("myads")}</title>
-        <meta name="description" content="Jobs | Worknow" />
+        <meta name="description" content="My advertisements | Worknow" />
       </Helmet>
       <Navbar />
-      <JobForm />
+      <Button />
     </>
   );
 }
