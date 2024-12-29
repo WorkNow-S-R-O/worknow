@@ -31,7 +31,7 @@ const Navbar = () => {
       {/* Desktop Version */}
       <div className="mb-20 d-none d-lg-block">
         <div className="absolute top-0 left-0 w-full h-16 bg-[#e3f2fd]"></div>
-        <div className="flex absolute top-0 left-0 m-3">
+        <div className="flex absolute top-0 left-0 m-3 ">
           <Link
             to="/"
             className="d-flex align-items-center no-underline text-black"
@@ -70,7 +70,7 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        <div className="d-flex align-items-center absolute top-0 right-12 m-3">
+        <div className="d-flex align-items-center absolute top-0 right-0 m-3">
           <div className="dropdown me-2">
             <button
               className="btn btn-secondary dropdown-toggle"
