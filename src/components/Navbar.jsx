@@ -29,7 +29,7 @@ const Navbar = () => {
   return (
     <>
       {/* Desktop Version */}
-      <div className="mb-20 d-none d-lg-block">
+      <div className="mb-50 d-none d-lg-block">
         <div className="absolute top-0 left-0 w-full h-16 bg-[#e3f2fd]"></div>
         <div className="flex absolute top-0 left-0 m-3 ">
           <Link
@@ -79,6 +79,7 @@ const Navbar = () => {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
+              <i className="bi bi-translate me-2"></i>
               {language === "en" ? "English" : "Russian"}
             </button>
             <ul className="dropdown-menu" aria-labelledby="languageDropdown">
