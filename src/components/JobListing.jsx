@@ -31,6 +31,17 @@ const JobListing = () => {
         "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
       phone: "+972-50-765-4321",
     },
+    {
+      title: "Backend Developer",
+      company: "Backend Solutions",
+      location: "Хайфа",
+      salary: "₪18,000 - ₪25,000",
+      experience: "3-5 лет",
+      employmentType: "Полная занятость",
+      description:
+        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
+      phone: "+972-50-765-4321",
+    },
   ];
 
   return (

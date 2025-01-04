@@ -43,7 +43,7 @@ const Navbar = () => {
             />
             <h1 className="text-3xl ml-0">worknow</h1>
           </Link>
-          <ul className="flex justify-center items-center ml-20 gap-2 mb-2 text-gray-500">
+          <ul className="flex justify-center items-center ml-0 gap-2 mb-2 text-gray-500">
             <li className="mr-3">
               <Link
                 to="/"
