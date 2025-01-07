@@ -13,7 +13,7 @@ function MyAds() {
         <meta name="description" content="My advertisements | Worknow" />
       </Helmet>
       <Navbar />
-      <Button />
+      <Button />\
     </>
   );
 }

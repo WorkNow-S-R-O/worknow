@@ -1,4 +1,5 @@
 import { Navbar } from "../components/index";
+import { Footer } from "../components/index";
 import { JobForm } from "../components/index";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -14,6 +15,7 @@ function CreateNewAd() {
       </Helmet>
       <Navbar />
       <JobForm />
+      <Footer />
     </>
   );
 }
