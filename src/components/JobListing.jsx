@@ -1,11 +1,12 @@
 import { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { Pagination } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const JobListing = () => {
   const [phoneVisible, setPhoneVisible] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 10;
+
 
   const handleShowPhone = (index) => {
     setPhoneVisible(index);

@@ -6,7 +6,7 @@ const JobForm = () => {
   return (
     <div className="flex items-center justify-center px-4 mt-20 mb-40">
       {/* Родительский контейнер с отступами */}
-      <div className="job-form w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-6 bg-white rounded-lg shadow-md">
+      <div className="job-form mt-10 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-6 bg-white rounded-lg shadow-md">
         {/* Контейнер формы с реактивным max-width */}
         <h1 className="text-2xl font-bold mb-4 text-center">
           {t("create_new_advertisement")}
