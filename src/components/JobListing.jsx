@@ -13,15 +13,12 @@ const JobListing = () => {
 
   const jobData = [
     {
-      title: "Frontend Developer",
-      company: "Tech Corp",
+      title: "Мойка автомобилей",
       location: "Тель-Авив",
-      salary: "₪15,000 - ₪20,000",
-      experience: "2-3 года",
-      employmentType: "Полная занятость",
+      salary: "45 - 55",
       description:
-        "Мы ищем опытного Frontend Developer для работы с современными технологиями (React, Vue.js). Если вы ищете вызов и хотите работать в динамичной команде, эта вакансия для вас!",
-      phone: "+972-50-123-4567",
+        "📍 Бней Айш 🚘 Мойка машин 💰 45 шекелей в час ⏰ С 7:00 до 16:00 🚕 Подвозка с Ашкелона и Ашдода ✅ Обучение на месте ✅ Проезд оплачивается ✅ Любые документы",
+      phone: "+972-053-677-6686",
     },
     {
       title: "Backend Developer",
@@ -179,9 +176,7 @@ const JobListing = () => {
   };
 
   return (
-    <div
-      className="flex items-center justify-content-center flex-column align-items-center mt-40"
-    >
+    <div className="flex items-center justify-content-center flex-column align-items-center mt-40">
       <div className="d-flex flex-column align-items-center">
         {currentJobs.map((job, index) => (
           <div
@@ -197,17 +192,11 @@ const JobListing = () => {
           >
             <div className="card-body">
               <h5 className="card-title text-primary">{job.title}</h5>
-              <h6 className="card-subtitle mb-2 text-muted">
-                Компания: {job.company}
-              </h6>
               <p className="card-text">
-                <strong>Локация:</strong> {job.location}
+                <strong>Зарплата в час:</strong> {job.salary}
                 <br />
-                <strong>Зарплата:</strong> {job.salary}
+                <strong>Местоположение:</strong> {job.location}
                 <br />
-                <strong>Требуемый опыт:</strong> {job.experience}
-                <br />
-                <strong>Тип занятости:</strong> {job.employmentType}
               </p>
               <p className="card-text">{job.description}</p>
               <div className="d-flex align-items-center">
