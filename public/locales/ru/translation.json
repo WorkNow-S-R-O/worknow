@@ -19,5 +19,7 @@
   "write_job_description": "Введите описание вакансии",
   "create": "Создать",
   "button_create_new_advertisement": "Создать новое обьявление",
-  "create_new_advertisement_tab": "Создать новое обьявление | Worknow"
+  "create_new_advertisement_tab": "Создать новое обьявление | Worknow",
+  "phone_number": "Номер телефона",
+  "write_phone_number": "Введите номер телефона"
 }
