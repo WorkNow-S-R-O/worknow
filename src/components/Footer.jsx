@@ -11,7 +11,7 @@ const Footer = () => {
       }}
     >
       <a
-        href="https://t.me/worknow_israel"
+        href="https://t.me/WORKNOW_JOBS"
         target="_blank"
         rel="noopener noreferrer"
         className="btn btn-outline-primary d-flex align-items-center"

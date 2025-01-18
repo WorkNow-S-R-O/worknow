@@ -20,6 +20,7 @@
     "@clerk/localizations": "^3.9.4",
     "@popperjs/core": "^2.11.8",
     "@prisma/client": "^6.1.0",
+    "@supabase/supabase-js": "^2.47.12",
     "axios": "^1.7.9",
     "body-parser": "^1.20.3",
     "bootstrap": "^5.3.3",
