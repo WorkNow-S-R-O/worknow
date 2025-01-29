@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Pagination } from "react-bootstrap";
+import { Pagination, Dropdown, DropdownButton } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const JobListing = () => {
   const [phoneVisible, setPhoneVisible] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCity, setSelectedCity] = useState("Выбрать город");
   const jobsPerPage = 10;
 
 
@@ -166,68 +167,60 @@ const JobListing = () => {
     },
   ];
 
-  // Разделяем данные на страницы
-  const totalPages = Math.ceil(jobData.length / jobsPerPage);
+  const filteredJobs = selectedCity === "Выбрать город" ? jobData : jobData.filter(job => job.location === selectedCity);
+
+  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobData.slice(indexOfFirstJob, indexOfLastJob);
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  const handleCitySelect = (city) => {
+    setSelectedCity(city);
+    setCurrentPage(1);
+  };
+
   return (
-    <div className="flex items-center justify-content-center flex-column align-items-center mt-40">
-      <div className="d-flex flex-column align-items-center">
-        {currentJobs.map((job, index) => (
-          <div
-            key={index}
-            className="d-flex card shadow-sm mb-4"
-            style={{
-              width: "90%",
-              justifyContent: "center",
-              alignItems: "center",
-              maxWidth: "700px",
-              borderRadius: "10px",
-            }}
-          >
-            <div className="card-body">
-              <h5 className="card-title text-primary">{job.title}</h5>
-              <p className="card-text">
-                <strong>Зарплата в час:</strong> {job.salary}
-                <br />
-                <strong>Местоположение:</strong> {job.location}
-                <br />
-              </p>
-              <p className="card-text">{job.description}</p>
-              <div className="d-flex align-items-center">
-                <button
-                  onClick={() => handleShowPhone(index)}
-                  className="btn btn-primary me-3"
-                >
-                  Показать телефон
-                </button>
-                <span className={phoneVisible === index ? "" : "text-muted"}>
-                  {phoneVisible === index ? job.phone : "Скрыт"}
-                </span>
+    <div className="d-flex flex-column min-vh-100">
+      <div className="flex-grow-1 d-flex flex-column align-items-center mt-40">
+        <DropdownButton title={<span><i className="bi bi-geo-alt"></i> {selectedCity}</span>} variant="primary" className="mb-3">
+          <Dropdown.Item onClick={() => handleCitySelect("Выбрать город")}>Все города</Dropdown.Item>
+          <Dropdown.Item onClick={() => handleCitySelect("Тель-Авив")}>Тель-Авив</Dropdown.Item>
+          <Dropdown.Item onClick={() => handleCitySelect("Хайфа")}>Хайфа</Dropdown.Item>
+        </DropdownButton>
+
+        <div className="d-flex flex-column align-items-center flex-grow-1">
+          {currentJobs.map((job, index) => (
+            <div key={index} className="d-flex card shadow-sm mb-4" style={{ width: "90%", maxWidth: "700px", borderRadius: "10px" }}>
+              <div className="card-body">
+                <h5 className="card-title text-primary">{job.title}</h5>
+                <p className="card-text">
+                  <strong>Зарплата в час:</strong> {job.salary}<br />
+                  <strong>Местоположение:</strong> {job.location}<br />
+                </p>
+                <p className="card-text">{job.description}</p>
+                <div className="d-flex align-items-center">
+                  <button onClick={() => handleShowPhone(index)} className="btn btn-primary me-3">Показать телефон</button>
+                  <span className={phoneVisible === index ? "" : "text-muted"}>{phoneVisible === index ? job.phone : "Скрыт"}</span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
-      {/* Пагинация */}
-      <Pagination>
-        {[...Array(totalPages).keys()].map((page) => (
-          <Pagination.Item
-            key={page + 1}
-            active={page + 1 === currentPage}
-            onClick={() => handlePageChange(page + 1)}
-          >
-            {page + 1}
-          </Pagination.Item>
-        ))}
-      </Pagination>
+      <div className="mt-auto d-flex justify-content-center">
+        <Pagination>
+          {[...Array(totalPages).keys()].map((page) => (
+            <Pagination.Item key={page + 1} active={page + 1 === currentPage} onClick={() => handlePageChange(page + 1)}>
+              {page + 1}
+            </Pagination.Item>
+          ))}
+        </Pagination>
+      </div>
     </div>
   );
 };
