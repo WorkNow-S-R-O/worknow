@@ -1,4 +1,4 @@
-import prisma from '../lib/prisma'
+import prisma from './prisma'
 import {User} from '@prisma/client'
 
 export async function createUser(data: User) {

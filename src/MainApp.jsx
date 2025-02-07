@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { ClerkProvider } from "@clerk/clerk-react";
+import { shadesOfPurple } from '@clerk/themes'
 import { RouterProvider } from "react-router-dom";
 import useLanguageStore from "./store/languageStore";
 import { HelmetProvider } from "react-helmet-async";
@@ -41,6 +42,9 @@ const MainApp = () => {
 
   return (
     <ClerkProvider
+    appearance={{
+      baseTheme: shadesOfPurple,
+    }}
       publishableKey={PUBLISHABLE_KEY}
       afterSignOutUrl="/"
       localization={memoizedLocalization}

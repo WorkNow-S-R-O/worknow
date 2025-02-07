@@ -62,10 +62,10 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                to="/facebook-groups"
+                to="/work-map"
                 className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
               >
-                {t("facebookgroups")}
+                {t("work_near_by")}
               </Link>
             </li>
           </ul>
@@ -168,9 +168,9 @@ const Navbar = () => {
               <li className="nav-item">
                 <Link
                   className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
-                  to="/facebook-groups"
+                  to="/work-map"
                 >
-                  {t("facebookgroups")}
+                  {t("work_near_by")}
                 </Link>
               </li>
             </ul>
