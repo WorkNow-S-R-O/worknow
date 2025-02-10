@@ -8,15 +8,17 @@ function Home() {
   const { t } = useTranslation();
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Helmet>
         <title>{t("jobsworknow")}</title>
         <meta name="description" content="Jobs | Worknow" />
       </Helmet>
       <Navbar />
-      <JobListing />
+      <main className="flex-1">
+        <JobListing />
+      </main>
       <Footer />
-    </>
+    </div>
   );
 }
 

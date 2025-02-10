@@ -184,8 +184,8 @@ const JobListing = () => {
   };
 
   return (
-    <div className="d-flex flex-column min-vh-100">
-      <div className="flex-grow-1 d-flex flex-column align-items-center mt-40">
+    <div className="d-flex flex-column">
+      <div className="flex-grow-1 d-flex flex-column align-items-center mt-40 min-h-screen ">
         <DropdownButton title={<span><i className="bi bi-geo-alt"></i> {selectedCity}</span>} variant="primary" className="mb-3">
           <Dropdown.Item onClick={() => handleCitySelect("Выбрать город")}>Все города</Dropdown.Item>
           <Dropdown.Item onClick={() => handleCitySelect("Тель-Авив")}>Тель-Авив</Dropdown.Item>
@@ -209,7 +209,7 @@ const JobListing = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div> 
       </div>
 
       <div className="mt-auto d-flex justify-content-center">

@@ -3,10 +3,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const Footer = () => {
   return (
     <footer
-      className="d-flex justify-content-center align-items-center py-3"
+      className="d-flex justify-content-center align-items-center py-3 mt-auto "
       style={{
         backgroundColor: "#e3f2fd",
-        position: "absolute",
         width: "100%",
       }}
     >

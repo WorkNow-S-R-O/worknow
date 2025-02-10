@@ -29,7 +29,7 @@ const Navbar = () => {
   return (
     <>
       {/* Desktop Version */}
-      <div className="mb-50 d-none d-lg-block">
+      <div className="d-none d-lg-block mb-10">
         <div className="absolute top-0 left-0 w-full h-16 bg-[#e3f2fd]"></div>
         <div className="flex absolute top-0 left-0 m-3 ">
           <Link
@@ -38,7 +38,7 @@ const Navbar = () => {
           >
             <img
               className="w-12 bottom-2 relative ml-0 me-2"
-              src="/assets/images/WORKNOW LOGO.svg"
+              src="/public/images/logo.svg"
               alt="Logo"
             />
             <h1 className="text-3xl ml-0">worknow</h1>
