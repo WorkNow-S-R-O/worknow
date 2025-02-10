@@ -38,7 +38,7 @@ const Navbar = () => {
           >
             <img
               className="w-12 bottom-2 relative ml-0 me-2"
-              src="/public/images/logo.svg"
+              src="/images/logo.svg"
               alt="Logo"
             />
             <h1 className="text-3xl ml-0">worknow</h1>
