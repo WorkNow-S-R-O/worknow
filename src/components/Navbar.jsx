@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import PremiumButton from "./ui/premium-button";
 import useLanguageStore from "../store/languageStore"; // Импортируем Zustand хранилище
 import {
   SignedIn,
@@ -101,10 +102,7 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
-          <button type="button" className="btn btn-warning">
-            <i className="bi bi-gem me-2"></i>
-            {t("premium")}
-          </button>
+        <PremiumButton />
           <div className="d-flex ml-5">
             <SignedOut>
               <SignInButton>
@@ -122,12 +120,12 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Version */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-[#e3f2fd] d-lg-none fixed-top">
+      <nav className=" z-10 navbar navbar-expand-lg navbar-light bg-[#e3f2fd] d-lg-none fixed-top">
         <div className="container-fluid">
           <Link className="navbar-brand d-flex align-items-center" to="/">
             <img
               className="w-12 me-2"
-              src="/assets/images/WORKNOW LOGO.svg"
+              src="/images/logo.svg"
               alt="Logo"
             />
             <h1 className="text-3xl m-0">worknow</h1>
@@ -219,10 +217,7 @@ const Navbar = () => {
               <SignedIn>
                 <UserButton />
               </SignedIn>
-              <button type="button" className="btn btn-warning">
-                <i className="bi bi-gem me-2"></i>
-                {t("premium")}
-              </button>
+              <PremiumButton />
             </div>
           </div>
         </div>

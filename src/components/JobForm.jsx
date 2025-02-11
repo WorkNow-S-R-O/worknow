@@ -88,7 +88,7 @@ const JobForm = () => {
                 htmlFor="image"
                 className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <i className="bi bi-pencil me-2 text-gray-500"></i>
+                <i className="bi bi-magic me-2 text-gray-500"></i>
                 {t("improve_with_ai")}
               </label>
             </div>
