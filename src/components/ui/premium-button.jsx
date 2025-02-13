@@ -12,14 +12,46 @@ const PremiumButton = () => {
           {t("premium")}
         </button>
       </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>{t("premium_title")}</SheetTitle>
-          <SheetDescription>
-            {t("premium_description")}
-          </SheetDescription>
-        </SheetHeader>
-        {/* Здесь можно добавить контент, например, преимущества премиум-аккаунта */}
+      <SheetContent className="flex flex-col h-full">
+        <div className="flex-1 overflow-auto">
+          <SheetHeader>
+            <SheetTitle>{t("premium_title")}</SheetTitle>
+            <SheetDescription>
+              {t("premium_description")}
+            </SheetDescription>
+          </SheetHeader>
+
+          {/* Преимущества подписки */}
+          <div className="my-4 p-4 bg-yellow-200 rounded-lg shadow">
+            <h3 className="text-lg font-bold text-yellow-800 mb-2">{t("premium_benefits_title")}</h3>
+            <ul className="list-disc list-inside text-yellow-700">
+              <li>{t("premium_benefit_1")}</li>
+              <li>{t("premium_benefit_2")}</li>
+              <li>{t("premium_benefit_3")}</li>
+              <li>{t("premium_benefit_4")}</li>
+              <li>{t("premium_benefit_5")}</li>
+            </ul>
+          </div>
+
+          <div className="flex justify-center items-center my-4">
+            <img
+              src="./images/premium.png"
+              alt="premium"
+              className="w-1/2"
+            />
+          </div>
+
+        </div>
+
+        {/* Фиксированная кнопка оплаты */}
+        <div className="mt-auto">
+          <button
+            type="button"
+            className="btn btn-warning w-full py-3 text-lg"
+          >
+            К оплате: 99 ₪
+          </button>
+        </div>
       </SheetContent>
     </Sheet>
   );

@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "prisma db seed",
+    "prisma:seed": "node prisma/seed.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -38,6 +38,7 @@
     "lucide": "^0.475.0",
     "lucide-react": "^0.475.0",
     "postgres": "^3.4.5",
+    "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.7",
     "react-dom": "^18.3.1",
@@ -45,6 +46,7 @@
     "react-helmet-async": "^2.0.5",
     "react-i18next": "^15.2.0",
     "react-router-dom": "^7.0.2",
+    "react-select": "^5.10.0",
     "svix": "^1.45.1",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",

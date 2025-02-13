@@ -25,5 +25,12 @@
   "phone_number": "Phone number",
   "write_phone_number": "Write phone number",
   "improve_with_ai": "Improve with AI",
-  "premium_title": "Premium account"
+  "premium_title": "Premium account",
+  "premium_description": "Premium subscription helps you find a job at least twice as fast",
+  "premium_benefits_title": "What you will get?",
+  "premium_benefit_1": "Your vacancies will be in the top",
+  "premium_benefit_2": "Access to job map",
+  "premium_benefit_3": "Publications in Telegram",
+  "premium_benefit_4": "Access to functions of AI",
+  "premium_benefit_5": "Your vacancies will be gold"
 }

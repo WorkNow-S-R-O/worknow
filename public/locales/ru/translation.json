@@ -24,5 +24,13 @@
   "phone_number": "Номер телефона",
   "write_phone_number": "Введите номер телефона",
   "improve_with_ai": "Улучшить с помощью ИИ",
-  "premium_title": "Премиум аккаунт"
+  "premium_title": "Премиум аккаунт",
+  "premium_description": "Премиум подписка помогает вам как минимум в два раза быстрее найти рабочий персонал",
+  "premium_benefits_title": "Что вы получите?",
+  "premium_benefit_1": "Ваши вакансии будут в топе",
+  "premium_benefit_2": "Доступ к карте вакансий",
+  "premium_benefit_3": "Публикации в телеграме",
+  "premium_benefit_4": "Доступ к функциям ИИ",
+  "premium_benefit_5": "Ваши вакансии будут золотыми"
+
 }

@@ -1,173 +1,32 @@
-import { useState } from "react";
-import { Pagination, Dropdown, DropdownButton } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Pagination } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import CityDropdown from './ui/city-dropwdown';
 
 const JobListing = () => {
-  const [phoneVisible, setPhoneVisible] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCity, setSelectedCity] = useState("Выбрать город");
+  const [selectedCity, setSelectedCity] = useState('Выбрать город');
+  const [jobData, setJobData] = useState([]);
   const jobsPerPage = 10;
 
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/jobs');
+        setJobData(response.data);
+      } catch (error) {
+        console.error('Ошибка загрузки объявлений:', error);
+      }
+    };
 
-  const handleShowPhone = (index) => {
-    setPhoneVisible(index);
-  };
+    fetchJobs();
+  }, []);
 
-  const jobData = [
-    {
-      title: "Мойка автомобилей",
-      location: "Тель-Авив",
-      salary: "45 - 55",
-      description:
-        "📍 Бней Айш 🚘 Мойка машин 💰 45 шекелей в час ⏰ С 7:00 до 16:00 🚕 Подвозка с Ашкелона и Ашдода ✅ Обучение на месте ✅ Проезд оплачивается ✅ Любые документы",
-      phone: "+972-053-677-6686",
-    },
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-
-    {
-      title: "Backend Developer",
-      company: "Backend Solutions",
-      location: "Хайфа",
-      salary: "₪18,000 - ₪25,000",
-      experience: "3-5 лет",
-      employmentType: "Полная занятость",
-      description:
-        "Присоединяйтесь к нашей команде, чтобы разработать масштабируемые серверные решения. Мы используем Node.js и Python.",
-      phone: "+972-50-765-4321",
-    },
-  ];
-
-  const filteredJobs = selectedCity === "Выбрать город" ? jobData : jobData.filter(job => job.location === selectedCity);
+  const filteredJobs =
+    selectedCity === 'Выбрать город'
+      ? jobData
+      : jobData.filter((job) => job.city.name === selectedCity);
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
   const indexOfLastJob = currentPage * jobsPerPage;
@@ -185,42 +44,52 @@ const JobListing = () => {
 
   return (
     <div className="d-flex flex-column">
-      <div className="flex-grow-1 d-flex flex-column align-items-center mt-40 min-h-screen ">
-        <DropdownButton title={<span><i className="bi bi-geo-alt"></i> {selectedCity}</span>} variant="primary" className="mb-3">
-          <Dropdown.Item onClick={() => handleCitySelect("Выбрать город")}>Все города</Dropdown.Item>
-          <Dropdown.Item onClick={() => handleCitySelect("Тель-Авив")}>Тель-Авив</Dropdown.Item>
-          <Dropdown.Item onClick={() => handleCitySelect("Хайфа")}>Хайфа</Dropdown.Item>
-        </DropdownButton>
+      <div className="flex-grow-1 d-flex flex-column align-items-center mt-40 min-h-screen">
+        <CityDropdown selectedCity={selectedCity} onCitySelect={handleCitySelect} />
 
         <div className="d-flex flex-column align-items-center flex-grow-1">
-          {currentJobs.map((job, index) => (
-            <div key={index} className="d-flex card shadow-sm mb-4" style={{ width: "90%", maxWidth: "700px", borderRadius: "10px" }}>
-              <div className="card-body">
-                <h5 className="card-title text-primary">{job.title}</h5>
-                <p className="card-text">
-                  <strong>Зарплата в час:</strong> {job.salary}<br />
-                  <strong>Местоположение:</strong> {job.location}<br />
-                </p>
-                <p className="card-text">{job.description}</p>
-                <div className="d-flex align-items-center">
-                  <button onClick={() => handleShowPhone(index)} className="btn btn-primary me-3">Показать телефон</button>
-                  <span className={phoneVisible === index ? "" : "text-muted"}>{phoneVisible === index ? job.phone : "Скрыт"}</span>
+          {filteredJobs.length === 0 ? (
+            <p className="text-muted mt-4">Объявлений не найдено</p>
+          ) : (
+            currentJobs.map((job) => (
+              <div
+                key={job.id}
+                className="d-flex card shadow-sm mb-4"
+                style={{ width: '90%', maxWidth: '700px', borderRadius: '10px' }}
+              >
+                <div className="card-body">
+                  <h5 className="card-title text-primary">{job.title}</h5>
+                  <p className="card-text">
+                    <strong>Зарплата в час:</strong> {job.salary}
+                    <br />
+                    <strong>Местоположение:</strong> {job.city.name}
+                  </p>
+                  <p className="card-text">{job.description}</p>
+                  <p className="card-text">
+                    <strong>Телефон:</strong> {job.phone}
+                  </p>
                 </div>
               </div>
-            </div>
-          ))}
-        </div> 
+            ))
+          )}
+        </div>
       </div>
 
-      <div className="mt-auto d-flex justify-content-center">
-        <Pagination>
-          {[...Array(totalPages).keys()].map((page) => (
-            <Pagination.Item key={page + 1} active={page + 1 === currentPage} onClick={() => handlePageChange(page + 1)}>
-              {page + 1}
-            </Pagination.Item>
-          ))}
-        </Pagination>
-      </div>
+      {filteredJobs.length > 0 && (
+        <div className="mt-auto d-flex justify-content-center">
+          <Pagination>
+            {[...Array(totalPages).keys()].map((page) => (
+              <Pagination.Item
+                key={page + 1}
+                active={page + 1 === currentPage}
+                onClick={() => handlePageChange(page + 1)}
+              >
+                {page + 1}
+              </Pagination.Item>
+            ))}
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 };
