@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useUser } from '@clerk/clerk-react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 
@@ -123,22 +125,22 @@ const JobForm = ({ onJobCreated }) => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="cityId" className="block text-gray-700 mb-2">{t('location')}</label>
-            {loading ? (
-              <p>Загрузка городов...</p>
-            ) : (
-              <Select
-                options={cities}
-                value={cities.find((city) => city.value === formData.cityId) || null}
-                onChange={handleCityChange}
-                placeholder="Выберите город"
-                classNamePrefix="react-select"
-                isClearable
-                menuPlacement="auto"
-                maxMenuHeight={160} // это примерно 5 пунктов по высоте
-              />
-            )}
-          </div>
+  <label htmlFor="cityId" className="block text-gray-700 mb-2">{t('location')}</label>
+  {loading ? (
+    <Skeleton height={40} />
+  ) : (
+    <Select
+      options={cities}
+      value={cities.find((city) => city.value === formData.cityId) || null}
+      onChange={handleCityChange}
+      placeholder="Выберите город"
+      classNamePrefix="react-select"
+      isClearable
+      menuPlacement="auto"
+      maxMenuHeight={160}
+    />
+  )}
+</div>
 
           <div className="mb-4">
             <label htmlFor="phone" className="block text-gray-700 mb-2">{t('phone_number')}</label>
