@@ -5,10 +5,13 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const JobForm = ({ onJobCreated }) => {
   const { t } = useTranslation();
   const { user } = useUser();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -32,6 +35,7 @@ const JobForm = ({ onJobCreated }) => {
         setCities(formattedCities);
       } catch (error) {
         console.error('Ошибка получения городов:', error);
+        toast.error('Не удалось загрузить города!');
       } finally {
         setLoading(false);
       }
@@ -59,7 +63,7 @@ const JobForm = ({ onJobCreated }) => {
     e.preventDefault();
 
     if (!user) {
-      alert('Вы должны быть авторизованы');
+      toast.error('Вы должны быть авторизованы!');
       return;
     }
 
@@ -70,8 +74,7 @@ const JobForm = ({ onJobCreated }) => {
         userId: user.id,
       });
 
-      console.log('Объявление создано:', response.data);
-      alert('Объявление успешно создано!');
+      toast.success('Объявление успешно создано!');
 
       setFormData({
         title: '',
@@ -84,14 +87,18 @@ const JobForm = ({ onJobCreated }) => {
       if (onJobCreated) {
         onJobCreated(response.data);
       }
+
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
     } catch (error) {
       console.error('Ошибка при создании объявления:', error.response?.data || error.message);
-      alert('Ошибка при создании объявления');
+      toast.error('Ошибка при создании объявления!');
     }
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center px-4 m-auto relative">
+    <div className="flex-grow-1 d-flex justify-content-center align-items-center px-4">
       <div className="job-form my-5 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4 mt-5 text-center">{t('create_new_advertisement')}</h1>
 
@@ -125,22 +132,22 @@ const JobForm = ({ onJobCreated }) => {
           </div>
 
           <div className="mb-4">
-  <label htmlFor="cityId" className="block text-gray-700 mb-2">{t('location')}</label>
-  {loading ? (
-    <Skeleton height={40} />
-  ) : (
-    <Select
-      options={cities}
-      value={cities.find((city) => city.value === formData.cityId) || null}
-      onChange={handleCityChange}
-      placeholder="Выберите город"
-      classNamePrefix="react-select"
-      isClearable
-      menuPlacement="auto"
-      maxMenuHeight={160}
-    />
-  )}
-</div>
+            <label htmlFor="cityId" className="block text-gray-700 mb-2">{t('location')}</label>
+            {loading ? (
+              <Skeleton height={40} />
+            ) : (
+              <Select
+                options={cities}
+                value={cities.find((city) => city.value === formData.cityId) || null}
+                onChange={handleCityChange}
+                placeholder="Выберите город"
+                classNamePrefix="react-select"
+                isClearable
+                menuPlacement="auto"
+                maxMenuHeight={160}
+              />
+            )}
+          </div>
 
           <div className="mb-4">
             <label htmlFor="phone" className="block text-gray-700 mb-2">{t('phone_number')}</label>
