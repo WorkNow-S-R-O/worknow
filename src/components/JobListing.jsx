@@ -47,15 +47,23 @@ const JobListing = () => {
       <div className="flex-grow-1 d-flex flex-column align-items-center mt-40 min-h-screen">
         <CityDropdown selectedCity={selectedCity} onCitySelect={handleCitySelect} />
 
-        <div className="d-flex flex-column align-items-center flex-grow-1">
+        <div className="d-flex flex-column align-items-center w-100">
           {filteredJobs.length === 0 ? (
             <p className="text-muted mt-4">Объявлений не найдено</p>
           ) : (
             currentJobs.map((job) => (
               <div
                 key={job.id}
-                className="d-flex card shadow-sm mb-4"
-                style={{ width: '90%', maxWidth: '700px', borderRadius: '10px' }}
+                className="card shadow-sm mb-4 position-relative"
+                style={{
+                  width: '90%',
+                  maxWidth: '700px',
+                  borderRadius: '10px',
+                  minHeight: '220px',
+                  height: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
               >
                 <div className="card-body">
                   <h5 className="card-title text-primary">{job.title}</h5>
@@ -69,6 +77,30 @@ const JobListing = () => {
                     <strong>Телефон:</strong> {job.phone}
                   </p>
                 </div>
+
+                {/* Аватарка пользователя в правом верхнем углу */}
+                {job.user?.imageUrl && (
+                  <div
+                    className="position-absolute top-0 end-0 m-2"
+                    style={{
+                      width: '45px',
+                      height: '45px',
+                      borderRadius: '50%',
+                      overflow: 'hidden',
+                      border: '2px solid #ddd',
+                    }}
+                  >
+                    <img
+                      src={job.user.imageUrl}
+                      alt="User Avatar"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             ))
           )}
