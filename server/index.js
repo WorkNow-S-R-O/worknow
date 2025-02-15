@@ -140,21 +140,42 @@ app.get('/api/cities', async (req, res) => {
 
 // CRUD для объявлений
 
-// Получение всех объявлений
-app.get('/api/jobs', async (req, res) => {
-  try {
-    const jobs = await prisma.job.findMany({
-      include: { city: true, user: true },
-    });
-    res.status(200).json(jobs);
-  } catch (error) {
-    res.status(500).json({ error: 'Ошибка получения объявлений', details: error.message });
-  }
-});
-
 // Создание объявления
 app.post('/api/jobs', async (req, res) => {
   const { title, salary, cityId, phone, description, userId } = req.body;
+
+  console.log('Получены данные для создания объявления:', {
+    title,
+    salary,
+    cityId,
+    phone,
+    description,
+    userId,
+  });
+
+  // Проверяем, существует ли пользователь с указанным clerkUserId
+  let existingUser;
+  try {
+    console.log(`Поиск пользователя с clerkUserId: ${userId}`);
+    existingUser = await prisma.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+    console.log('Результат поиска пользователя:', existingUser);
+
+    if (!existingUser) {
+      console.error(`Пользователь с clerkUserId "${userId}" не найден в базе данных.`);
+      return res.status(400).json({
+        error: 'Пользователь не найден',
+        details: `Не найден пользователь с clerkUserId "${userId}" в базе данных.`,
+      });
+    }
+  } catch (userError) {
+    console.error('Ошибка при проверке пользователя:', userError.message);
+    return res.status(500).json({
+      error: 'Ошибка проверки пользователя',
+      details: userError.message,
+    });
+  }
 
   try {
     const job = await prisma.job.create({
@@ -164,20 +185,25 @@ app.post('/api/jobs', async (req, res) => {
         phone,
         description,
         city: { connect: { id: parseInt(cityId) } },
-        user: { connect: { clerkUserId: userId } },
+        // Используем найденное поле id, а не clerkUserId
+        user: { connect: { id: existingUser.id } },
       },
       include: {
         city: true,
         user: true,
-      }
+      },
     });
 
+    console.log('Объявление успешно создано:', job);
     res.status(201).json(job);
   } catch (error) {
-    console.error('Ошибка создания объявления:', error);
+    console.error('Ошибка создания объявления:', error.message);
+    console.error(error.stack);
     res.status(500).json({ error: 'Ошибка создания объявления', details: error.message });
   }
 });
+
+
 
 // Обновление объявления
 app.put('/api/jobs/:id', async (req, res) => {
@@ -218,4 +244,68 @@ app.delete('/api/jobs/:id', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
+
+// Получение всех объявлений
+app.get('/api/jobs', async (req, res) => {
+  try {
+    const jobs = await prisma.job.findMany({
+      include: {
+        city: true,
+        user: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    res.status(200).json(jobs);
+  } catch (error) {
+    console.error('Ошибка получения объявлений:', error.message);
+    res.status(500).json({ error: 'Ошибка получения объявлений', details: error.message });
+  }
+});
+
+// Получение объявлений конкретного пользователя с пагинацией
+app.get('/api/user-jobs/:clerkUserId', async (req, res) => {
+  const { clerkUserId } = req.params;
+  const { page = 1, limit = 5 } = req.query;
+
+  const pageInt = parseInt(page);
+  const limitInt = parseInt(limit);
+  const skip = (pageInt - 1) * limitInt;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Пользователь не найден' });
+    }
+
+    const jobs = await prisma.job.findMany({
+      where: { userId: user.id },
+      include: {
+        city: true,
+      },
+      skip,
+      take: limitInt,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    const totalJobs = await prisma.job.count({
+      where: { userId: user.id },
+    });
+
+    res.status(200).json({
+      jobs,
+      totalJobs,
+      totalPages: Math.ceil(totalJobs / limitInt),
+      currentPage: pageInt,
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Ошибка получения объявлений пользователя', details: error.message });
+  }
 });
