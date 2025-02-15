@@ -32,5 +32,9 @@
   "premium_benefit_2": "Access to job map",
   "premium_benefit_3": "Publications in Telegram",
   "premium_benefit_4": "Access to functions of AI",
-  "premium_benefit_5": "Your vacancies will be gold"
+  "premium_benefit_5": "Your vacancies will be gold",
+  "accessdenied": "Access denied",
+  "page_not_found": "Page not found",
+  "edit_advertisement": "Edit advertisement",
+  "save": "Save"
 }
