@@ -31,6 +31,10 @@
   "premium_benefit_2": "Доступ к карте вакансий",
   "premium_benefit_3": "Публикации в телеграме",
   "premium_benefit_4": "Доступ к функциям ИИ",
-  "premium_benefit_5": "Ваши вакансии будут золотыми"
+  "premium_benefit_5": "Ваши вакансии будут золотыми",
+  "accessdenied": "Доступ запрещен",
+  "page_not_found": "Страница не найдена",
+  "edit_advertisement": "Редактировать объявление",
+  "save": "Сохранить"
 
 }
