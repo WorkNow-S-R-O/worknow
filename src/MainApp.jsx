@@ -1,6 +1,7 @@
 import { useMemo } from "react";
+import { Toaster } from 'react-hot-toast';
 import { ClerkProvider } from "@clerk/clerk-react";
-import { baseTheme } from '@clerk/themes'
+import { baseTheme } from "@clerk/themes";
 import { RouterProvider } from "react-router-dom";
 import useLanguageStore from "./store/languageStore";
 import { HelmetProvider } from "react-helmet-async";
@@ -9,6 +10,9 @@ import Home from "./pages/Home.jsx";
 import MyAds from "./pages/MyAds.jsx";
 import CreateNewAd from "./pages/CreateNewAd.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import AccessDenied from "./pages/AccessDenied.jsx";
+import EditJobForm from "./components/EditJobForm.jsx";
+import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 import "./18n.ts";
 
 const router = createBrowserRouter([
@@ -24,7 +28,21 @@ const router = createBrowserRouter([
   },
   {
     path: "/create-new-advertisement",
-    element: <CreateNewAd />,
+    element: (
+      <ProtectedRoute>
+        <CreateNewAd />
+      </ProtectedRoute>
+    ),
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/access-denied",
+    element: <AccessDenied />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: '/edit-job/:id',
+    element: <ProtectedRoute><EditJobForm /></ProtectedRoute>,
     errorElement: <NotFoundPage />,
   },
 ]);
@@ -42,15 +60,16 @@ const MainApp = () => {
 
   return (
     <ClerkProvider
-    appearance={{
-      baseTheme: baseTheme,
-    }}
+      appearance={{
+        baseTheme: baseTheme,
+      }}
       publishableKey={PUBLISHABLE_KEY}
       afterSignOutUrl="/"
       localization={memoizedLocalization}
     >
       <HelmetProvider>
         <RouterProvider router={router} />
+        <Toaster position="top-center" />
       </HelmetProvider>
     </ClerkProvider>
   );
