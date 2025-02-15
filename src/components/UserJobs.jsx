@@ -5,6 +5,8 @@ import { Pagination } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Trash, PencilSquare } from 'react-bootstrap-icons';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const UserJobs = () => {
   const { user } = useUser();
@@ -69,7 +71,23 @@ const UserJobs = () => {
       <h2 className="text-lg font-bold mb-3 text-center text-primary">Мои объявления</h2>
 
       {loading ? (
-        <p className='text-center'>Загрузка...</p>
+        <div style={{ minHeight: '700px' }} className="d-flex flex-column justify-content-between">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div
+              key={index}
+              className="card mb-3 position-relative"
+              style={{ width: '90%', maxWidth: '700px', margin: '0 auto' }}
+            >
+              <div className="card-body">
+                <Skeleton height={24} width="50%" />
+                <Skeleton height={18} width="80%" className="my-2" />
+                <Skeleton height={18} width="60%" />
+                <Skeleton height={15} width="100%" className="my-2" />
+                <Skeleton height={15} width="100%" />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : jobs.length === 0 ? (
         <p className='text-center'>У вас нет объявлений.</p>
       ) : (
