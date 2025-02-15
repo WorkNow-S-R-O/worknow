@@ -9,22 +9,47 @@ import Select from 'react-select';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+// Валидация с помощью Zod
+const jobSchema = z.object({
+  title: z.string().min(3, 'Минимум 3 символа').max(100, 'Максимум 100 символов'),
+  salary: z.string().regex(/^\d+$/, 'Можно вводить только цифры'),
+  cityId: z.number({ required_error: 'Выберите город' }),
+  phone: z.string().regex(/^\d+$/, 'Можно вводить только цифры').min(7, 'Минимум 7 цифр'),
+  description: z.string().min(10, 'Минимум 10 символов').max(5000, 'Максимум 5000 символов'),
+});
+
 const EditJobForm = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    title: '',
-    salary: '',
-    cityId: '',
-    phone: '',
-    description: '',
+  const [cities, setCities] = useState([]);
+  const [loadingCities, setLoadingCities] = useState(true);
+  const [loadingJob, setLoadingJob] = useState(true);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(jobSchema),
+    defaultValues: {
+      title: '',
+      salary: '',
+      cityId: undefined,
+      phone: '',
+      description: '',
+    },
   });
 
-  const [cities, setCities] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingJob, setLoadingJob] = useState(true);
+  const selectedCityId = watch('cityId');
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -39,30 +64,23 @@ const EditJobForm = () => {
         console.error('Ошибка получения городов:', error);
         toast.error('Не удалось загрузить города');
       } finally {
-        setLoading(false);
+        setLoadingCities(false);
       }
     };
 
     const fetchJob = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/jobs');
-        const job = response.data.find((job) => job.id === parseInt(id));
+        const response = await axios.get(`http://localhost:3001/api/jobs/${id}`);
+        const job = response.data;
 
-        if (!job) {
-          toast.error('Объявление не найдено');
-          navigate('/');
-          return;
-        }
-
-        setFormData({
-          title: job.title,
-          salary: job.salary,
-          cityId: job.city.id,
-          phone: job.phone,
-          description: job.description,
-        });
+        setValue('title', job.title);
+        setValue('salary', job.salary);
+        setValue('cityId', job.city.id);
+        setValue('phone', job.phone);
+        setValue('description', job.description);
       } catch (error) {
         toast.error('Ошибка загрузки объявления');
+        navigate('/');
       } finally {
         setLoadingJob(false);
       }
@@ -70,30 +88,13 @@ const EditJobForm = () => {
 
     fetchCities();
     fetchJob();
-  }, [id, navigate]);
+  }, [id, navigate, setValue]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleCityChange = (selectedOption) => {
-    setFormData((prev) => ({
-      ...prev,
-      cityId: selectedOption ? selectedOption.value : '',
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     try {
       await axios.put(`http://localhost:3001/api/jobs/${id}`, {
-        ...formData,
-        cityId: parseInt(formData.cityId),
+        ...data,
+        cityId: parseInt(data.cityId),
       });
 
       toast.success('Объявление обновлено!');
@@ -107,98 +108,100 @@ const EditJobForm = () => {
   return (
     <div className="d-flex flex-column min-vh-100">
       <Navbar />
-  
+
       <div className="flex-grow-1 d-flex justify-content-center align-items-center px-4">
         <div className="job-form my-5 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-6 bg-white rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-4 mt-5 text-center">{t('edit_advertisement')}</h1>
-  
+
           {loadingJob ? (
-            <Skeleton height={400} />
+            <div>
+              <Skeleton height={45} className="mb-3" />
+              <Skeleton height={45} className="mb-3" />
+              <Skeleton height={45} className="mb-3" />
+              <Skeleton height={45} className="mb-3" />
+              <Skeleton height={90} className="mb-3" />
+              <Skeleton height={45} />
+            </div>
           ) : (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
-                <label htmlFor="title" className="block text-gray-700 mb-2">{t('job_title')}</label>
+                <label className="block text-gray-700 mb-2">{t('job_title')}</label>
                 <input
-                  id="title"
                   type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  className="bg-white w-full border border-gray-300 px-3 py-2 rounded"
-                  required
+                  {...register('title')}
+                  className={`bg-white w-full border px-3 py-2 rounded ${
+                    errors.title ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
               </div>
-  
+
               <div className="mb-4">
-                <label htmlFor="salary" className="block text-gray-700 mb-2">{t('salary_per_hour')}</label>
+                <label className="block text-gray-700 mb-2">{t('salary_per_hour')}</label>
                 <input
-                  id="salary"
                   type="text"
-                  name="salary"
-                  value={formData.salary}
-                  onChange={handleChange}
-                  className="bg-white w-full border border-gray-300 px-3 py-2 rounded"
-                  required
+                  {...register('salary')}
+                  className={`bg-white w-full border px-3 py-2 rounded ${
+                    errors.salary ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.salary && <p className="text-red-500 text-sm">{errors.salary.message}</p>}
               </div>
-  
+
               <div className="mb-4">
-                <label htmlFor="cityId" className="block text-gray-700 mb-2">{t('location')}</label>
-                {loading ? (
+                <label className="block text-gray-700 mb-2">{t('location')}</label>
+                {loadingCities ? (
                   <Skeleton height={40} />
                 ) : (
                   <Select
                     options={cities}
-                    value={cities.find((city) => city.value === formData.cityId) || null}
-                    onChange={handleCityChange}
+                    value={cities.find((city) => city.value === selectedCityId) || null}
+                    onChange={(option) => setValue('cityId', option?.value)}
                     placeholder={t('choose_city')}
                     classNamePrefix="react-select"
                     isClearable
                   />
                 )}
+                {errors.cityId && <p className="text-red-500 text-sm">{errors.cityId.message}</p>}
               </div>
-  
+
               <div className="mb-4">
-                <label htmlFor="phone" className="block text-gray-700 mb-2">{t('phone_number')}</label>
+                <label className="block text-gray-700 mb-2">{t('phone_number')}</label>
                 <input
-                  id="phone"
                   type="text"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="bg-white w-full border border-gray-300 px-3 py-2 rounded"
-                  required
+                  {...register('phone')}
+                  className={`bg-white w-full border px-3 py-2 rounded ${
+                    errors.phone ? 'border-red-500' : 'border-gray-300'
+                  }`}
                 />
+                {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
               </div>
-  
+
               <div className="mb-4">
-                <label htmlFor="description" className="block text-gray-700 mb-2">{t('description')}</label>
+                <label className="block text-gray-700 mb-2">{t('description')}</label>
                 <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  className="bg-white w-full border border-gray-300 px-3 py-2 rounded"
+                  {...register('description')}
+                  className={`bg-white w-full border px-3 py-2 rounded ${
+                    errors.description ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   rows="5"
-                  required
-                ></textarea>
+                />
+                {errors.description && (
+                  <p className="text-red-500 text-sm">{errors.description.message}</p>
+                )}
               </div>
-  
-              <button
-                type="submit"
-                className="btn btn-primary w-full text-white px-4 py-2 rounded"
-              >
+
+              <button type="submit" className="btn btn-primary w-full text-white px-4 py-2 rounded">
                 {t('save')}
               </button>
             </form>
           )}
         </div>
       </div>
-  
+
       <Footer />
     </div>
   );
-
 };
 
 export default EditJobForm;

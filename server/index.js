@@ -309,3 +309,27 @@ app.get('/api/user-jobs/:clerkUserId', async (req, res) => {
     res.status(500).json({ error: 'Ошибка получения объявлений пользователя', details: error.message });
   }
 });
+
+// Получение одного объявления по ID
+app.get('/api/jobs/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const job = await prisma.job.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        city: true,
+      },
+    });
+
+    if (!job) {
+      return res.status(404).json({ error: 'Объявление не найдено' });
+    }
+
+    res.status(200).json(job);
+  } catch (error) {
+    console.error('Ошибка получения объявления:', error.message);
+    res.status(500).json({ error: 'Ошибка получения объявления', details: error.message });
+  }
+});
+

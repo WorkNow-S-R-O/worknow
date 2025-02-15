@@ -8,21 +8,46 @@ import Select from 'react-select';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+// Валидация с помощью Zod
+const jobSchema = z.object({
+  title: z.string().min(3, 'Минимум 3 символа').max(100, 'Максимум 100 символов'),
+  salary: z.string().regex(/^\d+$/, 'Можно вводить только цифры'),
+  cityId: z.number({ required_error: 'Выберите город' }),
+  phone: z.string().regex(/^\d+$/, 'Можно вводить только цифры').min(7, 'Минимум 7 цифр'),
+  description: z.string().min(10, 'Минимум 10 символов').max(5000, 'Максимум 5000 символов'),
+});
+
 const JobForm = ({ onJobCreated }) => {
   const { t } = useTranslation();
   const { user } = useUser();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    title: '',
-    salary: '',
-    cityId: '',
-    phone: '',
-    description: '',
-  });
-
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(jobSchema),
+    defaultValues: {
+      title: '',
+      salary: '',
+      cityId: undefined,
+      phone: '',
+      description: '',
+    },
+  });
+
+  const selectedCityId = watch('cityId');
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -44,24 +69,7 @@ const JobForm = ({ onJobCreated }) => {
     fetchCities();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleCityChange = (selectedOption) => {
-    setFormData((prev) => ({
-      ...prev,
-      cityId: selectedOption ? selectedOption.value : '',
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     if (!user) {
       toast.error('Вы должны быть авторизованы!');
       return;
@@ -69,20 +77,14 @@ const JobForm = ({ onJobCreated }) => {
 
     try {
       const response = await axios.post('http://localhost:3001/api/jobs', {
-        ...formData,
-        cityId: parseInt(formData.cityId),
+        ...data,
+        cityId: parseInt(data.cityId),
         userId: user.id,
       });
 
       toast.success('Объявление успешно создано!');
 
-      setFormData({
-        title: '',
-        salary: '',
-        cityId: '',
-        phone: '',
-        description: '',
-      });
+      reset();
 
       if (onJobCreated) {
         onJobCreated(response.data);
@@ -102,44 +104,53 @@ const JobForm = ({ onJobCreated }) => {
       <div className="job-form my-5 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-6 bg-white rounded-lg shadow-md">
         <h1 className="text-2xl font-bold mb-4 mt-5 text-center">{t('create_new_advertisement')}</h1>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          {/* Название вакансии */}
           <div className="mb-4">
-            <label htmlFor="title" className="block text-gray-700 mb-2">{t('job_title')}</label>
+            <label htmlFor="title" className="block text-gray-700 mb-2">
+              {t('job_title')}
+            </label>
             <input
               id="title"
               type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="bg-white w-full border border-gray-300 px-3 py-2 rounded"
+              {...register('title')}
+              className={`bg-white w-full border px-3 py-2 rounded ${
+                errors.title ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-300'
+              }`}
               placeholder={t('write_job_title')}
-              required
             />
+            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
           </div>
 
+          {/* Зарплата */}
           <div className="mb-4">
-            <label htmlFor="salary" className="block text-gray-700 mb-2">{t('salary_per_hour')}</label>
+            <label htmlFor="salary" className="block text-gray-700 mb-2">
+              {t('salary_per_hour')}
+            </label>
             <input
               id="salary"
               type="text"
-              name="salary"
-              value={formData.salary}
-              onChange={handleChange}
-              className="bg-white w-full border border-gray-300 px-3 py-2 rounded"
+              {...register('salary')}
+              className={`bg-white w-full border px-3 py-2 rounded ${
+                errors.salary ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-300'
+              }`}
               placeholder={t('write_salary')}
-              required
             />
+            {errors.salary && <p className="text-red-500 text-sm mt-1">{errors.salary.message}</p>}
           </div>
 
+          {/* Город */}
           <div className="mb-4">
-            <label htmlFor="cityId" className="block text-gray-700 mb-2">{t('location')}</label>
+            <label htmlFor="cityId" className="block text-gray-700 mb-2">
+              {t('location')}
+            </label>
             {loading ? (
               <Skeleton height={40} />
             ) : (
               <Select
                 options={cities}
-                value={cities.find((city) => city.value === formData.cityId) || null}
-                onChange={handleCityChange}
+                value={cities.find((city) => city.value === selectedCityId) || null}
+                onChange={(option) => setValue('cityId', option?.value)}
                 placeholder="Выберите город"
                 classNamePrefix="react-select"
                 isClearable
@@ -147,34 +158,41 @@ const JobForm = ({ onJobCreated }) => {
                 maxMenuHeight={160}
               />
             )}
+            {errors.cityId && <p className="text-red-500 text-sm mt-1">{errors.cityId.message}</p>}
           </div>
 
+          {/* Телефон */}
           <div className="mb-4">
-            <label htmlFor="phone" className="block text-gray-700 mb-2">{t('phone_number')}</label>
+            <label htmlFor="phone" className="block text-gray-700 mb-2">
+              {t('phone_number')}
+            </label>
             <input
               id="phone"
               type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="bg-white w-full border border-gray-300 px-3 py-2 rounded"
+              {...register('phone')}
+              className={`bg-white w-full border px-3 py-2 rounded ${
+                errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-300'
+              }`}
               placeholder={t('write_phone_number')}
-              required
             />
+            {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
           </div>
 
+          {/* Описание */}
           <div className="mb-4">
-            <label htmlFor="description" className="block text-gray-700 mb-2">{t('description')}</label>
+            <label htmlFor="description" className="block text-gray-700 mb-2">
+              {t('description')}
+            </label>
             <textarea
               id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="bg-white w-full border border-gray-300 px-3 py-2 rounded"
+              {...register('description')}
+              className={`bg-white w-full border px-3 py-2 rounded ${
+                errors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-300'
+              }`}
               rows="5"
               placeholder={t('write_job_description')}
-              required
-            ></textarea>
+            />
+            {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
           </div>
 
           <button

@@ -22,13 +22,12 @@ const PremiumButton = () => {
           </SheetHeader>
 
           {/* Преимущества подписки */}
-          <div className="my-4 p-4 bg-yellow-200 rounded-lg shadow">
-            <h3 className="text-lg font-bold text-yellow-800 mb-2">{t("premium_benefits_title")}</h3>
-            <ul className="list-disc list-inside text-yellow-700">
+          <div className="my-4 p-4 bg-primary rounded-lg shadow">
+            <h3 className="text-lg font-bold text-white mb-2">{t("premium_benefits_title")}</h3>
+            <ul className="list-disc list-inside text-white">
               <li>{t("premium_benefit_1")}</li>
               <li>{t("premium_benefit_2")}</li>
               <li>{t("premium_benefit_3")}</li>
-              <li>{t("premium_benefit_4")}</li>
               <li>{t("premium_benefit_5")}</li>
             </ul>
           </div>
@@ -37,7 +36,7 @@ const PremiumButton = () => {
             <img
               src="./images/premium.png"
               alt="premium"
-              className="w-1/2"
+              className=""
             />
           </div>
 
@@ -47,7 +46,7 @@ const PremiumButton = () => {
         <div className="mt-auto">
           <button
             type="button"
-            className="btn btn-warning w-full py-3 text-lg"
+            className="btn btn-primary w-full py-3 text-lg"
           >
             К оплате: 99 ₪
           </button>
