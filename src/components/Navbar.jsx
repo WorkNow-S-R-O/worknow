@@ -62,12 +62,15 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link
-                to="/work-map"
-                className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
+            <a
+              href="https://www.facebook.com/groups/763040732570299"
+               target="_blank"
+              rel="noopener noreferrer"
+              className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
               >
-                {t("work_near_by")}
-              </Link>
+               {t('facebook_group')}
+               </a>
+
             </li>
           </ul>
         </div>
@@ -164,12 +167,14 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link
-                  className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
-                  to="/work-map"
-                >
-                  {t("work_near_by")}
-                </Link>
+              <a
+              href="https://www.facebook.com/groups/763040732570299"
+               target="_blank"
+              rel="noopener noreferrer"
+              className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
+              >
+               {t('facebook_group')}
+               </a>
               </li>
             </ul>
 

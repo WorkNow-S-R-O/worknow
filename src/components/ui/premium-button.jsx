@@ -26,9 +26,9 @@ const PremiumButton = () => {
             <h3 className="text-lg font-bold text-white mb-2">{t("premium_benefits_title")}</h3>
             <ul className="list-disc list-inside text-white">
               <li>{t("premium_benefit_1")}</li>
-              <li>{t("premium_benefit_2")}</li>
               <li>{t("premium_benefit_3")}</li>
               <li>{t("premium_benefit_5")}</li>
+              <li>{t("premium_benefit_2")}</li>
             </ul>
           </div>
 
