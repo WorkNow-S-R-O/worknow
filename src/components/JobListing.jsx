@@ -5,6 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import CityDropdown from './ui/city-dropwdown';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 const JobListing = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,7 +57,6 @@ const JobListing = () => {
 
         <div className="d-flex flex-column align-items-center w-100">
           {loading ? (
-            // Показываем 5 скелетонов вместо вакансий во время загрузки
             Array.from({ length: 5 }).map((_, index) => (
               <div
                 key={index}
@@ -84,8 +85,11 @@ const JobListing = () => {
             currentJobs.map((job) => (
               <div
                 key={job.id}
-                className="card shadow-sm mb-4 position-relative"
+                className={`card shadow-sm mb-4 position-relative ${
+                  job.user?.isPremium ? 'border border-warning' : ''
+                }`}
                 style={{
+                  backgroundColor: job.user?.isPremium ? '#fff8dc' : 'white',
                   width: '90%',
                   maxWidth: '700px',
                   borderRadius: '10px',
@@ -101,14 +105,19 @@ const JobListing = () => {
                     <strong>Зарплата в час:</strong> {job.salary}
                     <br />
                     <strong>Местоположение:</strong> {job.city.name}
+                    <br />
                   </p>
                   <p className="card-text">{job.description}</p>
                   <p className="card-text">
                     <strong>Телефон:</strong> {job.phone}
+                    <p className="card-text text-muted">
+                  <small>
+                    Дата создания: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
+                  </small>
+                </p>
                   </p>
                 </div>
 
-                {/* Аватарка пользователя в правом верхнем углу */}
                 {job.user?.imageUrl && (
                   <div
                     className="position-absolute top-0 end-0 m-2"
