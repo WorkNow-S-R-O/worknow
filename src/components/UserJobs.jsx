@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useUser } from '@clerk/clerk-react';
-import { Pagination } from 'react-bootstrap';
+import { Pagination, Modal, Button } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Trash, PencilSquare } from 'react-bootstrap-icons';
 import Skeleton from 'react-loading-skeleton';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 const UserJobs = () => {
@@ -16,6 +18,10 @@ const UserJobs = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+
+  // Модальное окно
+  const [showModal, setShowModal] = useState(false);
+  const [jobToDelete, setJobToDelete] = useState(null);
 
   useEffect(() => {
     if (!user) return;
@@ -39,19 +45,25 @@ const UserJobs = () => {
     fetchUserJobs();
   }, [user, currentPage]);
 
-  const handleDelete = async (jobId) => {
-    if (!window.confirm('Вы уверены, что хотите удалить это объявление?')) {
-      return;
-    }
+  const handleDelete = async () => {
+    if (!jobToDelete) return;
 
     try {
-      await axios.delete(`http://localhost:3001/api/jobs/${jobId}`);
+      await axios.delete(`http://localhost:3001/api/jobs/${jobToDelete}`);
       toast.success('Объявление удалено!');
-      setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
+      setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobToDelete));
     } catch (error) {
       console.error('Ошибка удаления объявления:', error);
       toast.error('Ошибка удаления объявления!');
+    } finally {
+      setShowModal(false);
+      setJobToDelete(null);
     }
+  };
+
+  const openDeleteModal = (jobId) => {
+    setJobToDelete(jobId);
+    setShowModal(true);
   };
 
   const handleEdit = (jobId) => {
@@ -100,10 +112,15 @@ const UserJobs = () => {
             >
               <div className="card-body">
                 <h5 className="card-title">{job.title}</h5>
-                <p className="card-text">Зарплата: {job.salary}</p>
+                <strong className="card-text">Зарплата: {job.salary}</strong>
                 <p className="card-text">Местоположение: {job.city.name}</p>
                 <p className="card-text">Описание: {job.description}</p>
                 <strong className="card-text">Телефон: {job.phone}</strong>
+                <p className="card-text text-muted">
+                  <small>
+                    Дата создания: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
+                  </small>
+                </p>
               </div>
 
               <div className="position-absolute bottom-0 end-0 mb-3 me-3 d-flex gap-3">
@@ -117,7 +134,7 @@ const UserJobs = () => {
                   role="button"
                   size={24}
                   className="text-danger"
-                  onClick={() => handleDelete(job.id)}
+                  onClick={() => openDeleteModal(job.id)}
                 />
               </div>
             </div>
@@ -136,6 +153,24 @@ const UserJobs = () => {
           </Pagination>
         </div>
       )}
+
+      {/* Модальное окно подтверждения удаления */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Подтвердите удаление</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Вы точно хотите удалить это объявление? Это действие нельзя отменить.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Отмена
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Удалить
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
