@@ -34,7 +34,7 @@ const PremiumButton = () => {
 
           <div className="flex justify-center items-center my-4">
             <img
-              src="./images/premium.png"
+              src="/images/premium.png"
               alt="premium"
               className=""
             />
