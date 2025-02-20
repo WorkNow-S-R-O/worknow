@@ -12,6 +12,7 @@ import CreateNewAd from "./pages/CreateNewAd.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import AccessDenied from "./pages/AccessDenied.jsx";
 import EditJobForm from "./components/EditJobForm.jsx";
+import UserProfile from "./components/UserProfile.jsx";
 import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 import "./18n.ts";
 
@@ -41,8 +42,17 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
   },
   {
-    path: '/edit-job/:id',
-    element: <ProtectedRoute><EditJobForm /></ProtectedRoute>,
+    path: "/edit-job/:id",
+    element: (
+      <ProtectedRoute>
+        <EditJobForm />
+      </ProtectedRoute>
+    ),
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/profile/:clerkUserId",
+    element: <UserProfile />,
     errorElement: <NotFoundPage />,
   },
 ]);

@@ -18,7 +18,7 @@ const jobSchema = z.object({
   salary: z.string().regex(/^\d+$/, 'Можно вводить только цифры'),
   cityId: z.number({ required_error: 'Выберите город' }),
   phone: z.string().regex(/^\d+$/, 'Можно вводить только цифры').min(7, 'Минимум 7 цифр'),
-  description: z.string().min(10, 'Минимум 10 символов').max(5000, 'Максимум 5000 символов'),
+  description: z.string().min(10, 'Минимум 10 символов').max(2000, 'Максимум 2000 символов'),
 });
 
 const JobForm = ({ onJobCreated }) => {

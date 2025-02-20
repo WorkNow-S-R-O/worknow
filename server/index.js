@@ -333,3 +333,29 @@ app.get('/api/jobs/:id', async (req, res) => {
   }
 });
 
+app.get('/api/user/:clerkUserId', async (req, res) => {
+  const { clerkUserId } = req.params;
+
+  console.log(`Поиск пользователя с clerkUserId: ${clerkUserId}`);
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+    });
+
+    if (!user) {
+      console.log(`Пользователь с clerkUserId ${clerkUserId} не найден`);
+      return res.status(404).json({ error: 'Пользователь не найден' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Ошибка получения данных пользователя:', error.message);
+    res.status(500).json({ error: 'Ошибка получения данных пользователя', details: error.message });
+  }
+});
+
+
+
+
+

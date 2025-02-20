@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Pagination } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -14,6 +15,7 @@ const JobListing = () => {
   const [jobData, setJobData] = useState([]);
   const [loading, setLoading] = useState(true);
   const jobsPerPage = 10;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -48,6 +50,10 @@ const JobListing = () => {
   const handleCitySelect = (city) => {
     setSelectedCity(city);
     setCurrentPage(1);
+  };
+
+  const handleAvatarClick = (clerkUserId) => {
+    navigate(`/profile/${clerkUserId}`);
   };
 
   return (
@@ -105,17 +111,16 @@ const JobListing = () => {
                     <strong>Зарплата в час:</strong> {job.salary}
                     <br />
                     <strong>Местоположение:</strong> {job.city.name}
-                    <br />
                   </p>
                   <p className="card-text">{job.description}</p>
                   <p className="card-text">
                     <strong>Телефон:</strong> {job.phone}
-                    <p className="card-text text-muted">
-                  <small>
-                    Дата создания: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
-                  </small>
-                </p>
                   </p>
+                  <div className="card-text text-muted">
+                    <small>
+                      Дата создания: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
+                    </small>
+                  </div>
                 </div>
 
                 {job.user?.imageUrl && (
@@ -127,7 +132,9 @@ const JobListing = () => {
                       borderRadius: '50%',
                       overflow: 'hidden',
                       border: '2px solid #ddd',
+                      cursor: 'pointer',
                     }}
+                    onClick={() => handleAvatarClick(job.user.clerkUserId)}
                   >
                     <img
                       src={job.user.imageUrl}
