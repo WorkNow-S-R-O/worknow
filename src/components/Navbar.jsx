@@ -44,7 +44,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="mr-3">
-              <Link to="/my-advertisements" className="nav-link text-lg font-normal text-gray-600 focus:text-black">
+              <Link id="jobs" to="/my-advertisements" className="nav-link text-lg font-normal text-gray-600 focus:text-black">
                 {t("jobs")}
               </Link>
             </li>
@@ -59,9 +59,9 @@ const Navbar = () => {
               >
                 {t("support")}
               </button>
-              <ul className="dropdown-menu mt-3" aria-labelledby="supportDropdown">
+              <ul id="supportDropdown" className="dropdown-menu mt-3 text-gray-600 " aria-labelledby="supportDropdown">
                 <li>
-                  <Link to="/rules" className="dropdown-item">
+                  <Link to="/rules" className="dropdown-item text-gray-600">
                     {t("rules")}
                   </Link>
                 </li>

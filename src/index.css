@@ -51,10 +51,6 @@ h1 {
   line-height: 1.1;
 }
 
-.nav-link:focus {
-  color: black;
-}
-
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -86,6 +82,7 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
 
 @layer base {
   :root {
@@ -163,3 +160,28 @@ button:focus-visible {
   }
 }
 
+#supportDropdown {
+  color: #6c757d !important; /* Принудительно делаем серый */
+}
+
+#supportDropdown .dropdown-item {
+  color: #6c757d !important; /* Цвет текста */
+}
+
+#supportDropdown .dropdown-item:hover,
+#supportDropdown .dropdown-item:focus {
+  background-color: #e9ebec !important; /* Светло-серый фон при наведении */
+  color: #495057 !important; /* Чуть темнее при наведении */
+}
+
+#vacancies:hover {
+color: #1a1a1a !important;
+}
+
+#jobs:hover {
+color: #1a1a1a !important;
+}
+
+#supportDropdown:hover {
+  color: #1a1a1a !important;
+}
