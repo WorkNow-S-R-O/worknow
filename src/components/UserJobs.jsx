@@ -111,16 +111,21 @@ const UserJobs = () => {
               style={{ width: '90%', maxWidth: '700px', margin: '0 auto' }}
             >
               <div className="card-body">
-                <h5 className="card-title">{job.title}</h5>
-                <strong className="card-text">Зарплата: {job.salary}</strong>
-                <p className="card-text">Местоположение: {job.city.name}</p>
-                <p className="card-text">Описание: {job.description}</p>
-                <strong className="card-text">Телефон: {job.phone}</strong>
-                <p className="card-text text-muted">
+                <h5 className="card-title text-primary">{job.title}</h5>
+                <p className="card-text">
+                  <strong>Зарплата в час:</strong> <span>{job.salary}</span>
+                  <br />
+                  <strong>Местоположение:</strong> <span>{job.city.name}</span>
+                </p>
+                <p className="card-text">{job.description}</p>
+                <p className="card-text">
+                  <strong>Телефон:</strong> <span>{job.phone}</span>
+                </p>
+                <div className="card-text text-muted">
                   <small>
                     Дата создания: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
                   </small>
-                </p>
+                </div>
               </div>
 
               <div className="position-absolute bottom-0 end-0 mb-3 me-3 d-flex gap-3">

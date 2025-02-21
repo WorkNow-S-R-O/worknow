@@ -24,7 +24,11 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
 
   return (
     <DropdownButton
-      title={selectedCity}
+      title={
+        <>
+          <i className="bi bi-geo-alt me-2"></i> {selectedCity}
+        </>
+      }
       variant="outline-primary"
       className="mb-3"
     >
@@ -35,7 +39,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
         }}
       >
         <Dropdown.Item onClick={() => onCitySelect('Выбрать город')}>
-          Все города
+          <i className="bi bi-geo-alt me-2"></i> Все города
         </Dropdown.Item>
         {loading ? (
           <Dropdown.Item disabled>Загрузка...</Dropdown.Item>
@@ -45,7 +49,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
               key={city.id}
               onClick={() => onCitySelect(city.name)}
             >
-              {city.name}
+              <i className="bi bi-geo-alt me-2"></i> {city.name}
             </Dropdown.Item>
           ))
         )}
