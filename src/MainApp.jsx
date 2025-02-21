@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { Toaster } from 'react-hot-toast';
+import { useMemo, Suspense } from "react";
+import { Toaster } from "react-hot-toast";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { baseTheme } from "@clerk/themes";
 import { RouterProvider } from "react-router-dom";
@@ -59,26 +59,33 @@ const router = createBrowserRouter([
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
-if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key");
-}
-
 const MainApp = () => {
   const localization = useLanguageStore((state) => state.localization);
+  const loading = useLanguageStore((state) => state.loading); // Добавляем проверку загрузки
 
-  const memoizedLocalization = useMemo(() => localization, [localization]);
+  const memoizedLocalization = useMemo(() => localization ?? {}, [localization]);
+
+  // 1️⃣ Если PUBLISHABLE_KEY отсутствует, рендерим заглушку вместо ошибки
+  if (!PUBLISHABLE_KEY) {
+    return <div>❌ Ошибка: Ключ Clerk отсутствует</div>;
+  }
+
+  // 2️⃣ Пока загрузка локализации идет — показываем заглушку
+  if (loading) {
+    return <div>🔄 Загрузка переводов...</div>;
+  }
 
   return (
     <ClerkProvider
-      appearance={{
-        baseTheme: baseTheme,
-      }}
+      appearance={{ baseTheme: baseTheme }}
       publishableKey={PUBLISHABLE_KEY}
       afterSignOutUrl="/"
       localization={memoizedLocalization}
     >
       <HelmetProvider>
-        <RouterProvider router={router} />
+        <Suspense fallback={<div>🔄 Загрузка страницы...</div>}>
+          <RouterProvider router={router} />
+        </Suspense>
         <Toaster position="top-center" />
       </HelmetProvider>
     </ClerkProvider>

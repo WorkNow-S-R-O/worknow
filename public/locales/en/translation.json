@@ -10,6 +10,7 @@
   "jobsworknow": "Jobs | Worknow",
   "myads": "My advertisements | Worknow",
   "create_new_advertisement": "Create new advertisement",
+  "button_create_first_advertisement": "Create your first advertisement",
   "job_title": "Job title",
   "write_job_title": "Write job title",
   "salary_per_hour": "Salary per hour",
@@ -36,5 +37,10 @@
   "page_not_found": "Page not found",
   "edit_advertisement": "Edit advertisement",
   "save": "Save",
-  "pay_now": "Pay now"
+  "pay_now": "Pay now",
+  "message_login_to_view_ads": "Log in to view ads",
+  "support": "Support",
+  "rules": "User agreement",
+  "technical_support": "Technical support",
+  "survey": "Survey"
 }

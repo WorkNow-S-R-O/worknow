@@ -80,8 +80,6 @@ const UserJobs = () => {
 
   return (
     <div className="mt-4">
-      <h2 className="text-lg font-bold mb-3 text-center text-primary">Мои объявления</h2>
-
       {loading ? (
         <div style={{ minHeight: '700px' }} className="d-flex flex-column justify-content-between">
           {Array.from({ length: 5 }).map((_, index) => (
@@ -101,9 +99,12 @@ const UserJobs = () => {
           ))}
         </div>
       ) : jobs.length === 0 ? (
-        <p className='text-center'>У вас нет объявлений.</p>
+        <p className="text-center fs-4">У вас пока нет объявлений.</p>
       ) : (
-        <div style={{ minHeight: '700px' }} className="d-flex flex-column justify-content-between">
+        <div style={{ minHeight: '700px' }} className="d-flex flex-column">
+          {/* Отображаем заголовок "Мои объявления" только если есть объявления */}
+          <h2 className="text-lg font-bold mb-3 text-center text-primary">Мои объявления</h2>
+
           {jobs.map((job) => (
             <div
               key={job.id}

@@ -32,48 +32,54 @@ const Navbar = () => {
       {/* Desktop Version */}
       <div className="d-none d-lg-block mb-10">
         <div className="absolute top-0 left-0 w-full h-16 bg-[#e3f2fd]"></div>
-        <div className="flex absolute top-0 left-0 m-3 ">
-          <Link
-            to="/"
-            className="d-flex align-items-center no-underline text-black"
-          >
-            <img
-              className="w-12 bottom-2 relative ml-0 me-2"
-              src="/images/logo.svg"
-              alt="Logo"
-            />
+        <div className="flex absolute top-0 left-0 m-3">
+          <Link to="/" className="d-flex align-items-center no-underline text-black">
+            <img className="w-12 bottom-2 relative ml-0 me-2" src="/images/logo.svg" alt="Logo" />
             <h1 className="text-3xl ml-0">worknow</h1>
           </Link>
           <ul className="flex justify-center items-center ml-0 gap-2 mb-2 text-gray-500">
             <li className="mr-3">
-              <Link
-                to="/"
-                className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
-              >
+              <Link id="vacancies" to="/" className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900">
                 {t("vacancies")}
               </Link>
             </li>
             <li className="mr-3">
-              <Link
-                to="/my-advertisements"
-                className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
-              >
+              <Link to="/my-advertisements" className="nav-link text-lg font-normal text-gray-600 focus:text-black">
                 {t("jobs")}
               </Link>
             </li>
-            <li>
-            <a
-              href="https://www.facebook.com/groups/763040732570299"
-               target="_blank"
-              rel="noopener noreferrer"
-              className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
+            {/* Dropdown Support */}
+            <li className="nav-item dropdown">
+              <button
+                className="nav-link text-lg font-normal text-gray-600 focus:text-gray-900 dropdown-toggle"
+                type="button"
+                id="supportDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
               >
-               {t('facebook_group')}
-               </a>
-
+                {t("support")}
+              </button>
+              <ul className="dropdown-menu mt-3" aria-labelledby="supportDropdown">
+                <li>
+                  <Link to="/rules" className="dropdown-item">
+                    {t("rules")}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/technical-support" className="dropdown-item">
+                    {t("technical_support")}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/survey" className="dropdown-item">
+                    {t("survey")}
+                  </Link>
+                </li>
+              </ul>
             </li>
           </ul>
         </div>
+
         <div className="d-flex align-items-center absolute top-0 right-0 m-3">
           <div className="dropdown me-2">
             <button
@@ -88,24 +94,18 @@ const Navbar = () => {
             </button>
             <ul className="dropdown-menu" aria-labelledby="languageDropdown">
               <li>
-                <button
-                  onClick={() => handleLanguageChange("en")}
-                  className="dropdown-item"
-                >
+                <button onClick={() => handleLanguageChange("en")} className="dropdown-item">
                   English
                 </button>
               </li>
               <li>
-                <button
-                  onClick={() => handleLanguageChange("ru")}
-                  className="dropdown-item"
-                >
+                <button onClick={() => handleLanguageChange("ru")} className="dropdown-item">
                   Russian
                 </button>
               </li>
             </ul>
           </div>
-        <PremiumButton />
+          <PremiumButton />
           <div className="d-flex ml-5">
             <SignedOut>
               <SignInButton>
@@ -123,14 +123,10 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Version */}
-      <nav className=" z-10 navbar navbar-expand-lg navbar-light bg-[#e3f2fd] d-lg-none fixed-top">
+      <nav className="z-10 navbar navbar-expand-lg navbar-light bg-[#e3f2fd] d-lg-none fixed-top">
         <div className="container-fluid">
           <Link className="navbar-brand d-flex align-items-center" to="/">
-            <img
-              className="w-12 me-2"
-              src="/images/logo.svg"
-              alt="Logo"
-            />
+            <img className="w-12 me-2" src="/images/logo.svg" alt="Logo" />
             <h1 className="text-3xl m-0">worknow</h1>
           </Link>
 
@@ -145,72 +141,50 @@ const Navbar = () => {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div
-            className={`navbar-collapse ${isExpanded ? "show" : "collapse"}`}
-            id="navbarNav"
-          >
+          <div className={`navbar-collapse ${isExpanded ? "show" : "collapse"}`} id="navbarNav">
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link
-                  className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
-                  to="/"
-                >
+                <Link className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900" to="/">
                   {t("vacancies")}
                 </Link>
               </li>
               <li className="nav-item">
-                <Link
-                  className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
-                  to="/my-advertisements"
-                >
+                <Link className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900" to="/my-advertisements">
                   {t("jobs")}
                 </Link>
               </li>
-              <li className="nav-item">
-              <a
-              href="https://www.facebook.com/groups/763040732570299"
-               target="_blank"
-              rel="noopener noreferrer"
-              className="text-lg font-normal text-gray-600 hover:text-gray-900 no-underline"
-              >
-               {t('facebook_group')}
-               </a>
+              {/* Dropdown Support */}
+              <li className="nav-item dropdown">
+                <button
+                  className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900 dropdown-toggle"
+                  type="button"
+                  id="mobileSupportDropdown"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  {t("support")}
+                </button>
+                <ul className="dropdown-menu" aria-labelledby="mobileSupportDropdown">
+                  <li>
+                    <Link to="/rules" className="dropdown-item">
+                      {t("rules")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/technical-support" className="dropdown-item">
+                      {t("technical_support")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/survey" className="dropdown-item">
+                      {t("survey")}
+                    </Link>
+                  </li>
+                </ul>
               </li>
             </ul>
 
             <div className="d-flex flex-column gap-2 mt-3">
-              <div className="dropdown">
-                <button
-                  className="btn btn-secondary dropdown-toggle"
-                  type="button"
-                  id="mobileLanguageDropdown"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  {language === "en" ? "English" : "Russian"}
-                </button>
-                <ul
-                  className="dropdown-menu"
-                  aria-labelledby="mobileLanguageDropdown"
-                >
-                  <li>
-                    <button
-                      onClick={() => handleLanguageChange("en")}
-                      className="dropdown-item"
-                    >
-                      English
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => handleLanguageChange("ru")}
-                      className="dropdown-item"
-                    >
-                      Russian
-                    </button>
-                  </li>
-                </ul>
-              </div>
               <SignedOut>
                 <SignInButton>
                   <span className="btn btn-primary d-flex align-items-center justify-content-center">

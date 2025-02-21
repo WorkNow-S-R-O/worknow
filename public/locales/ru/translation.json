@@ -19,6 +19,7 @@
   "write_job_description": "Введите описание вакансии",
   "create": "Создать",
   "button_create_new_advertisement": "Создать новое обьявление",
+  "button_create_first_advertisement": "Создать первое обьявление",
   "create_new_advertisement_tab": "Создать новое обьявление | Worknow",
   "phone_number": "Номер телефона",
   "write_phone_number": "Введите номер телефона",
@@ -27,13 +28,18 @@
   "premium_description": "Премиум подписка помогает вам как минимум в два раза быстрее найти рабочий персонал",
   "premium_benefits_title": "Что вы получите?",
   "premium_benefit_1": "Ваши вакансии будут в топе",
-  "premium_benefit_2": "Продвижение в фейсбуке",
+  "premium_benefit_2": "Продвижение в Facebook",
   "premium_benefit_3": "Публикации в телеграме",
-  "premium_benefit_5": "Ваши вакансии будут золотыми",
+  "premium_benefit_5": "Ваши вакансии будут выделенны цветом",
   "accessdenied": "Доступ запрещен",
   "page_not_found": "Страница не найдена",
   "edit_advertisement": "Редактировать объявление",
   "save": "Сохранить",
-  "pay_now": "Оплатить сейчас"
+  "pay_now": "Оплатить сейчас",
+  "message_login_to_view_ads": "Войдите, чтобы просмотреть объявления",
+  "support": "Поддержка",
+  "rules": "Пользовательское соглашение",
+  "technical_support": "Техническая поддержка",
+  "survey": "Опрос"
 
 }
