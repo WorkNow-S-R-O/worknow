@@ -48,7 +48,7 @@ const PremiumButton = () => {
             type="button"
             className="btn btn-primary w-full py-3 text-lg"
           >
-            К оплате: 99 ₪
+            {t("purchase")}
           </button>
         </div>
       </SheetContent>
