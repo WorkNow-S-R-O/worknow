@@ -51,7 +51,9 @@ const PremiumButton = () => {
 
           <div className="text-center my-4">
             <a
-              href="#"
+              href="https://foggy-macrame-d24.notion.site/1a281d115acf801eabf3e8a40c9f0a84?pvs=4"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-blue-500 underline"
             >
               {t("how_it_works")}
