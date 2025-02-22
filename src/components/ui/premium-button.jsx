@@ -28,7 +28,16 @@ const PremiumButton = () => {
               <li>{t("premium_benefit_1")}</li>
               <li>{t("premium_benefit_3")}</li>
               <li>{t("premium_benefit_5")}</li>
-              <li>{t("premium_benefit_2")}</li>
+              <li>
+                <a
+                  href="https://www.facebook.com/groups/763040732570299"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-white"
+                >
+                  {t("premium_benefit_2")}
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -40,6 +49,14 @@ const PremiumButton = () => {
             />
           </div>
 
+          <div className="text-center my-4">
+            <a
+              href="#"
+              className="text-blue-500 underline"
+            >
+              {t("how_it_works")}
+            </a>
+          </div>
         </div>
 
         {/* Фиксированная кнопка оплаты */}
