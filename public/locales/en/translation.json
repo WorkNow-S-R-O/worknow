@@ -45,5 +45,6 @@
   "survey": "Take a quick survey",
   "purchase": "Purchase for 99 ₪",
   "how_it_works": "How it works",
-  "payment_error": "Payment error"
+  "payment_error": "Payment error",
+  "premium_active": "Premium active"
 }

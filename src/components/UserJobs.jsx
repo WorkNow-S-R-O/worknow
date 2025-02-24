@@ -107,7 +107,16 @@ const UserJobs = () => {
         <div className="d-flex flex-column" style={{ minHeight: '700px' }}>
           <h2 className="text-lg font-bold mb-3 text-center text-primary">Мои объявления</h2>
           {jobs.map((job) => (
-            <div key={job.id} className="card mb-3 position-relative" style={{ width: '90%', maxWidth: '700px', margin: '0 auto' }}>
+            <div
+              key={job.id}
+              className={`card mb-3 position-relative ${job.user?.isPremium ? 'border border-warning' : ''}`}
+              style={{
+                width: '90%',
+                maxWidth: '700px',
+                margin: '0 auto',
+                backgroundColor: job.user?.isPremium ? '#fff8dc' : 'white',
+              }}
+            >
               <div className="card-body">
                 <h5 className="card-title text-primary">{job.title}</h5>
                 <p className="card-text">
@@ -131,7 +140,9 @@ const UserJobs = () => {
           ))}
           <Pagination className="mt-3 justify-content-center">
             {[...Array(totalPages)].map((_, i) => (
-              <Pagination.Item key={i + 1} active={i + 1 === currentPage} onClick={() => handlePageChange(i + 1)}>{i + 1}</Pagination.Item>
+              <Pagination.Item key={i + 1} active={i + 1 === currentPage} onClick={() => handlePageChange(i + 1)}>
+                {i + 1}
+              </Pagination.Item>
             ))}
           </Pagination>
         </div>

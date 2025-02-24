@@ -301,7 +301,8 @@ app.get('/api/user-jobs/:clerkUserId', async (req, res) => {
       where: { userId: user.id },
       include: {
         city: true,
-      },
+        user: true
+      }, 
       skip,
       take: limitInt,
       orderBy: {
