@@ -1,24 +1,47 @@
 import { useTranslation } from "react-i18next";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { useUser } from "@clerk/clerk-react";
+import axios from "axios";
+import { useEffect } from "react";
+import { toast } from "react-hot-toast";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
 
 const PremiumButton = () => {
   const { t } = useTranslation();
+  const { user } = useUser();
 
+  const isPremium = user?.publicMetadata?.isPremium;
+  const premiumEndDate = user?.publicMetadata?.premiumEndDate;
+
+  const handleCheckout = async () => {
+    try {
+      const response = await axios.post('http://localhost:3001/api/payments/create-checkout-session', {
+        clerkUserId: user.id,
+      });
+
+      window.location.href = response.data.url;
+    } catch (error) {
+      toast.error(t("payment_error"));
+    }
+  };
+  useEffect(() => {
+    console.log("Premium status:", user?.publicMetadata?.isPremium);
+  }, [user]);
+  
   return (
     <Sheet className="z-9999">
       <SheetTrigger asChild>
-        <button type="button" className="btn btn-warning">
+        <button type="button" className={`btn ${isPremium ? 'btn-outline-warning' : 'btn-warning'}`}>
           <i className="bi bi-gem me-2"></i>
-          {t("premium")}
+          {isPremium ? t("premium_active") : t("premium")}
         </button>
       </SheetTrigger>
       <SheetContent className="flex flex-col h-full">
         <div className="flex-1 overflow-auto">
           <SheetHeader>
             <SheetTitle>{t("premium_title")}</SheetTitle>
-            <SheetDescription>
-              {t("premium_description")}
-            </SheetDescription>
+            <SheetDescription>{t("premium_description")}</SheetDescription>
           </SheetHeader>
 
           {/* Преимущества подписки */}
@@ -42,11 +65,7 @@ const PremiumButton = () => {
           </div>
 
           <div className="flex justify-center items-center my-4">
-            <img
-              src="/images/premium.png"
-              alt="premium"
-              className=""
-            />
+            <img src="/images/premium.png" alt="premium" className="" />
           </div>
 
           <div className="text-center my-4">
@@ -61,14 +80,25 @@ const PremiumButton = () => {
           </div>
         </div>
 
-        {/* Фиксированная кнопка оплаты */}
+        {/* Кнопка оплаты или дата окончания подписки */}
         <div className="mt-auto">
-          <button
-            type="button"
-            className="btn btn-primary w-full py-3 text-lg"
-          >
-            {t("purchase")}
-          </button>
+          {isPremium ? (
+            <button
+              type="button"
+              className="btn btn-secondary w-full py-3 text-lg cursor-default"
+              disabled
+            >
+              {t("premium_active_until", { date: format(new Date(premiumEndDate), 'dd MMMM yyyy', { locale: ru }) })}
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-primary w-full py-3 text-lg"
+              onClick={handleCheckout}
+            >
+              {t("purchase")}
+            </button>
+          )}
         </div>
       </SheetContent>
     </Sheet>

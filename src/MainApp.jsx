@@ -14,6 +14,7 @@ import AccessDenied from "./pages/AccessDenied.jsx";
 import EditJobForm from "./components/EditJobForm.jsx";
 import UserProfile from "./components/UserProfile.jsx";
 import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
+import Success from "./pages/Success.jsx";
 import "./18n.ts";
 
 const router = createBrowserRouter([
@@ -53,6 +54,11 @@ const router = createBrowserRouter([
   {
     path: "/profile/:clerkUserId",
     element: <UserProfile />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/success",
+    element: <Success />,
     errorElement: <NotFoundPage />,
   },
 ]);

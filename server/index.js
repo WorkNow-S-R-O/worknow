@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import fetch from 'node-fetch';
+import paymentRoutes from './routes/payments.js';
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ app.use(cors());
 app.use(express.json({
   verify: (req, res, buf) => { req.rawBody = buf.toString(); }
 }));
+
+app.use('/api/payments', paymentRoutes);
 
 const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
@@ -252,14 +255,23 @@ app.get('/api/jobs', async (req, res) => {
     const jobs = await prisma.job.findMany({
       include: {
         city: true,
-        user: true
+        user: true,
       },
       orderBy: [
-        { boostedAt: 'desc' },
-        { createdAt: 'desc' }
+        {
+          user: {
+            isPremium: 'desc',  // Premium пользователи выше всех
+          },
+        },
+        {
+          boostedAt: 'desc',    // Затем по boostedAt
+        },
+        {
+          createdAt: 'desc',    // Затем по дате создания
+        },
       ],
     });
-  
+
     res.status(200).json(jobs);
   } catch (error) {
     console.error('Ошибка получения объявлений:', error.message);

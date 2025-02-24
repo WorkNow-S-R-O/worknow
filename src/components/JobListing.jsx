@@ -38,11 +38,19 @@ const JobListing = () => {
       ? jobData
       : jobData.filter((job) => job.city.name === selectedCity);
 
-  const sortedJobs = [...filteredJobs].sort((a, b) => {
-    const dateA = a.boostedAt ? new Date(a.boostedAt) : new Date(a.createdAt);
-    const dateB = b.boostedAt ? new Date(b.boostedAt) : new Date(b.createdAt);
-    return dateB - dateA;
-  });
+      const sortedJobs = [...filteredJobs].sort((a, b) => {
+        // Premium объявления выше всех остальных
+        if (a.user?.isPremium !== b.user?.isPremium) {
+          return a.user?.isPremium ? -1 : 1;
+        }
+      
+        // Затем сортировка по boostedAt и createdAt
+        const dateA = a.boostedAt ? new Date(a.boostedAt) : new Date(a.createdAt);
+        const dateB = b.boostedAt ? new Date(b.boostedAt) : new Date(b.createdAt);
+      
+        return dateB - dateA;
+      });
+      
 
   const totalPages = Math.ceil(sortedJobs.length / jobsPerPage);
   const indexOfLastJob = currentPage * jobsPerPage;
