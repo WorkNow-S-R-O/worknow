@@ -38,10 +38,16 @@ const JobListing = () => {
       ? jobData
       : jobData.filter((job) => job.city.name === selectedCity);
 
-  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+  const sortedJobs = [...filteredJobs].sort((a, b) => {
+    const dateA = a.boostedAt ? new Date(a.boostedAt) : new Date(a.createdAt);
+    const dateB = b.boostedAt ? new Date(b.boostedAt) : new Date(b.createdAt);
+    return dateB - dateA;
+  });
+
+  const totalPages = Math.ceil(sortedJobs.length / jobsPerPage);
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+  const currentJobs = sortedJobs.slice(indexOfFirstJob, indexOfLastJob);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -126,25 +132,10 @@ const JobListing = () => {
                 {job.user?.imageUrl && (
                   <div
                     className="position-absolute top-0 end-0 m-2"
-                    style={{
-                      width: '45px',
-                      height: '45px',
-                      borderRadius: '50%',
-                      overflow: 'hidden',
-                      border: '2px solid #ddd',
-                      cursor: 'pointer',
-                    }}
+                    style={{ width: '45px', height: '45px', cursor: 'pointer' }}
                     onClick={() => handleAvatarClick(job.user.clerkUserId)}
                   >
-                    <img
-                      src={job.user.imageUrl}
-                      alt="User Avatar"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                      }}
-                    />
+                    <img src={job.user.imageUrl} alt="User Avatar" className="rounded-circle w-100 h-100" />
                   </div>
                 )}
               </div>
@@ -154,19 +145,13 @@ const JobListing = () => {
       </div>
 
       {filteredJobs.length > 0 && !loading && (
-        <div className="mt-auto d-flex justify-content-center">
-          <Pagination>
-            {[...Array(totalPages).keys()].map((page) => (
-              <Pagination.Item
-                key={page + 1}
-                active={page + 1 === currentPage}
-                onClick={() => handlePageChange(page + 1)}
-              >
-                {page + 1}
-              </Pagination.Item>
-            ))}
-          </Pagination>
-        </div>
+        <Pagination className="mt-auto d-flex justify-content-center">
+          {[...Array(totalPages).keys()].map((page) => (
+            <Pagination.Item key={page + 1} active={page + 1 === currentPage} onClick={() => handlePageChange(page + 1)}>
+              {page + 1}
+            </Pagination.Item>
+          ))}
+        </Pagination>
       )}
     </div>
   );

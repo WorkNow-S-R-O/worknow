@@ -36,4 +36,7 @@ model Job {
   description String
   phone       String
   createdAt   DateTime @default(now())
+  boostedAt   DateTime?
+
+  @@index([boostedAt])
 }

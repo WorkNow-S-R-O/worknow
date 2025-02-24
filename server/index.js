@@ -252,12 +252,14 @@ app.get('/api/jobs', async (req, res) => {
     const jobs = await prisma.job.findMany({
       include: {
         city: true,
-        user: true,
+        user: true
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: [
+        { boostedAt: 'desc' },
+        { createdAt: 'desc' }
+      ],
     });
+  
     res.status(200).json(jobs);
   } catch (error) {
     console.error('Ошибка получения объявлений:', error.message);
@@ -352,6 +354,46 @@ app.get('/api/user/:clerkUserId', async (req, res) => {
   } catch (error) {
     console.error('Ошибка получения данных пользователя:', error.message);
     res.status(500).json({ error: 'Ошибка получения данных пользователя', details: error.message });
+  }
+});
+
+// Поднятие вакансии вверх
+app.post('/api/jobs/:id/boost', async (req, res) => {
+  const { id } = req.params;
+  console.log(`[Boost] Запрос на поднятие объявления с ID: ${id}`);
+
+  try {
+    const job = await prisma.job.findUnique({ where: { id: parseInt(id) } });
+    console.log(`[Boost] Результат поиска объявления:`, job);
+
+    if (!job) {
+      console.error(`[Boost] Объявление с ID ${id} не найдено.`);
+      return res.status(404).json({ error: 'Объявление не найдено' });
+    }
+
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    const now = new Date();
+
+    if (job.boostedAt) {
+      const timeSinceBoost = now - new Date(job.boostedAt);
+      console.log(`[Boost] Время с последнего поднятия (мс): ${timeSinceBoost}`);
+
+      if (timeSinceBoost < ONE_DAY) {
+        console.warn(`[Boost] Попытка повторного поднятия до истечения суток.`);
+        return res.status(400).json({ error: 'Поднимать вакансию можно только раз в сутки' });
+      }
+    }
+
+    const boostedJob = await prisma.job.update({
+      where: { id: parseInt(id) },
+      data: { boostedAt: now },
+    });
+
+    console.log(`[Boost] Объявление успешно поднято:`, boostedJob);
+    res.status(200).json(boostedJob);
+  } catch (error) {
+    console.error('[Boost] Ошибка на сервере:', error);
+    res.status(500).json({ error: 'Ошибка поднятия вакансии', details: error.message });
   }
 });
 
