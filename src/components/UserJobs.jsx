@@ -116,7 +116,10 @@ const UserJobs = () => {
                 </p>
                 <p className="card-text">{job.description}</p>
                 <div className="text-muted">
-                  <small>Дата создания: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}</small>
+                  <small>
+                    <span className="d-none d-sm-inline">Дата создания: </span>
+                    {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
+                  </small>
                 </div>
               </div>
               <div className="position-absolute bottom-0 end-0 mb-3 me-3 d-flex gap-3">
