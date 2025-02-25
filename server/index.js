@@ -6,6 +6,8 @@ import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import fetch from 'node-fetch';
 import paymentRoutes from './routes/payments.js';
+import { checkLowRankedJobs } from './cron-jobs.js';
+import './cron-jobs.js';
 
 dotenv.config();
 
@@ -376,27 +378,45 @@ app.post('/api/jobs/:id/boost', async (req, res) => {
   console.log(`[Boost] Запрос на поднятие объявления с ID: ${id}`);
 
   try {
-    const job = await prisma.job.findUnique({ where: { id: parseInt(id) } });
-    console.log(`[Boost] Результат поиска объявления:`, job);
+    // Получаем вакансию вместе с пользователем
+    const job = await prisma.job.findUnique({
+      where: { id: parseInt(id) },
+      include: { user: true },
+    });
 
     if (!job) {
       console.error(`[Boost] Объявление с ID ${id} не найдено.`);
       return res.status(404).json({ error: 'Объявление не найдено' });
     }
 
-    const ONE_DAY = 24 * 60 * 60 * 1000;
+    const ONE_DAY = 24 * 60 * 60 * 1000; // 24 часа в миллисекундах
     const now = new Date();
+    const user = job.user;
 
+    if (!user) {
+      console.error(`[Boost] Пользователь не найден.`);
+      return res.status(404).json({ error: 'Пользователь не найден' });
+    }
+
+    // Если объявление уже было поднято, проверяем таймер (даже если у пользователя премиум)
     if (job.boostedAt) {
-      const timeSinceBoost = now - new Date(job.boostedAt);
-      console.log(`[Boost] Время с последнего поднятия (мс): ${timeSinceBoost}`);
+      const lastBoostTime = new Date(job.boostedAt);
+      const timeSinceBoost = now - lastBoostTime;
 
       if (timeSinceBoost < ONE_DAY) {
-        console.warn(`[Boost] Попытка повторного поднятия до истечения суток.`);
-        return res.status(400).json({ error: 'Поднимать вакансию можно только раз в сутки' });
+        // Рассчитываем оставшееся время
+        const timeLeft = ONE_DAY - timeSinceBoost;
+        const hoursLeft = Math.floor(timeLeft / (1000 * 60 * 60));
+        const minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+        console.warn(`[Boost] Попытка повторного поднятия до истечения суток. Осталось ${hoursLeft}ч ${minutesLeft}м.`);
+        return res.status(400).json({ 
+          error: `Вы сможете поднять вакансию через ${hoursLeft} ч ${minutesLeft} м.` 
+        });
       }
     }
 
+    // 🔥 Если таймер истек или премиум только что куплен – поднимаем вакансию
     const boostedJob = await prisma.job.update({
       where: { id: parseInt(id) },
       data: { boostedAt: now },
@@ -410,6 +430,16 @@ app.post('/api/jobs/:id/boost', async (req, res) => {
   }
 });
 
+
+app.get('/api/test-cron', async (req, res) => {
+  try {
+    console.log("🔄 Запуск тестовой проверки...");
+    await checkLowRankedJobs();
+    res.status(200).json({ message: 'Тестовое уведомление отправлено!' });
+  } catch (error) {
+    res.status(500).json({ error: 'Ошибка при тестировании cron-задачи', details: error.message });
+  }
+});
 
 
 

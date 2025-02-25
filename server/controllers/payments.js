@@ -1,27 +1,43 @@
 import stripe from '../utils/stripe.js';
 import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
 export const createCheckoutSession = async (req, res) => {
   const { clerkUserId } = req.body;
 
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    mode: 'subscription', // важно: теперь это subscription, а не payment
-    line_items: [
-      {
-        price: 'price_1Qt63NCOLiDbHvw13PRhpenX', // твой Price ID из Stripe
-        quantity: 1,
-      },
-    ],
-    success_url: 'http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',
-    cancel_url: 'http://localhost:3000/cancel',
-    metadata: { clerkUserId },
-  });
+  try {
+    // 🔹 Получаем пользователя из базы
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+    });
 
-  res.json({ url: session.url });
+    if (!user || !user.email) {
+      return res.status(404).json({ error: 'Пользователь не найден или отсутствует email' });
+    }
+
+    // 🔹 Создаем Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'subscription',
+      customer_email: user.email, // Теперь email берется из БД
+      line_items: [
+        {
+          price: 'price_1Qt63NCOLiDbHvw13PRhpenX', // Твой Price ID из Stripe
+          quantity: 1,
+        },
+      ],
+      success_url: 'http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: 'http://localhost:3000/cancel',
+      metadata: { clerkUserId },
+    });
+
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error('Ошибка при создании Checkout Session:', error);
+    res.status(500).json({ error: 'Ошибка при создании сессии' });
+  }
 };
-
 
 export const activatePremium = async (req, res) => {
   const { sessionId, clerkUserId } = req.body;
@@ -34,7 +50,7 @@ export const activatePremium = async (req, res) => {
         where: { clerkUserId },
         data: {
           isPremium: true,
-          premiumEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          premiumEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 дней подписки
         },
       });
 

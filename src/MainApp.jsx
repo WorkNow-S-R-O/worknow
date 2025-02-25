@@ -15,6 +15,7 @@ import EditJobForm from "./components/EditJobForm.jsx";
 import UserProfile from "./components/UserProfile.jsx";
 import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 import Success from "./pages/Success.jsx";
+import Cancel from "./pages/Cancel.jsx";
 import "./18n.ts";
 
 const router = createBrowserRouter([
@@ -59,6 +60,11 @@ const router = createBrowserRouter([
   {
     path: "/success",
     element: <Success />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/cancel",
+    element: <Cancel />,
     errorElement: <NotFoundPage />,
   },
 ]);

@@ -4,14 +4,11 @@ import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
 
 const PremiumButton = () => {
   const { t } = useTranslation();
   const { user } = useUser();
   const [isPremium, setIsPremium] = useState(false);
-  const [premiumEndDate, setPremiumEndDate] = useState(null);
 
   useEffect(() => {
     const fetchUserPremiumStatus = async () => {
@@ -20,7 +17,6 @@ const PremiumButton = () => {
       try {
         const response = await axios.get(`http://localhost:3001/api/user/${user.id}`);
         setIsPremium(response.data.isPremium);
-        setPremiumEndDate(response.data.premiumEndDate);
       } catch (error) {
         console.error('Ошибка получения статуса Premium:', error);
       }
@@ -91,28 +87,17 @@ const PremiumButton = () => {
           </div>
         </div>
 
-        <div className="mt-auto">
-  {isPremium && premiumEndDate ? (
-    <button
-      type="button"
-      className="btn btn-secondary w-full py-3 text-lg cursor-default"
-      disabled
-    >
-      {t("premium_active_until", {
-        date: format(new Date(premiumEndDate), 'dd MMMM yyyy', { locale: ru }),
-      })}
-    </button>
-  ) : (
-    <button
-      type="button"
-      className="btn btn-primary w-full py-3 text-lg"
-      onClick={handleCheckout}
-    >
-      {t("purchase")}
-    </button>
-  )}
-</div>
-
+        <div className="mt-auto text-center text-lg font-semibold text-primary">
+          {isPremium ? t("purchased") : (
+            <button
+              type="button"
+              className="btn btn-primary w-full py-3 text-lg"
+              onClick={handleCheckout}
+            >
+              {t("purchase")}
+            </button>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   );
