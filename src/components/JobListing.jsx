@@ -106,10 +106,10 @@ const JobListing = () => {
               <div
                 key={job.id}
                 className={`card shadow-sm mb-4 position-relative ${
-                  job.user?.isPremium ? 'border border-warning' : ''
+                  job.user?.isPremium ? 'border border-warning premium-glow' : ''
                 }`}
                 style={{
-                  backgroundColor: job.user?.isPremium ? '#fff8dc' : 'white',
+                  backgroundColor: 'white',
                   width: '90%',
                   maxWidth: '700px',
                   borderRadius: '10px',
@@ -117,6 +117,10 @@ const JobListing = () => {
                   height: 'auto',
                   display: 'flex',
                   flexDirection: 'column',
+                  position: 'relative',
+                  boxShadow: job.user?.isPremium
+                    ? '0px 0px 15px 5px rgba(255, 215, 0, 0.7)' // Золотое свечение
+                    : 'none',
                 }}
               >
                 <div className="card-body">

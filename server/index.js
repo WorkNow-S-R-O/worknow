@@ -161,7 +161,6 @@ app.post('/api/jobs', async (req, res) => {
   // Проверяем, существует ли пользователь с указанным clerkUserId
   let existingUser;
   try {
-    console.log(`Поиск пользователя с clerkUserId: ${userId}`);
     existingUser = await prisma.user.findUnique({
       where: { clerkUserId: userId },
     });
@@ -353,8 +352,6 @@ app.get('/api/jobs/:id', async (req, res) => {
 app.get('/api/user/:clerkUserId', async (req, res) => {
   const { clerkUserId } = req.params;
 
-  console.log(`Поиск пользователя с clerkUserId: ${clerkUserId}`);
-
   try {
     const user = await prisma.user.findUnique({
       where: { clerkUserId },
@@ -429,6 +426,9 @@ app.post('/api/jobs/:id/boost', async (req, res) => {
     res.status(500).json({ error: 'Ошибка поднятия вакансии', details: error.message });
   }
 });
+
+
+
 
 
 app.get('/api/test-cron', async (req, res) => {

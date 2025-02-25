@@ -114,7 +114,7 @@ const UserJobs = () => {
                 width: '90%',
                 maxWidth: '700px',
                 margin: '0 auto',
-                backgroundColor: job.user?.isPremium ? '#fff8dc' : 'white',
+                backgroundColor:  'white',
               }}
             >
               <div className="card-body">
