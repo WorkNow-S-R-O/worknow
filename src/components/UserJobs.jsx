@@ -115,6 +115,7 @@ const UserJobs = () => {
                 maxWidth: '700px',
                 margin: '0 auto',
                 backgroundColor:  'white',
+                borderRadius: '10px',
               }}
             >
               <div className="card-body">

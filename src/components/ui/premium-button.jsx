@@ -9,6 +9,7 @@ const PremiumButton = () => {
   const { t } = useTranslation();
   const { user } = useUser();
   const [isPremium, setIsPremium] = useState(false);
+  const [isAutoRenewal, setIsAutoRenewal] = useState(true);
 
   useEffect(() => {
     const fetchUserPremiumStatus = async () => {
@@ -17,6 +18,7 @@ const PremiumButton = () => {
       try {
         const response = await axios.get(`http://localhost:3001/api/user/${user.id}`);
         setIsPremium(response.data.isPremium);
+        setIsAutoRenewal(response.data.isAutoRenewal); 
       } catch (error) {
         console.error('Ошибка получения статуса Premium:', error);
       }
@@ -34,6 +36,20 @@ const PremiumButton = () => {
       window.location.href = response.data.url;
     } catch (error) {
       toast.error(t("payment_error"));
+    }
+  };
+
+  const handleCancelAutoRenewal = async () => {
+    try {
+      await axios.post("http://localhost:3001/api/payments/cancel-auto-renewal", {
+        clerkUserId: user.id,
+      });
+
+      setIsAutoRenewal(false);
+      toast.success("Автопродление успешно отключено!");
+    } catch (error) {
+      console.error("Ошибка отмены автопродления:", error);
+      toast.error("Ошибка при отмене автопродления.");
     }
   };
 
@@ -88,7 +104,19 @@ const PremiumButton = () => {
         </div>
 
         <div className="mt-auto text-center text-lg font-semibold text-primary">
-          {isPremium ? t("purchased") : (
+          {isPremium ? (
+            isAutoRenewal ? (
+              <button
+                type="button"
+                className="btn btn-danger w-full py-3 text-lg"
+                onClick={handleCancelAutoRenewal}
+              >
+                {t("cancel_subscription")}
+              </button>
+            ) : (
+              <p className="text-danger">Автопродление отключено</p>
+            )
+          ) : (
             <button
               type="button"
               className="btn btn-primary w-full py-3 text-lg"

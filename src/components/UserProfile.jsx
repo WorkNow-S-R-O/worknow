@@ -52,25 +52,19 @@ const UserProfile = () => {
   return (
     <>
       <Navbar />
-      <div className="container mt-20">
+      <div className="container mt-20 d-flex flex-column align-items-center text-center">
         {loading ? (
           <>
-            {/* Скелетон для профиля */}
-            <div className="d-flex align-items-center mb-4">
-              <Skeleton circle height={100} width={100} className="me-3" />
+            <div className="d-flex flex-column align-items-center mb-4">
+              <Skeleton circle height={100} width={100} className="mb-3" />
               <div>
                 <Skeleton width={200} height={24} />
                 <Skeleton width={150} height={18} className="mt-2" />
               </div>
             </div>
-
-            <h4>
-              <Skeleton width={200} height={24} />
-            </h4>
-
-            {/* Скелетоны для списка объявлений */}
+            <h4><Skeleton width={200} height={24} /></h4>
             {Array.from({ length: jobsPerPage }).map((_, index) => (
-              <div key={index} className="card mb-3">
+              <div key={index} className="card mb-3 w-75 text-start" style={{ maxWidth: '700px' }}>
                 <div className="card-body">
                   <Skeleton height={24} width="50%" />
                   <Skeleton height={18} width="90%" className="mt-2" />
@@ -86,17 +80,15 @@ const UserProfile = () => {
           <p>Пользователь не найден</p>
         ) : (
           <>
-            <div className="d-flex align-items-center mb-4">
+            <div className="d-flex flex-column align-items-center mb-4">
               <img
                 src={user.imageUrl}
                 alt="User Avatar"
-                className="rounded-circle me-3"
+                className="rounded-circle mb-3"
                 style={{ width: '100px', height: '100px', objectFit: 'cover' }}
               />
               <div>
-                <h2>
-                  {user.firstName || 'Без имени'} {user.lastName || ''}
-                </h2>
+                <h2>{user.firstName || 'Без имени'} {user.lastName || ''}</h2>
                 <p className="text-muted">{user.email}</p>
               </div>
             </div>
@@ -107,25 +99,44 @@ const UserProfile = () => {
             ) : (
               <>
                 {currentJobs.map((job) => (
-                  <div key={job.id} className="card mb-3">
+                  <div
+                    key={job.id}
+                    className={`card shadow-sm mb-4 position-relative w-75 text-start ${
+                      job.user?.isPremium ? 'border border-warning premium-glow' : ''
+                    }`}
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: '10px',
+                      maxWidth: '700px',
+                      minHeight: '220px',
+                      height: 'auto',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      position: 'relative',
+                      boxShadow: job.user?.isPremium
+                        ? '0px 0px 15px 5px rgba(255, 215, 0, 0.7)'
+                        : 'none',
+                    }}
+                  >
                     <div className="card-body">
-                      <h5>{job.title}</h5>
-                      <p>{job.description}</p>
-                      <p>
-                        <strong>Зарплата:</strong> {job.salary}
+                      <h5 className="card-title text-primary">{job.title}</h5>
+                      <p className="card-text">
+                        <strong>Зарплата в час:</strong> {job.salary}
                         <br />
-                        <strong>Город:</strong> {job.city.name}
-                        <br />
-                        <strong>Телефон:</strong> {job.phone}
-                        <br />
-                        <small className="text-muted">
-                          Дата: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
-                        </small>
+                        <strong>Местоположение:</strong> {job.city.name}
                       </p>
+                      <p className="card-text">{job.description}</p>
+                      <p className="card-text">
+                        <strong>Телефон:</strong> {job.phone}
+                      </p>
+                      <div className="card-text text-muted">
+                        <small>
+                          Дата создания: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
+                        </small>
+                      </div>
                     </div>
                   </div>
                 ))}
-
                 <Pagination className="justify-content-center">
                   {[...Array(totalPages).keys()].map((page) => (
                     <Pagination.Item

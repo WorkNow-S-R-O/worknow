@@ -101,7 +101,7 @@ const JobForm = ({ onJobCreated }) => {
 
   return (
     <div className="flex-grow-1 d-flex justify-content-center align-items-center px-4">
-      <div className="job-form my-5 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-6 bg-white rounded-lg shadow-md">
+      <div className="job-form my-5 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-6 bg-white rounded-lg ">
         <h1 className="text-2xl font-bold mb-4 mt-5 text-center">{t('create_new_advertisement')}</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -155,7 +155,6 @@ const JobForm = ({ onJobCreated }) => {
                 classNamePrefix="react-select"
                 isClearable
                 menuPlacement="auto"
-                maxMenuHeight={160}
               />
             )}
             {errors.cityId && <p className="text-red-500 text-sm mt-1">{errors.cityId.message}</p>}

@@ -48,6 +48,7 @@
   "payment_transaction_error": "Произошла ошибка во время транзакции",
   "payment_cancelled": "Оплата отменена",
   "payment_cancelled_description": "Возможно вы случайно отменили оплату, попробуйте еще раз.",
-  "try_again": "Попробовать еще раз"
+  "try_again": "Попробовать еще раз",
+  "cancel_subscription": "Отменить подписку"
 
 }

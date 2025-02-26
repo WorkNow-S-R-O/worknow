@@ -7,6 +7,7 @@ import { PrismaClient } from '@prisma/client';
 import fetch from 'node-fetch';
 import paymentRoutes from './routes/payments.js';
 import { checkLowRankedJobs } from './cron-jobs.js';
+import { cancelAutoRenewal } from './controllers/payments.js';
 import './cron-jobs.js';
 
 dotenv.config();
@@ -34,6 +35,8 @@ if (!CLERK_SECRET_KEY) {
   console.error('❌ Missing Clerk API Secret Key!');
   process.exit(1);
 }
+
+app.post('/api/payments/cancel-auto-renewal', cancelAutoRenewal);
 
 // Вебхук для Clerk
 app.post('/webhook/clerk', async (req, res) => {

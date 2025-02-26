@@ -11,6 +11,7 @@ export const createCheckoutSession = async (req, res) => {
     const user = await prisma.user.findUnique({
       where: { clerkUserId },
     });
+    console.log("🔹 [DEBUG] Данные пользователя:", user);
 
     if (!user || !user.email) {
       return res.status(404).json({ error: 'Пользователь не найден или отсутствует email' });
@@ -44,6 +45,10 @@ export const activatePremium = async (req, res) => {
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
+    console.log("🔹 [DEBUG] Session retrieved from Stripe:", session);
+
+    const subscriptionId = session.subscription; // ID подписки в Stripe
+    console.log("🔹 [DEBUG] Stripe Subscription ID:", subscriptionId);
 
     if (session.payment_status === 'paid') {
       await prisma.user.update({
@@ -51,6 +56,8 @@ export const activatePremium = async (req, res) => {
         data: {
           isPremium: true,
           premiumEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 дней подписки
+          isAutoRenewal: !!subscriptionId,
+          stripeSubscriptionId: subscriptionId || null, // Сохраняем ID подписки
         },
       });
 
@@ -59,7 +66,53 @@ export const activatePremium = async (req, res) => {
       res.status(400).json({ error: 'Платеж не прошел' });
     }
   } catch (error) {
-    console.error('Ошибка активации премиума:', error);
+    console.error('❌ Ошибка активации премиума:', error);
     res.status(500).json({ error: 'Ошибка активации премиума' });
   }
 };
+
+
+
+export const cancelAutoRenewal = async (req, res) => {
+  console.log("🔹 [DEBUG] Запрос на отмену автопродления получен:", req.body);
+
+  const { clerkUserId } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+    });
+
+    console.log("🔹 [DEBUG] Найден пользователь:", user);
+
+    if (!user || !user.stripeSubscriptionId) {
+      console.error("❌ Ошибка: подписка не найдена.");
+      return res.status(404).json({ error: 'Подписка не найдена' });
+    }
+
+    if (!user.isAutoRenewal) {
+      console.warn("⚠️ Автопродление уже отключено.");
+      return res.status(400).json({ error: 'Автопродление уже отключено' });
+    }
+
+    // 🔹 Отключаем автопродление в Stripe
+    console.log(`🔹 [DEBUG] Отправляем запрос в Stripe: отмена подписки ${user.stripeSubscriptionId}`);
+    await stripe.subscriptions.update(user.stripeSubscriptionId, {
+      cancel_at_period_end: true,
+    });
+
+    // 🔹 Обновляем статус в базе
+    await prisma.user.update({
+      where: { clerkUserId },
+      data: { isAutoRenewal: false },
+    });
+
+    console.log("✅ [DEBUG] Автопродление успешно отключено!");
+
+    res.json({ success: true, message: 'Автопродление подписки отключено.' });
+  } catch (error) {
+    console.error('❌ Ошибка при отключении автообновления:', error);
+    res.status(500).json({ error: 'Ошибка при отключении автообновления' });
+  }
+};
+

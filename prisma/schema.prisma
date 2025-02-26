@@ -8,17 +8,19 @@ datasource db {
 }
 
 model User {
-  id          String  @id @default(uuid())
-  email       String  @unique
-  firstName   String?
-  lastName    String?
-  imageUrl    String?
-  clerkUserId String  @unique
-  isPremium     Boolean  @default(false)
-  premiumEndsAt DateTime?
-  jobs        Job[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                   String    @id @default(uuid())
+  email                String    @unique
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  clerkUserId          String    @unique
+  firstName            String?
+  imageUrl             String?
+  lastName             String?
+  isPremium            Boolean   @default(false)
+  premiumEndsAt        DateTime?
+  isAutoRenewal        Boolean   @default(true)
+  stripeSubscriptionId String?
+  jobs                 Job[]
 }
 
 model City {
@@ -28,17 +30,17 @@ model City {
 }
 
 model Job {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
-  cityId      Int
-  city        City     @relation(fields: [cityId], references: [id])
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
   salary      String
-  description String
   phone       String
-  createdAt   DateTime @default(now())
+  description String
+  cityId      Int
+  userId      String
+  createdAt   DateTime  @default(now())
   boostedAt   DateTime?
+  city        City      @relation(fields: [cityId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
 
   @@index([boostedAt])
 }

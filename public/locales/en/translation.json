@@ -51,5 +51,6 @@
   "payment_transaction_error": "An error occurred during the transaction",
   "payment_cancelled": "Payment cancelled",
   "payment_cancelled_description": "Maybe you accidentally cancelled the payment, try again.",
-  "try_again": "Try again"
+  "try_again": "Try again",
+  "cancel_subscription": "Cancel subscription"
 }

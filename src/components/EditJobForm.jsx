@@ -110,7 +110,7 @@ const EditJobForm = () => {
       <Navbar />
 
       <div className="flex-grow-1 d-flex justify-content-center align-items-center px-4">
-        <div className="job-form my-5 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-6 bg-white rounded-lg shadow-md">
+        <div className="job-form my-5 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-6 bg-white rounded-lg">
           <h1 className="text-2xl font-bold mb-4 mt-5 text-center">{t('edit_advertisement')}</h1>
 
           {loadingJob ? (
