@@ -96,11 +96,26 @@ const JobForm = ({ onJobCreated }) => {
     } catch (error) {
       console.error('Ошибка при создании объявления:', error.response?.data || error.message);
 
-      if (error.response && error.response.data && error.response.data.errors) {
-        // Показываем каждую ошибку из списка отдельно
-        error.response.data.errors.forEach((err) => {
-          toast.error(`${err}`);
-        });
+      if (error.response && error.response.data) {
+        if (error.response.data.error && error.response.data.error.includes('Вы сможете опубликовать новое объявление')) {
+          // Извлекаем время из сообщения
+          const match = error.response.data.error.match(/через (\d+)м (\d+)с/);
+          if (match) {
+            const minutesLeft = match[1];
+            const secondsLeft = match[2];
+
+            toast.error(`Подождите ${minutesLeft} мин ${secondsLeft} сек перед созданием нового объявления.`);
+          } else {
+            toast.error(error.response.data.error);
+          }
+        } else if (error.response.data.errors) {
+          // Показываем каждую ошибку отдельно
+          error.response.data.errors.forEach((err) => {
+            toast.error(`${err}`);
+          });
+        } else {
+          toast.error('Ошибка при создании объявления. Попробуйте позже.');
+        }
       } else {
         toast.error('Ошибка при создании объявления. Попробуйте позже.');
       }

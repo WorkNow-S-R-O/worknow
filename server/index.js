@@ -207,6 +207,12 @@ app.post('/api/jobs', async (req, res) => {
   try {
     existingUser = await prisma.user.findUnique({
       where: { clerkUserId: userId },
+      include: {
+        jobs: {
+          orderBy: { createdAt: 'desc' },
+          take: 1, // Берём только последнюю вакансию
+        },
+      },
     });
     console.log('Результат поиска пользователя:', existingUser);
 
@@ -217,13 +223,32 @@ app.post('/api/jobs', async (req, res) => {
         details: `Не найден пользователь с clerkUserId "${userId}" в базе данных.`,
       });
     }
-  } catch (userError) {
-    console.error('Ошибка при проверке пользователя:', userError.message);
-    return res.status(500).json({
-      error: 'Ошибка проверки пользователя',
-      details: userError.message,
-    });
-  }
+
+        // Проверяем время последней публикации объявления
+        if (existingUser.jobs.length > 0) {
+          const lastJob = existingUser.jobs[0];
+          const now = new Date();
+          const lastJobTime = new Date(lastJob.createdAt);
+          const timeDiff = (now - lastJobTime) / 1000; // разница в секундах
+    
+          if (timeDiff < 180) { // 3 минуты = 180 секунд
+            const timeLeft = 180 - timeDiff;
+            const minutesLeft = Math.floor(timeLeft / 60);
+            const secondsLeft = Math.floor(timeLeft % 60);
+    
+            console.warn(`[Rate Limit] Попытка публикации до истечения 3 минут. Осталось ${minutesLeft}м ${secondsLeft}с.`);
+            return res.status(400).json({
+              error: `Вы сможете опубликовать новое объявление через ${minutesLeft}м ${secondsLeft}с.`,
+            });
+          }
+        }   } catch (userError) {
+          console.error('Ошибка при проверке пользователя:', userError.message);
+          return res.status(500).json({
+            error: 'Ошибка проверки пользователя',
+            details: userError.message,
+          });
+        }
+
 
   try {
     const job = await prisma.job.create({
