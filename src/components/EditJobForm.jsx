@@ -96,14 +96,31 @@ const EditJobForm = () => {
         ...data,
         cityId: parseInt(data.cityId),
       });
-
-      toast.success('Объявление обновлено!');
+  
+      toast.success('Объявление успешно обновлено!');
       navigate('/');
     } catch (error) {
       console.error('Ошибка обновления объявления:', error);
-      toast.error('Ошибка при обновлении объявления');
+  
+      // Проверяем, есть ли ответ от сервера и содержит ли он список ошибок
+      if (error.response && error.response.data) {
+        const errorData = error.response.data;
+  
+        if (errorData.errors && Array.isArray(errorData.errors)) {
+          errorData.errors.forEach((err) => {
+            toast.error(`${err}`);
+          });
+        } else if (errorData.error) {
+          toast.error(`${errorData.error}`);
+        } else {
+          toast.error('Произошла неизвестная ошибка. Попробуйте позже.');
+        }
+      } else {
+        toast.error('Ошибка при обновлении объявления. Сервер недоступен.');
+      }
     }
   };
+  
 
   return (
     <div className="d-flex flex-column min-vh-100">

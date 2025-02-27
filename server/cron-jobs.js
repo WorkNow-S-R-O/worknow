@@ -1,4 +1,5 @@
 import cron from 'node-cron';
+import stripe from './utils/stripe.js';
 import nodemailer from 'nodemailer';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
@@ -76,6 +77,55 @@ const checkLowRankedJobs = async () => {
 
   } catch (error) {
     console.error("❌ Ошибка при проверке объявлений:", error);
+  }
+};
+
+export const cancelAutoRenewal = async (req, res) => {
+  const { clerkUserId } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+    });
+
+    if (!user || !user.stripeSubscriptionId) {
+      return res.status(404).json({ error: 'Подписка не найдена' });
+    }
+
+    if (!user.isAutoRenewal) {
+      return res.status(400).json({ error: 'Автопродление уже отключено' });
+    }
+
+    // 🔹 Отключаем автопродление в Stripe
+    await stripe.subscriptions.update(user.stripeSubscriptionId, {
+      cancel_at_period_end: true,
+    });
+
+    // 🔹 Обновляем статус в базе
+    await prisma.user.update({
+      where: { clerkUserId },
+      data: { isAutoRenewal: false },
+    });
+
+    // 🔹 Отправляем email пользователю
+
+    console.log(`📩 [DEBUG] Готовимся отправить письмо на ${user.email}`);
+
+
+    const mailOptions = {
+      from: `"Worknow" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: "Автопродление подписки отключено",
+      text: `Здравствуйте, ${user.firstName || "пользователь"}!\n\nВы успешно отключили автопродление подписки. Ваша премиум-подписка останется активной до ${user.premiumEndsAt.toLocaleDateString()}.\n\nСпасибо, что пользуетесь Worknow!`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`📩 Письмо об отключении автопродления отправлено на ${user.email}`);
+
+    res.json({ success: true, message: 'Автопродление подписки отключено.' });
+  } catch (error) {
+    console.error(' Ошибка при отключении автообновления:', error);
+    res.status(500).json({ error: 'Ошибка при отключении автообновления' });
   }
 };
 

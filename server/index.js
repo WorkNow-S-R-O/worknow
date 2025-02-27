@@ -2,12 +2,14 @@
 import express from 'express';
 import { Webhook } from 'svix';
 import dotenv from 'dotenv';
+import {Filter} from "bad-words";
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import fetch from 'node-fetch';
 import paymentRoutes from './routes/payments.js';
 import { checkLowRankedJobs } from './cron-jobs.js';
 import { cancelAutoRenewal } from './controllers/payments.js';
+import badWordsList from './utils/badWordsList.js';
 import './cron-jobs.js';
 
 dotenv.config();
@@ -20,6 +22,8 @@ app.use(cors());
 app.use(express.json({
   verify: (req, res, buf) => { req.rawBody = buf.toString(); }
 }));
+
+const filter = new Filter()
 
 app.use('/api/payments', paymentRoutes);
 
@@ -148,6 +152,23 @@ app.get('/api/cities', async (req, res) => {
 
 // CRUD для объявлений
 
+/// Проверяем текст на непристойные слова
+const containsBadWords = (text) => {
+  if (!text) return false;
+  
+  const words = text.toLowerCase().split(/\s+/);
+  
+  // Проверяем, содержит ли текст русские маты или английские
+  return words.some((word) => badWordsList.includes(word) || filter.isProfane(word));
+};
+
+// Проверяем текст на наличие ссылок
+const containsLinks = (text) => {
+  if (!text) return false;
+  const urlPattern = /(https?:\/\/|www\.)[^\s]+/gi;
+  return urlPattern.test(text);
+};
+
 // Создание объявления
 app.post('/api/jobs', async (req, res) => {
   const { title, salary, cityId, phone, description, userId } = req.body;
@@ -160,6 +181,26 @@ app.post('/api/jobs', async (req, res) => {
     description,
     userId,
   });
+
+  let errors = [];
+
+  // Проверяем маты
+  if (containsBadWords(title)) errors.push("Заголовок содержит нецензурные слова.");
+  if (containsBadWords(description)) errors.push("Описание содержит нецензурные слова.");
+
+  // Проверяем ссылки
+  if (containsLinks(title)) errors.push("Заголовок содержит запрещенные ссылки.");
+  if (containsLinks(description)) errors.push("Описание содержит запрещенные ссылки.");
+
+  // Логируем ошибки, если они есть
+  if (errors.length > 0) {
+    console.log("🚨 Ошибки при публикации объявления:", errors);
+    return res.status(400).json({
+      success: false,
+      message: "❗ Объявление не может быть опубликовано из-за следующих ошибок:",
+      errors
+    });
+  }
 
   // Проверяем, существует ли пользователь с указанным clerkUserId
   let existingUser;
@@ -216,6 +257,26 @@ app.post('/api/jobs', async (req, res) => {
 app.put('/api/jobs/:id', async (req, res) => {
   const { id } = req.params;
   const { title, salary, cityId, phone, description } = req.body;
+
+  let errors = [];
+
+  // Проверяем маты
+  if (containsBadWords(title)) errors.push("Заголовок содержит нецензурные слова.");
+  if (containsBadWords(description)) errors.push("Описание содержит нецензурные слова.");
+
+  // Проверяем ссылки
+  if (containsLinks(title)) errors.push("Заголовок содержит запрещенные ссылки.");
+  if (containsLinks(description)) errors.push("Описание содержит запрещенные ссылки.");
+
+  // Логируем ошибки, если они есть
+  if (errors.length > 0) {
+    console.log("🚨 Ошибки при редактировании объявления:", errors);
+    return res.status(400).json({
+      success: false,
+      message: "❗ Объявление не может быть обновлено из-за следующих ошибок:",
+      errors
+    });
+  }
 
   try {
     const job = await prisma.job.update({

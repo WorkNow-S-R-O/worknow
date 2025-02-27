@@ -95,7 +95,15 @@ const JobForm = ({ onJobCreated }) => {
       }, 2000);
     } catch (error) {
       console.error('Ошибка при создании объявления:', error.response?.data || error.message);
-      toast.error('Ошибка при создании объявления!');
+
+      if (error.response && error.response.data && error.response.data.errors) {
+        // Показываем каждую ошибку из списка отдельно
+        error.response.data.errors.forEach((err) => {
+          toast.error(`${err}`);
+        });
+      } else {
+        toast.error('Ошибка при создании объявления. Попробуйте позже.');
+      }
     }
   };
 
