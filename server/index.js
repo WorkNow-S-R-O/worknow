@@ -169,6 +169,9 @@ const containsLinks = (text) => {
   return urlPattern.test(text);
 };
 
+// Максимальное количество вакансий на пользователя
+const MAX_JOBS_PER_USER = 10;
+
 // Создание объявления
 app.post('/api/jobs', async (req, res) => {
   const { title, salary, cityId, phone, description, userId } = req.body;
@@ -223,6 +226,19 @@ app.post('/api/jobs', async (req, res) => {
         details: `Не найден пользователь с clerkUserId "${userId}" в базе данных.`,
       });
     }
+
+    // ✅ Проверяем количество вакансий у пользователя
+    const jobCount = await prisma.job.count({
+      where: { userId: existingUser.id },
+    });
+
+    if (jobCount >= MAX_JOBS_PER_USER) {
+      console.warn(`[Job Limit] Пользователь ${userId} достиг лимита в ${MAX_JOBS_PER_USER} вакансий.`);
+      return res.status(400).json({
+        error: `Вы уже разместили ${MAX_JOBS_PER_USER} объявлений. Удалите одно из них, прежде чем создать новое.`,
+      });
+    }
+
 
         // Проверяем время последней публикации объявления
         if (existingUser.jobs.length > 0) {

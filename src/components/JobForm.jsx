@@ -97,16 +97,25 @@ const JobForm = ({ onJobCreated }) => {
       console.error('Ошибка при создании объявления:', error.response?.data || error.message);
 
       if (error.response && error.response.data) {
-        if (error.response.data.error && error.response.data.error.includes('Вы сможете опубликовать новое объявление')) {
-          // Извлекаем время из сообщения
-          const match = error.response.data.error.match(/через (\d+)м (\d+)с/);
-          if (match) {
-            const minutesLeft = match[1];
-            const secondsLeft = match[2];
+        if (error.response.data.error) {
+          const errorMessage = error.response.data.error;
 
-            toast.error(`Подождите ${minutesLeft} мин ${secondsLeft} сек перед созданием нового объявления.`);
+          if (errorMessage.includes('Вы сможете опубликовать новое объявление')) {
+            // Извлекаем время ожидания
+            const match = errorMessage.match(/через (\d+)м (\d+)с/);
+            if (match) {
+              const minutesLeft = match[1];
+              const secondsLeft = match[2];
+
+              toast.error(`Подождите ${minutesLeft} мин ${secondsLeft} сек перед созданием нового объявления.`);
+            } else {
+              toast.error(errorMessage);
+            }
+          } else if (errorMessage.includes('Вы уже разместили 10 объявлений')) {
+            // Выводим ошибку о превышении лимита
+            toast.error('Достигнут лимит в 10 вакансий. Удалите одно из них, прежде чем создать новое.');
           } else {
-            toast.error(error.response.data.error);
+            toast.error(errorMessage);
           }
         } else if (error.response.data.errors) {
           // Показываем каждую ошибку отдельно
@@ -138,7 +147,7 @@ const JobForm = ({ onJobCreated }) => {
               type="text"
               {...register('title')}
               className={`bg-white w-full border px-3 py-2 rounded ${
-                errors.title ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-300'
+                errors.title ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder={t('write_job_title')}
             />
@@ -155,7 +164,7 @@ const JobForm = ({ onJobCreated }) => {
               type="text"
               {...register('salary')}
               className={`bg-white w-full border px-3 py-2 rounded ${
-                errors.salary ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-300'
+                errors.salary ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder={t('write_salary')}
             />
@@ -177,7 +186,6 @@ const JobForm = ({ onJobCreated }) => {
                 placeholder="Выберите город"
                 classNamePrefix="react-select"
                 isClearable
-                menuPlacement="auto"
               />
             )}
             {errors.cityId && <p className="text-red-500 text-sm mt-1">{errors.cityId.message}</p>}
@@ -193,7 +201,7 @@ const JobForm = ({ onJobCreated }) => {
               type="text"
               {...register('phone')}
               className={`bg-white w-full border px-3 py-2 rounded ${
-                errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-300'
+                errors.phone ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder={t('write_phone_number')}
             />
@@ -208,19 +216,13 @@ const JobForm = ({ onJobCreated }) => {
             <textarea
               id="description"
               {...register('description')}
-              className={`bg-white w-full border px-3 py-2 rounded ${
-                errors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-300' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-300'
-              }`}
+              className="bg-white w-full border px-3 py-2 rounded border-gray-300"
               rows="5"
               placeholder={t('write_job_description')}
             />
-            {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary w-full text-white px-4 py-2 rounded transition-colors focus:outline-none focus:ring-2"
-          >
+          <button type="submit" className="btn btn-primary w-full text-white px-4 py-2 rounded">
             {t('create')}
           </button>
         </form>
