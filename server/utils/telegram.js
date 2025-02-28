@@ -5,7 +5,7 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const TELEGRAM_MAX_LENGTH = 4000; // Учитываем запас для Markdown-разметки
 
 /**
- * Функция отправки уведомления в Telegram
+ * Функция отправки уведомления о новом премиум-пользователе в Telegram
  * @param {Object} user - Объект пользователя
  * @param {Array} jobs - Список вакансий пользователя
  */
@@ -63,5 +63,63 @@ export const sendTelegramNotification = async (user, jobs) => {
 
   } catch (error) {
     console.error('❌ Ошибка отправки в Telegram:', error);
+  }
+};
+
+/**
+ * Отправляет обновленный список вакансий пользователя в Telegram при редактировании/удалении
+ * @param {Object} user - Объект пользователя
+ * @param {Array} jobs - Список вакансий пользователя
+ */
+export const sendUpdatedJobListToTelegram = async (user, jobs) => {
+  try {
+    let messages = [];
+    let currentMessage = `⚡ *Обновление у премиум-пользователя!* ⚡\n\n` +
+                         `👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
+                         `📧 *Email:* ${user.email}\n` +
+                         `💎 *Статус:* Премиум активирован!\n\n` +
+                         `📌 *Актуальные вакансии пользователя:*`;
+
+    if (jobs.length === 0) {
+      currentMessage += `\n❌ У пользователя больше нет вакансий.`;
+      messages.push(currentMessage);
+    } else {
+      jobs.forEach((job, index) => {
+        let jobMessage = `\n\n🔹 *${index + 1}. ${job.title}* \n` +
+                         `📍 *Город:* ${job.city?.name || 'Не указан'}\n` +
+                         `💰 *Зарплата:* ${job.salary}\n` +
+                         `📞 *Телефон:* ${job.phone}\n` +
+                         `📅 *Дата:* ${new Date(job.createdAt).toLocaleDateString()}\n` +
+                         `📝 *Описание:* ${job.description || 'Нет описания'}\n` +
+                         `---`;
+
+        if (currentMessage.length + jobMessage.length > TELEGRAM_MAX_LENGTH) {
+          messages.push(currentMessage);
+          currentMessage = '';
+        }
+
+        currentMessage += jobMessage;
+      });
+
+      if (currentMessage.length > 0) {
+        messages.push(currentMessage);
+      }
+    }
+
+    for (const msg of messages) {
+      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: msg,
+          parse_mode: 'Markdown',
+        }),
+      });
+    }
+
+    console.log(`✅ [Telegram] Уведомление об изменении вакансий отправлено!`);
+  } catch (error) {
+    console.error(`❌ [Telegram] Ошибка при отправке уведомления:`, error);
   }
 };

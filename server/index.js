@@ -12,6 +12,7 @@ import { cancelAutoRenewal } from './controllers/payments.js';
 import stringSimilarity from "string-similarity";
 import badWordsList from './utils/badWordsList.js';
 import './cron-jobs.js';
+import { sendUpdatedJobListToTelegram } from './utils/telegram.js';
 
 dotenv.config();
 
@@ -338,7 +339,18 @@ app.put('/api/jobs/:id', async (req, res) => {
   }
 
   try {
-    const job = await prisma.job.update({
+    // Находим объявление с пользователем
+    const existingJob = await prisma.job.findUnique({
+      where: { id: parseInt(id) },
+      include: { user: true },
+    });
+
+    if (!existingJob) {
+      return res.status(404).json({ error: 'Объявление не найдено' });
+    }
+
+    // Обновляем объявление
+    const updatedJob = await prisma.job.update({
       where: { id: parseInt(id) },
       data: {
         title,
@@ -347,22 +359,56 @@ app.put('/api/jobs/:id', async (req, res) => {
         description,
         city: { connect: { id: parseInt(cityId) } },
       },
-      include: { city: true, user: true }
+      include: { city: true, user: true },
     });
-    res.status(200).json(job);
+
+    // 🔥 Если у пользователя премиум – отправляем обновленный список вакансий
+    if (updatedJob.user.isPremium) {
+      const userJobs = await prisma.job.findMany({
+        where: { userId: updatedJob.user.id },
+        include: { city: true },
+      });
+
+      await sendUpdatedJobListToTelegram(updatedJob.user, userJobs);
+    }
+
+    res.status(200).json(updatedJob);
   } catch (error) {
     res.status(500).json({ error: 'Ошибка обновления объявления', details: error.message });
   }
 });
+
 
 // Удаление объявления
 app.delete('/api/jobs/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
+    // 🔹 Находим объявление перед удалением
+    const job = await prisma.job.findUnique({
+      where: { id: parseInt(id) },
+      include: { user: true },
+    });
+
+    if (!job) {
+      return res.status(404).json({ error: 'Объявление не найдено' });
+    }
+
+    // Удаляем объявление
     await prisma.job.delete({
       where: { id: parseInt(id) },
     });
+
+    // 🔥 Если пользователь премиум – отправляем обновленный список
+    if (job.user.isPremium) {
+      const userJobs = await prisma.job.findMany({
+        where: { userId: job.user.id },
+        include: { city: true },
+      });
+
+      await sendUpdatedJobListToTelegram(job.user, userJobs);
+    }
+
     res.status(200).json({ message: 'Объявление удалено' });
   } catch (error) {
     res.status(500).json({ error: 'Ошибка удаления объявления', details: error.message });
