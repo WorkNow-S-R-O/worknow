@@ -9,6 +9,7 @@ import fetch from 'node-fetch';
 import paymentRoutes from './routes/payments.js';
 import { checkLowRankedJobs } from './cron-jobs.js';
 import { cancelAutoRenewal } from './controllers/payments.js';
+import stringSimilarity from "string-similarity";
 import badWordsList from './utils/badWordsList.js';
 import './cron-jobs.js';
 
@@ -226,6 +227,23 @@ app.post('/api/jobs', async (req, res) => {
         details: `Не найден пользователь с clerkUserId "${userId}" в базе данных.`,
       });
     }
+
+// Проверяем дубликаты по заголовку и описанию
+const existingJobs = await prisma.job.findMany({
+  where: { userId: existingUser.id },
+  select: { title: true, description: true },
+});
+
+const isDuplicate = existingJobs.some(job =>
+  stringSimilarity.compareTwoStrings(job.title, title) > 0.9 &&
+  stringSimilarity.compareTwoStrings(job.description, description) > 0.9
+);
+
+if (isDuplicate) {
+  return res.status(400).json({ error: "Ваше объявление похоже на уже существующее. Измените заголовок или описание." });
+}
+
+
 
     // ✅ Проверяем количество вакансий у пользователя
     const jobCount = await prisma.job.count({
