@@ -38,19 +38,14 @@ const JobListing = () => {
       ? jobData
       : jobData.filter((job) => job.city.name === selectedCity);
 
-      const sortedJobs = [...filteredJobs].sort((a, b) => {
-        // Premium объявления выше всех остальных
-        if (a.user?.isPremium !== b.user?.isPremium) {
-          return a.user?.isPremium ? -1 : 1;
-        }
-      
-        // Затем сортировка по boostedAt и createdAt
-        const dateA = a.boostedAt ? new Date(a.boostedAt) : new Date(a.createdAt);
-        const dateB = b.boostedAt ? new Date(b.boostedAt) : new Date(b.createdAt);
-      
-        return dateB - dateA;
-      });
-      
+  const sortedJobs = [...filteredJobs].sort((a, b) => {
+    if (a.user?.isPremium !== b.user?.isPremium) {
+      return a.user?.isPremium ? -1 : 1;
+    }
+    const dateA = a.boostedAt ? new Date(a.boostedAt) : new Date(a.createdAt);
+    const dateB = b.boostedAt ? new Date(b.boostedAt) : new Date(b.createdAt);
+    return dateB - dateA;
+  });
 
   const totalPages = Math.ceil(sortedJobs.length / jobsPerPage);
   const indexOfLastJob = currentPage * jobsPerPage;
@@ -119,7 +114,7 @@ const JobListing = () => {
                   flexDirection: 'column',
                   position: 'relative',
                   boxShadow: job.user?.isPremium
-                    ? '0px 0px 15px 5px rgba(255, 215, 0, 0.7)' // Золотое свечение
+                    ? '0px 0px 15px 5px rgba(255, 215, 0, 0.7)'
                     : 'none',
                 }}
               >
@@ -158,11 +153,43 @@ const JobListing = () => {
 
       {filteredJobs.length > 0 && !loading && (
         <Pagination className="mt-auto d-flex justify-content-center">
-          {[...Array(totalPages).keys()].map((page) => (
-            <Pagination.Item key={page + 1} active={page + 1 === currentPage} onClick={() => handlePageChange(page + 1)}>
-              {page + 1}
-            </Pagination.Item>
-          ))}
+          <Pagination.Prev 
+            disabled={currentPage === 1} 
+            onClick={() => handlePageChange(currentPage - 1)} 
+          />
+
+          {totalPages <= 10 ? (
+            [...Array(totalPages).keys()].map((page) => (
+              <Pagination.Item 
+                key={page + 1} 
+                active={page + 1 === currentPage} 
+                onClick={() => handlePageChange(page + 1)}
+              >
+                {page + 1}
+              </Pagination.Item>
+            ))
+          ) : (
+            <>
+              {currentPage > 3 && <Pagination.Ellipsis disabled />}
+              {[...Array(totalPages).keys()]
+                .slice(Math.max(0, currentPage - 2), Math.min(totalPages, currentPage + 1))
+                .map((page) => (
+                  <Pagination.Item 
+                    key={page + 1} 
+                    active={page + 1 === currentPage} 
+                    onClick={() => handlePageChange(page + 1)}
+                  >
+                    {page + 1}
+                  </Pagination.Item>
+                ))}
+              {currentPage < totalPages - 2 && <Pagination.Ellipsis disabled />}
+            </>
+          )}
+
+          <Pagination.Next 
+            disabled={currentPage === totalPages} 
+            onClick={() => handlePageChange(currentPage + 1)} 
+          />
         </Pagination>
       )}
     </div>
