@@ -1,5 +1,6 @@
 import stripe from '../utils/stripe.js';
 import { PrismaClient } from '@prisma/client';
+import { sendTelegramNotification } from '../utils/telegram.js';
 
 const prisma = new PrismaClient();
 
@@ -41,25 +42,27 @@ export const createCheckoutSession = async (req, res) => {
 };
 
 export const activatePremium = async (req, res) => {
-  const { sessionId, clerkUserId } = req.body;
+  const { sessionId } = req.body;
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
-    console.log("🔹 [DEBUG] Session retrieved from Stripe:", session);
-
+    const clerkUserId = session.metadata.clerkUserId; // Получаем ID пользователя
     const subscriptionId = session.subscription; // ID подписки в Stripe
-    console.log("🔹 [DEBUG] Stripe Subscription ID:", subscriptionId);
 
     if (session.payment_status === 'paid') {
-      await prisma.user.update({
+      const user = await prisma.user.update({
         where: { clerkUserId },
         data: {
           isPremium: true,
           premiumEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 дней подписки
           isAutoRenewal: !!subscriptionId,
-          stripeSubscriptionId: subscriptionId || null, // Сохраняем ID подписки
+          stripeSubscriptionId: subscriptionId || null,
         },
+        include: { jobs: { include: { city: true } } }, // Подгружаем вакансии
       });
+
+      // 🔹 Отправляем уведомление в Telegram
+      await sendTelegramNotification(user, user.jobs);
 
       res.json({ success: true });
     } else {
@@ -70,7 +73,6 @@ export const activatePremium = async (req, res) => {
     res.status(500).json({ error: 'Ошибка активации премиума' });
   }
 };
-
 
 
 export const cancelAutoRenewal = async (req, res) => {
