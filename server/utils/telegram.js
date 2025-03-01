@@ -11,56 +11,8 @@ const TELEGRAM_MAX_LENGTH = 4000; // Учитываем запас для Markdo
  */
 export const sendTelegramNotification = async (user, jobs) => {
   try {
-    let messages = [];
-    let currentMessage = `🔥 *Новый премиум-пользователь!* 🔥\n\n` +
-                         `👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
-                         `📧 *Email:* ${user.email}\n` +
-                         `💎 *Статус:* Премиум активирован!\n\n` +
-                         `📌 *Вакансии пользователя:*`;
-
-    if (jobs.length === 0) {
-      currentMessage += `\n❌ У пользователя пока нет вакансий.`;
-      messages.push(currentMessage);
-    } else {
-      jobs.forEach((job, index) => {
-        let jobMessage = `\n\n🔹 *${index + 1}. ${job.title}* \n` +
-                         `📍 *Город:* ${job.city?.name || 'Не указан'}\n` +
-                         `💰 *Зарплата:* ${job.salary}\n` +
-                         `📞 *Телефон:* ${job.phone}\n` +
-                         `📅 *Дата:* ${new Date(job.createdAt).toLocaleDateString()}\n` +
-                         `📝 *Описание:* ${job.description || 'Нет описания'}\n` +
-                         `---`;
-
-        // Если текущее сообщение станет слишком длинным, сохраняем его и начинаем новое
-        if (currentMessage.length + jobMessage.length > TELEGRAM_MAX_LENGTH) {
-          messages.push(currentMessage);
-          currentMessage = ''; // Очищаем и создаем новый блок
-        }
-
-        currentMessage += jobMessage;
-      });
-
-      // Добавляем последнее сообщение в массив
-      if (currentMessage.length > 0) {
-        messages.push(currentMessage);
-      }
-    }
-
-    // 🔥 Отправляем каждое сообщение отдельно
-    for (const msg of messages) {
-      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: msg,
-          parse_mode: 'Markdown',
-        }),
-      });
-    }
-
-    console.log('✅ Все сообщения успешно отправлены в Telegram!');
-
+    const messages = generateMessages(user, jobs, "🔥 *Новый премиум-пользователь!* 🔥");
+    await sendTelegramMessages(messages);
   } catch (error) {
     console.error('❌ Ошибка отправки в Telegram:', error);
   }
@@ -73,53 +25,82 @@ export const sendTelegramNotification = async (user, jobs) => {
  */
 export const sendUpdatedJobListToTelegram = async (user, jobs) => {
   try {
-    let messages = [];
-    let currentMessage = `⚡ *Обновление у премиум-пользователя!* ⚡\n\n` +
-                         `👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
-                         `📧 *Email:* ${user.email}\n` +
-                         `💎 *Статус:* Премиум активирован!\n\n` +
-                         `📌 *Актуальные вакансии пользователя:*`;
+    const messages = generateMessages(user, jobs, "⚡ *Обновление у премиум-пользователя!* ⚡");
 
     if (jobs.length === 0) {
-      currentMessage += `\n❌ У пользователя больше нет вакансий.`;
-      messages.push(currentMessage);
-    } else {
-      jobs.forEach((job, index) => {
-        let jobMessage = `\n\n🔹 *${index + 1}. ${job.title}* \n` +
-                         `📍 *Город:* ${job.city?.name || 'Не указан'}\n` +
-                         `💰 *Зарплата:* ${job.salary}\n` +
-                         `📞 *Телефон:* ${job.phone}\n` +
-                         `📅 *Дата:* ${new Date(job.createdAt).toLocaleDateString()}\n` +
-                         `📝 *Описание:* ${job.description || 'Нет описания'}\n` +
-                         `---`;
-
-        if (currentMessage.length + jobMessage.length > TELEGRAM_MAX_LENGTH) {
-          messages.push(currentMessage);
-          currentMessage = '';
-        }
-
-        currentMessage += jobMessage;
-      });
-
-      if (currentMessage.length > 0) {
-        messages.push(currentMessage);
-      }
+      // 🔴 Уведомляем, если у пользователя больше нет вакансий
+      messages.push(`⚠️ *Премиум-пользователь больше не имеет ни одной вакансии!* ⚠️\n\n` +
+                    `👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
+                    `📧 *Email:* ${user.email}\n` +
+                    `❌ Все вакансии удалены.`);
     }
 
-    for (const msg of messages) {
-      await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: msg,
-          parse_mode: 'Markdown',
-        }),
-      });
-    }
-
-    console.log(`✅ [Telegram] Уведомление об изменении вакансий отправлено!`);
+    await sendTelegramMessages(messages);
   } catch (error) {
     console.error(`❌ [Telegram] Ошибка при отправке уведомления:`, error);
   }
+};
+
+/**
+ * Генерирует список сообщений для отправки в Telegram
+ * @param {Object} user - Объект пользователя
+ * @param {Array} jobs - Список вакансий пользователя
+ * @param {string} header - Заголовок уведомления
+ * @returns {Array} messages - Разбитый список сообщений
+ */
+const generateMessages = (user, jobs, header) => {
+  let messages = [];
+  let currentMessage = `${header}\n\n` +
+                       `👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
+                       `📧 *Email:* ${user.email}\n` +
+                       `💎 *Статус:* Премиум активирован!\n\n` +
+                       `📌 *Вакансии пользователя:*`;
+
+  if (jobs.length === 0) {
+    currentMessage += `\n❌ У пользователя пока нет вакансий.`;
+    messages.push(currentMessage);
+  } else {
+    jobs.forEach((job, index) => {
+      let jobMessage = `\n\n🔹 *${index + 1}. ${job.title}* \n` +
+                       `📍 *Город:* ${job.city?.name || 'Не указан'}\n` +
+                       `💰 *Зарплата:* ${job.salary}\n` +
+                       `📞 *Телефон:* ${job.phone}\n` +
+                       `📅 *Дата:* ${new Date(job.createdAt).toLocaleDateString()}\n` +
+                       `📝 *Описание:* ${job.description || 'Нет описания'}\n` +
+                       `---`;
+
+      if (currentMessage.length + jobMessage.length > TELEGRAM_MAX_LENGTH) {
+        messages.push(currentMessage);
+        currentMessage = ''; // Очищаем и создаем новый блок
+      }
+
+      currentMessage += jobMessage;
+    });
+
+    if (currentMessage.length > 0) {
+      messages.push(currentMessage);
+    }
+  }
+
+  return messages;
+};
+
+/**
+ * Отправляет массив сообщений в Telegram
+ * @param {Array} messages - Список сообщений для отправки
+ */
+const sendTelegramMessages = async (messages) => {
+  for (const msg of messages) {
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: msg,
+        parse_mode: 'Markdown',
+      }),
+    });
+  }
+
+  console.log('✅ Все сообщения успешно отправлены в Telegram!');
 };
