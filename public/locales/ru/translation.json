@@ -49,6 +49,6 @@
   "payment_cancelled": "Оплата отменена",
   "payment_cancelled_description": "Возможно вы случайно отменили оплату, попробуйте еще раз.",
   "try_again": "Попробовать еще раз",
-  "cancel_subscription": "Отменить подписку"
-
+  "cancel_subscription": "Отменить подписку",
+  "choose_city": "Выберите город"
 }

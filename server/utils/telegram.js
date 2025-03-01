@@ -42,6 +42,62 @@ export const sendUpdatedJobListToTelegram = async (user, jobs) => {
 };
 
 /**
+ * Отправляет уведомление в Telegram о создании новой вакансии
+ * @param {Object} user - Объект пользователя
+ * @param {Object} job - Созданная вакансия
+ */
+export const sendNewJobNotificationToTelegram = async (user, job) => {
+  try {
+    console.log("📢 Вызов sendNewJobNotificationToTelegram для вакансии:", job);
+    
+    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+      console.error("❌ Ошибка: TELEGRAM_BOT_TOKEN или TELEGRAM_CHAT_ID не установлены.");
+      return;
+    }
+
+    const message = `🆕 *Новая вакансия от премиум-пользователя!* 🆕\n\n` +
+                    `👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
+                    `📧 *Email:* ${user.email}\n` +
+                    `💎 *Статус:* Премиум активирован!\n\n` +
+                    `📌 *Вакансия:*\n` +
+                    `🔹 *${job.title}* \n` +
+                    `📍 *Город:* ${job.city?.name || 'Не указан'}\n` +
+                    `💰 *Зарплата:* ${job.salary}\n` +
+                    `📞 *Телефон:* ${job.phone}\n` +
+                    `📅 *Дата:* ${new Date(job.createdAt).toLocaleDateString()}\n` +
+                    `📝 *Описание:* ${job.description || 'Нет описания'}\n` +
+                    `---`;
+                    
+
+    console.log(`📤 Отправляем сообщение в Telegram:\n${message}`);
+
+    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'Markdown',
+        }),
+    });
+
+    const data = await response.json();
+    console.log("📩 Ответ от Telegram API:", data);
+
+    if (!data.ok) {
+        console.error("❌ Ошибка Telegram:", data.description);
+    } else {
+        console.log(`✅ [Telegram] Уведомление о новой вакансии отправлено!`);
+    }
+
+  } catch (error) {
+    console.error(`❌ Ошибка при отправке уведомления в Telegram:`, error);
+  }
+};
+
+
+
+/**
  * Генерирует список сообщений для отправки в Telegram
  * @param {Object} user - Объект пользователя
  * @param {Array} jobs - Список вакансий пользователя
@@ -91,16 +147,30 @@ const generateMessages = (user, jobs, header) => {
  */
 const sendTelegramMessages = async (messages) => {
   for (const msg of messages) {
-    await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text: msg,
-        parse_mode: 'Markdown',
-      }),
-    });
+    console.log(`📤 Отправляем сообщение в Telegram:\n${msg}`);
+
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: msg,
+          parse_mode: 'Markdown',
+        }),
+      });
+
+      const data = await response.json();
+      console.log("📩 Ответ от Telegram API:", data);
+
+      if (!data.ok) {
+        console.error("❌ Ошибка Telegram:", data.description);
+      }
+    } catch (error) {
+      console.error("❌ Ошибка сети при отправке:", error);
+    }
   }
+};
+
 
   console.log('✅ Все сообщения успешно отправлены в Telegram!');
-};

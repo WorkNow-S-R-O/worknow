@@ -434,7 +434,7 @@ app.get('/api/jobs', async (req, res) => {
           },
         },
         {
-          boostedAt: 'desc',    // Затем по boostedAt
+          boostedAt: { sort: 'desc', nulls: 'last' },
         },
         {
           createdAt: 'desc',    // Затем по дате создания

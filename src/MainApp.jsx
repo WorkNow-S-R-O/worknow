@@ -11,7 +11,7 @@ import MyAds from "./pages/MyAds.jsx";
 import CreateNewAd from "./pages/CreateNewAd.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import AccessDenied from "./pages/AccessDenied.jsx";
-import EditJobForm from "./components/EditJobForm.jsx";
+import {EditJobForm} from "./components/index.ts";
 import UserProfile from "./components/UserProfile.jsx";
 import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 import Success from "./pages/Success.jsx";

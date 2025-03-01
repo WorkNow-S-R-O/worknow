@@ -52,5 +52,6 @@
   "payment_cancelled": "Payment cancelled",
   "payment_cancelled_description": "Maybe you accidentally cancelled the payment, try again.",
   "try_again": "Try again",
-  "cancel_subscription": "Cancel subscription"
+  "cancel_subscription": "Cancel subscription",
+  "choose_city": "Choose city"
 }
