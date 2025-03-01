@@ -24,7 +24,7 @@ function generateJobTitle(description) {
             return job.title;
         }
     }
-    return "Общая вакансия"; // Если нет совпадений
+    return "Общая вакансия";
 }
 
 // Очистка старых данных перед загрузкой новых
@@ -60,8 +60,9 @@ async function fetchJobDescriptions() {
                 let title = job.querySelector('.caption .cap')?.innerText.trim() || null;
                 let city = job.querySelector('.hidden-xs a')?.innerText.trim() || 'Не указан';
 
+                // 🔍 Проверяем наличие номера телефона в описании
                 let phoneMatch = description.match(/\+972[-\s]?\d{1,2}[-\s]?\d{3}[-\s]?\d{4,6}/);
-                let phone = phoneMatch ? phoneMatch[0] : null;
+                let phone = phoneMatch ? phoneMatch[0].replace(/\s+/g, '') : null;
 
                 if (!title) {
                     title = "Без названия";
@@ -130,7 +131,7 @@ async function createFakeUsersWithJobs(jobs) {
 
         const clerkUserId = `fake_${faker.string.uuid()}`;
 
-        // Если номера нет — генерируем израильский номер
+        // ✅ Если номер найден в описании, берем его, иначе генерируем случайный
         const phone = job.phone || `+972-${faker.number.int({ min: 50, max: 59 })}-${faker.number.int({ min: 1000000, max: 9999999 })}`;
 
         // Генерация реалистичной зарплаты

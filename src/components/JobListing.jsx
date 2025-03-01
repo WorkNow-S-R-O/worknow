@@ -158,7 +158,7 @@ const JobListing = () => {
             onClick={() => handlePageChange(currentPage - 1)} 
           />
 
-          {totalPages <= 10 ? (
+          {totalPages <= 5 ? (
             [...Array(totalPages).keys()].map((page) => (
               <Pagination.Item 
                 key={page + 1} 

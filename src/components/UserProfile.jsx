@@ -36,7 +36,6 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      console.log('clerkUserId из useParams:', clerkUserId);
       try {
         const userResponse = await axios.get(`http://localhost:3001/api/user/${clerkUserId}`);
         setUser(userResponse.data);
