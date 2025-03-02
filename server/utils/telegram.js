@@ -171,6 +171,3 @@ const sendTelegramMessages = async (messages) => {
     }
   }
 };
-
-
-  console.log('✅ Все сообщения успешно отправлены в Telegram!');
