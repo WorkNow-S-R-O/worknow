@@ -33,6 +33,7 @@ app.use('/:id/boost', boostJob);
 app.use('/api/users', usersRoutes);
 app.use('/webhook', webhookRoutes);
 app.use('/api/users', userSyncRoutes);
+app.use('/api/jobs', jobsRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
@@ -52,30 +53,6 @@ if (!CLERK_SECRET_KEY) {
 }
 
 app.post('/api/payments/cancel-auto-renewal', cancelAutoRenewal);
-
-
-// Получение одного объявления по ID
-app.get('/api/jobs/:id', async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const job = await prisma.job.findUnique({
-      where: { id: parseInt(id) },
-      include: {
-        city: true,
-      },
-    });
-
-    if (!job) {
-      return res.status(404).json({ error: 'Объявление не найдено' });
-    }
-
-    res.status(200).json(job);
-  } catch (error) {
-    console.error('Ошибка получения объявления:', error.message);
-    res.status(500).json({ error: 'Ошибка получения объявления', details: error.message });
-  }
-});
 
 app.get('/api/user/:clerkUserId', async (req, res) => {
   const { clerkUserId } = req.params;
