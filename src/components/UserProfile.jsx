@@ -24,9 +24,9 @@ const UserProfile = () => {
   const fetchJobs = async (page) => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/api/user-jobs/${clerkUserId}?page=${page}&limit=${jobsPerPage}`
+        `http://localhost:3001/api/users/user-jobs/${clerkUserId}?page=${page}&limit=${jobsPerPage}`
       );
-
+      
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -37,7 +37,8 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const userResponse = await axios.get(`http://localhost:3001/api/user/${clerkUserId}`);
+        const userResponse = await axios.get(`http://localhost:3001/api/users/${clerkUserId}`);
+
         setUser(userResponse.data);
 
         await fetchJobs(currentPage);

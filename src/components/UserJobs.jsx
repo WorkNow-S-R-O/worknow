@@ -28,8 +28,9 @@ const UserJobs = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3001/api/user-jobs/${user.id}?page=${currentPage}&limit=5`
+        `http://localhost:3001/api/users/user-jobs/${user.id}?page=${currentPage}&limit=5`
       );
+      
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
     } catch (error) {
