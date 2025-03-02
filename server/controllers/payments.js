@@ -25,7 +25,7 @@ export const createCheckoutSession = async (req, res) => {
       customer_email: user.email, // Теперь email берется из БД
       line_items: [
         {
-          price: 'price_1Qt63NCOLiDbHvw13PRhpenX', // Твой Price ID из Stripe
+          price: 'price_1Qt5J0COLiDbHvw1IQNl90uU', // Твой Price ID из Stripe
           quantity: 1,
         },
       ],

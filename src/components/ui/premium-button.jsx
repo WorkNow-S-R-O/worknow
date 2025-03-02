@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 const PremiumButton = () => {
   const { t } = useTranslation();
   const { user } = useUser();
+  const { redirectToSignIn } = useClerk(); // Функция для редиректа на страницу входа
   const [isPremium, setIsPremium] = useState(false);
   const [isAutoRenewal, setIsAutoRenewal] = useState(true);
 
@@ -28,6 +29,12 @@ const PremiumButton = () => {
   }, [user]);
 
   const handleCheckout = async () => {
+    if (!user) {
+      // Если пользователь не авторизован, перенаправляем его на страницу входа
+      redirectToSignIn();
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:3001/api/payments/create-checkout-session', {
         clerkUserId: user.id,
