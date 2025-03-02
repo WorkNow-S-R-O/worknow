@@ -13,6 +13,8 @@ import usersRoutes from './routes/users.js';
 import webhookRoutes from './routes/webhook.js';
 import userSyncRoutes from './routes/userSync.js';
 import userRoutes from './routes/users.js';
+import { WEBHOOK_SECRET, CLERK_SECRET_KEY } from './config/clerkConfig.js';
+
 
 dotenv.config();
 
@@ -39,8 +41,6 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
 
-const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
-const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
 
 if (!WEBHOOK_SECRET) {
   console.error('❌ Missing Clerk Webhook Secret!');
