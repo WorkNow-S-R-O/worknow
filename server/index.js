@@ -2,7 +2,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { PrismaClient } from '@prisma/client';
 import paymentRoutes from './routes/payments.js';
 import { cancelAutoRenewal } from './controllers/payments.js';
 import './cron-jobs.js';
@@ -13,11 +12,11 @@ import boostJob from './routes/jobs.js';
 import usersRoutes from './routes/users.js';
 import webhookRoutes from './routes/webhook.js';
 import userSyncRoutes from './routes/userSync.js';
+import userRoutes from './routes/users.js';
 
 dotenv.config();
 
 const app = express();
-const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
@@ -34,6 +33,7 @@ app.use('/api/users', usersRoutes);
 app.use('/webhook', webhookRoutes);
 app.use('/api/users', userSyncRoutes);
 app.use('/api/jobs', jobsRoutes);
+app.use('/api/user', userRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
@@ -53,25 +53,3 @@ if (!CLERK_SECRET_KEY) {
 }
 
 app.post('/api/payments/cancel-auto-renewal', cancelAutoRenewal);
-
-app.get('/api/user/:clerkUserId', async (req, res) => {
-  const { clerkUserId } = req.params;
-
-  try {
-    const user = await prisma.user.findUnique({
-      where: { clerkUserId },
-    });
-
-    if (!user) {
-      console.log(`Пользователь с clerkUserId ${clerkUserId} не найден`);
-      return res.status(404).json({ error: 'Пользователь не найден' });
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    console.error('Ошибка получения данных пользователя:', error.message);
-    res.status(500).json({ error: 'Ошибка получения данных пользователя', details: error.message });
-  }
-});
-
-
