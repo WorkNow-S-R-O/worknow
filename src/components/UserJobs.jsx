@@ -90,14 +90,18 @@ const UserJobs = () => {
 
   return (
     <div className="mt-4">
+      <h2 className="text-lg font-bold mb-3 text-center text-primary">
+        {loading ? <Skeleton width={200} height={24} /> : "Мои объявления"}
+      </h2>
+
       {loading ? (
-        <div style={{ minHeight: '700px' }} className="d-flex flex-column justify-content-between">
+        <div className="d-flex flex-column align-items-center">
           {Array.from({ length: 5 }).map((_, index) => (
-            <div key={index} className="card mb-3" style={{ width: '90%', maxWidth: '700px', margin: '0 auto' }}>
+            <div key={index} className="card mb-3 shadow-sm" style={{ width: '90%', maxWidth: '700px', minHeight: '220px' }}>
               <div className="card-body">
-                <Skeleton height={24} width="50%" />
-                <Skeleton height={18} width="80%" className="my-2" />
-                <Skeleton height={18} width="60%" />
+                <Skeleton height={30} width="70%" />
+                <Skeleton height={20} width="90%" className="mt-2" />
+                <Skeleton height={20} width="60%" className="mt-2" />
               </div>
             </div>
           ))}
@@ -106,16 +110,15 @@ const UserJobs = () => {
         <p className="text-center fs-4">У вас пока нет объявлений.</p>
       ) : (
         <div className="d-flex flex-column" style={{ minHeight: '700px' }}>
-          <h2 className="text-lg font-bold mb-3 text-center text-primary">Мои объявления</h2>
           {jobs.map((job) => (
             <div
               key={job.id}
-              className={`card mb-3 position-relative ${job.user?.isPremium ? 'border border-warning' : ''}`}
+              className={`card mb-3 position-relative shadow-sm ${job.user?.isPremium ? 'border border-warning' : ''}`}
               style={{
                 width: '90%',
                 maxWidth: '700px',
                 margin: '0 auto',
-                backgroundColor:  'white',
+                backgroundColor: 'white',
                 borderRadius: '10px',
               }}
             >
@@ -149,6 +152,7 @@ const UserJobs = () => {
           </Pagination>
         </div>
       )}
+
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton><Modal.Title>Подтвердите удаление</Modal.Title></Modal.Header>
         <Modal.Body>Вы точно хотите удалить это объявление? Это действие нельзя отменить.</Modal.Body>
