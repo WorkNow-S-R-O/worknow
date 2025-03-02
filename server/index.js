@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import paymentRoutes from './routes/payments.js';
-import { checkLowRankedJobs } from './cron-jobs.js';
 import { cancelAutoRenewal } from './controllers/payments.js';
 import './cron-jobs.js';
 import jobsRoutes from './routes/jobs.js';
