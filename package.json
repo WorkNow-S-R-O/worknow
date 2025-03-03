@@ -5,8 +5,8 @@
   "type": "module",
   "url": "https://github.com/MostOfLuck/job-listing",
   "scripts": {
+    "start": "vite",
     "dev": "concurrently \"vite\" \"node server/index.js\"",
-    "start": "node server/index.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
