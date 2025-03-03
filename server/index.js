@@ -1,7 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import path from "path";
 import paymentRoutes from "./routes/payments.js";
 import jobsRoutes from "./routes/jobs.js";
 import citiesRoutes from "./routes/cities.js";
@@ -14,7 +13,6 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const __dirname = path.resolve(); // Для корректной работы с путями
 
 // ✅ Настраиваем CORS
 app.use(cors({
@@ -25,9 +23,6 @@ app.use(cors({
 app.use(express.json({
   verify: (req, res, buf) => { req.rawBody = buf.toString(); }
 }));
-
-// ✅ Раздача фронтенда, если он есть
-app.use(express.static(path.join(__dirname, "client/dist")));
 
 app.get("/", (req, res) => {
   res.send("🚀 API Server is running!");
