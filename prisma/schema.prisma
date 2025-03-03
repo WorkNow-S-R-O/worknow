@@ -15,10 +15,10 @@ model User {
   clerkUserId          String    @unique
   firstName            String?
   imageUrl             String?
-  isAutoRenewal        Boolean   @default(true)
-  isPremium            Boolean   @default(false)
   lastName             String?
+  isPremium            Boolean   @default(false)
   premiumEndsAt        DateTime?
+  isAutoRenewal        Boolean   @default(true)
   stripeSubscriptionId String?
   jobs                 Job[]
 }
