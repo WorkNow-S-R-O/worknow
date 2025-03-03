@@ -27,7 +27,7 @@ app.use(express.json({
 }));
 
 // ✅ Раздача фронтенда, если он есть
-app.use(express.static(path.join(__dirname, "client/build")));
+app.use(express.static(path.join(__dirname, "client/dist")));
 
 app.get("/", (req, res) => {
   res.send("🚀 API Server is running!");
