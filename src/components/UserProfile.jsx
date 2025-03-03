@@ -21,10 +21,12 @@ const UserProfile = () => {
 
   const { clerkUserId } = useParams();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchJobs = async (page) => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/api/users/user-jobs/${clerkUserId}?page=${page}&limit=${jobsPerPage}`
+        `${API_URL}/users/user-jobs/${clerkUserId}?page=${page}&limit=${jobsPerPage}`
       );
       
       setJobs(response.data.jobs);

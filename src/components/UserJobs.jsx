@@ -10,6 +10,8 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import 'react-loading-skeleton/dist/skeleton.css';
 
+const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
+
 const UserJobs = () => {
   const { user } = useUser();
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ const UserJobs = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3001/api/users/user-jobs/${user.id}?page=${currentPage}&limit=5`
+        `${API_URL}/users/user-jobs/${user.id}?page=${currentPage}&limit=5`
       );
       
       setJobs(response.data.jobs);
@@ -49,7 +51,7 @@ const UserJobs = () => {
     if (!jobToDelete) return;
 
     try {
-      await axios.delete(`http://localhost:3001/api/jobs/${jobToDelete}`);
+      await axios.delete(`${API_URL}/jobs/${jobToDelete}`);
       toast.success('Объявление удалено!');
       setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobToDelete));
     } catch (error) {
@@ -72,11 +74,11 @@ const UserJobs = () => {
 
   const handleBoost = async (jobId) => {
     try {
-      await axios.post(`http://localhost:3001/api/jobs/${jobId}/boost`);
+      await axios.post(`${API_URL}/jobs/${jobId}/boost`);
       toast.success('Объявление поднято в топ!');
       fetchUserJobs();
     } catch (error) {
-      toast.error(error.response.data.error || 'Ошибка поднятия объявления');
+      toast.error(error.response?.data?.error || 'Ошибка поднятия объявления');
     }
   };
 
@@ -126,7 +128,7 @@ const UserJobs = () => {
                 <h5 className="card-title text-primary">{job.title}</h5>
                 <p className="card-text">
                   <strong>Зарплата в час:</strong> {job.salary}<br />
-                  <strong>Местоположение:</strong> {job.city.name}
+                  <strong>Местоположение:</strong> {job.city?.name || 'Не указано'}
                 </p>
                 <p className="card-text">{job.description}</p>
                 <div className="text-muted">

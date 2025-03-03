@@ -3,6 +3,8 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
+const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
+
 const CityDropdown = ({ selectedCity, onCitySelect }) => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +12,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/cities');
+        const response = await axios.get(`${API_URL}/cities`);
         setCities(response.data);
       } catch (error) {
         console.error('Ошибка загрузки городов:', error);
@@ -38,7 +40,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
           overflowY: 'auto',
         }}
       >
-        <Dropdown.Item onClick={() => onCitySelect('Выбрать город')}>
+        <Dropdown.Item onClick={() => onCitySelect('Все города')}>
           <i className="bi bi-geo-alt me-2"></i> Все города
         </Dropdown.Item>
         {loading ? (
