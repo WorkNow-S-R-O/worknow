@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/jobs';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const fetchJob = async (id) => {
   const response = await axios.get(`${API_URL}/${id}`);
