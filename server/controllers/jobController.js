@@ -1,4 +1,4 @@
-import { getJobByIdService } from "../services/jobService.js";
+import { getJobByIdService } from "../services/getJobById";
 
 export const getJobById = async (req, res) => {
   const { id } = req.params;
