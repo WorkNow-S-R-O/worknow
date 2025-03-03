@@ -4,12 +4,14 @@ const prisma = new PrismaClient();
 
 export const getJobByIdService = async (id) => {
   try {
-    if (!id) {
-      throw new Error("ID вакансии не передан");
+    console.log("ID, который пришел в сервис:", id); // Логируем id
+
+    if (!id || isNaN(id)) {
+      throw new Error("ID вакансии не передан или имеет неверный формат");
     }
 
     const job = await prisma.job.findUnique({
-      where: { id: Number(id) }, // Приводим id к числу
+      where: { id: Number(id) }, // Преобразуем id в число
       include: { city: true },
     });
 
