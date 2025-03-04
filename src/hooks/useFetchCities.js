@@ -11,7 +11,7 @@ const useFetchCities = () => {
   useEffect(() => {
     const loadCities = async () => {
       try {
-        const url = `${API_URL}/api/cities`; // Убедимся, что путь правильный
+        const url = `${API_URL}/cities`; // ✅ Теперь путь корректный
         console.log(`📌 Отправляем запрос на города: ${url}`);
 
         const response = await axios.get(url);

@@ -6,15 +6,9 @@ import { useTranslation } from "react-i18next";
 export const JobFormFields = ({ register, errors, setValue, selectedCityId, cities, loading }) => {
   const { t } = useTranslation();
 
-  // ✅ Логирование перед рендерингом
   console.log("📌 Города в JobFormFields:", cities);
-  console.log("📌 Выбранный город ID:", selectedCityId);
+console.log("📌 Выбранный город ID:", selectedCityId);
 
-  // ✅ Преобразуем список городов в нужный формат [{ value, label }]
-  const cityOptions = cities.map(city => ({
-    value: city.id, // Гарантированно есть `id`
-    label: city.name // Гарантированно есть `name`
-  }));
 
   return (
     <>
@@ -61,8 +55,8 @@ export const JobFormFields = ({ register, errors, setValue, selectedCityId, citi
           <Skeleton height={40} />
         ) : (
           <Select
-            options={cityOptions} // ✅ Используем преобразованные данные
-            value={cityOptions.find(city => city.value === selectedCityId) || null}
+            options={cities}
+            value={cities.find((city) => city.value === selectedCityId) || null}
             onChange={(option) => setValue('cityId', option?.value)}
             placeholder="Выберите город"
             classNamePrefix="react-select"
@@ -117,8 +111,8 @@ JobFormFields.propTypes = {
   selectedCityId: PropTypes.number,
   cities: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired, // Исправлено, теперь используем `id`
-      name: PropTypes.string.isRequired, // Исправлено, теперь используем `name`
+      value: PropTypes.number.isRequired,
+      label: PropTypes.string.isRequired,
     })
   ).isRequired,
   loading: PropTypes.bool.isRequired,
