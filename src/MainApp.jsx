@@ -13,6 +13,7 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import AccessDenied from "./pages/AccessDenied.jsx";
 import {EditJobForm} from "./components/index.ts";
 import UserProfile from "./components/UserProfile.jsx";
+import SupportPage from "./components/SupportPage.jsx";
 import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 import Success from "./pages/Success.jsx";
 import Cancel from "./pages/Cancel.jsx";
@@ -58,7 +59,12 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
   },
   {
-    path: "/success",
+    path: "/support",
+    element: <SupportPage />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/technical_support",
     element: <Success />,
     errorElement: <NotFoundPage />,
   },
