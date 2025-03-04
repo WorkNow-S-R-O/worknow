@@ -29,11 +29,9 @@ const UserJobs = () => {
 
     setLoading(true);
     try {
-      console.log(`📌 Отправляем запрос: ${API_URL}/api/users/user-jobs/${user.id}?page=${currentPage}&limit=5`);
       const response = await axios.get(`${API_URL}/users/user-jobs/${user.id}?page=${currentPage}&limit=5`);
 
       
-      console.log("📌 Полученные объявления:", response.data);
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
     } catch (error) {

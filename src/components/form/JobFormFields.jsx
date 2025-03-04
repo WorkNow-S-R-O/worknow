@@ -6,10 +6,6 @@ import { useTranslation } from "react-i18next";
 export const JobFormFields = ({ register, errors, setValue, selectedCityId, cities, loading }) => {
   const { t } = useTranslation();
 
-  console.log("📌 Города в JobFormFields:", cities);
-console.log("📌 Выбранный город ID:", selectedCityId);
-
-
   return (
     <>
       {/* Название вакансии */}

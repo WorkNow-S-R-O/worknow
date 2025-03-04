@@ -3,8 +3,6 @@ import { getJobByIdService } from "../services/getJobService.js";
 export const getJobById = async (req, res) => {
   const { id } = req.params;
 
-  console.log("ID из запроса:", id); // Логируем ID
-
   if (!id || isNaN(Number(id))) {
     return res.status(400).json({ error: "ID вакансии обязателен и должен быть числом" });
   }

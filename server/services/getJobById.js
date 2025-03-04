@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 export const getJobByIdService = async (id) => {
   try {
-    console.log("ID, который пришел в сервис:", id); // Логируем id
 
     if (!id || isNaN(id)) {
       throw new Error("ID вакансии не передан или имеет неверный формат");

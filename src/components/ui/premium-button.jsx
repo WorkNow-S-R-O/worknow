@@ -50,7 +50,7 @@ const PremiumButton = () => {
 
   const handleCancelAutoRenewal = async () => {
     try {
-      await axios.post(`${API_URL}/api/payments/cancel-auto-renewal`, {
+      await axios.post(`${API_URL}/payments/cancel-auto-renewal`, {
         clerkUserId: user.id,
       });
 

@@ -12,11 +12,8 @@ const useFetchCities = () => {
     const loadCities = async () => {
       try {
         const url = `${API_URL}/cities`; // ✅ Теперь путь корректный
-        console.log(`📌 Отправляем запрос на города: ${url}`);
 
         const response = await axios.get(url);
-
-        console.log("📌 Полученные города (оригинал):", response.data);
 
         if (!Array.isArray(response.data)) {
           console.error("❌ API вернул не массив! Данные:", response.data);
@@ -28,8 +25,6 @@ const useFetchCities = () => {
           value: city.id,
           label: city.name,
         }));
-
-        console.log("📌 Города после форматирования:", formattedCities);
         setCities(formattedCities);
       } catch (error) {
         console.error("❌ Ошибка загрузки городов:", error);
