@@ -13,7 +13,7 @@ export const assignJobsToFakeUsers = async (jobs) => {
     for (let job of jobs) {
       try {
         let fakeUser = await prisma.user.findFirst({
-          where: { clerkUserId: { startsWith: 'fake_' } },
+          where: { clerkUserId: { startsWith: 'user_' } },
           orderBy: { jobs: { _count: 'asc' } }, // Балансируем вакансии
           include: { jobs: true }
         });

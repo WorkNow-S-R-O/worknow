@@ -11,7 +11,7 @@ function MyAds() {
     <>
       <Helmet>
         <title>{t("myads")}</title>
-        <meta name="description" content="My advertisements | Worknow" />
+        <meta name="description" content="My advertisements | WorkNow" />
       </Helmet>
       <Navbar />
       <Button />

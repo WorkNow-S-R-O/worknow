@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useUser } from '@clerk/clerk-react';
 import { useTranslation } from "react-i18next";
 
+const API_URL = import.meta.env.VITE_API_URL; // Используем переменную окружения
+
 const Cancel = () => {
   const { t } = useTranslation();
   const { user } = useUser();
@@ -12,15 +14,15 @@ const Cancel = () => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-        navigate('/');
-      }, 5000);
+      navigate('/');
+    }, 5000);
 
-      return () => clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [navigate]);
 
   const handleCheckout = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/api/payments/create-checkout-session', {
+      const response = await axios.post(`${API_URL}/payments/create-checkout-session`, {
         clerkUserId: user.id,
       });
 

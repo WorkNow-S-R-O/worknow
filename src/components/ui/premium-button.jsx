@@ -5,6 +5,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const PremiumButton = () => {
   const { t } = useTranslation();
   const { user } = useUser();
@@ -17,7 +19,7 @@ const PremiumButton = () => {
       if (!user) return;
 
       try {
-        const response = await axios.get(`http://localhost:3001/api/user/${user.id}`);
+        const response = await axios.get(`${API_URL}/api/user/${user.id}`);
         setIsPremium(response.data.isPremium);
         setIsAutoRenewal(response.data.isAutoRenewal); 
       } catch (error) {
@@ -36,7 +38,7 @@ const PremiumButton = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/payments/create-checkout-session', {
+      const response = await axios.post(`${API_URL}/api/payments/create-checkout-session`, {
         clerkUserId: user.id,
       });
 
@@ -48,7 +50,7 @@ const PremiumButton = () => {
 
   const handleCancelAutoRenewal = async () => {
     try {
-      await axios.post("http://localhost:3001/api/payments/cancel-auto-renewal", {
+      await axios.post(`${API_URL}/api/payments/cancel-auto-renewal`, {
         clerkUserId: user.id,
       });
 

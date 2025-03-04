@@ -11,6 +11,8 @@ import { ru } from 'date-fns/locale';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [jobs, setJobs] = useState([]);
@@ -39,7 +41,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const userResponse = await axios.get(`http://localhost:3001/api/users/${clerkUserId}`);
+        const userResponse = await axios.get(`${API_URL}/api/users/${clerkUserId}`);
 
         setUser(userResponse.data);
 

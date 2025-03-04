@@ -11,7 +11,7 @@ function Home() {
     <div className="flex flex-col min-h-screen">
       <Helmet>
         <title>{t("jobsworknow")}</title>
-        <meta name="description" content="Jobs | Worknow" />
+        <meta name="description" content="Jobs | WorkNow" />
       </Helmet>
       <Navbar />
       <main className="flex-1">

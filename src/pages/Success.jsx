@@ -4,6 +4,8 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@clerk/clerk-react';
 
+const API_URL = import.meta.env.VITE_API_URL; // Используем переменную окружения
+
 const Success = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
@@ -13,7 +15,7 @@ const Success = () => {
   useEffect(() => {
     const activatePremium = async () => {
       try {
-        await axios.post('http://localhost:3001/api/payments/activate-premium', {
+        await axios.post(`${API_URL}/payments/activate-premium`, {
           sessionId,
           clerkUserId: user.id,
         });

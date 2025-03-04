@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { fetchCities } from '../../server/cityService';
+import axios from 'axios';
 import { toast } from 'react-hot-toast';
+
+const API_URL = import.meta.env.VITE_API_URL; // ✅ Используем переменную окружения
 
 const useFetchCities = () => {
   const [cities, setCities] = useState([]);
@@ -9,10 +11,19 @@ const useFetchCities = () => {
   useEffect(() => {
     const loadCities = async () => {
       try {
-        const cityData = await fetchCities();
-        setCities(cityData);
+        const response = await axios.get(`${API_URL}/cities`);
+
+        console.log("📌 Полученные города:", response.data); // ✅ Логируем данные
+
+        if (!Array.isArray(response.data)) {
+          console.error("❌ API вернул не массив:", response.data);
+          setCities([]); // ✅ Предотвращаем ошибки
+          return;
+        }
+
+        setCities(response.data);
       } catch (error) {
-        console.error('Ошибка загрузки городов:', error);
+        console.error('❌ Ошибка загрузки городов:', error);
         toast.error('Не удалось загрузить города!');
       } finally {
         setLoading(false);
