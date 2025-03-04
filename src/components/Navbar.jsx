@@ -12,6 +12,13 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+if (!PUBLISHABLE_KEY || !googleClientId) {
+  console.error("❌ Clerk API Key или Google Client ID не найдены!");
+}
+
 const Navbar = () => {
   const { t, i18n } = useTranslation();
 
