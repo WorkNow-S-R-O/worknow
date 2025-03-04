@@ -173,7 +173,7 @@ const Navbar = () => {
                 </button>
                 <ul className="dropdown-menu" aria-labelledby="mobileSupportDropdown">
                   <li>
-                    <Link to="/rules" className="dropdown-item">
+                    <Link to="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca" className="dropdown-item">
                       {t("rules")}
                     </Link>
                   </li>
