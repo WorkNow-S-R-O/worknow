@@ -53,10 +53,6 @@ const JobForm = ({ onJobCreated }) => {
             cities={cities} 
             loading={loading} 
           />
-
-          <button type="submit" className="btn btn-primary w-full text-white px-4 py-2 rounded">
-            {t('create')}
-          </button>
         </form>
       </div>
     </div>
