@@ -19,7 +19,7 @@ const PremiumButton = () => {
       if (!user) return;
 
       try {
-        const response = await axios.get(`${API_URL}/api/user/${user.id}`);
+        const response = await axios.get(`${API_URL}/user/${user.id}`);
         setIsPremium(response.data.isPremium);
         setIsAutoRenewal(response.data.isAutoRenewal); 
       } catch (error) {
@@ -38,7 +38,7 @@ const PremiumButton = () => {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/api/payments/create-checkout-session`, {
+      const response = await axios.post(`${API_URL}/payments/create-checkout-session`, {
         clerkUserId: user.id,
       });
 
