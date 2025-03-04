@@ -23,8 +23,6 @@ const UserProfile = () => {
 
   const { clerkUserId } = useParams();
 
-  const API_URL = import.meta.env.VITE_API_URL;
-
   const fetchJobs = async (page) => {
     try {
       const response = await axios.get(
