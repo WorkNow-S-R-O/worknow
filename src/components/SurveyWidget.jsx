@@ -2,21 +2,18 @@ import { useEffect } from "react";
 
 const SurveyWidget = () => {
   useEffect(() => {
-    (function (t, e, s, n) {
-      var o, a, c;
-      t.SMCX = t.SMCX || [];
-      if (!e.getElementById(n)) {
-        o = e.getElementsByTagName(s);
-        a = o[o.length - 1];
-        c = e.createElement(s);
-        c.type = "text/javascript";
-        c.async = true;
-        c.id = n;
-        c.src =
-          "https://widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgdyU2pqpYZCI3tEdSFY4EGCkJzpvUWeYwN5mmOILR_2BapO.js";
-        a.parentNode.insertBefore(c, a);
-      }
-    })(window, document, "script", "smcx-sdk");
+    const scriptId = "smcx-sdk";
+
+    // Проверяем, не загружен ли уже скрипт
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.async = true;
+      script.id = scriptId;
+      script.src =
+        "https://widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgdyU2pqpYZCI3tEdSFY4EGCkJzpvUWeYwN5mmOILR_2BapO.js";
+      document.body.appendChild(script);
+    }
   }, []);
 
   return (
@@ -28,14 +25,7 @@ const SurveyWidget = () => {
         <p className="text-gray-600 mb-4">
           Ваше мнение важно для нас. Пройдите короткий опрос.
         </p>
-        <a
-          href="https://ru.surveymonkey.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 text-lg font-medium hover:underline"
-        >
-          Составьте собственный опрос для сбора отзывов пользователей
-        </a>
+        <div id="smcx-survey-container" className="w-full mt-4"></div>
       </div>
     </div>
   );
