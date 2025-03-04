@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
 
 const CityDropdown = ({ selectedCity, onCitySelect }) => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // ✅ Используем навигацию
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -24,11 +26,20 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
     fetchCities();
   }, []);
 
+  const handleCitySelect = (cityName) => {
+    if (cityName === 'Все города') {
+      navigate('/'); // ✅ Перенаправляем на главную
+      onCitySelect(null); // ✅ Сбрасываем фильтр
+    } else {
+      onCitySelect(cityName);
+    }
+  };
+
   return (
     <DropdownButton
       title={
         <>
-          <i className="bi bi-geo-alt me-2"></i> {selectedCity}
+          <i className="bi bi-geo-alt me-2"></i> {selectedCity || 'Выберите город'}
         </>
       }
       variant="outline-primary"
@@ -40,7 +51,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
           overflowY: 'auto',
         }}
       >
-        <Dropdown.Item onClick={() => onCitySelect('Все города')}>
+        <Dropdown.Item onClick={() => handleCitySelect('Все города')}>
           <i className="bi bi-geo-alt me-2"></i> Все города
         </Dropdown.Item>
         {loading ? (
@@ -49,7 +60,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
           cities.map((city) => (
             <Dropdown.Item
               key={city.id}
-              onClick={() => onCitySelect(city.name)}
+              onClick={() => handleCitySelect(city.name)}
             >
               <i className="bi bi-geo-alt me-2"></i> {city.name}
             </Dropdown.Item>
@@ -61,7 +72,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
 };
 
 CityDropdown.propTypes = {
-  selectedCity: PropTypes.string.isRequired,
+  selectedCity: PropTypes.string,
   onCitySelect: PropTypes.func.isRequired,
 };
 
