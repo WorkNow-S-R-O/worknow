@@ -64,7 +64,7 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
   },
   {
-    path: "/technical_support",
+    path: "/success",
     element: <Success />,
     errorElement: <NotFoundPage />,
   },

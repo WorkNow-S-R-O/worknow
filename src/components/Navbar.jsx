@@ -79,7 +79,7 @@ const Navbar = () => {
 
                 </li>
                 <li>
-                  <Link to="/technical-support" className="dropdown-item">
+                  <Link to="/support" className="dropdown-item">
                     {t("technical_support")}
                   </Link>
                 </li>
@@ -190,7 +190,7 @@ const Navbar = () => {
 
                   </li>
                   <li>
-                    <Link to="/technical-support" className="dropdown-item">
+                    <Link to="/support" className="dropdown-item">
                       {t("technical_support")}
                     </Link>
                   </li>
