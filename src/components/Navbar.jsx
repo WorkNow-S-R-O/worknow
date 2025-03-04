@@ -68,9 +68,15 @@ const Navbar = () => {
               </button>
               <ul id="supportDropdown" className="dropdown-menu mt-3 text-gray-600 " aria-labelledby="supportDropdown">
                 <li>
-                  <Link to="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca" className="dropdown-item text-gray-600">
-                    {t("rules")}
-                  </Link>
+                <a 
+  href="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca" 
+  className="dropdown-item" 
+  target="_blank" 
+  rel="noopener noreferrer"
+>
+  {t("rules")}
+</a>
+
                 </li>
                 <li>
                   <Link to="/technical-support" className="dropdown-item">
@@ -173,9 +179,15 @@ const Navbar = () => {
                 </button>
                 <ul className="dropdown-menu" aria-labelledby="mobileSupportDropdown">
                   <li>
-                    <Link to="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca" className="dropdown-item">
-                      {t("rules")}
-                    </Link>
+                  <a 
+  href="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca" 
+  className="dropdown-item" 
+  target="_blank" 
+  rel="noopener noreferrer"
+>
+  {t("rules")}
+</a>
+
                   </li>
                   <li>
                     <Link to="/technical-support" className="dropdown-item">
