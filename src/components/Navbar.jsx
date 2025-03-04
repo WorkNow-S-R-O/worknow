@@ -68,7 +68,7 @@ const Navbar = () => {
               </button>
               <ul id="supportDropdown" className="dropdown-menu mt-3 text-gray-600 " aria-labelledby="supportDropdown">
                 <li>
-                  <Link to="/rules" className="dropdown-item text-gray-600">
+                  <Link to="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca" className="dropdown-item text-gray-600">
                     {t("rules")}
                   </Link>
                 </li>
