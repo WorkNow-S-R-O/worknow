@@ -4,6 +4,9 @@ import { sendTelegramNotification } from '../utils/telegram.js';
 
 const prisma = new PrismaClient();
 
+// ✅ URL для продакшена
+const FRONTEND_URL = process.env.FRONTEND_URL || "https://worknowjob.com";
+
 export const createCheckoutSession = async (req, res) => {
   const { clerkUserId } = req.body;
 
@@ -18,25 +21,29 @@ export const createCheckoutSession = async (req, res) => {
       return res.status(404).json({ error: 'Пользователь не найден или отсутствует email' });
     }
 
+    // ✅ Формируем ссылки для продакшена
+    const successUrl = `${FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${FRONTEND_URL}/cancel`;
+
     // 🔹 Создаем Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'subscription',
-      customer_email: user.email, // Теперь email берется из БД
+      customer_email: user.email,
       line_items: [
         {
           price: 'price_1Qt5J0COLiDbHvw1IQNl90uU', // Твой Price ID из Stripe
           quantity: 1,
         },
       ],
-      success_url: 'http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',
-      cancel_url: 'http://localhost:3000/cancel',
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: { clerkUserId },
     });
 
     res.json({ url: session.url });
   } catch (error) {
-    console.error('Ошибка при создании Checkout Session:', error);
+    console.error('❌ Ошибка при создании Checkout Session:', error);
     res.status(500).json({ error: 'Ошибка при создании сессии' });
   }
 };
@@ -73,7 +80,6 @@ export const activatePremium = async (req, res) => {
     res.status(500).json({ error: 'Ошибка активации премиума' });
   }
 };
-
 
 export const cancelAutoRenewal = async (req, res) => {
   console.log("🔹 [DEBUG] Запрос на отмену автопродления получен:", req.body);
@@ -117,4 +123,3 @@ export const cancelAutoRenewal = async (req, res) => {
     res.status(500).json({ error: 'Ошибка при отключении автообновления' });
   }
 };
-
