@@ -4,12 +4,12 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
+const API_URL = import.meta.env.VITE_API_URL;
 
 const CityDropdown = ({ selectedCity, onCitySelect }) => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // ✅ Используем навигацию
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -28,8 +28,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
 
   const handleCitySelect = (cityName) => {
     if (cityName === 'Все города') {
-      navigate('/'); // ✅ Перенаправляем на главную
-      onCitySelect(null); // ✅ Сбрасываем фильтр
+      navigate('/'); // ❗ Перенаправляем на главную без фильтра
     } else {
       onCitySelect(cityName);
     }
@@ -39,18 +38,13 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
     <DropdownButton
       title={
         <>
-          <i className="bi bi-geo-alt me-2"></i> {selectedCity || 'Выберите город'}
+          <i className="bi bi-geo-alt me-2"></i> {selectedCity}
         </>
       }
       variant="outline-primary"
       className="mb-3"
     >
-      <div
-        style={{
-          maxHeight: '200px', // ~5 строк (можно настроить)
-          overflowY: 'auto',
-        }}
-      >
+      <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
         <Dropdown.Item onClick={() => handleCitySelect('Все города')}>
           <i className="bi bi-geo-alt me-2"></i> Все города
         </Dropdown.Item>
@@ -58,10 +52,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
           <Dropdown.Item disabled>Загрузка...</Dropdown.Item>
         ) : (
           cities.map((city) => (
-            <Dropdown.Item
-              key={city.id}
-              onClick={() => handleCitySelect(city.name)}
-            >
+            <Dropdown.Item key={city.id} onClick={() => onCitySelect(city.name)}>
               <i className="bi bi-geo-alt me-2"></i> {city.name}
             </Dropdown.Item>
           ))
@@ -72,7 +63,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
 };
 
 CityDropdown.propTypes = {
-  selectedCity: PropTypes.string,
+  selectedCity: PropTypes.string.isRequired,
   onCitySelect: PropTypes.func.isRequired,
 };
 
