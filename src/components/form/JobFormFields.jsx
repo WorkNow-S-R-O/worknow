@@ -2,9 +2,11 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 import Skeleton from 'react-loading-skeleton';
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 export const JobFormFields = ({ register, errors, setValue, selectedCityId, cities, loading }) => {
   const { t } = useTranslation();
+  const [isAgreed, setIsAgreed] = useState(false);
 
   return (
     <>
@@ -95,6 +97,39 @@ export const JobFormFields = ({ register, errors, setValue, selectedCityId, citi
         />
         {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
       </div>
+
+      {/* Чекбокс "Согласие с пользовательским соглашением" */}
+      <div className="mb-4 flex items-center">
+        <input
+          type="checkbox"
+          id="terms"
+          className="mr-2 w-4 h-4"
+          checked={isAgreed}
+          onChange={() => setIsAgreed(!isAgreed)}
+        />
+        <label htmlFor="terms" className="text-gray-700 text-sm">
+          Я согласен с{" "}
+          <a
+            href="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            пользовательским соглашением
+          </a>
+        </label>
+      </div>
+
+      {/* Кнопка отправки */}
+      <button
+        type="submit"
+        className={`btn btn-primary w-full text-white px-4 py-2 rounded ${
+          !isAgreed ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={!isAgreed}
+      >
+        {t('create')}
+      </button>
     </>
   );
 };
