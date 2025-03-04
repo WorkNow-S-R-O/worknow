@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { batch } from "react-hook-form";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -31,13 +30,13 @@ const useFetchJob = (id, setValue) => {
           return;
         }
 
-        batch(() => {
-          setValue("title", job.title);
-          setValue("salary", job.salary);
-          setValue("cityId", job.city ? job.city.id : null);
-          setValue("phone", job.phone);
-          setValue("description", job.description);
-        });
+        // ✅ Вместо `batch()` просто вызываем `setValue` последовательно
+        setValue("title", job.title);
+        setValue("salary", job.salary);
+        setValue("cityId", job.city ? job.city.id : null);
+        setValue("phone", job.phone);
+        setValue("description", job.description);
+
       } catch (error) {
         console.error("❌ Ошибка загрузки объявления:", error);
         toast.error("Ошибка загрузки объявления");
