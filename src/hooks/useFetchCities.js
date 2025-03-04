@@ -11,17 +11,19 @@ const useFetchCities = () => {
   useEffect(() => {
     const loadCities = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/cities`);
+        const url = `${API_URL}/api/cities`; // Убедимся, что путь правильный
+        console.log(`📌 Отправляем запрос на города: ${url}`);
+
+        const response = await axios.get(url);
 
         console.log("📌 Полученные города (оригинал):", response.data);
 
         if (!Array.isArray(response.data)) {
-          console.error("❌ API вернул не массив:", response.data);
+          console.error("❌ API вернул не массив! Данные:", response.data);
           setCities([]);
           return;
         }
 
-        // Преобразуем города в нужный формат
         const formattedCities = response.data.map((city) => ({
           value: city.id,
           label: city.name,
@@ -30,8 +32,8 @@ const useFetchCities = () => {
         console.log("📌 Города после форматирования:", formattedCities);
         setCities(formattedCities);
       } catch (error) {
-        console.error('❌ Ошибка загрузки городов:', error);
-        toast.error('Не удалось загрузить города!');
+        console.error("❌ Ошибка загрузки городов:", error);
+        toast.error("Не удалось загрузить города!");
       } finally {
         setLoading(false);
       }
