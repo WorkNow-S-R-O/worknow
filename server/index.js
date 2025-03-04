@@ -54,7 +54,6 @@ const __dirname = path.dirname(__filename);
 // Раздача статических файлов фронта
 app.use(express.static(path.join(__dirname, "../dist")));
 
-app.use('/api/jobs', jobsRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/cities', citiesRoutes);
 app.use('/:id/boost', boostJob);
