@@ -11,20 +11,23 @@ const useFetchCities = () => {
   useEffect(() => {
     const loadCities = async () => {
       try {
+        console.log(`📌 Отправляем запрос: ${API_URL}/cities`);
         const response = await axios.get(`${API_URL}/cities`);
 
-        console.log("📌 Полученные города:", response.data); // ✅ Логируем данные
+        console.log("📌 Статус ответа:", response.status);
+        console.log("📌 Данные ответа:", response.data);
 
-        if (!Array.isArray(response.data)) {
-          console.error("❌ API вернул не массив:", response.data);
-          setCities([]); // ✅ Предотвращаем ошибки
+        if (!response.data || !Array.isArray(response.data)) {
+          console.error("❌ API вернул некорректные данные:", response.data);
+          setCities([]);
           return;
         }
 
+        console.log("✅ Города успешно загружены:", response.data);
         setCities(response.data);
       } catch (error) {
-        console.error('❌ Ошибка загрузки городов:', error);
-        toast.error('Не удалось загрузить города!');
+        console.error("❌ Ошибка при загрузке городов:", error.response?.data || error.message);
+        toast.error("Не удалось загрузить города!");
       } finally {
         setLoading(false);
       }
