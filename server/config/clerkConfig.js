@@ -2,6 +2,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+console.log("WEBHOOK_SECRET:", process.env.CLERK_WEBHOOK_SECRET);
+console.log("CLERK_SECRET_KEY:", process.env.CLERK_SECRET_KEY);
+
 const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
 
