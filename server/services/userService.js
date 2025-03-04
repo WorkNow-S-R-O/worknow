@@ -52,27 +52,50 @@ export const getUserByClerkIdService = async (clerkUserId) => {
 };
 
 export const getUserJobsService = async (clerkUserId, query) => {
+  console.log("📌 ClerkUserID из запроса:", clerkUserId);
+
   const { page = 1, limit = 5 } = query;
   const pageInt = parseInt(page);
   const limitInt = parseInt(limit);
   const skip = (pageInt - 1) * limitInt;
 
   try {
-    const user = await prisma.user.findUnique({ where: { clerkUserId } });
-    if (!user) return { error: 'Пользователь не найден' };
+    let user = await prisma.user.findUnique({ where: { clerkUserId } });
+
+    if (!user) {
+      console.log("⚠️ Пользователь не найден в базе. Пробуем синхронизировать...");
+      const syncResult = await syncUserService(clerkUserId);
+      if (syncResult.error) {
+        return { error: "Ошибка синхронизации пользователя", details: syncResult.error };
+      }
+      user = syncResult.user;
+      console.log("✅ Пользователь успешно синхронизирован:", user);
+    }
+
+    console.log("📌 Загружаем объявления для пользователя:", user.id);
+    
     const jobs = await prisma.job.findMany({
       where: { userId: user.id },
       include: { city: true, user: true },
       skip,
       take: limitInt,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
+
     const totalJobs = await prisma.job.count({ where: { userId: user.id } });
-    return { jobs, totalJobs, totalPages: Math.ceil(totalJobs / limitInt), currentPage: pageInt };
+
+    return {
+      jobs,
+      totalJobs,
+      totalPages: Math.ceil(totalJobs / limitInt),
+      currentPage: pageInt,
+    };
   } catch (error) {
-    return { error: 'Ошибка получения объявлений пользователя', details: error.message };
+    console.error("❌ Ошибка получения объявлений пользователя:", error);
+    return { error: "Ошибка сервера", details: error.message };
   }
 };
+
 
 // Обработка Clerk Webhook
 export const handleClerkWebhookService = async (req) => {

@@ -39,17 +39,27 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const userResponse = await axios.get(`${API_URL}/api/users/${clerkUserId}`);
-
-        setUser(userResponse.data);
-
+        console.log("🔍 Загружаем профиль пользователя:", clerkUserId);
+    
+        const userResponse = await axios.get(`${API_URL}/users/${clerkUserId}`);
+        console.log("✅ Данные профиля:", userResponse.data);
+    
+        if (!userResponse.data || !userResponse.data.firstName) {
+          console.warn("⚠️ Пользователь не найден или данные профиля пустые!");
+          setUser(null);
+        } else {
+          setUser(userResponse.data);
+        }
+    
         await fetchJobs(currentPage);
       } catch (error) {
-        console.error('Ошибка загрузки данных профиля:', error);
+        console.error("❌ Ошибка загрузки данных профиля:", error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
+    
 
     fetchProfileData();
   }, [clerkUserId, currentPage]);
@@ -136,17 +146,18 @@ SkeletonLoader.propTypes = {
 const UserHeader = ({ user }) => (
   <div className="d-flex flex-column align-items-center mb-4">
     <img
-      src={user.imageUrl}
+      src={user.imageUrl || "/images/default-avatar.png"}
       alt="User Avatar"
       className="rounded-circle mb-3"
-      style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+      style={{ width: "100px", height: "100px", objectFit: "cover" }}
     />
     <div>
-      <h2>{user.firstName || 'Без имени'} {user.lastName || ''}</h2>
-      <p className="text-muted">{user.email}</p>
+      <h2>{user.firstName ? `${user.firstName} ${user.lastName || ""}` : "Анонимный пользователь"}</h2>
+      <p className="text-muted">{user.email || "Email не указан"}</p>
     </div>
   </div>
 );
+
 
 UserHeader.propTypes = {
   user: PropTypes.shape({

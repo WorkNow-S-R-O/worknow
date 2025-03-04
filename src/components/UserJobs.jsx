@@ -29,19 +29,22 @@ const UserJobs = () => {
 
     setLoading(true);
     try {
+      console.log(`📌 Отправляем запрос: ${API_URL}/api/users/user-jobs/${user.id}?page=${currentPage}&limit=5`);
       const response = await axios.get(
-        `${API_URL}/users/user-jobs/${user.id}?page=${currentPage}&limit=5`
+        `${API_URL}/api/users/user-jobs/${user.id}?page=${currentPage}&limit=5`
       );
       
+      console.log("📌 Полученные объявления:", response.data);
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.error('Ошибка загрузки объявлений пользователя:', error);
-      toast.error('Ошибка загрузки ваших объявлений!');
+      console.error("❌ Ошибка загрузки объявлений пользователя:", error.response?.data || error.message);
+      toast.error("Ошибка загрузки ваших объявлений!");
     } finally {
       setLoading(false);
     }
-  };
+};
+
 
   useEffect(() => {
     fetchUserJobs();
