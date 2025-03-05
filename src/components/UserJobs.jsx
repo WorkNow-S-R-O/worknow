@@ -135,7 +135,7 @@ const UserJobs = () => {
                 <p className="card-text">{job.description}</p>
                 <div className="text-muted">
                   <small>
-                    <span className="d-none d-sm-inline">{t("created_at")}</span>
+                    <span className="d-none d-sm-inline">{t("created_at") }</span>
                     {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
                   </small>
                 </div>
