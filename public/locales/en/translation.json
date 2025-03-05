@@ -68,5 +68,10 @@
   "choose_city_dashboard": "Choose city",
   "user_not_found": "User not found",
   "user_jobs": "User jobs:",
-  "user_no_jobs": "User hasn't posted jobs yet."
+  "user_no_jobs": "User hasn't posted jobs yet.",
+  "latest_jobs": "Latest jobs",
+  "jobs_in": "Jobs in",
+  "find_jobs_in": "Find jobs in",
+  "job_search_platform": "Job search platform",
+  "new_vacancies_from_employers": "New vacancies from employers"
 }

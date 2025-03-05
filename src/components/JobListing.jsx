@@ -23,8 +23,8 @@ const JobListing = () => {
 
   // Генерация SEO-friendly заголовка
   const pageTitle = selectedCity !== t('choose_city_dashboard')
-    ? `${t('jobs_in')} ${selectedCity} - Worknow`
-    : `${t('latest_jobs')} | Worknow`;
+    ? `${t('jobs_in')} ${selectedCity} - WorkNow`
+    : `${t('latest_jobs')} | WorkNow`;
 
   // Генерация динамического описания страницы
   const pageDescription = selectedCity !== t('choose_city_dashboard')
