@@ -65,5 +65,8 @@
   "cancel": "Cancel",
   "delete": "Delete",
   "email_support": "Write to us:",
-  "choose_city_dashboard": "Choose city"
+  "choose_city_dashboard": "Choose city",
+  "user_not_found": "User not found",
+  "user_jobs": "User jobs:",
+  "user_no_jobs": "User hasn't posted jobs yet."
 }

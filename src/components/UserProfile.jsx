@@ -15,6 +15,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const UserProfile = () => {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,13 +80,13 @@ const UserProfile = () => {
         {loading ? (
           <SkeletonLoader jobsPerPage={jobsPerPage} />
         ) : !user ? (
-          <p>Пользователь не найден</p>
+          <p>{t("user_not_found")}</p>
         ) : (
           <>
             <UserHeader user={user} />
-            <h4 className="text-primary">Объявления пользователя:</h4>
+            <h4 className="text-primary">{t("user_jobs")}</h4>
             {jobs.length === 0 ? (
-              <p>Пользователь пока не разместил объявлений.</p>
+              <p>{t("user_no_jobs")}</p>
             ) : (
               <>
                 {jobs.map((job) => (
