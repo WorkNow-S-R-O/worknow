@@ -8,6 +8,7 @@ import { Pagination } from 'react-bootstrap';
 import Skeleton from 'react-loading-skeleton';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { useTranslation } from "react-i18next";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -22,6 +23,7 @@ const UserProfile = () => {
   const jobsPerPage = 5;
 
   const { clerkUserId } = useParams();
+  
 
   const fetchJobs = async (page) => {
     try {
@@ -169,44 +171,48 @@ UserHeader.propTypes = {
 };
 
 // Компонент карточки вакансии
-const JobCard = ({ job }) => (
-  <div
-    className={`card shadow-sm mb-4 position-relative w-75 text-start ${
-      job.user?.isPremium ? 'border border-warning premium-glow' : ''
-    }`}
-    style={{
-      backgroundColor: 'white',
-      borderRadius: '10px',
-      maxWidth: '700px',
-      minHeight: '220px',
-      height: 'auto',
-      display: 'flex',
-      flexDirection: 'column',
-      position: 'relative',
-      boxShadow: job.user?.isPremium
-        ? '0px 0px 15px 5px rgba(255, 215, 0, 0.7)'
-        : 'none',
-    }}
-  >
-    <div className="card-body">
-      <h5 className="card-title text-primary">{job.title}</h5>
-      <p className="card-text">
-        <strong>Зарплата в час:</strong> {job.salary}
-        <br />
-        <strong>Местоположение:</strong> {job.city.name}
-      </p>
-      <p className="card-text">{job.description}</p>
-      <p className="card-text">
-        <strong>Телефон:</strong> {job.phone}
-      </p>
-      <div className="card-text text-muted">
-        <small>
-          Дата создания: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
-        </small>
+const JobCard = ({ job }) => {
+  const { t } = useTranslation(); // Вызов внутри компонента
+
+  return (
+    <div
+      className={`card shadow-sm mb-4 position-relative w-75 text-start ${
+        job.user?.isPremium ? 'border border-warning premium-glow' : ''
+      }`}
+      style={{
+        backgroundColor: 'white',
+        borderRadius: '10px',
+        maxWidth: '700px',
+        minHeight: '220px',
+        height: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        boxShadow: job.user?.isPremium
+          ? '0px 0px 15px 5px rgba(255, 215, 0, 0.7)'
+          : 'none',
+      }}
+    >
+      <div className="card-body">
+        <h5 className="card-title text-primary">{job.title}</h5>
+        <p className="card-text">
+          <strong>{t("salary_per_hour_card")}</strong> {job.salary}
+          <br />
+          <strong>{t("location_card")}</strong> {job.city.name}
+        </p>
+        <p className="card-text">{job.description}</p>
+        <p className="card-text">
+          <strong>{t("phone_number_card")}</strong> {job.phone}
+        </p>
+        <div className="card-text text-muted">
+          <small>
+            {t("created_at")}: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
+          </small>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 JobCard.propTypes = {
   job: PropTypes.shape({

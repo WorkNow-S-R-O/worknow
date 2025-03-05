@@ -1,7 +1,9 @@
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
+import { useTranslation } from "react-i18next";
 
 const SupportPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Навигационная панель */}
@@ -11,7 +13,7 @@ const SupportPage = () => {
       <div className="flex-grow flex items-center justify-center p-4">
         <div className="bg-white shadow-lg rounded-lg p-6 text-center">
           <h2 className="text-lg font-semibold text-gray-700 mb-3">
-            По всем вопросам писать на почту:
+            {t("email_support")}
           </h2>
           <a
             href="mailto:worknow.notifications@gmail.com"

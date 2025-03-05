@@ -50,5 +50,17 @@
   "payment_cancelled_description": "Возможно вы случайно отменили оплату, попробуйте еще раз.",
   "try_again": "Попробовать еще раз",
   "cancel_subscription": "Отменить подписку",
-  "choose_city": "Выберите город"
+  "choose_city": "Выберите город",
+  "salary_per_hour_card": "Зарплата в час:",
+  "location_card": "Местоположение:",
+  "phone_number_card": "Номер телефона:",
+  "created_at": "Дата создания:",
+  "sign_in_to_view": "Пожалуйста, войдите, чтобы увидеть ваши объявления.",
+  "you_dont_have_ads": "У вас пока нет объявлений.",
+  "confirm_delete": "Подтвердите удаление",
+  "confirm_delete_text": "Вы точно хотите удалить это объявление? Это действие нельзя отменить.",
+  "cancel": "Отмена",
+  "delete": "Удалить",
+  "email_support": "По всем вопросам писать на почту:",
+  "choose_city_dashboard": "Выбрать город"
 }

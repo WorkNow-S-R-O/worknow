@@ -2,8 +2,11 @@ import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
+
 
 const JobCard = ({ job }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleAvatarClick = () => {
@@ -29,17 +32,17 @@ const JobCard = ({ job }) => {
       <div className="card-body">
         <h5 className="card-title text-primary">{job.title}</h5>
         <p className="card-text">
-          <strong>Зарплата в час:</strong> {job.salary || 'Не указано'}
+          <strong>{t("salary_per_hour_card")}</strong> {job.salary || 'Не указано'}
           <br />
-          <strong>Местоположение:</strong> {job.city?.name || 'Не указано'}
+          <strong>{t("location_card")}</strong> {job.city?.name || 'Не указано'}
         </p>
         <p className="card-text">{job.description || 'Описание отсутствует'}</p>
         <p className="card-text">
-          <strong>Телефон:</strong> {job.phone || 'Не указан'}
+          <strong>{t("phone_number_card")}</strong> {job.phone || 'Не указан'}
         </p>
         <div className="card-text text-muted">
           <small>
-            Дата создания:{' '}
+            {t("created_at")}{' '}
             {job.createdAt
               ? format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })
               : 'Неизвестно'}

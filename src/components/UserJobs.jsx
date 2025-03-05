@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Trash, PencilSquare, SortUp } from 'react-bootstrap-icons';
 import Skeleton from 'react-loading-skeleton';
+import { useTranslation } from "react-i18next";
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -13,6 +14,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
 
 const UserJobs = () => {
+  const { t } = useTranslation();
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -87,7 +89,7 @@ const UserJobs = () => {
   };
 
   if (!user) {
-    return <p className='text-center'>Пожалуйста, войдите, чтобы увидеть ваши объявления.</p>;
+    return <p className='text-center'>{t("sing_in_to_view")}</p>;
   }
 
   return (
@@ -109,7 +111,7 @@ const UserJobs = () => {
           ))}
         </div>
       ) : jobs.length === 0 ? (
-        <p className="text-center fs-4">У вас пока нет объявлений.</p>
+        <p className="text-center fs-4">{t("you_dont_have_ads")}</p>
       ) : (
         <div className="d-flex flex-column" style={{ minHeight: '700px' }}>
           {jobs.map((job) => (
@@ -127,13 +129,13 @@ const UserJobs = () => {
               <div className="card-body">
                 <h5 className="card-title text-primary">{job.title}</h5>
                 <p className="card-text">
-                  <strong>Зарплата в час:</strong> {job.salary}<br />
-                  <strong>Местоположение:</strong> {job.city?.name || 'Не указано'}
+                  <strong>{t("salary_per_hour_card")}</strong> {job.salary}<br />
+                  <strong>{t("location_card")}</strong> {job.city?.name || 'Не указано'}
                 </p>
                 <p className="card-text">{job.description}</p>
                 <div className="text-muted">
                   <small>
-                    <span className="d-none d-sm-inline">Дата создания: </span>
+                    <span className="d-none d-sm-inline">{t("created_at")}</span>
                     {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
                   </small>
                 </div>
@@ -156,11 +158,11 @@ const UserJobs = () => {
       )}
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton><Modal.Title>Подтвердите удаление</Modal.Title></Modal.Header>
-        <Modal.Body>Вы точно хотите удалить это объявление? Это действие нельзя отменить.</Modal.Body>
+        <Modal.Header closeButton><Modal.Title>{t("confirm_delete")}</Modal.Title></Modal.Header>
+        <Modal.Body>{t("confirm_delete_text")}</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>Отмена</Button>
-          <Button variant="danger" onClick={handleDelete}>Удалить</Button>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>{t("cancel")}</Button>
+          <Button variant="danger" onClick={handleDelete}>{t("delete")}</Button>
         </Modal.Footer>
       </Modal>
     </div>

@@ -53,5 +53,17 @@
   "payment_cancelled_description": "Maybe you accidentally cancelled the payment, try again.",
   "try_again": "Try again",
   "cancel_subscription": "Cancel subscription",
-  "choose_city": "Choose city"
+  "choose_city": "Choose city",
+  "salary_per_hour_card": "Salary per hour:",
+  "location_card": "Location:",
+  "phone_number_card": "Phone number:",
+  "created_at": "Created at:",
+  "sign_in_to_view": "Please sign in to view your ads.",
+  "you_dont_have_ads": "You don't have ads yet.",
+  "confirm_delete": "Confirm deletion",
+  "confirm_delete_text": "Are you sure you want to delete this ad? This action cannot be undone.",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "email_support": "Write to us:",
+  "choose_city_dashboard": "Choose city"
 }
