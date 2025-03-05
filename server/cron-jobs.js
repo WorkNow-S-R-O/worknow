@@ -68,7 +68,7 @@ const checkLowRankedJobs = async () => {
         from: `"Worknow Notifications" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: 'Ваши объявления опустились вниз',
-        text: `Здравствуйте!\n\nВаши объявления опустились на страницу ${minPage} или ниже:\n\n${jobTitles}\n\nРекомендуем поднять их, чтобы привлечь больше откликов.\n\nС уважением, Команда Worknow.`,
+        text: `Здравствуйте!\n\nВаши объявления опустились на страницу ${minPage} или ниже:\n\n${jobTitles}\n\nРекомендуем поднять их, чтобы привлечь больше откликов.\n\nПоднимите объявления здесь: https://worknowjob.com/my-advertisements\n\nС уважением, Команда Worknow.`,
       };
 
       await transporter.sendMail(mailOptions);
