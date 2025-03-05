@@ -83,11 +83,6 @@ const Navbar = () => {
                     {t("technical_support")}
                   </Link>
                 </li>
-                <li>
-                  <Link to="/survey" className="dropdown-item">
-                    {t("survey")}
-                  </Link>
-                </li>
               </ul>
             </li>
           </ul>
@@ -192,11 +187,6 @@ const Navbar = () => {
                   <li>
                     <Link to="/support" className="dropdown-item">
                       {t("technical_support")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/survey" className="dropdown-item">
-                      {t("survey")}
                     </Link>
                   </li>
                 </ul>
