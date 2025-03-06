@@ -57,7 +57,7 @@
   "salary_per_hour_card": "Salary per hour:",
   "location_card": "Location:",
   "phone_number_card": "Phone number:",
-  "created_at": "Created at:",
+  "created_at": "Created at",
   "sign_in_to_view": "Please sign in to view your ads.",
   "you_dont_have_ads": "You don't have ads yet.",
   "confirm_delete": "Confirm deletion",
@@ -81,4 +81,5 @@
   "edit_page_description": "Edit advertisement",
   "edit_page_default_description": "Edit job",
   "find_latest_jobs": "Find latest jobs"
+  
 }

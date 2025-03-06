@@ -54,7 +54,7 @@
   "salary_per_hour_card": "Зарплата в час:",
   "location_card": "Местоположение:",
   "phone_number_card": "Номер телефона:",
-  "created_at": "Дата создания:",
+  "created_at": "Дата создания",
   "sign_in_to_view": "Пожалуйста, войдите, чтобы увидеть ваши объявления.",
   "you_dont_have_ads": "У вас пока нет объявлений.",
   "confirm_delete": "Подтвердите удаление",
