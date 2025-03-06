@@ -73,5 +73,8 @@
   "jobs_in": "Jobs in",
   "find_jobs_in": "Find jobs in",
   "job_search_platform": "Job search platform",
-  "new_vacancies_from_employers": "New vacancies from employers"
+  "new_vacancies_from_employers": "New vacancies from employers",
+  "user_profile_title": "User profile",
+  "user_profile_not_found_description": "User not found",
+  "profile_description": "Profile description"
 }

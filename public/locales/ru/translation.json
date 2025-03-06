@@ -70,5 +70,8 @@
   "jobs_in": "Работа в",
   "find_jobs_in": "Найти работы в",
   "job_search_platform": "Платформа поиска работы",
-  "new_vacancies_from_employers": "Новые вакансии от работодателей"
+  "new_vacancies_from_employers": "Новые вакансии от работодателей",
+  "user_profile_title": "Профиль пользователя",
+  "user_profile_not_found_description": "Пользователь не найден",
+  "profile_description": "Описание профиля"
 }
