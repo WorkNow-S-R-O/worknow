@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Pagination } from 'react-bootstrap';
 import Skeleton from 'react-loading-skeleton';
 import { format } from 'date-fns';
+import { Helmet } from 'react-helmet-async';
 import { ru } from 'date-fns/locale';
 import { useTranslation } from "react-i18next";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -22,16 +23,13 @@ const UserProfile = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const jobsPerPage = 5;
-
   const { clerkUserId } = useParams();
-  
 
   const fetchJobs = async (page) => {
     try {
       const response = await axios.get(
         `${API_URL}/users/user-jobs/${clerkUserId}?page=${page}&limit=${jobsPerPage}`
       );
-      
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -43,17 +41,17 @@ const UserProfile = () => {
     const fetchProfileData = async () => {
       try {
         console.log("🔍 Загружаем профиль пользователя:", clerkUserId);
-    
+
         const userResponse = await axios.get(`${API_URL}/users/${clerkUserId}`);
         console.log("✅ Данные профиля:", userResponse.data);
-    
+
         if (!userResponse.data || !userResponse.data.firstName) {
           console.warn("⚠️ Пользователь не найден или данные профиля пустые!");
           setUser(null);
         } else {
           setUser(userResponse.data);
         }
-    
+
         await fetchJobs(currentPage);
       } catch (error) {
         console.error("❌ Ошибка загрузки данных профиля:", error);
@@ -62,7 +60,6 @@ const UserProfile = () => {
         setLoading(false);
       }
     };
-    
 
     fetchProfileData();
   }, [clerkUserId, currentPage]);
@@ -73,8 +70,69 @@ const UserProfile = () => {
     }
   };
 
+  // 🔹 Динамические заголовок и описание для SEO
+  const pageTitle = user
+    ? `${user.firstName} ${user.lastName || ""} | ${t("user_profile_title")} - WorkNow`
+    : `${t("user_not_found")} | WorkNow`;
+
+  const pageDescription = user
+    ? `${t("profile_description", { name: user.firstName })}. ${t("user_jobs")}: ${jobs.length}.`
+    : t("user_profile_not_found_description");
+
+  const profileImage = user?.imageUrl || "/images/default-avatar.png";
+  const profileUrl = `https://worknowjob.com/user/${clerkUserId}`;
+
   return (
     <>
+      {/* 🔹 SEO-оптимизация */}
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={profileUrl} />
+        <meta property="og:type" content="profile" />
+        <meta property="og:image" content={profileImage} />
+        <meta name="robots" content="index, follow" />
+
+        {/* 🔹 Schema.org разметка (Person + JobPosting) */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": user ? `${user.firstName} ${user.lastName || ""}` : "Пользователь",
+            "image": profileImage,
+            "url": profileUrl,
+            "email": user?.email || "Не указано",
+            "jobTitle": "Работодатель",
+            "worksFor": {
+              "@type": "Organization",
+              "name": "WorkNow",
+              "sameAs": "https://worknowjob.com"
+            },
+            "hasOfferCatalog": jobs.map((job) => ({
+              "@type": "JobPosting",
+              "title": job.title,
+              "description": job.description,
+              "datePosted": job.createdAt,
+              "hiringOrganization": {
+                "@type": "Organization",
+                "name": "WorkNow",
+                "sameAs": "https://worknowjob.com"
+              },
+              "jobLocation": {
+                "@type": "Place",
+                "address": {
+                  "@type": "PostalAddress",
+                  "addressLocality": job.city?.name || "Не указано",
+                  "addressCountry": "IL"
+                }
+              }
+            }))
+          })}
+        </script>
+      </Helmet>
+
       <Navbar />
       <div className="container mt-20 d-flex flex-column align-items-center text-center">
         {loading ? (
@@ -93,13 +151,13 @@ const UserProfile = () => {
                   <JobCard key={job.id} job={job} />
                 ))}
                 <Pagination className="justify-content-center">
-                  {[...Array(totalPages).keys()].map((page) => (
+                  {[...Array(totalPages)].map((_, i) => (
                     <Pagination.Item
-                      key={page + 1}
-                      active={page + 1 === currentPage}
-                      onClick={() => handlePageChange(page + 1)}
+                      key={i + 1}
+                      active={i + 1 === currentPage}
+                      onClick={() => handlePageChange(i + 1)}
                     >
-                      {page + 1}
+                      {i + 1}
                     </Pagination.Item>
                   ))}
                 </Pagination>
