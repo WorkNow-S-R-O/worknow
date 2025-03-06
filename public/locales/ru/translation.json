@@ -73,5 +73,6 @@
   "new_vacancies_from_employers": "Новые вакансии от работодателей",
   "user_profile_title": "Профиль пользователя",
   "user_profile_not_found_description": "Пользователь не найден",
-  "profile_description": "Описание профиля"
+  "profile_description": "Описание профиля",
+  "my_ads_title": "Мои объявления"
 }

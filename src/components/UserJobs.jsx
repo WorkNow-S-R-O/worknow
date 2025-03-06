@@ -95,7 +95,7 @@ const UserJobs = () => {
   return (
     <div className="mt-4">
       <h2 className="text-lg font-bold mb-3 text-center text-primary">
-        {loading ? <Skeleton width={200} height={24} /> : "Мои объявления"}
+        {loading ? <Skeleton width={200} height={24} /> : (t("my_ads_title"))}
       </h2>
 
       {loading ? (
