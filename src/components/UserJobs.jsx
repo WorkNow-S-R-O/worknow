@@ -134,11 +134,12 @@ const UserJobs = () => {
                 </p>
                 <p className="card-text">{job.description}</p>
                 <div className="text-muted">
-                  <small>
-                    <span className="d-none d-sm-inline">{t("created_at") }</span>
-                    {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
-                  </small>
-                </div>
+  <small>
+    <span className="d-none d-sm-inline">{t("created_at") + ": "}</span> 
+    {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
+  </small>
+</div>
+
               </div>
               <div className="position-absolute bottom-0 end-0 mb-3 me-3 d-flex gap-3">
                 <SortUp role="button" size={24} className="text-success" onClick={() => handleBoost(job.id)} title="Поднять в топ" />
