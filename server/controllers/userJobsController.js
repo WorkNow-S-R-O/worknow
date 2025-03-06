@@ -1,7 +1,6 @@
 import { getUserJobsService } from '../services/userJobsService.js';
 
 export const getUserJobs = async (req, res) => {
-  console.log('clerkUserId из запроса:', req.params.clerkUserId); // Логируем значение
 
   if (!req.params.clerkUserId) {
     return res.status(400).json({ error: 'clerkUserId is missing' });

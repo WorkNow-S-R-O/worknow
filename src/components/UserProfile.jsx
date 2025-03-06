@@ -40,10 +40,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        console.log("🔍 Загружаем профиль пользователя:", clerkUserId);
-
         const userResponse = await axios.get(`${API_URL}/users/${clerkUserId}`);
-        console.log("✅ Данные профиля:", userResponse.data);
 
         if (!userResponse.data || !userResponse.data.firstName) {
           console.warn("⚠️ Пользователь не найден или данные профиля пустые!");

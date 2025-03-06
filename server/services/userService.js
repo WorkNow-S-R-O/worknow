@@ -52,7 +52,6 @@ export const getUserByClerkIdService = async (clerkUserId) => {
 };
 
 export const getUserJobsService = async (clerkUserId, query) => {
-  console.log("📌 ClerkUserID из запроса:", clerkUserId);
 
   const { page = 1, limit = 5 } = query;
   const pageInt = parseInt(page);
@@ -63,16 +62,13 @@ export const getUserJobsService = async (clerkUserId, query) => {
     let user = await prisma.user.findUnique({ where: { clerkUserId } });
 
     if (!user) {
-      console.log("⚠️ Пользователь не найден в базе. Пробуем синхронизировать...");
       const syncResult = await syncUserService(clerkUserId);
       if (syncResult.error) {
         return { error: "Ошибка синхронизации пользователя", details: syncResult.error };
       }
       user = syncResult.user;
-      console.log("✅ Пользователь успешно синхронизирован:", user);
     }
 
-    console.log("📌 Загружаем объявления для пользователя:", user.id);
     
     const jobs = await prisma.job.findMany({
       where: { userId: user.id },

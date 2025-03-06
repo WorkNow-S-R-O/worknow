@@ -60,7 +60,6 @@ export const createJobService = async ({ title, salary, cityId, phone, descripti
 
   // Если пользователь премиум — отправляем уведомление в Telegram
   if (existingUser.isPremium) {
-    console.log("📢 Премиум-пользователь создал вакансию, отправляем в Telegram...");
     await sendNewJobNotificationToTelegram(existingUser, job);
   }
 

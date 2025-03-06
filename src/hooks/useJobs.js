@@ -13,8 +13,7 @@ const useJobs = () => {
       setLoading(true);
       try {
         const response = await axios.get(`${API_URL}/jobs`);
-        
-        console.log("📌 Полученные вакансии:", response.data); // ✅ Логируем API-ответ
+      
         
         if (!Array.isArray(response.data)) {
           console.error("❌ API вернул не массив:", response.data);

@@ -7,7 +7,6 @@ export const getUserByClerkId = async (req, res) => {
     const user = await getUserByClerkIdService(clerkUserId);
 
     if (!user) {
-      console.log(`Пользователь с clerkUserId ${clerkUserId} не найден`);
       return res.status(404).json({ error: 'Пользователь не найден' });
     }
 

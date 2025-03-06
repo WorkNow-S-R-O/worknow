@@ -8,7 +8,6 @@ const prisma = new PrismaClient();
  * Функция для распределения вакансий среди фейковых пользователей
  */
 export const assignJobsToFakeUsers = async (jobs) => {
-    console.log('🔄 Привязываем вакансии к фейковым пользователям...');
   
     for (let job of jobs) {
       try {
@@ -34,7 +33,6 @@ export const assignJobsToFakeUsers = async (jobs) => {
           },
         });
   
-        console.log(`✅ Вакансия "${job.title}" привязана к ${fakeUser.email}`);
       } catch (error) {
         console.error(`❌ Ошибка при привязке вакансии "${job.title}":`, error.message);
       }
