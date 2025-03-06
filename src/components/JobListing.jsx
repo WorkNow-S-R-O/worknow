@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useState } from 'react';
 import useJobs from '../hooks/useJobs';
 import JobList from '../components/JobList';
 import PaginationControl from '../components/PaginationControl';
@@ -7,14 +7,19 @@ import { useTranslation } from "react-i18next";
 import { Helmet } from 'react-helmet-async';
 
 const JobListing = () => {
-  const { t } = useTranslation();
+  const { t, ready } = useTranslation();
+  
+  // Ждем загрузки переводов
+  const defaultCity = ready ? t('choose_city_dashboard') : 'Выбрать город';
+  const defaultTitle = ready ? t('latest_jobs') : 'Последние вакансии';
+
   const { jobs, loading } = useJobs();
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCity, setSelectedCity] = useState(t('choose_city_dashboard'));
+  const [selectedCity, setSelectedCity] = useState(defaultCity);
   const jobsPerPage = 10;
 
   // Фильтрация вакансий по городу
-  const filteredJobs = selectedCity === t('choose_city_dashboard') 
+  const filteredJobs = selectedCity === defaultCity 
     ? jobs 
     : jobs.filter((job) => job.city?.name.toLowerCase() === selectedCity.toLowerCase());
 
@@ -22,17 +27,17 @@ const JobListing = () => {
   const currentJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
 
   // Генерация SEO-friendly заголовка
-  const pageTitle = selectedCity !== t('choose_city_dashboard')
-    ? `${t('jobs_in')} ${selectedCity} - WorkNow`
-    : `${t('latest_jobs')} | WorkNow`;
+  const pageTitle = selectedCity !== defaultCity
+    ? `${t('jobs_in', { city: selectedCity })} - WorkNow`
+    : `${defaultTitle} | WorkNow`;
 
   // Генерация динамического описания страницы
-  const pageDescription = selectedCity !== t('choose_city_dashboard')
-    ? `${t('find_jobs_in')} ${selectedCity}. ${t('new_vacancies_from_employers')}.`
+  const pageDescription = selectedCity !== defaultCity
+    ? `${t('find_jobs_in', { city: selectedCity })}. ${t('new_vacancies_from_employers')}.`
     : `${t('job_search_platform')} - ${t('find_latest_jobs')}.`;
 
   // Формирование динамического URL для SEO
-  const pageUrl = selectedCity !== t('choose_city_dashboard')
+  const pageUrl = selectedCity !== defaultCity
     ? `https://worknowjob.com/jobs/${selectedCity.toLowerCase()}`
     : `https://worknowjob.com/jobs`;
 
@@ -46,7 +51,7 @@ const JobListing = () => {
         <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://worknowjob.com/images/preview.jpg" />
+        <meta property="og:image" content="https://worknowjob.com/images/logo.svg" />
         <meta name="robots" content="index, follow" />
         
         {/* Schema.org разметка (JobPosting) */}
@@ -54,7 +59,7 @@ const JobListing = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "JobPosting",
-            "title": selectedCity !== t('choose_city_dashboard') ? `Работа в ${selectedCity}` : "Работа в Израиле",
+            "title": selectedCity !== defaultCity ? `Работа в ${selectedCity}` : "Работа в Израиле",
             "description": pageDescription,
             "datePosted": new Date().toISOString(),
             "employmentType": "Full-time",
@@ -67,7 +72,7 @@ const JobListing = () => {
               "@type": "Place",
               "address": {
                 "@type": "PostalAddress",
-                "addressLocality": selectedCity !== t('choose_city_dashboard') ? selectedCity : "Израиль",
+                "addressLocality": selectedCity !== defaultCity ? selectedCity : "Израиль",
                 "addressCountry": "IL"
               }
             }
