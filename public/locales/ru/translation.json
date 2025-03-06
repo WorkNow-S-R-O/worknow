@@ -74,5 +74,7 @@
   "user_profile_title": "Профиль пользователя",
   "user_profile_not_found_description": "Пользователь не найден",
   "profile_description": "Описание профиля",
-  "my_ads_title": "Мои объявления"
+  "my_ads_title": "Мои объявления",
+  "edit_page_description": "Редактирование объявления",
+  "edit_page_default_description": "Редактирование вакансии"
 }

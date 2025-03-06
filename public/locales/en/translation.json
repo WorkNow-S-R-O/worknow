@@ -77,5 +77,7 @@
   "user_profile_title": "User profile",
   "user_profile_not_found_description": "User not found",
   "profile_description": "Profile description",
-  "my_ads_title": "My ads"
+  "my_ads_title": "My ads",
+  "edit_page_description": "Edit advertisement",
+  "edit_page_default_description": "Edit job"
 }
