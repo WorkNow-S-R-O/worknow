@@ -139,7 +139,7 @@ const UserProfile = () => {
           <p>{t("user_not_found")}</p>
         ) : (
           <>
-            <UserHeader user={user} />
+            <UserHeader user={user} loading={loading} />
             <h4 className="text-primary">{t("user_jobs")}</h4>
             {jobs.length === 0 ? (
               <p>{t("user_no_jobs")}</p>
@@ -217,20 +217,21 @@ const UserHeader = ({ user, loading }) => (
         <Spinner animation="border" variant="primary" />
       </div>
     ) : (
-      <img
-        src={user.imageUrl || "/images/default-avatar.png"}
-        alt="User Avatar"
-        className="rounded-circle mb-3"
-        style={{ width: "100px", height: "100px", objectFit: "cover" }}
-      />
+      <>
+        <img
+          src={user.imageUrl || "/images/default-avatar.png"}
+          alt=""
+          className="rounded-circle mb-3"
+          style={{ width: "100px", height: "100px", objectFit: "cover" }}
+        />
+        <div>
+          <h2>{user.firstName ? `${user.firstName} ${user.lastName || ""}` : "Анонимный пользователь"}</h2>
+          <p className="text-muted">{user.email || "Email не указан"}</p>
+        </div>
+      </>
     )}
-    <div>
-      <h2>{user.firstName ? `${user.firstName} ${user.lastName || ""}` : "Анонимный пользователь"}</h2>
-      <p className="text-muted">{user.email || "Email не указан"}</p>
-    </div>
   </div>
 );
-
 
 UserHeader.propTypes = {
   user: PropTypes.shape({
