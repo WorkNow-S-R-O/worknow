@@ -23,6 +23,8 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [imageError, setImageError] = useState(false);
+  
   const jobsPerPage = 5;
   const { clerkUserId } = useParams();
 
@@ -77,7 +79,7 @@ const UserProfile = () => {
     ? `${t("profile_description", { name: user.firstName })}. ${t("user_jobs")}: ${jobs.length}.`
     : t("user_profile_not_found_description");
 
-  const profileImage = user?.imageUrl || "/images/default-avatar.png";
+  const profileImage = imageError ? "/images/default-avatar.png" : user?.imageUrl || "/images/default-avatar.png";
   const profileUrl = `https://worknowjob.com/user/${clerkUserId}`;
 
   return (
@@ -139,7 +141,7 @@ const UserProfile = () => {
           <p>{t("user_not_found")}</p>
         ) : (
           <>
-            <UserHeader user={user} loading={loading} />
+            <UserHeader user={user} loading={loading} profileImage={profileImage} setImageError={setImageError} />
             <h4 className="text-primary">{t("user_jobs")}</h4>
             {jobs.length === 0 ? (
               <p>{t("user_no_jobs")}</p>
@@ -202,36 +204,40 @@ SkeletonLoader.propTypes = {
 };
 
 // Компонент заголовка профиля
-const UserHeader = ({ user, loading }) => (
-  <div className="d-flex flex-column align-items-center mb-4">
-    {loading ? (
-      <div
-        className="d-flex justify-content-center align-items-center mb-3"
-        style={{
-          width: '100px',
-          height: '100px',
-          borderRadius: '50%',
-          backgroundColor: '#f0f0f0',
-        }}
-      >
-        <Spinner animation="border" variant="primary" />
-      </div>
-    ) : (
-      <>
+const UserHeader = ({ user, profileImage, setImageError }) => {
+  const [imageLoading, setImageLoading] = useState(true);
+
+  return (
+    <div className="d-flex flex-column align-items-center mb-4">
+      {imageLoading ? (
+        <div
+          className="d-flex justify-content-center align-items-center mb-3"
+          style={{
+            width: '100px',
+            height: '100px',
+            borderRadius: '50%',
+            backgroundColor: '#f0f0f0',
+          }}
+        >
+          <Spinner animation="border" variant="primary" />
+        </div>
+      ) : (
         <img
-          src={user.imageUrl || "/images/default-avatar.png"}
-          alt=""
+          src={profileImage}
+          alt="User Avatar"
           className="rounded-circle mb-3"
           style={{ width: "100px", height: "100px", objectFit: "cover" }}
+          onLoad={() => setImageLoading(false)}
+          onError={() => { setImageError(true); setImageLoading(false); }}
         />
-        <div>
-          <h2>{user.firstName ? `${user.firstName} ${user.lastName || ""}` : "Анонимный пользователь"}</h2>
-          <p className="text-muted">{user.email || "Email не указан"}</p>
-        </div>
-      </>
-    )}
-  </div>
-);
+      )}
+      <div>
+        <h2>{user?.firstName ? `${user.firstName} ${user.lastName || ""}` : "Анонимный пользователь"}</h2>
+        <p className="text-muted">{user?.email || "Email не указан"}</p>
+      </div>
+    </div>
+  );
+};
 
 UserHeader.propTypes = {
   user: PropTypes.shape({
@@ -241,6 +247,8 @@ UserHeader.propTypes = {
     email: PropTypes.string,
   }).isRequired,
   loading: PropTypes.bool.isRequired,
+  profileImage: PropTypes.string,
+  setImageError: PropTypes.func.isRequired,
 };
 
 // Компонент карточки вакансии
