@@ -2,6 +2,8 @@
 
 WorkNow is a platform that helps employers find employees and job seekers find work. It allows users to post job listings, browse job offers, and contact employers.
 
+![WorkNow](./screenshots/worknow-screenshot.png)
+
 ## 📦 Installation
 
 1. **Clone the repository:**
