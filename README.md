@@ -11,6 +11,15 @@ WorkNow is a platform that helps employers find employees and job seekers find w
    git clone https://github.com/MostOfLuck/job-listing.git
    cd job-listing
 
+
+2. **Install depencies:**
+   ```sh
+   npm install
+
+3. **Run the project on your localy:**
+   ```sh
+   npm start
+
 ✨ Features
 
 ✅ Authentication via Clerk  
