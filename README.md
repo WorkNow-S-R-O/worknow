@@ -11,11 +11,12 @@ WorkNow is a platform that helps employers find employees and job seekers find w
 
 ✨ Features
 
-✅ Authentication via Clerk
-✅ Job posting for employers
-✅ Browsing job listings
-✅ Support for English and Russian languages
-✅ SEO optimization and OpenGraph meta tags
+✅ Authentication via Clerk  
+✅ Job posting for employers  
+✅ Browsing job listings  
+✅ Support for English and Russian languages  
+✅ SEO optimization and OpenGraph meta tags  
+
 
 🔌 API
 
