@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { useParams } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { Pagination } from 'react-bootstrap';
 import Skeleton from 'react-loading-skeleton';
@@ -201,14 +202,28 @@ SkeletonLoader.propTypes = {
 };
 
 // Компонент заголовка профиля
-const UserHeader = ({ user }) => (
+const UserHeader = ({ user, loading }) => (
   <div className="d-flex flex-column align-items-center mb-4">
-    <img
-      src={user.imageUrl || "/images/default-avatar.png"}
-      alt="User Avatar"
-      className="rounded-circle mb-3"
-      style={{ width: "100px", height: "100px", objectFit: "cover" }}
-    />
+    {loading ? (
+      <div
+        className="d-flex justify-content-center align-items-center mb-3"
+        style={{
+          width: '100px',
+          height: '100px',
+          borderRadius: '50%',
+          backgroundColor: '#f0f0f0',
+        }}
+      >
+        <Spinner animation="border" variant="primary" />
+      </div>
+    ) : (
+      <img
+        src={user.imageUrl || "/images/default-avatar.png"}
+        alt="User Avatar"
+        className="rounded-circle mb-3"
+        style={{ width: "100px", height: "100px", objectFit: "cover" }}
+      />
+    )}
     <div>
       <h2>{user.firstName ? `${user.firstName} ${user.lastName || ""}` : "Анонимный пользователь"}</h2>
       <p className="text-muted">{user.email || "Email не указан"}</p>
@@ -224,6 +239,7 @@ UserHeader.propTypes = {
     lastName: PropTypes.string,
     email: PropTypes.string,
   }).isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 // Компонент карточки вакансии
