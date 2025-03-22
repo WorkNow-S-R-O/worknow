@@ -26,8 +26,8 @@ WorkNow is a platform that helps employers find employees and job seekers find w
 ✅ Job posting for employers  
 ✅ Browsing job listings  
 ✅ Support for English and Russian languages  
+✅ Telegram bot notifications  
 ✅ SEO optimization and OpenGraph meta tags  
-
 
 🔌 API
 
