@@ -16,7 +16,7 @@ WorkNow is a platform that helps employers find employees and job seekers find w
    ```sh
    npm install
 
-3. **Run the project on your localy:**
+3. **Run the project localy:**
    ```sh
    npm start
 
