@@ -8,6 +8,7 @@ import { Pagination } from 'react-bootstrap';
 import Skeleton from 'react-loading-skeleton';
 import { format } from 'date-fns';
 import { Helmet } from 'react-helmet-async';
+import UserHeader from './UserHeader';
 import { ru } from 'date-fns/locale';
 import { useTranslation } from "react-i18next";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -138,7 +139,12 @@ const UserProfile = () => {
           <p>{t("user_not_found")}</p>
         ) : (
           <>
-            <UserHeader user={user} />
+            <UserHeader
+  user={user}
+  profileImage={profileImage}
+  loading={loading}
+  setImageError={() => {}}
+/>
             <h4 className="text-primary">{t("user_jobs")}</h4>
             {jobs.length === 0 ? (
               <p>{t("user_no_jobs")}</p>
@@ -198,32 +204,6 @@ const SkeletonLoader = ({ jobsPerPage }) => (
 
 SkeletonLoader.propTypes = {
   jobsPerPage: PropTypes.number.isRequired,
-};
-
-// Компонент заголовка профиля
-const UserHeader = ({ user }) => (
-  <div className="d-flex flex-column align-items-center mb-4">
-    <img
-      src={user.imageUrl || "/images/default-avatar.png"}
-      alt="User Avatar"
-      className="rounded-circle mb-3"
-      style={{ width: "100px", height: "100px", objectFit: "cover" }}
-    />
-    <div>
-      <h2>{user.firstName ? `${user.firstName} ${user.lastName || ""}` : "Анонимный пользователь"}</h2>
-      <p className="text-muted">{user.email || "Email не указан"}</p>
-    </div>
-  </div>
-);
-
-
-UserHeader.propTypes = {
-  user: PropTypes.shape({
-    imageUrl: PropTypes.string,
-    firstName: PropTypes.string,
-    lastName: PropTypes.string,
-    email: PropTypes.string,
-  }).isRequired,
 };
 
 // Компонент карточки вакансии
