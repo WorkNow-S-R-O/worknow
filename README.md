@@ -1,4 +1,4 @@
-# WorkNow - Job Listing Platform 🚀
+# WorkNow - Job Listing Platform  🚀
 
 WorkNow is a platform that helps employers find employees and job seekers find work. It allows users to post job listings, browse job offers, and contact employers.
 
@@ -10,6 +10,15 @@ WorkNow is a platform that helps employers find employees and job seekers find w
    ```sh
    git clone https://github.com/MostOfLuck/job-listing.git
    cd job-listing
+
+
+2. **Install depencies:**
+   ```sh
+   npm install
+
+3. **Run the project localy:**
+   ```sh
+   npm start
 
 ✨ Features
 
