@@ -1,4 +1,4 @@
-# WorkNow - Job Listing Platform 🚀
+# WorkNow - Job Listing Platform  🚀
 
 WorkNow is a platform that helps employers find employees and job seekers find work. It allows users to post job listings, browse job offers, and contact employers.
 
