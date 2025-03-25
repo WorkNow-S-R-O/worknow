@@ -6,10 +6,8 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Pagination } from 'react-bootstrap';
 import Skeleton from 'react-loading-skeleton';
-import { format } from 'date-fns';
 import { Helmet } from 'react-helmet-async';
 import UserHeader from './UserHeader';
-import { ru } from 'date-fns/locale';
 import { useTranslation } from "react-i18next";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -112,7 +110,6 @@ const UserProfile = () => {
               "@type": "JobPosting",
               "title": job.title,
               "description": job.description,
-              "datePosted": job.createdAt,
               "hiringOrganization": {
                 "@type": "Organization",
                 "name": "WorkNow",
@@ -240,11 +237,6 @@ const JobCard = ({ job }) => {
         <p className="card-text">
           <strong>{t("phone_number_card")}</strong> {job.phone}
         </p>
-        <div className="card-text text-muted">
-          <small>
-            {t("created_at")}: {format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })}
-          </small>
-        </div>
       </div>
     </div>
   );
@@ -257,7 +249,6 @@ JobCard.propTypes = {
     salary: PropTypes.string.isRequired,
     phone: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
-    createdAt: PropTypes.string.isRequired,
     city: PropTypes.shape({
       name: PropTypes.string.isRequired,
     }).isRequired,
