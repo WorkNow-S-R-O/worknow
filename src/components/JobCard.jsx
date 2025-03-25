@@ -42,14 +42,6 @@ const JobCard = ({ job }) => {
         <p className="card-text">
           <strong>{t("phone_number_card")}</strong> {job.phone || 'Не указан'}
         </p>
-        <div className="card-text text-muted">
-          <small>
-            {t("created_at")}{' '}
-            {job.createdAt
-              ? format(new Date(job.createdAt), 'dd MMMM yyyy', { locale: ru })
-              : 'Неизвестно'}
-          </small>
-        </div>
       </div>
 
       {job.user?.imageUrl && (
@@ -87,7 +79,6 @@ JobCard.propTypes = {
     }),
     description: PropTypes.string,
     phone: PropTypes.string,
-    createdAt: PropTypes.string.isRequired,
     user: PropTypes.shape({
       clerkUserId: PropTypes.string,
       imageUrl: PropTypes.string,
