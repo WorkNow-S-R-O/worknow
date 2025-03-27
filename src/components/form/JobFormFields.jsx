@@ -1,10 +1,17 @@
-import PropTypes from 'prop-types';
-import Select from 'react-select';
-import Skeleton from 'react-loading-skeleton';
+import PropTypes from "prop-types";
+import Select from "react-select";
+import Skeleton from "react-loading-skeleton";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 
-export const JobFormFields = ({ register, errors, setValue, selectedCityId, cities, loading }) => {
+export const JobFormFields = ({
+  register,
+  errors,
+  setValue,
+  selectedCityId,
+  cities,
+  loading,
+}) => {
   const { t } = useTranslation();
   const [isAgreed, setIsAgreed] = useState(false);
 
@@ -13,41 +20,45 @@ export const JobFormFields = ({ register, errors, setValue, selectedCityId, citi
       {/* Название вакансии */}
       <div className="mb-4">
         <label htmlFor="title" className="block text-gray-700 mb-2">
-          {t('job_title')}
+          {t("job_title")}
         </label>
         <input
           id="title"
           type="text"
-          {...register('title')}
+          {...register("title")}
           className={`bg-white w-full border px-3 py-2 rounded ${
-            errors.title ? 'border-red-500' : 'border-gray-300'
+            errors.title ? "border-red-500" : "border-gray-300"
           }`}
-          placeholder={t('write_job_title')}
+          placeholder={t("write_job_title")}
         />
-        {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
+        {errors.title && (
+          <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+        )}
       </div>
 
       {/* Зарплата */}
       <div className="mb-4">
         <label htmlFor="salary" className="block text-gray-700 mb-2">
-          {t('salary_per_hour')}
+          {t("salary_per_hour")}
         </label>
         <input
           id="salary"
           type="text"
-          {...register('salary')}
+          {...register("salary")}
           className={`bg-white w-full border px-3 py-2 rounded ${
-            errors.salary ? 'border-red-500' : 'border-gray-300'
+            errors.salary ? "border-red-500" : "border-gray-300"
           }`}
-          placeholder={t('write_salary')}
+          placeholder={t("write_salary")}
         />
-        {errors.salary && <p className="text-red-500 text-sm mt-1">{errors.salary.message}</p>}
+        {errors.salary && (
+          <p className="text-red-500 text-sm mt-1">{errors.salary.message}</p>
+        )}
       </div>
 
       {/* Город */}
       <div className="mb-4">
         <label htmlFor="cityId" className="block text-gray-700 mb-2">
-          {t('location')}
+          {t("location")}
         </label>
         {loading ? (
           <Skeleton height={40} />
@@ -55,55 +66,62 @@ export const JobFormFields = ({ register, errors, setValue, selectedCityId, citi
           <Select
             options={cities}
             value={cities.find((city) => city.value === selectedCityId) || null}
-            onChange={(option) => setValue('cityId', option?.value)}
+            onChange={(option) => setValue("cityId", option?.value)}
             placeholder="Выберите город"
             classNamePrefix="react-select"
             isClearable
           />
         )}
-        {errors.cityId && <p className="text-red-500 text-sm mt-1">{errors.cityId.message}</p>}
+        {errors.cityId && (
+          <p className="text-red-500 text-sm mt-1">{errors.cityId.message}</p>
+        )}
       </div>
 
       {/* Телефон */}
       <div className="mb-4">
         <label htmlFor="phone" className="block text-gray-700 mb-2">
-          {t('phone_number')}
+          {t("phone_number")}
         </label>
         <input
           id="phone"
           type="text"
-          {...register('phone')}
+          {...register("phone")}
           className={`bg-white w-full border px-3 py-2 rounded ${
-            errors.phone ? 'border-red-500' : 'border-gray-300'
+            errors.phone ? "border-red-500" : "border-gray-300"
           }`}
-          placeholder={t('write_phone_number')}
+          placeholder={t("write_phone_number")}
         />
-        {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
+        {errors.phone && (
+          <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+        )}
       </div>
 
       {/* Описание */}
       <div className="mb-4">
         <label htmlFor="description" className="block text-gray-700 mb-2">
-          {t('description')}
+          {t("description")}
         </label>
         <textarea
           id="description"
-          {...register('description')}
+          {...register("description")}
           className={`bg-white w-full border px-3 py-2 rounded ${
-            errors.description ? 'border-red-500' : 'border-gray-300'
+            errors.description ? "border-red-500" : "border-gray-300"
           }`}
           rows="5"
-          placeholder={t('write_job_description')}
+          placeholder={t("write_job_description")}
         />
-        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
+        {errors.description && (
+          <p className="text-red-500 text-sm mt-1">
+            {errors.description.message}
+          </p>
+        )}
       </div>
 
       {/* Чекбокс "Согласие с пользовательским соглашением" */}
       <div className="mb-4 flex items-center">
         <input
           type="checkbox"
-          id="terms"
-          className="mr-2 w-4 h-4 bg-white border-2 border-primary rounded"
+          className="form-checkbox h-4 w-4 bg-white border-2 border-blue-500 rounded text-blue-500 focus:ring-blue-500"
           checked={isAgreed}
           onChange={() => setIsAgreed(!isAgreed)}
         />
@@ -128,7 +146,7 @@ export const JobFormFields = ({ register, errors, setValue, selectedCityId, citi
         }`}
         disabled={!isAgreed}
       >
-        {t('create')}
+        {t("create")}
       </button>
     </>
   );
