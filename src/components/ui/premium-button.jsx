@@ -37,6 +37,12 @@ const PremiumButton = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Предварительная загрузка изображения
+    const preloadImage = new Image();
+    preloadImage.src = "/images/premium.png";
+  }, []);
+
+  useEffect(() => {
     const fetchUserPremiumStatus = async () => {
       if (!user) {
         setIsLoading(false);
