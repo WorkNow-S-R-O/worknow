@@ -121,7 +121,8 @@ export const JobFormFields = ({
       <div className="mb-4 flex items-center">
         <input
           type="checkbox"
-          className="form-checkbox h-4 w-4 bg-white border-2 border-blue-500 rounded text-blue-500 focus:ring-blue-500"
+          id="terms"
+          className="mr-2 w-4 h-4 bg-white border-2 border-primary rounded"
           checked={isAgreed}
           onChange={() => setIsAgreed(!isAgreed)}
         />
