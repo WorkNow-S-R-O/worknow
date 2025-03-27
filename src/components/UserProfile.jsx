@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Navbar } from './Navbar';
-import { Footer } from './Footer';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { Pagination } from 'react-bootstrap';
-import Skeleton from 'react-loading-skeleton';
-import { Helmet } from 'react-helmet-async';
-import UserHeader from './UserHeader';
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { Navbar } from "./Navbar";
+import { Footer } from "./Footer";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { Pagination } from "react-bootstrap";
+import Skeleton from "react-loading-skeleton";
+import { Helmet } from "react-helmet-async";
+import UserHeader from "./UserHeader";
 import { useTranslation } from "react-i18next";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-loading-skeleton/dist/skeleton.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -32,14 +32,17 @@ const UserProfile = () => {
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
     } catch (error) {
-      console.error('Ошибка загрузки объявлений:', error);
+      console.error("Ошибка загрузки объявлений:", error);
     }
   };
 
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const userResponse = await axios.get(`${API_URL}/users/${clerkUserId}`);
+        const timestamp = new Date().getTime();
+        const userResponse = await axios.get(
+          `${API_URL}/users/${clerkUserId}?t=${timestamp}`
+        );
 
         if (!userResponse.data || !userResponse.data.firstName) {
           console.warn("⚠️ Пользователь не найден или данные профиля пустые!");
@@ -68,11 +71,15 @@ const UserProfile = () => {
 
   // 🔹 Динамические заголовок и описание для SEO
   const pageTitle = user
-    ? `${user.firstName} ${user.lastName || ""} | ${t("user_profile_title")} - WorkNow`
+    ? `${user.firstName} ${user.lastName || ""} | ${t(
+        "user_profile_title"
+      )} - WorkNow`
     : `${t("user_not_found")} | WorkNow`;
 
   const pageDescription = user
-    ? `${t("profile_description", { name: user.firstName })}. ${t("user_jobs")}: ${jobs.length}.`
+    ? `${t("profile_description", { name: user.firstName })}. ${t(
+        "user_jobs"
+      )}: ${jobs.length}.`
     : t("user_profile_not_found_description");
 
   const profileImage = user?.imageUrl || "/images/default-avatar.png";
@@ -96,34 +103,36 @@ const UserProfile = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Person",
-            "name": user ? `${user.firstName} ${user.lastName || ""}` : "Пользователь",
-            "image": profileImage,
-            "url": profileUrl,
-            "email": user?.email || "Не указано",
-            "jobTitle": "Работодатель",
-            "worksFor": {
+            name: user
+              ? `${user.firstName} ${user.lastName || ""}`
+              : "Пользователь",
+            image: profileImage,
+            url: profileUrl,
+            email: user?.email || "Не указано",
+            jobTitle: "Работодатель",
+            worksFor: {
               "@type": "Organization",
-              "name": "WorkNow",
-              "sameAs": "https://worknowjob.com"
+              name: "WorkNow",
+              sameAs: "https://worknowjob.com",
             },
-            "hasOfferCatalog": jobs.map((job) => ({
+            hasOfferCatalog: jobs.map((job) => ({
               "@type": "JobPosting",
-              "title": job.title,
-              "description": job.description,
-              "hiringOrganization": {
+              title: job.title,
+              description: job.description,
+              hiringOrganization: {
                 "@type": "Organization",
-                "name": "WorkNow",
-                "sameAs": "https://worknowjob.com"
+                name: "WorkNow",
+                sameAs: "https://worknowjob.com",
               },
-              "jobLocation": {
+              jobLocation: {
                 "@type": "Place",
-                "address": {
+                address: {
                   "@type": "PostalAddress",
-                  "addressLocality": job.city?.name || "Не указано",
-                  "addressCountry": "IL"
-                }
-              }
-            }))
+                  addressLocality: job.city?.name || "Не указано",
+                  addressCountry: "IL",
+                },
+              },
+            })),
           })}
         </script>
       </Helmet>
@@ -137,11 +146,11 @@ const UserProfile = () => {
         ) : (
           <>
             <UserHeader
-  user={user}
-  profileImage={profileImage}
-  loading={loading}
-  setImageError={() => {}}
-/>
+              user={user}
+              profileImage={profileImage}
+              loading={loading}
+              setImageError={() => {}}
+            />
             <h4 className="text-primary">{t("user_jobs")}</h4>
             {jobs.length === 0 ? (
               <p>{t("user_no_jobs")}</p>
@@ -185,7 +194,11 @@ const SkeletonLoader = ({ jobsPerPage }) => (
       <Skeleton width={200} height={24} />
     </h4>
     {Array.from({ length: jobsPerPage }).map((_, index) => (
-      <div key={index} className="card mb-3 w-75 text-start" style={{ maxWidth: '700px' }}>
+      <div
+        key={index}
+        className="card mb-3 w-75 text-start"
+        style={{ maxWidth: "700px" }}
+      >
         <div className="card-body">
           <Skeleton height={24} width="50%" />
           <Skeleton height={18} width="90%" className="mt-2" />
@@ -210,20 +223,20 @@ const JobCard = ({ job }) => {
   return (
     <div
       className={`card shadow-sm mb-4 position-relative w-75 text-start ${
-        job.user?.isPremium ? 'border border-warning premium-glow' : ''
+        job.user?.isPremium ? "border border-warning premium-glow" : ""
       }`}
       style={{
-        backgroundColor: 'white',
-        borderRadius: '10px',
-        maxWidth: '700px',
-        minHeight: '220px',
-        height: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
+        backgroundColor: "white",
+        borderRadius: "10px",
+        maxWidth: "700px",
+        minHeight: "220px",
+        height: "auto",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
         boxShadow: job.user?.isPremium
-          ? '0px 0px 15px 5px rgba(255, 215, 0, 0.7)'
-          : 'none',
+          ? "0px 0px 15px 5px rgba(255, 215, 0, 0.7)"
+          : "none",
       }}
     >
       <div className="card-body">
