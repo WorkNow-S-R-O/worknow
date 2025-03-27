@@ -1,5 +1,12 @@
 import { useTranslation } from "react-i18next";
-import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -7,23 +14,41 @@ import { toast } from "react-hot-toast";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const PremiumButtonSkeleton = () => (
+  <div className="animate-pulse">
+    <div className="h-10 w-32 bg-gray-200 rounded"></div>
+  </div>
+);
+
+const PremiumButtonSpinner = () => (
+  <div className="flex items-center justify-center">
+    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+  </div>
+);
+
 const PremiumButton = () => {
   const { t } = useTranslation();
   const { user } = useUser();
   const { redirectToSignIn } = useClerk(); // Функция для редиректа на страницу входа
   const [isPremium, setIsPremium] = useState(false);
   const [isAutoRenewal, setIsAutoRenewal] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserPremiumStatus = async () => {
-      if (!user) return;
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
 
       try {
         const response = await axios.get(`${API_URL}/user/${user.id}`);
         setIsPremium(response.data.isPremium);
-        setIsAutoRenewal(response.data.isAutoRenewal); 
+        setIsAutoRenewal(response.data.isAutoRenewal);
       } catch (error) {
-        console.error('Ошибка получения статуса Premium:', error);
+        console.error("Ошибка получения статуса Premium:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -38,9 +63,12 @@ const PremiumButton = () => {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/payments/create-checkout-session`, {
-        clerkUserId: user.id,
-      });
+      const response = await axios.post(
+        `${API_URL}/payments/create-checkout-session`,
+        {
+          clerkUserId: user.id,
+        }
+      );
 
       window.location.href = response.data.url;
     } catch (error) {
@@ -65,10 +93,17 @@ const PremiumButton = () => {
   return (
     <Sheet className="z-9999">
       <SheetTrigger asChild>
-        <button type="button" className={`btn ${isPremium ? 'btn-primary' : 'btn-warning'}`}>
-          <i className="bi bi-gem me-2"></i>
-          {isPremium ? t("premium_active") : t("premium")}
-        </button>
+        {isLoading ? (
+          <PremiumButtonSkeleton />
+        ) : (
+          <button
+            type="button"
+            className={`btn ${isPremium ? "btn-primary" : "btn-warning"}`}
+          >
+            <i className="bi bi-gem me-2"></i>
+            {isPremium ? t("premium_active") : t("premium")}
+          </button>
+        )}
       </SheetTrigger>
       <SheetContent className="flex flex-col h-full">
         <div className="flex-1 overflow-auto">
@@ -78,19 +113,21 @@ const PremiumButton = () => {
           </SheetHeader>
 
           <div className="my-4 p-4 bg-primary rounded-lg shadow">
-            <h3 className="text-lg font-bold text-white mb-2">{t("premium_benefits_title")}</h3>
+            <h3 className="text-lg font-bold text-white mb-2">
+              {t("premium_benefits_title")}
+            </h3>
             <ul className="list-disc list-inside text-white">
               <li>{t("premium_benefit_1")}</li>
               <li>
-                <a href="https://t.me/WORKNOW_JOBS"
+                <a
+                  href="https://t.me/WORKNOW_JOBS"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline text-white"
                 >
-                  
-                {t("premium_benefit_3")}
+                  {t("premium_benefit_3")}
                 </a>
-                </li>
+              </li>
               <li>{t("premium_benefit_5")}</li>
               <li>
                 <a
