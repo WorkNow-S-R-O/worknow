@@ -15,8 +15,9 @@ import { toast } from "react-hot-toast";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const PremiumButtonSkeleton = () => (
-  <div className="animate-pulse">
+  <div className="animate-pulse flex items-center gap-2">
     <div className="h-10 w-32 bg-gray-200 rounded"></div>
+    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
   </div>
 );
 
