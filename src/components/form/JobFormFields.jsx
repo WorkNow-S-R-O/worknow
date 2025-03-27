@@ -103,7 +103,7 @@ export const JobFormFields = ({ register, errors, setValue, selectedCityId, citi
         <input
           type="checkbox"
           id="terms"
-          className="mr-2 w-4 h-4"
+          className="mr-2 w-4 h-4 bg-white border-2 border-primary rounded"
           checked={isAgreed}
           onChange={() => setIsAgreed(!isAgreed)}
         />
