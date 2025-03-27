@@ -36,30 +36,41 @@ const UserProfile = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const timestamp = new Date().getTime();
-        const userResponse = await axios.get(
-          `${API_URL}/users/${clerkUserId}?t=${timestamp}`
-        );
+  const fetchProfileData = async () => {
+    try {
+      const timestamp = new Date().getTime();
+      const userResponse = await axios.get(
+        `${API_URL}/users/${clerkUserId}?t=${timestamp}`
+      );
 
-        if (!userResponse.data || !userResponse.data.firstName) {
-          console.warn("⚠️ Пользователь не найден или данные профиля пустые!");
-          setUser(null);
-        } else {
-          setUser(userResponse.data);
-        }
-
-        await fetchJobs(currentPage);
-      } catch (error) {
-        console.error("❌ Ошибка загрузки данных профиля:", error);
+      if (!userResponse.data || !userResponse.data.firstName) {
+        console.warn("⚠️ Пользователь не найден или данные профиля пустые!");
         setUser(null);
-      } finally {
-        setLoading(false);
+      } else {
+        setUser(userResponse.data);
       }
+
+      await fetchJobs(currentPage);
+    } catch (error) {
+      console.error("❌ Ошибка загрузки данных профиля:", error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Добавляем эффект для обновления при возвращении фокуса
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchProfileData();
     };
 
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, []);
+
+  // Основной эффект для загрузки данных
+  useEffect(() => {
     fetchProfileData();
   }, [clerkUserId, currentPage]);
 
