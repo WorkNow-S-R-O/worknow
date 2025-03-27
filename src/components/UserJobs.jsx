@@ -144,6 +144,9 @@ const UserJobs = () => {
                   {job.city?.name || "Не указано"}
                 </p>
                 <p className="card-text">{job.description}</p>
+                <p className="card-text">
+                  <strong>{t("phone_number_card")}</strong> {job.phone}
+                </p>
                 <div className="text-muted">
                   <small>
                     <span className="d-none d-sm-inline">
