@@ -27,16 +27,10 @@ const JobList = ({ jobs, loading }) => {
   }
 
   return jobs.map((job) => {
-    // Только если пользователь авторизован и это его объявление — показываем актуальные данные из Clerk
-    const isOwnJob = isLoaded && clerkUser && job.user?.clerkUserId === clerkUser.id;
-    const currentUserName = isOwnJob ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}` : undefined;
-    const currentUserImageUrl = isOwnJob ? clerkUser.imageUrl : undefined;
     return (
       <JobCard
         key={job.id}
         job={job}
-        currentUserName={currentUserName}
-        currentUserImageUrl={currentUserImageUrl}
       />
     );
   });

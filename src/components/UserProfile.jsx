@@ -11,13 +11,11 @@ import UserHeader from "./UserHeader";
 import { useTranslation } from "react-i18next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useUser } from '@clerk/clerk-react';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const UserProfile = () => {
   const { t } = useTranslation();
-  const { user: clerkUser, isLoaded } = useUser();
   const [user, setUser] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,19 +23,6 @@ const UserProfile = () => {
   const [totalPages, setTotalPages] = useState(1);
   const jobsPerPage = 5;
   const { clerkUserId } = useParams();
-
-  // Определяем, просматривает ли пользователь свой профиль
-  const isOwnProfile = isLoaded && clerkUser && clerkUser.id === clerkUserId;
-
-  // Если это свой профиль — используем данные из Clerk
-  const profileData = isOwnProfile
-    ? {
-        firstName: clerkUser.firstName,
-        lastName: clerkUser.lastName,
-        email: clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses?.[0]?.emailAddress || '',
-        imageUrl: clerkUser.imageUrl,
-      }
-    : user;
 
   const fetchJobs = async (page) => {
     try {
@@ -102,13 +87,15 @@ const UserProfile = () => {
     }
   };
 
-  // 🔹 Динамические заголовок и описание для SEO
+  // Всегда используем только публичные данные из backend
+  const profileData = user;
+
   const pageTitle = profileData
-    ? `${profileData.firstName || ''} ${profileData.lastName || ''} | ${t("user_profile_title")} - WorkNow`
+    ? `${profileData.name || ''} | ${t("user_profile_title")} - WorkNow`
     : `${t("user_not_found") } | WorkNow`;
 
   const pageDescription = profileData
-    ? `${t("profile_description", { name: profileData.firstName })}. ${t("user_jobs")}: ${jobs.length}.`
+    ? `${t("profile_description", { name: profileData.name })}. ${t("user_jobs")}: ${jobs.length}.`
     : t("user_profile_not_found_description");
 
   const profileImage = profileData?.imageUrl || "/images/default-avatar.png";
@@ -168,7 +155,7 @@ const UserProfile = () => {
 
       <Navbar />
       <div className="container mt-20 d-flex flex-column align-items-center text-center">
-        {loading && !isOwnProfile ? (
+        {loading ? (
           <SkeletonLoader jobsPerPage={jobsPerPage} />
         ) : !profileData ? (
           <p>{t("user_not_found")}</p>
@@ -186,12 +173,7 @@ const UserProfile = () => {
             ) : (
               <>
                 {jobs.map((job) => (
-                  <JobCard
-                    key={job.id}
-                    job={job}
-                    currentUserName={isOwnProfile ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}` : undefined}
-                    currentUserImageUrl={isOwnProfile ? clerkUser.imageUrl : undefined}
-                  />
+                  <JobCard key={job.id} job={job} />
                 ))}
                 <Pagination className="justify-content-center">
                   {[...Array(totalPages)].map((_, i) => (
@@ -251,7 +233,7 @@ SkeletonLoader.propTypes = {
 };
 
 // Компонент карточки вакансии
-const JobCard = ({ job, currentUserName, currentUserImageUrl }) => {
+const JobCard = ({ job }) => {
   const { t } = useTranslation(); // Вызов внутри компонента
 
   return (
@@ -303,8 +285,6 @@ JobCard.propTypes = {
       isPremium: PropTypes.bool,
     }),
   }).isRequired,
-  currentUserName: PropTypes.string,
-  currentUserImageUrl: PropTypes.string,
 };
 
 export default UserProfile;
