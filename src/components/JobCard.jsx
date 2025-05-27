@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import Spinner from "react-bootstrap/Spinner";
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job, currentUserName, currentUserImageUrl }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [imageLoading, setImageLoading] = useState(true);
@@ -23,6 +23,10 @@ const JobCard = ({ job }) => {
     const timestamp = new Date().getTime();
     return `${url}?t=${timestamp}`;
   };
+
+  // Используем актуальные данные, если они переданы
+  const avatarUrl = currentUserImageUrl || job.user?.imageUrl;
+  const displayName = currentUserName || job.user?.name;
 
   return (
     <div
@@ -54,7 +58,7 @@ const JobCard = ({ job }) => {
         </p>
       </div>
 
-      {job.user?.imageUrl && (
+      {avatarUrl && (
         <div
           className="position-absolute top-0 end-0 m-2 d-flex justify-content-center align-items-center"
           style={{
@@ -71,7 +75,7 @@ const JobCard = ({ job }) => {
             <Spinner animation="border" variant="primary" size="sm" />
           )}
           <img
-            src={getImageUrl(job.user.imageUrl)}
+            src={getImageUrl(avatarUrl)}
             alt="User Avatar"
             className="rounded-circle w-100 h-100"
             style={{ display: imageLoading ? "none" : "block" }}
@@ -102,8 +106,11 @@ JobCard.propTypes = {
       clerkUserId: PropTypes.string,
       imageUrl: PropTypes.string,
       isPremium: PropTypes.bool,
+      name: PropTypes.string,
     }),
   }).isRequired,
+  currentUserName: PropTypes.string,
+  currentUserImageUrl: PropTypes.string,
 };
 
 export default JobCard;
