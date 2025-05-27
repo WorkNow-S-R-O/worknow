@@ -59,14 +59,21 @@ const UserProfile = () => {
     }
   };
 
-  // Добавляем эффект для обновления при возвращении фокуса
+  // Добавляем эффект для обновления при возвращении фокуса и смене аватарки
   useEffect(() => {
     const handleFocus = () => {
       fetchProfileData();
     };
+    const handleAvatarChanged = () => {
+      fetchProfileData();
+    };
 
     window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
+    window.addEventListener("avatarChanged", handleAvatarChanged);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("avatarChanged", handleAvatarChanged);
+    };
   }, []);
 
   // Основной эффект для загрузки данных
