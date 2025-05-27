@@ -11,11 +11,13 @@ import UserHeader from "./UserHeader";
 import { useTranslation } from "react-i18next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useUser } from '@clerk/clerk-react';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const UserProfile = () => {
   const { t } = useTranslation();
+  const { user: clerkUser, isLoaded } = useUser();
   const [user, setUser] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,8 +89,17 @@ const UserProfile = () => {
     }
   };
 
-  // Всегда используем только публичные данные из backend
-  const profileData = user;
+  // Определяем, просматривает ли пользователь свой профиль
+  const isOwnProfile = isLoaded && clerkUser && clerkUser.id === clerkUserId;
+
+  // Если это свой профиль — используем данные из Clerk
+  const profileData = isOwnProfile
+    ? {
+        name: `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim(),
+        email: clerkUser.primaryEmailAddress?.emailAddress || clerkUser.emailAddresses?.[0]?.emailAddress || '',
+        imageUrl: clerkUser.imageUrl,
+      }
+    : user;
 
   const pageTitle = profileData
     ? `${profileData.name || ''} | ${t("user_profile_title")} - WorkNow`
@@ -173,7 +184,12 @@ const UserProfile = () => {
             ) : (
               <>
                 {jobs.map((job) => (
-                  <JobCard key={job.id} job={job} />
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                    currentUserName={isOwnProfile ? profileData.name : undefined}
+                    currentUserImageUrl={isOwnProfile ? profileData.imageUrl : undefined}
+                  />
                 ))}
                 <Pagination className="justify-content-center">
                   {[...Array(totalPages)].map((_, i) => (
@@ -233,7 +249,7 @@ SkeletonLoader.propTypes = {
 };
 
 // Компонент карточки вакансии
-const JobCard = ({ job }) => {
+const JobCard = ({ job, currentUserName, currentUserImageUrl }) => {
   const { t } = useTranslation(); // Вызов внутри компонента
 
   return (
@@ -285,6 +301,8 @@ JobCard.propTypes = {
       isPremium: PropTypes.bool,
     }),
   }).isRequired,
+  currentUserName: PropTypes.string,
+  currentUserImageUrl: PropTypes.string,
 };
 
 export default UserProfile;

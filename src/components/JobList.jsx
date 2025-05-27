@@ -27,10 +27,13 @@ const JobList = ({ jobs, loading }) => {
   }
 
   return jobs.map((job) => {
+    const isOwnJob = isLoaded && clerkUser && job.user?.clerkUserId === clerkUser.id;
     return (
       <JobCard
         key={job.id}
         job={job}
+        currentUserName={isOwnJob ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() : undefined}
+        currentUserImageUrl={isOwnJob ? clerkUser.imageUrl : undefined}
       />
     );
   });

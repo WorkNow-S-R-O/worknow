@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import Spinner from "react-bootstrap/Spinner";
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job, currentUserName, currentUserImageUrl }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [imageLoading, setImageLoading] = useState(true);
@@ -24,9 +24,9 @@ const JobCard = ({ job }) => {
     return `${url}?t=${timestamp}`;
   };
 
-  // Используем только публичные данные из backend
-  const avatarUrl = job.user?.imageUrl;
-  const displayName = job.user?.name;
+  // Используем актуальные данные, если они переданы
+  const avatarUrl = currentUserImageUrl || job.user?.imageUrl;
+  const displayName = currentUserName || job.user?.name;
 
   return (
     <div
@@ -109,6 +109,8 @@ JobCard.propTypes = {
       name: PropTypes.string,
     }),
   }).isRequired,
+  currentUserName: PropTypes.string,
+  currentUserImageUrl: PropTypes.string,
 };
 
 export default JobCard;
