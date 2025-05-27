@@ -19,7 +19,7 @@ import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 import Success from "./pages/Success.jsx";
 import Cancel from "./pages/Cancel.jsx";
 import "./18n.ts";
-import useSyncClerkProfile from './hooks/useSyncClerkProfile';
+import ClerkProfileSync from './components/ClerkProfileSync';
 
 const router = createBrowserRouter([
   {
@@ -90,8 +90,6 @@ const MainApp = () => {
 
   const memoizedLocalization = useMemo(() => localization ?? {}, [localization]);
 
-  useSyncClerkProfile();
-
   if (!PUBLISHABLE_KEY) {
     return <div>❌ Ошибка: Ключ Clerk отсутствует</div>;
   }
@@ -108,6 +106,7 @@ const MainApp = () => {
       localization={memoizedLocalization}
     >
       <HelmetProvider>
+        <ClerkProfileSync />
         {/* 🔹 Глобальная SEO-оптимизация */}
         <Helmet>
           <title>WorkNow – Работа в Израиле | Поиск вакансий</title>
@@ -148,7 +147,6 @@ const MainApp = () => {
             })}
           </script>
         </Helmet>
-
         <Suspense fallback={<div>🔄 Загрузка страницы...</div>}>
           <RouterProvider router={router} />
         </Suspense>
