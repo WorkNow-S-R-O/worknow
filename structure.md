@@ -29,6 +29,7 @@ src/
   css/
     index.css
   hooks/
+    useSyncClerkProfile.js
   lib/
   main.jsx
   MainApp.jsx

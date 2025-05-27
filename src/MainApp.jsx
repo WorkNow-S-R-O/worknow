@@ -19,6 +19,7 @@ import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 import Success from "./pages/Success.jsx";
 import Cancel from "./pages/Cancel.jsx";
 import "./18n.ts";
+import useSyncClerkProfile from './hooks/useSyncClerkProfile';
 
 const router = createBrowserRouter([
   {
@@ -88,6 +89,8 @@ const MainApp = () => {
   const loading = useLanguageStore((state) => state.loading);
 
   const memoizedLocalization = useMemo(() => localization ?? {}, [localization]);
+
+  useSyncClerkProfile();
 
   if (!PUBLISHABLE_KEY) {
     return <div>❌ Ошибка: Ключ Clerk отсутствует</div>;
