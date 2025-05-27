@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types';
 import JobCard from './JobCard';
 import Skeleton from 'react-loading-skeleton';
+import { useUser } from '@clerk/clerk-react';
 
 const JobList = ({ jobs, loading }) => {
+  const { user: clerkUser, isLoaded } = useUser();
+
   if (loading) {
     return (
       <>
@@ -23,7 +26,17 @@ const JobList = ({ jobs, loading }) => {
     return <p className="text-muted mt-4">Объявлений не найдено</p>;
   }
 
-  return jobs.map((job) => <JobCard key={job.id} job={job} />);
+  return jobs.map((job) => {
+    const isOwnJob = isLoaded && clerkUser && job.user?.clerkUserId === clerkUser.id;
+    return (
+      <JobCard
+        key={job.id}
+        job={job}
+        currentUserName={isOwnJob ? `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}` : undefined}
+        currentUserImageUrl={isOwnJob ? clerkUser.imageUrl : undefined}
+      />
+    );
+  });
 };
 
 // **Валидация пропсов**
