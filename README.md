@@ -73,7 +73,7 @@ WorkNow is a platform that helps employers find employees and job seekers find w
 
 ## 📸 Screenshots
 
-![Main page](./screenshots/WorkNow.png)
+![Main page](./screenshots/CleanShot%202025-06-13%20at%2017.38.47@2x.png)
 
 ---
 
