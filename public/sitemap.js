@@ -52,9 +52,9 @@ const generateSitemap = async () => {
       urlCount++;
     }
 
-    // ✅ Профили пользователей (убираем fake_)
+    // ✅ Профили пользователей (убираем user_)
     for (const user of users) {
-      if (!user.clerkUserId || user.clerkUserId.startsWith("fake_")) continue;
+      if (!user.clerkUserId || user.clerkUserId.startsWith("user_")) continue;
 
       if (urlCount >= maxUrlsPerSitemap) {
         fs.writeFileSync(`public/sitemap${sitemapCount}.xml`, sitemapContent + '</urlset>\n');

@@ -11,7 +11,7 @@ export const createFakeUser = async () => {
   const lastName = faker.person.lastName();
   const email = faker.internet.email({ firstName, lastName });
   const imageUrl = faker.image.avatar();
-  const clerkUserId = `fake_${faker.string.uuid()}`;
+  const clerkUserId = `user_${faker.string.uuid()}`;
 
   const user = await prisma.user.create({
     data: {

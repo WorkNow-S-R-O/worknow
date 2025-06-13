@@ -32,7 +32,7 @@ async function clearOldData() {
     console.log("🗑 Удаляем старые данные...");
     await prisma.job.deleteMany({});
     await prisma.user.deleteMany({
-        where: { clerkUserId: { startsWith: "fake_" } }
+        where: { clerkUserId: { startsWith: "user_" } }
     });
     console.log("✅ Очистка завершена!");
 }
@@ -129,7 +129,7 @@ async function createFakeUsersWithJobs(jobs) {
         const lastName = faker.person.lastName();
         const email = faker.internet.email({ firstName, lastName });
 
-        const clerkUserId = `fake_${faker.string.uuid()}`;
+        const clerkUserId = `user_${faker.string.uuid()}`;
 
         // ✅ Если номер найден в описании, берем его, иначе генерируем случайный
         const phone = job.phone || `+972-${faker.number.int({ min: 50, max: 59 })}-${faker.number.int({ min: 1000000, max: 9999999 })}`;

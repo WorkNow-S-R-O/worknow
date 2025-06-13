@@ -27,7 +27,7 @@ async function main() {
 
   console.log("🗑 Удаляем всех фейковых пользователей...");
   await prisma.user.deleteMany({
-    where: { clerkUserId: { startsWith: "fake_" } }
+    where: { clerkUserId: { startsWith: "user_" } }
   });
   console.log("✅ Все фейковые пользователи удалены!");
 
