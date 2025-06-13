@@ -93,7 +93,7 @@ WorkNow is a platform that helps employers find employees and job seekers find w
 
 ## 📬 Contacts & Support
 
-- Telegram: [@worknowjob](https://t.me/worknowjob)
+- Telegram: [@worknowjob](https://t.me/WORKNOW_JOBS)
 - Email: worknow.notifications@gmail.com
 
 ---
