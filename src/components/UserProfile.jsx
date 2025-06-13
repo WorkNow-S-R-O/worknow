@@ -7,7 +7,6 @@ import axios from "axios";
 import { Pagination } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import { Helmet } from "react-helmet-async";
-import UserHeader from "./UserHeader";
 import { useTranslation } from "react-i18next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -172,12 +171,6 @@ const UserProfile = () => {
           <p>{t("user_not_found")}</p>
         ) : (
           <>
-            <UserHeader
-              user={profileData}
-              profileImage={profileImage}
-              loading={loading}
-              setImageError={() => {}}
-            />
             <h4 className="text-primary">{t("user_jobs")}</h4>
             {jobs.length === 0 ? (
               <p>{t("user_no_jobs")}</p>
@@ -187,8 +180,6 @@ const UserProfile = () => {
                   <JobCard
                     key={job.id}
                     job={job}
-                    currentUserName={isOwnProfile ? profileData.name : undefined}
-                    currentUserImageUrl={isOwnProfile ? profileData.imageUrl : undefined}
                   />
                 ))}
                 <Pagination className="justify-content-center">
@@ -249,7 +240,7 @@ SkeletonLoader.propTypes = {
 };
 
 // Компонент карточки вакансии
-const JobCard = ({ job, currentUserName, currentUserImageUrl }) => {
+const JobCard = ({ job }) => {
   const { t } = useTranslation(); // Вызов внутри компонента
 
   return (
@@ -301,8 +292,6 @@ JobCard.propTypes = {
       isPremium: PropTypes.bool,
     }),
   }).isRequired,
-  currentUserName: PropTypes.string,
-  currentUserImageUrl: PropTypes.string,
 };
 
 export default UserProfile;

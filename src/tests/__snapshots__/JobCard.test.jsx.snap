@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JobCard matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="card shadow-sm mb-4 position-relative "
+    style="background-color: white; width: 90%; max-width: 700px; border-radius: 10px; min-height: 220px; box-shadow: none;"
+  >
+    <div
+      class="card-body"
+    >
+      <h5
+        class="card-title text-primary"
+      >
+        Test Job
+      </h5>
+      <p
+        class="card-text"
+      >
+        <strong>
+          salary_per_hour_card
+        </strong>
+         1000
+        <br />
+        <strong>
+          location_card
+        </strong>
+         Москва
+      </p>
+      <p
+        class="card-text"
+      >
+        Описание работы
+      </p>
+      <p
+        class="card-text"
+      >
+        <strong>
+          phone_number_card
+        </strong>
+         +79999999999
+      </p>
+    </div>
+    <div
+      class="position-absolute top-0 end-0 m-2 d-flex justify-content-center align-items-center"
+      style="width: 45px; height: 45px; cursor: pointer; border-radius: 50%; overflow: hidden; background-color: rgb(240, 240, 240);"
+    >
+      <div>
+        Spinner
+      </div>
+      <img
+        alt="User Avatar"
+        class="rounded-circle w-100 h-100"
+        src="/images/default-avatar.png?t=1748365211530"
+        style="display: none;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;

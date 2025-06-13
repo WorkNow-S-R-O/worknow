@@ -44,5 +44,9 @@ src/
   store/
   tests/
     __snapshots__/
+    JobCard.test.jsx
+    Footer.test.jsx
+    SupportPage.test.jsx
+    SurveyWidget.test.jsx
   18n.ts
   index.css 
