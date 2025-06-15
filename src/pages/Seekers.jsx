@@ -36,13 +36,17 @@ export default function Seekers() {
 
   const handleAddSeeker = async (form) => {
     try {
-      const res = await axios.post(`${API_URL}/seekers`, {
-        ...form,
+      const payload = {
+        name: form.name,
+        contact: form.contact,
+        city: form.city,
+        description: form.description,
         slug: (form.name + '-' + form.description.split('\n')[0])
           .toLowerCase()
           .replace(/[^a-zа-я0-9]+/gi, '-')
           .replace(/^-+|-+$/g, ''),
-      });
+      };
+      const res = await axios.post(`${API_URL}/seekers`, payload);
       const created = res.data;
       setShowAddModal(false);
       if (created && created.id) {
