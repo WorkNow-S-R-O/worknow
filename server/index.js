@@ -14,13 +14,14 @@ import usersRoutes from './routes/users.js';
 import webhookRoutes from './routes/webhook.js';
 import userSyncRoutes from './routes/userSync.js';
 import userRoutes from './routes/users.js';
+import seekersRoutes from './routes/seekers.js';
+
 import { WEBHOOK_SECRET, CLERK_SECRET_KEY } from './config/clerkConfig.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const isProduction = process.env.NODE_ENV === "production";
 
 // Проверяем важные переменные окружения
 if (!process.env.DATABASE_URL) {
@@ -62,6 +63,7 @@ app.use('/webhook', webhookRoutes);
 app.use('/api/users', userSyncRoutes);
 app.use('/api/jobs', jobsRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/seekers', seekersRoutes);
 
 // React Router должен отдавать index.html
 app.get("*", (req, res) => {
@@ -69,7 +71,7 @@ app.get("*", (req, res) => {
 });
 
 // Обработчик ошибок (защита от падения)
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error("❌ Ошибка на сервере:", err);
   res.status(500).json({ error: "Внутренняя ошибка сервера" });
 });

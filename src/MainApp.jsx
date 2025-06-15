@@ -18,6 +18,8 @@ import SurveyWidget from "./components/SurveyWidget.jsx";
 import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 import Success from "./pages/Success.jsx";
 import Cancel from "./pages/Cancel.jsx";
+import Seekers from "./pages/Seekers.jsx";
+import SeekerDetails from "./pages/SeekerDetails.jsx";
 import "./18n.ts";
 import ClerkProfileSync from './components/ClerkProfileSync';
 
@@ -78,6 +80,16 @@ const router = createBrowserRouter([
   {
     path: "/cancel",
     element: <Cancel />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/seekers",
+    element: <Seekers />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/seekers/:id",
+    element: <SeekerDetails />,
     errorElement: <NotFoundPage />,
   },
 ]);

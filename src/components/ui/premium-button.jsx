@@ -11,22 +11,19 @@ import { useUser, useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import React from "react";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const PremiumButtonSkeleton = () => (
-  <div className="relative h-10 w-32 bg-gray-200 rounded animate-pulse">
+const PremiumButtonSkeleton = React.forwardRef((props, ref) => (
+  <div ref={ref} className="relative h-10 w-32 bg-gray-200 rounded animate-pulse" {...props}>
     <div className="absolute inset-0 flex items-center justify-center">
       <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
     </div>
   </div>
-);
+));
+PremiumButtonSkeleton.displayName = "PremiumButtonSkeleton";
 
-const PremiumButtonSpinner = () => (
-  <div className="flex items-center justify-center">
-    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
-  </div>
-);
 
 const PremiumButton = () => {
   const { t } = useTranslation();
@@ -79,7 +76,7 @@ const PremiumButton = () => {
       );
 
       window.location.href = response.data.url;
-    } catch (error) {
+    } catch {
       toast.error(t("payment_error"));
     }
   };

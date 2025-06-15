@@ -44,3 +44,14 @@ model Job {
 
   @@index([boostedAt])
 }
+
+model Seeker {
+  id          Int      @id @default(autoincrement())
+  name        String
+  contact     String   // скрытый контакт (телефон/email/social)
+  city        String
+  description String
+  slug        String?  @unique
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}

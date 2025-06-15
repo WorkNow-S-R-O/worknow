@@ -51,6 +51,11 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="mr-3">
+              <Link id="seekers" to="/seekers" className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900">
+                {t("seekers")}
+              </Link>
+            </li>
+            <li className="mr-3">
               <Link id="jobs" to="/my-advertisements" className="nav-link text-lg font-normal text-gray-600 focus:text-black">
                 {t("jobs")}
               </Link>
@@ -98,7 +103,7 @@ const Navbar = () => {
               aria-expanded="false"
             >
               <i className="bi bi-translate me-2"></i>
-              {language === "en" ? "English" : "Russian"}
+              {language === "en" ? "English" : "Русский"}
             </button>
             <ul className="dropdown-menu" aria-labelledby="languageDropdown">
               <li>
@@ -108,7 +113,7 @@ const Navbar = () => {
               </li>
               <li>
                 <button onClick={() => handleLanguageChange("ru")} className="dropdown-item">
-                  Russian
+                  Русский
                 </button>
               </li>
             </ul>
@@ -154,6 +159,11 @@ const Navbar = () => {
               <li className="nav-item">
                 <Link className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900" to="/">
                   {t("vacancies")}
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900" to="/seekers">
+                  {t("seekers")}
                 </Link>
               </li>
               <li className="nav-item">
