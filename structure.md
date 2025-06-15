@@ -6,6 +6,7 @@ src/
       JobForm.jsx
       JobFormFields.jsx
       JobFormSchema.js
+      AddSeekerModal.jsx
     routes/
     ui/
       sheet.tsx
