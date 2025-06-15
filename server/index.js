@@ -71,7 +71,7 @@ app.get("*", (req, res) => {
 });
 
 // Обработчик ошибок (защита от падения)
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   console.error("❌ Ошибка на сервере:", err);
   res.status(500).json({ error: "Внутренняя ошибка сервера" });
 });

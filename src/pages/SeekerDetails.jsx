@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
 import {Footer} from "../components/Footer";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL; 
 
 export default function SeekerDetails() {
   const { id } = useParams();
@@ -22,7 +22,7 @@ export default function SeekerDetails() {
   }, [id]);
 
   if (loading) return <div>Загрузка...</div>;
-  if (!seeker) return <div>Соискатель не найден</div>;
+  if (!seeker || !seeker.description) return <div>Соискатель не найден</div>;
 
   return (
     <>
@@ -53,7 +53,7 @@ export default function SeekerDetails() {
         </div>
         <div className="mb-2">
           <strong>Объявление:</strong>
-          <div>{seeker.description.split("\n").slice(1).join(" ")}</div>
+          <div>{seeker.description?.split("\n").slice(1).join(" ")}</div>
         </div>
         <div className="mb-2">
           <strong>Примечание:</strong>
