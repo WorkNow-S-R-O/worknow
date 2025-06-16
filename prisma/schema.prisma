@@ -54,4 +54,8 @@ model Seeker {
   slug        String?  @unique
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
+  gender      String?
+  facebook    String?
+  languages   String[]
+  nativeLanguage String?
 }

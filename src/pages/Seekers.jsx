@@ -45,6 +45,10 @@ export default function Seekers() {
           .toLowerCase()
           .replace(/[^a-zа-я0-9]+/gi, '-')
           .replace(/^-+|-+$/g, ''),
+        gender: form.gender,
+        facebook: form.facebook,
+        languages: form.languages,
+        nativeLanguage: form.nativeLanguage,
       };
       const res = await axios.post(`${API_URL}/seekers`, payload);
       const created = res.data;
