@@ -10,6 +10,10 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "https://worknowjob.com";
 export const createCheckoutSession = async (req, res) => {
   const { clerkUserId } = req.body;
 
+  if (!clerkUserId) {
+    return res.status(400).json({ error: 'clerkUserId is required' });
+  }
+
   try {
     // 🔹 Получаем пользователя из базы
     const user = await prisma.user.findUnique({
