@@ -41,6 +41,7 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
       }
       variant="outline-primary"
       className="mb-3"
+      style={{ height: 40 }}
     >
       <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
         <Dropdown.Item onClick={() => handleCitySelect('Все города')}>

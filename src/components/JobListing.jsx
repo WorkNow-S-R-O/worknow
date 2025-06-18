@@ -5,6 +5,7 @@ import PaginationControl from '../components/PaginationControl';
 import CityDropdown from '../components/ui/city-dropwdown';
 import { useTranslation } from "react-i18next";
 import { Helmet } from 'react-helmet-async';
+import FilterIcon from '../components/ui/FilterIcon';
 
 const JobListing = () => {
   const { t, ready } = useTranslation();
@@ -81,7 +82,10 @@ const JobListing = () => {
       </Helmet>
 
       {/* Фильтр по городам */}
-      <CityDropdown selectedCity={selectedCity} onCitySelect={setSelectedCity} />
+      <div className="d-flex align-items-center mb-3">
+        <FilterIcon />
+        <CityDropdown selectedCity={selectedCity} onCitySelect={setSelectedCity} />
+      </div>
 
       {/* Список вакансий */}
       <JobList jobs={currentJobs} loading={loading} />
