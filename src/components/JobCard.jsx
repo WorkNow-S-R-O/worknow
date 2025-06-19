@@ -32,7 +32,7 @@ const JobCard = ({ job }) => {
         <h5 className="card-title text-primary">{job.title}</h5>
         {job.category?.name && (
           <div className="mb-2">
-            <span className="px-4 py-2 rounded font-semibold bg-primary text-white">{job.category.name}</span>
+            <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{job.category.name}</span>
           </div>
         )}
         <p className="card-text">
