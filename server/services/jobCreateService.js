@@ -6,7 +6,7 @@ import { sendNewJobNotificationToTelegram } from '../utils/telegram.js';
 const prisma = new PrismaClient();
 const MAX_JOBS_PER_USER = 10;
 
-export const createJobService = async ({ title, salary, cityId, phone, description, userId }) => {
+export const createJobService = async ({ title, salary, cityId, categoryId, phone, description, userId }) => {
   let errors = [];
 
   // Валидация на запрещенные слова и ссылки
@@ -53,9 +53,10 @@ export const createJobService = async ({ title, salary, cityId, phone, descripti
       phone,
       description,
       city: { connect: { id: parseInt(cityId) } },
+      category: { connect: { id: parseInt(categoryId) } },
       user: { connect: { id: existingUser.id } }
     },
-    include: { city: true, user: true },
+    include: { city: true, user: true, category: true },
   });
 
   // Если пользователь премиум — отправляем уведомление в Telegram
