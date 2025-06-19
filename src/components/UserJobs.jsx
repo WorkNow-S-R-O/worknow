@@ -35,6 +35,7 @@ const UserJobs = () => {
         `${API_URL}/users/user-jobs/${user.id}?page=${currentPage}&limit=5`
       );
 
+      console.log('Ответ от сервера:', response.data.jobs);
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
     } catch (error) {

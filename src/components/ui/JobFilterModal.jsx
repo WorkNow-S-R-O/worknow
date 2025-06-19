@@ -17,7 +17,8 @@ const JobFilterModal = ({ open, onClose }) => {
 
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ background: '#fff', borderRadius: 12, padding: 32, minWidth: 320, boxShadow: '0 4px 32px rgba(0,0,0,0.15)' }}>
+      <div style={{ background: '#fff', borderRadius: 12, padding: 32, minWidth: 320, boxShadow: '0 4px 32px rgba(0,0,0,0.15)', position: 'relative' }}>
+        <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#888' }} aria-label="Закрыть фильтр">×</button>
         <h3 style={{ marginBottom: 24 }}>Фильтрация вакансий</h3>
         <div style={{ marginBottom: 16 }}>
           <label>Желаемая зарплата (₪/час):</label>
@@ -33,8 +34,7 @@ const JobFilterModal = ({ open, onClose }) => {
           </select>
         </div>
         <div className="d-flex justify-content-end">
-          <button className="btn btn-secondary me-2" onClick={onClose}>Закрыть</button>
-          {/* Кнопка "Применить" появится позже */}
+          <button className="btn btn-primary" onClick={onClose}>Сохранить</button>
         </div>
       </div>
     </div>
