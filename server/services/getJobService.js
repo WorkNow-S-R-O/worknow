@@ -8,6 +8,7 @@ export const getJobByIdService = async (id) => {
       where: { id: parseInt(id) },
       include: {
         city: true,
+        category: true,
       },
     });
   } catch (error) {

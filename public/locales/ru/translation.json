@@ -79,5 +79,6 @@
   "edit_page_default_description": "Редактирование вакансии",
   "find_latest_jobs": "Поиск последних вакансий",
   "seekers": "Соискатели",
-  "category": "Категория"
+  "category": "Категория",
+  "choose_category": "Выберите категорию"
 }

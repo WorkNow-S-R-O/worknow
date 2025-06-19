@@ -264,6 +264,11 @@ const JobCard = ({ job }) => {
     >
       <div className="card-body">
         <h5 className="card-title text-primary">{job.title}</h5>
+        {job.category?.name && (
+          <div className="mb-2">
+            <span className="px-4 py-2 rounded font-semibold bg-primary text-white">{job.category.name}</span>
+          </div>
+        )}
         <p className="card-text">
           <strong>{t("salary_per_hour_card")}</strong> {job.salary}
           <br />

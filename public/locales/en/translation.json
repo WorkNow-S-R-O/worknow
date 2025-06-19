@@ -82,5 +82,6 @@
   "edit_page_default_description": "Edit job",
   "find_latest_jobs": "Find latest jobs",
   "seekers": "Seekers",
-  "category": "Category"
+  "category": "Category",
+  "choose_category": "Choose category"
 }

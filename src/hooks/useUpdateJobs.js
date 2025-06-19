@@ -7,6 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const useFetchJob = (id, setValue) => {
   const [loading, setLoading] = useState(true);
+  const [job, setJob] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,7 +21,6 @@ const useFetchJob = (id, setValue) => {
         const response = await axios.get(`${API_URL}/jobs/${id}`);
         const job = response.data;
 
-
         if (!job || typeof job !== "object") {
           console.error("❌ API вернул некорректные данные:", job);
           toast.error("Ошибка загрузки объявления");
@@ -32,8 +32,11 @@ const useFetchJob = (id, setValue) => {
         setValue("title", job.title);
         setValue("salary", job.salary);
         setValue("cityId", job.city ? job.city.id : null);
+        setValue("categoryId", job.category ? job.category.id : null);
         setValue("phone", job.phone);
         setValue("description", job.description);
+        
+        setJob(job);
 
       } catch (error) {
         console.error("❌ Ошибка загрузки объявления:", error);
@@ -47,7 +50,7 @@ const useFetchJob = (id, setValue) => {
     loadJob();
   }, [id, navigate, setValue]);
 
-  return { loading };
+  return { loading, job };
 };
 
 export default useFetchJob;
