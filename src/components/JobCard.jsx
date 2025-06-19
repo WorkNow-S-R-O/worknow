@@ -30,6 +30,11 @@ const JobCard = ({ job }) => {
     >
       <div className="card-body">
         <h5 className="card-title text-primary">{job.title}</h5>
+        {job.category?.name && (
+          <div className="mb-2">
+            <span className="badge bg-info text-dark">{job.category.name}</span>
+          </div>
+        )}
         <p className="card-text">
           <strong>{t("salary_per_hour_card")}</strong>{" "}
           {job.salary || "Не указано"}
@@ -52,6 +57,9 @@ JobCard.propTypes = {
     title: PropTypes.string.isRequired,
     salary: PropTypes.string,
     city: PropTypes.shape({
+      name: PropTypes.string,
+    }),
+    category: PropTypes.shape({
       name: PropTypes.string,
     }),
     description: PropTypes.string,

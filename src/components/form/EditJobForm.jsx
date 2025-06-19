@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useNavigate } from 'react-router-dom';
 import { jobSchema } from './JobFormSchema';
 import useFetchCities from '../../hooks/useFetchCities';
+import useFetchCategories from '../../hooks/useFetchCategories';
 import useFetchJob from '../../hooks/useUpdateJobs';
 import { updateJob } from '../../../server/editFormService';
 import { showToastError, showToastSuccess } from '../../../server/utils/toastUtils';
@@ -17,6 +18,7 @@ const EditJobForm = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { cities, loading: loadingCities } = useFetchCities();
+  const { categories, loading: loadingCategories } = useFetchCategories();
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
     resolver: zodResolver(jobSchema),
@@ -24,17 +26,19 @@ const EditJobForm = () => {
       title: '', 
       salary: '', 
       cityId: undefined, 
+      categoryId: undefined,
       phone: '', 
       description: '' 
     },
   });
 
   const selectedCityId = watch('cityId');
+  const selectedCategoryId = watch('categoryId');
   const { loading: loadingJob, job } = useFetchJob(id, setValue);
 
   const onSubmit = async (data) => {
     try {
-      await updateJob(id, { ...data, cityId: parseInt(data.cityId) });
+      await updateJob(id, { ...data, cityId: parseInt(data.cityId), categoryId: parseInt(data.categoryId) });
       showToastSuccess('Объявление успешно обновлено!');
       navigate('/');
     } catch (error) {
@@ -66,8 +70,11 @@ const EditJobForm = () => {
               errors={errors}
               setValue={setValue}
               selectedCityId={selectedCityId}
+              selectedCategoryId={selectedCategoryId}
               cities={cities}
+              categories={categories}
               loadingCities={loadingCities}
+              loadingCategories={loadingCategories}
               loadingJob={loadingJob}
             />
 

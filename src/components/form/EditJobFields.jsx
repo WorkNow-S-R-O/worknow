@@ -3,7 +3,7 @@ import Select from 'react-select';
 import Skeleton from 'react-loading-skeleton';
 import { useTranslation } from "react-i18next";
 
-const EditJobFields = ({ register, errors, setValue, selectedCityId, cities, loadingCities, loadingJob }) => {
+const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCategoryId, cities, categories, loadingCities, loadingCategories, loadingJob }) => {
   const { t } = useTranslation();
 
   return (
@@ -60,6 +60,24 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, cities, loa
         {errors.cityId && <p className="text-red-500 text-sm">{errors.cityId.message}</p>}
       </div>
 
+      {/* Категория */}
+      <div className="mb-4">
+        <label className="block text-gray-700 mb-2">{t('category')}</label>
+        {loadingCategories ? (
+          <Skeleton height={40} />
+        ) : (
+          <Select
+            options={categories}
+            value={categories.find((cat) => cat.value === selectedCategoryId) || null}
+            onChange={(option) => setValue('categoryId', option?.value)}
+            placeholder={t('choose_category')}
+            classNamePrefix="react-select"
+            isClearable
+          />
+        )}
+        {errors.categoryId && <p className="text-red-500 text-sm">{errors.categoryId.message}</p>}
+      </div>
+
       {/* Телефон */}
       <div className="mb-4">
         <label className="block text-gray-700 mb-2">{t('phone_number')}</label>
@@ -102,8 +120,11 @@ EditJobFields.propTypes = {
   errors: PropTypes.object.isRequired,
   setValue: PropTypes.func.isRequired,
   selectedCityId: PropTypes.number,
+  selectedCategoryId: PropTypes.number,
   cities: PropTypes.array.isRequired,
+  categories: PropTypes.array.isRequired,
   loadingCities: PropTypes.bool.isRequired,
+  loadingCategories: PropTypes.bool.isRequired,
   loadingJob: PropTypes.bool.isRequired,
 };
 
