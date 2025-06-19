@@ -2,9 +2,25 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const getJobsService = async () => {
+export const getJobsService = async (filters = {}) => {
   try {
+    // Формируем условия фильтрации
+    const where = {};
+    
+    // Фильтр по зарплате
+    if (filters.salary) {
+      where.salary = {
+        gte: String(filters.salary) // Больше или равно указанной зарплате
+      };
+    }
+
+    // Фильтр по категории
+    if (filters.categoryId) {
+      where.categoryId = parseInt(filters.categoryId);
+    }
+
     const jobs = await prisma.job.findMany({
+      where,
       include: { city: true, user: true, category: true },
       orderBy: [
         { user: { isPremium: 'desc' } },

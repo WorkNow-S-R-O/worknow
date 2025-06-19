@@ -15,7 +15,7 @@ const JobListing = () => {
   const defaultCity = ready ? t('choose_city_dashboard') : 'Выбрать город';
   const defaultTitle = ready ? t('latest_jobs') : 'Последние вакансии';
 
-  const { jobs, loading } = useJobs();
+  const { jobs } = useJobs();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCity, setSelectedCity] = useState(defaultCity);
   const jobsPerPage = 10;
@@ -27,7 +27,6 @@ const JobListing = () => {
     : jobs.filter((job) => job.city?.name.toLowerCase() === selectedCity.toLowerCase());
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
-  const currentJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
 
   // Генерация SEO-friendly заголовка
   const pageTitle = selectedCity !== defaultCity
@@ -93,7 +92,7 @@ const JobListing = () => {
       <JobFilterModal open={filterOpen} onClose={() => setFilterOpen(false)} />
 
       {/* Список вакансий */}
-      <JobList jobs={currentJobs} loading={loading} />
+      <JobList />
 
       {/* Пагинация */}
       {filteredJobs.length > 0 && (
