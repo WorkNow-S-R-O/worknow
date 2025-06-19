@@ -9,7 +9,9 @@ export const JobFormFields = ({
   errors,
   setValue,
   selectedCityId,
+  selectedCategoryId,
   cities,
+  categories,
   loading,
 }) => {
   const { t } = useTranslation();
@@ -74,6 +76,28 @@ export const JobFormFields = ({
         )}
         {errors.cityId && (
           <p className="text-red-500 text-sm mt-1">{errors.cityId.message}</p>
+        )}
+      </div>
+
+      {/* Категория */}
+      <div className="mb-4">
+        <label htmlFor="categoryId" className="block text-gray-700 mb-2">
+          {t("category")}
+        </label>
+        {loading ? (
+          <Skeleton height={40} />
+        ) : (
+          <Select
+            options={categories}
+            value={categories.find((category) => category.value === selectedCategoryId) || null}
+            onChange={(option) => setValue("categoryId", option?.value)}
+            placeholder="Выберите категорию"
+            classNamePrefix="react-select"
+            isClearable
+          />
+        )}
+        {errors.categoryId && (
+          <p className="text-red-500 text-sm mt-1">{errors.categoryId.message}</p>
         )}
       </div>
 
@@ -159,7 +183,14 @@ JobFormFields.propTypes = {
   errors: PropTypes.object.isRequired,
   setValue: PropTypes.func.isRequired,
   selectedCityId: PropTypes.number,
+  selectedCategoryId: PropTypes.number,
   cities: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  categories: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.number.isRequired,
       label: PropTypes.string.isRequired,

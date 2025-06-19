@@ -6,6 +6,7 @@ import CityDropdown from '../components/ui/city-dropwdown';
 import { useTranslation } from "react-i18next";
 import { Helmet } from 'react-helmet-async';
 import FilterIcon from '../components/ui/FilterIcon';
+import JobFilterModal from '../components/ui/JobFilterModal';
 
 const JobListing = () => {
   const { t, ready } = useTranslation();
@@ -18,6 +19,7 @@ const JobListing = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCity, setSelectedCity] = useState(defaultCity);
   const jobsPerPage = 10;
+  const [filterOpen, setFilterOpen] = useState(false);
 
   // Фильтрация вакансий по городу
   const filteredJobs = selectedCity === defaultCity 
@@ -83,9 +85,12 @@ const JobListing = () => {
 
       {/* Фильтр по городам */}
       <div className="d-flex align-items-center mb-3">
-        <FilterIcon />
+        <span onClick={() => setFilterOpen(true)} style={{ cursor: 'pointer' }}>
+          <FilterIcon />
+        </span>
         <CityDropdown selectedCity={selectedCity} onCitySelect={setSelectedCity} />
       </div>
+      <JobFilterModal open={filterOpen} onClose={() => setFilterOpen(false)} />
 
       {/* Список вакансий */}
       <JobList jobs={currentJobs} loading={loading} />

@@ -1,4 +1,5 @@
 import { getJobByIdService } from "../services/getJobService.js";
+import { createJobService } from "../services/createJobService.js";
 
 export const getJobById = async (req, res) => {
   const { id } = req.params;
@@ -18,5 +19,17 @@ export const getJobById = async (req, res) => {
   } catch (error) {
     console.error("Ошибка получения объявления:", error.message);
     res.status(500).json({ error: "Ошибка получения объявления", details: error.message });
+  }
+};
+
+export const createJob = async (req, res) => {
+  const jobData = req.body;
+
+  try {
+    const job = await createJobService(jobData);
+    res.status(201).json(job);
+  } catch (error) {
+    console.error("Ошибка создания объявления:", error.message);
+    res.status(500).json({ error: "Ошибка создания объявления", details: error.message });
   }
 };

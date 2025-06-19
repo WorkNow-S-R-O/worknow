@@ -29,6 +29,12 @@ model City {
   jobs Job[]
 }
 
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  jobs Job[]
+}
+
 model Job {
   id          Int       @id @default(autoincrement())
   title       String
@@ -37,10 +43,12 @@ model Job {
   description String
   cityId      Int
   userId      String
+  categoryId  Int
   createdAt   DateTime  @default(now())
   boostedAt   DateTime?
   city        City      @relation(fields: [cityId], references: [id])
   user        User      @relation(fields: [userId], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id])
 
   @@index([boostedAt])
 }

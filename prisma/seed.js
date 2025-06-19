@@ -35,6 +35,10 @@ async function main() {
   await prisma.city.deleteMany({});
   console.log("✅ Все города удалены!");
 
+  console.log("🗑 Удаляем всех соискателей...");
+  await prisma.seeker.deleteMany({});
+  console.log("✅ Все соискатели удалены!");
+  
   console.log("📌 Добавляем приоритетные города...");
   await prisma.city.createMany({
     data: priorityCities.map(name => ({ name })),
@@ -46,6 +50,23 @@ async function main() {
   });
 
   console.log("✅ Все города успешно добавлены!");
+
+  const categories = [
+    'Стройка',
+    'Уборка',
+    'Доставка',
+    'Офис',
+    'Ремонт',
+    'Образование',
+    'Медицина',
+    'Склад',
+    'Производство',
+    'Другое'
+  ];
+  await prisma.category.deleteMany({});
+  await prisma.category.createMany({
+    data: categories.map(name => ({ name })),
+  });
 
   // Добавляем тестовых соискателей
   const testSeekers = [

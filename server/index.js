@@ -15,6 +15,7 @@ import webhookRoutes from './routes/webhook.js';
 import userSyncRoutes from './routes/userSync.js';
 import userRoutes from './routes/users.js';
 import seekersRoutes from './routes/seekers.js';
+import categoriesRoutes from './routes/categories.js';
 
 import { WEBHOOK_SECRET, CLERK_SECRET_KEY } from './config/clerkConfig.js';
 
@@ -64,6 +65,7 @@ app.use('/api/users', userSyncRoutes);
 app.use('/api/jobs', jobsRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/seekers', seekersRoutes);
+app.use('/api/categories', categoriesRoutes);
 
 // React Router должен отдавать index.html
 app.get("*", (req, res) => {

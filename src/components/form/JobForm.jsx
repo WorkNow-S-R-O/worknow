@@ -2,8 +2,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
+import PropTypes from 'prop-types';
 import { jobSchema } from './JobFormSchema';
 import useFetchCities from '../../hooks/useFetchCities';
+import useFetchCategories from '../../hooks/useFetchCategories';
 import { createJob } from '../../../server/formService';
 import { showToastError, showToastSuccess } from '../../../server/utils/toastUtils';
 import JobFormFields from './JobFormFields';
@@ -13,14 +15,23 @@ const JobForm = ({ onJobCreated }) => {
   const { user } = useUser();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { cities, loading } = useFetchCities();
+  const { cities, loading: citiesLoading } = useFetchCities();
+  const { categories, loading: categoriesLoading } = useFetchCategories();
 
   const { register, handleSubmit, setValue, watch, formState: { errors }, reset } = useForm({
     resolver: zodResolver(jobSchema),
-    defaultValues: { title: '', salary: '', cityId: undefined, phone: '', description: '' },
+    defaultValues: { 
+      title: '', 
+      salary: '', 
+      cityId: undefined, 
+      categoryId: undefined,
+      phone: '', 
+      description: '' 
+    },
   });
 
   const selectedCityId = watch('cityId');
+  const selectedCategoryId = watch('categoryId');
 
   const onSubmit = async (data) => {
     if (!user) {
@@ -29,7 +40,12 @@ const JobForm = ({ onJobCreated }) => {
     }
 
     try {
-      await createJob({ ...data, cityId: parseInt(data.cityId), userId: user.id });
+      await createJob({ 
+        ...data, 
+        cityId: parseInt(data.cityId), 
+        categoryId: parseInt(data.categoryId),
+        userId: user.id 
+      });
       showToastSuccess('Объявление успешно создано!');
       reset();
       if (onJobCreated) onJobCreated();
@@ -49,14 +65,20 @@ const JobForm = ({ onJobCreated }) => {
             register={register} 
             errors={errors} 
             setValue={setValue} 
-            selectedCityId={selectedCityId} 
-            cities={cities} 
-            loading={loading} 
+            selectedCityId={selectedCityId}
+            selectedCategoryId={selectedCategoryId}
+            cities={cities}
+            categories={categories}
+            loading={citiesLoading || categoriesLoading}
           />
         </form>
       </div>
     </div>
   );
+};
+
+JobForm.propTypes = {
+  onJobCreated: PropTypes.func,
 };
 
 export { JobForm };

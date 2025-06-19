@@ -78,5 +78,6 @@
   "edit_page_description": "Редактирование объявления",
   "edit_page_default_description": "Редактирование вакансии",
   "find_latest_jobs": "Поиск последних вакансий",
-  "seekers": "Соискатели"
+  "seekers": "Соискатели",
+  "category": "Категория"
 }
