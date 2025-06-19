@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 export const getJobsService = async () => {
   try {
     const jobs = await prisma.job.findMany({
-      include: { city: true, user: true },
+      include: { city: true, user: true, category: true },
       orderBy: [
         { user: { isPremium: 'desc' } },
         { boostedAt: { sort: 'desc', nulls: 'last' } },
@@ -30,7 +30,7 @@ export const getUserJobsService = async (clerkUserId, query) => {
   
       const jobs = await prisma.job.findMany({
         where: { userId: user.id },
-        include: { city: true, user: true },
+        include: { city: true, user: true, category: true },
         skip,
         take: limitInt,
         orderBy: { createdAt: 'desc' },
