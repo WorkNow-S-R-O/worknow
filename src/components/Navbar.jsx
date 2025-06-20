@@ -46,24 +46,24 @@ const Navbar = () => {
           </Link>
           <ul className="flex justify-center items-center ml-0 gap-2 mb-2 text-gray-500">
             <li className="mr-3">
-              <Link id="vacancies" to="/" className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900">
+              <Link id="vacancies" to="/" className="nav-link text-lg font-normal">
                 {t("vacancies")}
               </Link>
             </li>
             <li className="mr-3">
-              <Link id="seekers" to="/seekers" className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900">
+              <Link id="seekers" to="/seekers" className="nav-link text-lg font-normal">
                 {t("seekers")}
               </Link>
             </li>
             <li className="mr-3">
-              <Link id="jobs" to="/my-advertisements" className="nav-link text-lg font-normal text-gray-600 focus:text-black">
+              <Link id="jobs" to="/my-advertisements" className="nav-link text-lg font-normal">
                 {t("jobs")}
               </Link>
             </li>
             {/* Dropdown Support */}
             <li className="nav-item dropdown">
               <button
-                className="nav-link text-lg font-normal text-gray-600 focus:text-gray-900 dropdown-toggle"
+                className="nav-link text-lg font-normal dropdown-toggle"
                 type="button"
                 id="supportDropdown"
                 data-bs-toggle="dropdown"
@@ -157,24 +157,24 @@ const Navbar = () => {
           <div className={`navbar-collapse ${isExpanded ? "show" : "collapse"}`} id="navbarNav">
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900" to="/">
+                <Link className="nav-link text-lg font-normal" to="/">
                   {t("vacancies")}
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900" to="/seekers">
+                <Link className="nav-link text-lg font-normal" to="/seekers">
                   {t("seekers")}
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900" to="/my-advertisements">
+                <Link className="nav-link text-lg font-normal" to="/my-advertisements">
                   {t("jobs")}
                 </Link>
               </li>
               {/* Dropdown Support */}
               <li className="nav-item dropdown">
                 <button
-                  className="nav-link text-lg font-normal text-gray-600 hover:text-gray-900 dropdown-toggle"
+                  className="nav-link text-lg font-normal dropdown-toggle"
                   type="button"
                   id="mobileSupportDropdown"
                   data-bs-toggle="dropdown"

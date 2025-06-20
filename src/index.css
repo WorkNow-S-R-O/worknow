@@ -169,20 +169,24 @@ button:focus-visible {
   color: #6c757d !important; /* Цвет текста */
 }
 
-#supportDropdown .dropdown-item:hover,
-#supportDropdown .dropdown-item:focus {
-  background-color: #e9ebec !important; /* Светло-серый фон при наведении */
-  color: #495057 !important; /* Чуть темнее при наведении */
+#supportDropdown {
+  color: #495057 !important;
 }
 
-#vacancies:hover {
-color: #1a1a1a !important;
+/* Правила для ссылок в навигации */
+.d-lg-block .nav-link,
+.d-lg-none .nav-link {
+    color: #495057 !important;
+    transition: color 0.2s ease-in-out;
 }
 
-#jobs:hover {
-color: #1a1a1a !important;
+.d-lg-block .nav-link:hover,
+.d-lg-block .nav-link:focus,
+.d-lg-none .nav-link:hover,
+.d-lg-none .nav-link:focus {
+    color: #1a1a1a !important; /* Черный цвет при наведении для всех ссылок */
 }
 
 #supportDropdown:hover {
-  color: #1a1a1a !important;
+  color: #1a1a1a !important
 }
