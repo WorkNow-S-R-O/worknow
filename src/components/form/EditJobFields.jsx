@@ -50,7 +50,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
         ) : (
           <Select
             options={cities}
-            value={cities.find((city) => city.value === selectedCityId) || null}
+            value={cities.find((city) => city.value == selectedCityId) || null}
             onChange={(option) => setValue('cityId', option?.value)}
             placeholder={t('choose_city')}
             classNamePrefix="react-select"
@@ -68,7 +68,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
         ) : (
           <Select
             options={categories}
-            value={categories.find((cat) => cat.value === selectedCategoryId) || null}
+            value={categories.find((cat) => cat.value == selectedCategoryId) || null}
             onChange={(option) => setValue('categoryId', option?.value)}
             placeholder={t('choose_category')}
             classNamePrefix="react-select"
