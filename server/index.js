@@ -13,7 +13,6 @@ import boostJob from './routes/jobs.js';
 import usersRoutes from './routes/users.js';
 import webhookRoutes from './routes/webhook.js';
 import userSyncRoutes from './routes/userSync.js';
-import userRoutes from './routes/users.js';
 import seekersRoutes from './routes/seekers.js';
 import categoriesRoutes from './routes/categories.js';
 
@@ -56,6 +55,7 @@ const __dirname = path.dirname(__filename);
 // Раздача статических файлов фронта
 app.use(express.static(path.join(__dirname, "../dist")));
 
+// --- РЕГИСТРАЦИЯ МАРШРУТОВ ---
 app.use('/api/payments', paymentRoutes);
 app.use('/api/cities', citiesRoutes);
 app.use('/:id/boost', boostJob);
@@ -63,7 +63,6 @@ app.use('/api/users', usersRoutes);
 app.use('/webhook', webhookRoutes);
 app.use('/api/users', userSyncRoutes);
 app.use('/api/jobs', jobsRoutes);
-app.use('/api/user', userRoutes);
 app.use('/api/seekers', seekersRoutes);
 app.use('/api/categories', categoriesRoutes);
 

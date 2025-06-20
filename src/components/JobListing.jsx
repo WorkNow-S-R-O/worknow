@@ -7,9 +7,11 @@ import { useTranslation } from "react-i18next";
 import { Helmet } from 'react-helmet-async';
 import FilterIcon from '../components/ui/FilterIcon';
 import JobFilterModal from '../components/ui/JobFilterModal';
+import useFilterStore from '../store/filterStore';
 
 const JobListing = () => {
   const { t, ready } = useTranslation();
+  const { filters, setFilters } = useFilterStore();
   
   // Ждем загрузки переводов
   const defaultCity = ready ? t('choose_city_dashboard') : 'Выбрать город';
@@ -21,10 +23,13 @@ const JobListing = () => {
   const jobsPerPage = 10;
   const [filterOpen, setFilterOpen] = useState(false);
 
-  // Фильтрация вакансий по городу
-  const filteredJobs = selectedCity === defaultCity 
-    ? jobs 
-    : jobs.filter((job) => job.city?.name.toLowerCase() === selectedCity.toLowerCase());
+  // Фильтрация вакансий
+  const filteredJobs = jobs.filter(job => {
+    const cityMatch = selectedCity === defaultCity || job.city?.name.toLowerCase() === selectedCity.toLowerCase();
+    const salaryMatch = !filters.salary || (job.salary && Number(job.salary) >= filters.salary);
+    const categoryMatch = !filters.categoryId || job.categoryId === Number(filters.categoryId);
+    return cityMatch && salaryMatch && categoryMatch;
+  });
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
   const currentJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
@@ -90,7 +95,12 @@ const JobListing = () => {
         </span>
         <CityDropdown selectedCity={selectedCity} onCitySelect={setSelectedCity} />
       </div>
-      <JobFilterModal open={filterOpen} onClose={() => setFilterOpen(false)} />
+      <JobFilterModal
+        open={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        onApply={setFilters}
+        currentFilters={filters}
+      />
 
       {/* Список вакансий */}
       <JobList jobs={currentJobs} loading={loading} />
