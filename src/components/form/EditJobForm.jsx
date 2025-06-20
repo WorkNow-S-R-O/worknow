@@ -38,7 +38,12 @@ const EditJobForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      await updateJob(id, { ...data, cityId: parseInt(data.cityId), categoryId: parseInt(data.categoryId) });
+      const updatedData = {
+        ...data,
+        cityId: data.cityId ? parseInt(data.cityId, 10) : null,
+        categoryId: data.categoryId ? parseInt(data.categoryId, 10) : null,
+      };
+      await updateJob(id, updatedData);
       showToastSuccess('Объявление успешно обновлено!');
       navigate('/');
     } catch (error) {
