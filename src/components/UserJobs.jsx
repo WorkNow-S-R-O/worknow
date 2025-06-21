@@ -143,6 +143,13 @@ const UserJobs = () => {
                     <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{job.category.name}</span>
                   </div>
                 )}
+                {
+                  !job.category?.name && (
+                    <div className="mb-2">
+                      <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">Не указано</span>
+                    </div>
+                  )
+                }
                 <p className="card-text">
                   <strong>{t("salary_per_hour_card")}</strong> {job.salary}
                   <br />
