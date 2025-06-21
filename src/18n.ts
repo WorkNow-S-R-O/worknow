@@ -10,12 +10,15 @@ i18n
   .init({
     fallbackLng: "ru",
     debug: true,
+    supportedLngs: ["en", "ru", "he"],
     detection: {
       order: ["queryString", "cookie"],
       caches: ["cookie"],
     },
     interpolation: {
       escapeValue: false,
+    },
+    backend: {
     },
   });
 
