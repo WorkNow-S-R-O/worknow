@@ -113,6 +113,15 @@ async function fetchJobDescriptions() {
 async function createFakeUsersWithJobs(jobs) {
     console.log(`👥 Создаем фейковых пользователей и привязываем вакансии...`);
 
+    const defaultCategory = await prisma.category.findUnique({
+        where: { name: 'Разное' },
+    });
+
+    if (!defaultCategory) {
+        console.error('❌ Категория "Разное" не найдена. Пожалуйста, запустите `prisma db seed`');
+        return;
+    }
+
     for (const job of jobs) {
         const city = await prisma.city.findUnique({ where: { name: job.city } });
 
@@ -155,6 +164,7 @@ async function createFakeUsersWithJobs(jobs) {
                         salary: salary,
                         phone: phone,
                         city: { connect: { id: city.id } },
+                        category: { connect: { id: defaultCategory.id } },
                     },
                 },
             },
