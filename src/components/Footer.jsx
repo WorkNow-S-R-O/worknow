@@ -1,4 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Telegram, Facebook } from 'react-bootstrap-icons';
 
 const Footer = () => {
   return (
@@ -9,27 +10,24 @@ const Footer = () => {
         width: "100%",
       }}
     >
-      <a
-        href="https://t.me/WORKNOW_JOBS"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="btn btn-outline-primary d-flex align-items-center"
-        style={{
-          borderRadius: "5px",
-          textDecoration: "none",
-        }}
-      >
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
-          alt="Telegram"
-          style={{
-            width: "24px",
-            height: "24px",
-            marginRight: "8px",
-          }}
-        />
-        Наш Telegram
-      </a>
+      <div className="d-flex gap-4">
+        <a
+          href="https://t.me/WORKNOW_JOBS"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Telegram"
+        >
+          <Telegram color="royalblue" size={28} />
+        </a>
+        <a
+          href="https://www.facebook.com/groups/763040732570299"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Facebook"
+        >
+          <Facebook color="royalblue" size={28} />
+        </a>
+      </div>
     </footer>
   );
 };
