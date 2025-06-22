@@ -6,7 +6,7 @@ import {Footer} from "../components/Footer";
 import {Navbar} from "../components/Navbar";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { Pagination } from "react-bootstrap";
+import PaginationControl from "../components/PaginationControl";
 import AddSeekerModal from "../components/form/AddSeekerModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -216,17 +216,11 @@ export default function Seekers() {
               </tbody>
             </table>
             {totalPages > 1 && (
-              <Pagination className="justify-content-center">
-                {[...Array(totalPages)].map((_, i) => (
-                  <Pagination.Item
-                    key={i + 1}
-                    active={i + 1 === currentPage}
-                    onClick={() => handlePageChange(i + 1)}
-                  >
-                    {i + 1}
-                  </Pagination.Item>
-                ))}
-              </Pagination>
+              <PaginationControl
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
             )}
           </>
         )}
