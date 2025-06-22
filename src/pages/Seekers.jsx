@@ -6,7 +6,7 @@ import {Footer} from "../components/Footer";
 import {Navbar} from "../components/Navbar";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import PaginationControl from "../components/PaginationControl";
+import { Pagination } from "react-bootstrap";
 import AddSeekerModal from "../components/form/AddSeekerModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -17,14 +17,16 @@ export default function Seekers() {
   const [seekers, setSeekers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const seekersPerPage = 10;
+
   const isPremium = user?.publicMetadata?.isPremium || false;
-  const isAdmin = user && user.emailAddresses?.[0]?.emailAddress === 'worknow.notifications@gmail.com';
+  const isAdmin = user?.emailAddresses?.[0]?.emailAddress === 'worknow.notifications@gmail.com';
+  
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const seekersPerPage = 10;
 
   useEffect(() => {
     setLoading(true);
@@ -41,7 +43,7 @@ export default function Seekers() {
         contact: form.contact,
         city: form.city,
         description: form.description,
-        slug: (form.name + '-' + form.description.split('\n')[0])
+        slug: (form.name + '-' + form.description.split('\\n')[0])
           .toLowerCase()
           .replace(/[^a-zа-я0-9]+/gi, '-')
           .replace(/^-+|-+$/g, ''),
@@ -74,10 +76,10 @@ export default function Seekers() {
   };
 
   const handleSelectAll = () => {
-    if (selectedIds.length === seekers.length) {
+    if (selectedIds.length === currentSeekers.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(seekers.map((s) => s.id));
+      setSelectedIds(currentSeekers.map((s) => s.id));
     }
   };
 
@@ -108,9 +110,12 @@ export default function Seekers() {
     }
   };
 
-  // Пагинация
   const totalPages = Math.ceil(seekers.length / seekersPerPage);
   const currentSeekers = seekers.slice((currentPage - 1) * seekersPerPage, currentPage * seekersPerPage);
+  
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <>
@@ -156,7 +161,7 @@ export default function Seekers() {
                     <th>
                       <input
                         type="checkbox"
-                        checked={selectedIds.length === seekers.length}
+                        checked={selectedIds.length === currentSeekers.length && currentSeekers.length > 0}
                         onChange={handleSelectAll}
                       />
                     </th>
@@ -171,7 +176,7 @@ export default function Seekers() {
                 {currentSeekers.map(seeker => (
                   <tr key={seeker.id}>
                     {isAdmin && deleteMode && (
-                      <td>
+                      <td className="py-3">
                         <input
                           type="checkbox"
                           checked={selectedIds.includes(seeker.id)}
@@ -179,7 +184,7 @@ export default function Seekers() {
                         />
                       </td>
                     )}
-                    <td>
+                    <td className="py-3">
                       <Link
                         to={`/seekers/${seeker.id}`}
                         style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
@@ -187,7 +192,7 @@ export default function Seekers() {
                         {seeker.name}
                       </Link>
                     </td>
-                    <td>
+                    <td className="py-3">
                       {isPremium ? (
                         <Link
                           to={`/seekers/${seeker.id}`}
@@ -204,19 +209,24 @@ export default function Seekers() {
                         </Link>
                       )}
                     </td>
-                    <td>{seeker.city}</td>
-                    <td>{seeker.description}</td>
+                    <td className="py-3">{seeker.city}</td>
+                    <td className="py-3">{seeker.description}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {/* Пагинация */}
             {totalPages > 1 && (
-              <PaginationControl
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
+              <Pagination className="justify-content-center">
+                {[...Array(totalPages)].map((_, i) => (
+                  <Pagination.Item
+                    key={i + 1}
+                    active={i + 1 === currentPage}
+                    onClick={() => handlePageChange(i + 1)}
+                  >
+                    {i + 1}
+                  </Pagination.Item>
+                ))}
+              </Pagination>
             )}
           </>
         )}
