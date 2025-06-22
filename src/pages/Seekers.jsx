@@ -121,7 +121,7 @@ export default function Seekers() {
     <>
       <Navbar />
       <AddSeekerModal show={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddSeeker} />
-      <div className="container mt-5">
+      <div className="container mt-20">
         <h2>{t("seekers") || "Соискатели"}</h2>
         {isAdmin && (
           <div className="mb-3 d-flex gap-2">
