@@ -108,7 +108,7 @@ export default function Seekers() {
       <Navbar />
       <AddSeekerModal show={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddSeeker} />
       <div className="container mt-20">
-        <h2>{t("seekers") || "Соискатели"}</h2>
+        <h2 className="fs-4">{t("seekers") || "Соискатели"}</h2>
         {isAdmin && (
           <div className="mb-3 d-flex gap-2">
             <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
@@ -159,7 +159,7 @@ export default function Seekers() {
                 </tr>
               </thead>
               <tbody>
-                {currentSeekers.map(seeker => (
+                {currentSeekers.map((seeker, index) => (
                   <tr key={seeker.id} className={seeker.isDemanded ? 'table-primary' : ''}>
                     {isAdmin && deleteMode && (
                       <td className="py-3">
@@ -173,6 +173,7 @@ export default function Seekers() {
                     <td className="py-3">
                       <Link
                         to={`/seekers/${seeker.id}`}
+                        state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * seekersPerPage + index }}
                         style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
                       >
                         {seeker.name}
@@ -182,6 +183,7 @@ export default function Seekers() {
                       {isPremium ? (
                         <Link
                           to={`/seekers/${seeker.id}`}
+                          state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * seekersPerPage + index }}
                           style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
                         >
                           {seeker.contact}
@@ -189,6 +191,7 @@ export default function Seekers() {
                       ) : (
                         <Link
                           to={`/seekers/${seeker.id}`}
+                          state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * seekersPerPage + index }}
                           style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
                         >
                           {'****'}

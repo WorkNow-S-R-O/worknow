@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
 import {Footer} from "../components/Footer";
@@ -8,13 +8,23 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export default function SeekerDetails() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  const location = useLocation();
   const [seeker, setSeeker] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
   const isPremium = user?.publicMetadata?.isPremium || false;
 
+  const { seekerIds, currentIndex } = location.state || {};
+  
+  const hasNext = seekerIds && currentIndex < seekerIds.length - 1;
+  const hasPrev = seekerIds && currentIndex > 0;
+  
+  const nextSeekerId = hasNext ? seekerIds[currentIndex + 1] : null;
+  const prevSeekerId = hasPrev ? seekerIds[currentIndex - 1] : null;
+
   useEffect(() => {
+    setSeeker(null);
+    setLoading(true);
     fetch(`${API_URL}/seekers/${id}`)
       .then((res) => res.json())
       .then((data) => {
@@ -31,8 +41,10 @@ export default function SeekerDetails() {
     <>
       <Navbar />
       <div className="container mt-5" style={{ maxWidth: 600 }}>
-        <a href="#" onClick={() => navigate(-1)} style={{ color: '#1976d2' }}>&larr; Вернуться к списку</a>
-        <h2 className="mt-3 mb-2">Соискатели</h2>
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <h2 className="fs-4 mb-0">Соискатели</h2>
+          <Link to="/seekers" style={{ color: '#1976d2', textDecoration: 'underline', whiteSpace: 'nowrap' }}>&larr; Вернуться к списку</Link>
+        </div>
         <div className="text-muted mb-2">Опубликовано {seeker.createdAt ? `${Math.floor((Date.now() - new Date(seeker.createdAt)) / (1000*60*60*24))} дней назад` : ''} {seeker.createdAt && new Date(seeker.createdAt).toLocaleDateString()}</div>
         <h3 className="mb-2">
           {seeker.name}
@@ -78,6 +90,26 @@ export default function SeekerDetails() {
           <strong>Примечание:</strong> {seeker.note}
         </div>
         <button className="btn btn-dark mt-2">Распечатать</button>
+        
+        {seekerIds && (
+        <div className="mt-4">
+          <div className="text-muted mb-2">
+            {`${currentIndex + 1}-й из ${seekerIds.length}`}
+          </div>
+          <div className="d-flex gap-2">
+            {hasPrev && (
+              <Link to={`/seekers/${prevSeekerId}`} state={{ seekerIds, currentIndex: currentIndex - 1 }} className="btn btn-primary">
+                &larr; Назад
+              </Link>
+            )}
+            {hasNext && (
+              <Link to={`/seekers/${nextSeekerId}`} state={{ seekerIds, currentIndex: currentIndex + 1 }} className="btn btn-primary">
+                Вперед &rarr;
+              </Link>
+            )}
+          </div>
+        </div>
+        )}
       </div>
       <Footer />
     </>
