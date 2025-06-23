@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import PaginationControl from "../components/PaginationControl";
 import AddSeekerModal from "../components/form/AddSeekerModal";
+import '../css/seekers-table-mobile.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -107,7 +108,7 @@ export default function Seekers() {
     <>
       <Navbar />
       <AddSeekerModal show={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddSeeker} />
-      <div className="container mt-3 mt-md-5 mt-lg-20">
+      <div className="container" style={{ paddingTop: '100px' }}>
         <h2 className="fs-4">{t("seekers") || "Соискатели"}</h2>
         {isAdmin && (
           <div className="mb-3 d-flex gap-2">
