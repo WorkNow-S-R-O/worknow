@@ -8,7 +8,7 @@ const JobCard = ({ job }) => {
 
   return (
     <div
-      className={`card shadow-sm mb-4 position-relative ${
+      className={`card shadow-sm mb-4 position-relative text-start ${
         job.user?.isPremium ? "border border-warning premium-glow" : ""
       }`}
       style={{

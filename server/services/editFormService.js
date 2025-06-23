@@ -26,7 +26,7 @@ export const updateJobService = async (id, { title, salary, cityId, phone, descr
         city: { connect: { id: parseInt(cityId) } },
         category: { connect: { id: parseInt(categoryId) } }
       },
-      include: { city: true, user: true },
+      include: { city: true, user: true, category: true },
     });
 
     if (updatedJob.user.isPremium) {

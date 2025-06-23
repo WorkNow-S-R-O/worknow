@@ -61,9 +61,15 @@ model Seeker {
   description String
   slug        String?  @unique
   isActive    Boolean  @default(true)
+  isDemanded  Boolean  @default(false)
   createdAt   DateTime @default(now())
   gender      String?
   facebook    String?
   languages   String[]
   nativeLanguage String?
+  employment  String?
+  category    String?
+  documents   String?
+  note        String?
+  announcement String?
 }

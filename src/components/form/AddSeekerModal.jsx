@@ -8,6 +8,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
     city: '',
     description: '',
     gender: '',
+    isDemanded: false,
     facebook: '',
     languages: [],
     nativeLanguage: '',
@@ -60,6 +61,8 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
       setForm(f => ({ ...f, nativeLanguage: value }));
     } else if (type === 'radio') {
       setForm(f => ({ ...f, [name]: value }));
+    } else if (type === 'checkbox' && name !== 'languages') {
+      setForm(f => ({ ...f, [name]: checked }));
     } else {
       setForm(f => ({ ...f, [name]: value }));
     }
@@ -110,6 +113,12 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                     <input className="form-check-input" type="radio" name="gender" id="gender-female" value="женщина" checked={form.gender === 'женщина'} onChange={handleChange} required />
                     <label className="form-check-label" htmlFor="gender-female">Женщина</label>
                   </div>
+                </div>
+                <div className="form-check mb-3">
+                  <input className="form-check-input" type="checkbox" name="isDemanded" id="isDemanded" checked={form.isDemanded} onChange={handleChange} />
+                  <label className="form-check-label" htmlFor="isDemanded">
+                    Востребованный кандидат
+                  </label>
                 </div>
                 {error && <div className="text-danger mb-2">{error}</div>}
                 <button className="btn btn-primary" type="submit">Далее</button>

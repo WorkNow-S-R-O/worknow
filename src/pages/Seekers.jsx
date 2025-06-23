@@ -38,21 +38,7 @@ export default function Seekers() {
 
   const handleAddSeeker = async (form) => {
     try {
-      const payload = {
-        name: form.name,
-        contact: form.contact,
-        city: form.city,
-        description: form.description,
-        slug: (form.name + '-' + form.description.split('\\n')[0])
-          .toLowerCase()
-          .replace(/[^a-zа-я0-9]+/gi, '-')
-          .replace(/^-+|-+$/g, ''),
-        gender: form.gender,
-        facebook: form.facebook,
-        languages: form.languages,
-        nativeLanguage: form.nativeLanguage,
-      };
-      const res = await axios.post(`${API_URL}/seekers`, payload);
+      const res = await axios.post(`${API_URL}/seekers`, form);
       const created = res.data;
       setShowAddModal(false);
       if (created && created.id) {
@@ -174,7 +160,7 @@ export default function Seekers() {
               </thead>
               <tbody>
                 {currentSeekers.map(seeker => (
-                  <tr key={seeker.id}>
+                  <tr key={seeker.id} className={seeker.isDemanded ? 'table-primary' : ''}>
                     {isAdmin && deleteMode && (
                       <td className="py-3">
                         <input

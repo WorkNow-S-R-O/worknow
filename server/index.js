@@ -60,8 +60,8 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/cities', citiesRoutes);
 app.use('/:id/boost', boostJob);
 app.use('/api/users', usersRoutes);
-app.use('/webhook', webhookRoutes);
 app.use('/api/users', userSyncRoutes);
+app.use('/webhook', webhookRoutes);
 app.use('/api/jobs', jobsRoutes);
 app.use('/api/seekers', seekersRoutes);
 app.use('/api/categories', categoriesRoutes);
@@ -72,7 +72,8 @@ app.get("*", (req, res) => {
 });
 
 // Обработчик ошибок (защита от падения)
-app.use((err, req, res, next) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => { // next обязателен для error-handling middleware
   console.error("❌ Ошибка на сервере:", err);
   res.status(500).json({ error: "Внутренняя ошибка сервера" });
 });

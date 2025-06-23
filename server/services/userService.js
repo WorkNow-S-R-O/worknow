@@ -72,7 +72,7 @@ export const getUserJobsService = async (clerkUserId, query) => {
     
     const jobs = await prisma.job.findMany({
       where: { userId: user.id },
-      include: { city: true, user: true },
+      include: { city: true, user: true, category: true },
       skip,
       take: limitInt,
       orderBy: { createdAt: "desc" },
@@ -144,7 +144,8 @@ export const handleClerkWebhookService = async (req) => {
     }
 
     return { success: true };
-  } catch (error) {
+  } catch (err) {
+    console.error('Webhook verification failed', err);
     return { error: 'Webhook verification failed' };
   }
 };

@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useUser } from '@clerk/clerk-react';
+import JobCard from "./JobCard";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -30,6 +31,7 @@ const UserProfile = () => {
       const response = await axios.get(
         `${API_URL}/users/user-jobs/${clerkUserId}?page=${page}&limit=${jobsPerPage}`
       );
+      console.log('Вакансии, полученные от сервера в UserProfile:', response.data.jobs);
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -111,6 +113,27 @@ const UserProfile = () => {
   const profileImage = profileData?.imageUrl || "/images/default-avatar.png";
   const profileUrl = `https://worknowjob.com/user/${clerkUserId}`;
 
+  // Создаем SEO-разметку отдельно, чтобы избежать мутации данных
+  const jobPostingSchema = jobs.map((job) => ({
+    "@type": "JobPosting",
+    title: job.title,
+    description: job.description,
+    hiringOrganization: {
+      "@type": "Organization",
+      name: "WorkNow",
+      sameAs: "https://worknowjob.com",
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: job.city?.name || "Не указано",
+        addressCountry: "IL",
+      },
+    },
+    "jobCategory": job.category?.name || "Не указано"
+  }));
+
   return (
     <>
       {/* 🔹 SEO-оптимизация */}
@@ -141,24 +164,7 @@ const UserProfile = () => {
               name: "WorkNow",
               sameAs: "https://worknowjob.com",
             },
-            hasOfferCatalog: jobs.map((job) => ({
-              "@type": "JobPosting",
-              title: job.title,
-              description: job.description,
-              hiringOrganization: {
-                "@type": "Organization",
-                name: "WorkNow",
-                sameAs: "https://worknowjob.com",
-              },
-              jobLocation: {
-                "@type": "Place",
-                address: {
-                  "@type": "PostalAddress",
-                  addressLocality: job.city?.name || "Не указано",
-                  addressCountry: "IL",
-                },
-              },
-            })),
+            hasOfferCatalog: jobPostingSchema
           })}
         </script>
       </Helmet>
@@ -237,69 +243,6 @@ const SkeletonLoader = ({ jobsPerPage }) => (
 
 SkeletonLoader.propTypes = {
   jobsPerPage: PropTypes.number.isRequired,
-};
-
-// Компонент карточки вакансии
-const JobCard = ({ job }) => {
-  const { t } = useTranslation(); // Вызов внутри компонента
-
-  return (
-    <div
-      className={`card shadow-sm mb-4 position-relative w-75 text-start ${
-        job.user?.isPremium ? "border border-warning premium-glow" : ""
-      }`}
-      style={{
-        backgroundColor: "white",
-        borderRadius: "10px",
-        maxWidth: "700px",
-        minHeight: "220px",
-        height: "auto",
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-        boxShadow: job.user?.isPremium
-          ? "0px 0px 15px 5px rgba(255, 215, 0, 0.7)"
-          : "none",
-      }}
-    >
-      <div className="card-body">
-        <h5 className="card-title text-primary">{job.title}</h5>
-        {job.category?.name && (
-          <div className="mb-2">
-            <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{job.category.name}</span>
-          </div>
-        )}
-        <p className="card-text">
-          <strong>{t("salary_per_hour_card")}</strong> {job.salary}
-          <br />
-          <strong>{t("location_card")}</strong> {job.city.name}
-        </p>
-        <p className="card-text">{job.description}</p>
-        <p className="card-text">
-          <strong>{t("phone_number_card")}</strong> {job.phone}
-        </p>
-      </div>
-    </div>
-  );
-};
-
-JobCard.propTypes = {
-  job: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    salary: PropTypes.string.isRequired,
-    phone: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    city: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-    }).isRequired,
-    category: PropTypes.shape({
-      name: PropTypes.string,
-    }),
-    user: PropTypes.shape({
-      isPremium: PropTypes.bool,
-    }),
-  }).isRequired,
 };
 
 export default UserProfile;

@@ -2,8 +2,8 @@ import { getAllSeekers, createSeeker, getSeekerBySlug, deleteSeeker, getSeekerBy
 
 export async function getSeekers(req, res) {
   try {
-    const seekers = await getAllSeekers();
-    res.json(seekers);
+    const data = await getAllSeekers(req.query);
+    res.json(data);
   } catch {
     res.status(500).json({ error: 'Ошибка получения соискателей' });
   }
@@ -11,7 +11,24 @@ export async function getSeekers(req, res) {
 
 export async function addSeeker(req, res) {
   try {
-    const seeker = await createSeeker(req.body);
+    const { name, contact, city, description, gender, isDemanded, facebook, languages, nativeLanguage, category, employment, documents, announcement, note } = req.body;
+    const seekerData = {
+      name,
+      contact,
+      city,
+      description,
+      gender,
+      isDemanded,
+      facebook,
+      languages,
+      nativeLanguage,
+      category,
+      employment,
+      documents,
+      announcement,
+      note,
+    };
+    const seeker = await createSeeker(seekerData);
     res.status(201).json(seeker);
   } catch (e) {
     console.error('Ошибка при добавлении соискателя:', e);

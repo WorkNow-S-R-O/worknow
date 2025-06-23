@@ -34,7 +34,11 @@ export default function SeekerDetails() {
         <a href="#" onClick={() => navigate(-1)} style={{ color: '#1976d2' }}>&larr; Вернуться к списку</a>
         <h2 className="mt-3 mb-2">Соискатели</h2>
         <div className="text-muted mb-2">Опубликовано {seeker.createdAt ? `${Math.floor((Date.now() - new Date(seeker.createdAt)) / (1000*60*60*24))} дней назад` : ''} {seeker.createdAt && new Date(seeker.createdAt).toLocaleDateString()}</div>
-        <h3 className="mb-2">{seeker.name} {seeker.gender && <span className="badge bg-dark">{seeker.gender}</span>}</h3>
+        <h3 className="mb-2">
+          {seeker.name}
+          {seeker.gender && <span className="badge bg-dark ms-2">{seeker.gender}</span>}
+          {seeker.isDemanded && <span className="badge bg-primary ms-2">востребованный кандидат</span>}
+        </h3>
         {isPremium && (seeker.contact || seeker.facebook) && (
           <div className="bg-light p-2 mb-2" style={{ fontWeight: 600, fontSize: 18 }}>
             <i className="bi bi-telephone me-2" />{seeker.contact && <span style={{marginRight:8}}>{seeker.contact}</span>}
