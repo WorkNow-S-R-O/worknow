@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
 import {Footer} from "../components/Footer";
 import { useUser } from "@clerk/clerk-react";
+import '../css/seeker-details-mobile.css';
 
 const API_URL = import.meta.env.VITE_API_URL; 
 
@@ -40,16 +41,18 @@ export default function SeekerDetails() {
   return (
     <>
       <Navbar />
-      <div className="container mt-5" style={{ maxWidth: 600 }}>
+      <div className="container" style={{ maxWidth: 600, paddingTop: '100px' }}>
         <div className="d-flex justify-content-between align-items-center mb-2">
           <h2 className="fs-4 mb-0">Соискатели</h2>
           <Link to="/seekers" style={{ color: '#1976d2', textDecoration: 'underline', whiteSpace: 'nowrap' }}>&larr; Вернуться к списку</Link>
         </div>
         <div className="text-muted mb-2">Опубликовано {seeker.createdAt ? `${Math.floor((Date.now() - new Date(seeker.createdAt)) / (1000*60*60*24))} дней назад` : ''} {seeker.createdAt && new Date(seeker.createdAt).toLocaleDateString()}</div>
         <h3 className="mb-2">
-          {seeker.name}
-          {seeker.gender && <span className="badge bg-dark ms-2">{seeker.gender}</span>}
-          {seeker.isDemanded && <span className="badge bg-primary ms-2">востребованный кандидат</span>}
+          <span className="d-flex align-items-center flex-wrap gap-2">
+            {seeker.name}
+            {seeker.gender && <span className="badge bg-dark">{seeker.gender}</span>}
+            {seeker.isDemanded && <span className="badge bg-primary">востребованный кандидат</span>}
+          </span>
         </h3>
         {isPremium && (seeker.contact || seeker.facebook) && (
           <div className="bg-light p-2 mb-2" style={{ fontWeight: 600, fontSize: 18 }}>
