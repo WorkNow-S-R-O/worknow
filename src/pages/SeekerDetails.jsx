@@ -92,7 +92,7 @@ export default function SeekerDetails() {
         <div className="mb-2">
           <strong>Примечание:</strong> {seeker.note}
         </div>
-        <button className="btn btn-dark mt-2">Распечатать</button>
+        <button className="btn btn-dark mt-2" onClick={() => window.print()}>Распечатать</button>
         
         {seekerIds && (
         <div className="mt-4">
