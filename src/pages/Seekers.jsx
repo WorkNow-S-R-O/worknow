@@ -142,7 +142,7 @@ export default function Seekers() {
           <>
             <table className="table table-bordered">
               <thead>
-                <tr>
+                <tr className="table-light">
                   {isAdmin && deleteMode && (
                     <th>
                       <input
