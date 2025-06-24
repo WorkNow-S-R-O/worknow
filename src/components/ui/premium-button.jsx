@@ -47,7 +47,7 @@ const PremiumButton = () => {
       }
 
       try {
-        const response = await axios.get(`${API_URL}/user/${user.id}`);
+        const response = await axios.get(`${API_URL}/users/${user.id}`);
         setIsPremium(response.data.isPremium);
         setIsAutoRenewal(response.data.isAutoRenewal);
       } catch (error) {
