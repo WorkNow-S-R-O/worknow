@@ -96,14 +96,19 @@ const router = createBrowserRouter([
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
+if (!PUBLISHABLE_KEY || !PUBLISHABLE_KEY.startsWith('pk_')) {
+  // eslint-disable-next-line no-console
+  console.error('❌ Ошибка: Некорректный или отсутствует VITE_CLERK_PUBLISHABLE_KEY! Проверьте .env и перезапустите dev-сервер.');
+}
+
 const MainApp = () => {
   const localization = useLanguageStore((state) => state.localization);
   const loading = useLanguageStore((state) => state.loading);
 
   const memoizedLocalization = useMemo(() => localization ?? {}, [localization]);
 
-  if (!PUBLISHABLE_KEY) {
-    return <div>❌ Ошибка: Ключ Clerk отсутствует</div>;
+  if (!PUBLISHABLE_KEY || !PUBLISHABLE_KEY.startsWith('pk_')) {
+    return <div style={{color: 'red', fontWeight: 'bold', padding: 24}}>❌ Ошибка: Некорректный или отсутствует VITE_CLERK_PUBLISHABLE_KEY!<br/>Проверьте .env и перезапустите dev-сервер.<br/>Текущий ключ: <code>{String(PUBLISHABLE_KEY)}</code></div>;
   }
 
   if (loading) {

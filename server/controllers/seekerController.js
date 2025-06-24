@@ -1,4 +1,5 @@
 import { getAllSeekers, createSeeker, getSeekerBySlug, deleteSeeker, getSeekerById } from '../services/seekerService.js';
+import { getUserByClerkIdService } from '../services/getUserByClerkService.js';
 
 export async function getSeekers(req, res) {
   try {
@@ -63,7 +64,13 @@ export async function getSeekerByIdController(req, res) {
     const seeker = await getSeekerById(id);
     console.log('Результат поиска:', seeker);
     if (!seeker) return res.status(404).json({ error: 'not found' });
-    res.json(seeker);
+    let isPremium = false;
+    const clerkUserId = req.query.clerkUserId;
+    if (clerkUserId) {
+      const user = await getUserByClerkIdService(clerkUserId);
+      isPremium = !!user?.isPremium;
+    }
+    res.json({ ...seeker, isPremium });
   } catch (e) {
     console.error('Ошибка получения соискателя по id:', e);
     res.status(500).json({ error: 'Ошибка получения соискателя' });

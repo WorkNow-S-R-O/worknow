@@ -50,4 +50,8 @@ src/
     SupportPage.test.jsx
     SurveyWidget.test.jsx
   18n.ts
-  index.css 
+  index.css
+  - tsconfig.app.json
+  - tsconfig.json
+  - tsconfig.server.json
+  - vite.config.js 

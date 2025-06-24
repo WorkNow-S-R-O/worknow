@@ -13,7 +13,7 @@ export default function SeekerDetails() {
   const [seeker, setSeeker] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
-  const isPremium = user?.publicMetadata?.isPremium || false;
+  const [isPremium, setIsPremium] = useState(false);
 
   const { seekerIds, currentIndex } = location.state || {};
   
@@ -26,14 +26,17 @@ export default function SeekerDetails() {
   useEffect(() => {
     setSeeker(null);
     setLoading(true);
-    fetch(`${API_URL}/seekers/${id}`)
+    const clerkUserId = user?.id;
+    const url = clerkUserId ? `${API_URL}/seekers/${id}?clerkUserId=${clerkUserId}` : `${API_URL}/seekers/${id}`;
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         setSeeker(data);
+        setIsPremium(!!data.isPremium);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [id]);
+  }, [id, user]);
 
   if (loading) return <div>Загрузка...</div>;
   if (!seeker || !seeker.description) return <div>Соискатель не найден</div>;
