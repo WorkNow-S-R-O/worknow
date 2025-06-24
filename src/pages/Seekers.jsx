@@ -21,7 +21,7 @@ export default function Seekers() {
   const [currentPage, setCurrentPage] = useState(1);
   const seekersPerPage = 10;
 
-  const isPremium = user?.publicMetadata?.isPremium || false;
+  const [isPremium, setIsPremium] = useState(false);
   const isAdmin = user?.emailAddresses?.[0]?.emailAddress === 'worknow.notifications@gmail.com';
   
   const [showAddModal, setShowAddModal] = useState(false);
@@ -36,6 +36,13 @@ export default function Seekers() {
       .catch(() => setError("Ошибка загрузки соискателей"))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    axios.get(`${API_URL}/users/${user.id}`)
+      .then(res => setIsPremium(!!res.data.isPremium))
+      .catch(() => setIsPremium(false));
+  }, [user]);
 
   const handleAddSeeker = async (form) => {
     try {
@@ -181,23 +188,13 @@ export default function Seekers() {
                       </Link>
                     </td>
                     <td className="py-3">
-                      {isPremium ? (
-                        <Link
-                          to={`/seekers/${seeker.id}`}
-                          state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * seekersPerPage + index }}
-                          style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
-                        >
-                          {seeker.contact}
-                        </Link>
-                      ) : (
-                        <Link
-                          to={`/seekers/${seeker.id}`}
-                          state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * seekersPerPage + index }}
-                          style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
-                        >
-                          {'****'}
-                        </Link>
-                      )}
+                      <Link
+                        to={`/seekers/${seeker.id}`}
+                        state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * seekersPerPage + index }}
+                        style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
+                      >
+                        {isPremium ? seeker.contact : '****'}
+                      </Link>
                     </td>
                     <td className="py-3">{seeker.city}</td>
                     <td className="py-3">{seeker.description}</td>
