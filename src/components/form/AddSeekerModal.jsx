@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useFetchCities from '../../hooks/useFetchCities';
+import useFetchCategories from '../../hooks/useFetchCategories';
 import PropTypes from 'prop-types';
 
 export default function AddSeekerModal({ show, onClose, onSubmit }) {
@@ -19,6 +20,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
     documents: '',
     note: '',
     announcement: '',
+    documentType: '',
   });
   const [error, setError] = useState(null);
 
@@ -30,6 +32,20 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
   ];
 
   const { cities, loading: loadingCities } = useFetchCities();
+  const { categories, loading: loadingCategories } = useFetchCategories();
+
+  const employmentOptions = [
+    { value: 'полная', label: 'Полная' },
+    { value: 'частичная', label: 'Частичная' },
+  ];
+
+  const documentTypeOptions = [
+    { value: 'Виза Б1', label: 'Виза Б1' },
+    { value: 'Виза Б2', label: 'Виза Б2' },
+    { value: 'Теудат Зеут', label: 'Теудат Зеут' },
+    { value: 'Рабочая виза', label: 'Рабочая виза' },
+    { value: 'Другое', label: 'Другое' },
+  ];
 
   if (!show) return null;
 
@@ -177,13 +193,47 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                   ))}
                 </div>
                 <div className="mb-3">
-                  <input name="category" className="form-control" placeholder="Категория (например, уход-за-пожилыми)" value={form.category} onChange={handleChange} />
+                  <select
+                    name="category"
+                    className="form-control"
+                    value={form.category}
+                    onChange={handleChange}
+                    required
+                    disabled={loadingCategories}
+                  >
+                    <option value="">Выберите категорию</option>
+                    {categories.map(cat => (
+                      <option key={cat.value} value={cat.label}>{cat.label}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="mb-3">
-                  <input name="employment" className="form-control" placeholder="Занятость (например, полная)" value={form.employment} onChange={handleChange} />
+                  <select
+                    name="employment"
+                    className="form-control"
+                    value={form.employment}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Выберите тип занятости</option>
+                    {employmentOptions.map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="mb-3">
-                  <input name="documents" className="form-control" placeholder="Документы" value={form.documents} onChange={handleChange} />
+                  <select
+                    name="documentType"
+                    className="form-control"
+                    value={form.documentType}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Выберите тип документа</option>
+                    {documentTypeOptions.map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="mb-3">
                   <textarea name="announcement" className="form-control" placeholder="Объявление (детально)" value={form.announcement} onChange={handleChange} />

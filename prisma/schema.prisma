@@ -72,4 +72,5 @@ model Seeker {
   documents   String?
   note        String?
   announcement String?
+  documentType String?
 }
