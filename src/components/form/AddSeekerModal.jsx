@@ -1,4 +1,6 @@
 import { useState } from "react";
+import useFetchCities from '../../hooks/useFetchCities';
+import PropTypes from 'prop-types';
 
 export default function AddSeekerModal({ show, onClose, onSubmit }) {
   const [step, setStep] = useState(1);
@@ -26,6 +28,8 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
     { value: 'английский', label: 'Английский' },
     { value: 'иврит', label: 'Иврит' },
   ];
+
+  const { cities, loading: loadingCities } = useFetchCities();
 
   if (!show) return null;
 
@@ -98,7 +102,19 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                   <input name="facebook" className="form-control" placeholder="Ссылка на Facebook (опционально)" value={form.facebook} onChange={handleChange} />
                 </div>
                 <div className="mb-3">
-                  <input name="city" className="form-control" placeholder="Город" value={form.city} onChange={handleChange} required />
+                  <select
+                    name="city"
+                    className="form-control"
+                    value={form.city}
+                    onChange={handleChange}
+                    required
+                    disabled={loadingCities}
+                  >
+                    <option value="">Выберите город</option>
+                    {cities.map(city => (
+                      <option key={city.value} value={city.label}>{city.label}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="mb-3">
                   <textarea name="description" className="form-control" placeholder="Краткое описание" value={form.description} onChange={handleChange} required />
@@ -187,4 +203,10 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
       </div>
     </div>
   );
+
 } 
+AddSeekerModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+};
