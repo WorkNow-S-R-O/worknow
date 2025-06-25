@@ -12,7 +12,7 @@ export async function getSeekers(req, res) {
 
 export async function addSeeker(req, res) {
   try {
-    const { name, contact, city, description, gender, isDemanded, facebook, languages, nativeLanguage, category, employment, documents, announcement, note } = req.body;
+    const { name, contact, city, description, gender, isDemanded, facebook, languages, nativeLanguage, category, employment, documents, announcement, note, documentType } = req.body;
     const seekerData = {
       name,
       contact,
@@ -28,6 +28,7 @@ export async function addSeeker(req, res) {
       documents,
       announcement,
       note,
+      documentType,
     };
     const seeker = await createSeeker(seekerData);
     res.status(201).json(seeker);

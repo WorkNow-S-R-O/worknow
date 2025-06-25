@@ -16,7 +16,7 @@ export async function getAllSeekers() {
 }
 
 export async function createSeeker(data) {
-  const { name, contact, city, description, gender, isDemanded, facebook, languages, nativeLanguage, category, employment, documents, announcement, note } = data;
+  const { name, contact, city, description, gender, isDemanded, facebook, languages, nativeLanguage, category, employment, documents, announcement, note, documentType } = data;
   return prisma.seeker.create({
     data: {
       name,
@@ -33,6 +33,7 @@ export async function createSeeker(data) {
       documents,
       announcement,
       note,
+      documentType,
       slug: generateSlug(name, description)
     }
   });
