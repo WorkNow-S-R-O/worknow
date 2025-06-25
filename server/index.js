@@ -78,6 +78,11 @@ app.use((err, req, res, next) => { // next обязателен для error-han
   res.status(500).json({ error: "Внутренняя ошибка сервера" });
 });
 
+// ВРЕМЕННЫЙ route для ручного теста сброса премиума
+app.get('/api/test-disable-premium', async (req, res) => {
+  await disableExpiredPremiums();
+  res.json({ success: true });
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

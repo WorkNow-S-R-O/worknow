@@ -137,4 +137,32 @@ cron.schedule('0 8 * * *', () => {
   timezone: "Europe/Moscow",
 });
 
+// Крон-задача для отключения просроченного премиума
+const disableExpiredPremiums = async () => {
+  try {
+    const result = await prisma.user.updateMany({
+      where: {
+        isPremium: true,
+        isAutoRenewal: false,
+        premiumEndsAt: { lt: new Date() }
+      },
+      data: { isPremium: false }
+    });
+    if (result.count > 0) {
+      console.log(`⏰ Отключено премиумов: ${result.count}`);
+    }
+  } catch (error) {
+    console.error('❌ Ошибка при отключении просроченного премиума:', error);
+  }
+};
+
+// Запуск каждый час
+cron.schedule('0 * * * *', () => {
+  console.log('⏰ Проверка просроченных премиумов...');
+  disableExpiredPremiums();
+}, {
+  timezone: 'Europe/Prague',
+});
+
+export { disableExpiredPremiums };
 export { checkLowRankedJobs };
