@@ -58,6 +58,7 @@ export const sendNewJobNotificationToTelegram = async (user, job) => {
     const message = `🆕 *Новая вакансия от премиум-пользователя!* 🆕\n\n` +
                     `👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
                     `📧 *Email:* ${user.email}\n` +
+                    `⚒️ *Категория:* ${job.category?.name || 'Не указана'}\n` +
                     `💎 *Статус:* Премиум активирован!\n\n` +
                     `📌 *Вакансия:*\n` +
                     `🔹 *${job.title}* \n` +
@@ -118,6 +119,7 @@ const generateMessages = (user, jobs, header) => {
   } else {
     jobs.forEach((job, index) => {
       let jobMessage = `\n\n🔹 *${index + 1}. ${job.title}* \n` +
+                       `⚒️ *Категория:* ${job.category?.name || 'Не указана'}\n` +
                        `📍 *Город:* ${job.city?.name || 'Не указан'}\n` +
                        `💰 *Зарплата:* ${job.salary}\n` +
                        `📞 *Телефон:* ${job.phone}\n` +
