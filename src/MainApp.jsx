@@ -104,6 +104,7 @@ if (!PUBLISHABLE_KEY || !PUBLISHABLE_KEY.startsWith('pk_')) {
 const MainApp = () => {
   const localization = useLanguageStore((state) => state.localization);
   const loading = useLanguageStore((state) => state.loading);
+  const currentLang = useLanguageStore((state) => state.language) || 'ru';
 
   const memoizedLocalization = useMemo(() => localization ?? {}, [localization]);
 
@@ -121,6 +122,7 @@ const MainApp = () => {
       publishableKey={PUBLISHABLE_KEY}
       afterSignOutUrl="/"
       localization={memoizedLocalization}
+      locale={currentLang}
     >
       <HelmetProvider>
         <ClerkProfileSync />
