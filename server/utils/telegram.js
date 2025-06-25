@@ -119,8 +119,8 @@ const generateMessages = (user, jobs, header) => {
   } else {
     jobs.forEach((job, index) => {
       let jobMessage = `\n\n🔹 *${index + 1}. ${job.title}* \n` +
-                       `⚒️ *Категория:* ${job.category || 'Не указана'}\n` +
-                       `📍 *Город:* ${job.city?.name || 'Не указан'}\n` +
+                       `⚒️ *Категория:* ${job.category?.name || 'Не указана'}\n` +
+                       `📍 *Город:* ${job.city?.name || job.city || 'Не указан'}\n` +
                        `💰 *Зарплата:* ${job.salary}\n` +
                        `📞 *Телефон:* ${job.phone}\n` +
                        `📅 *Дата:* ${new Date(job.createdAt).toLocaleDateString()}\n` +
