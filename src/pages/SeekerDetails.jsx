@@ -86,7 +86,7 @@ export default function SeekerDetails() {
           ))}
         </div>
         <div className="mb-2">
-          <strong>Документы:</strong> {seeker.documents}
+          <strong>Документы:</strong> {seeker.documentType}
         </div>
         <div className="mb-2">
           <strong>Объявление:</strong>
