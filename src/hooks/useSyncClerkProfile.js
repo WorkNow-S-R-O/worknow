@@ -7,11 +7,11 @@ const useSyncClerkProfile = () => {
 
   useEffect(() => {
     if (isLoaded && user) {
-      axios.patch('/api/users/sync-profile', {
+      axios.post('/api/users/sync-user', {
         clerkUserId: user.id,
-        name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-        imageUrl: user.imageUrl,
-      }).catch(() => {});
+      }).catch((error) => {
+        console.error('Ошибка синхронизации профиля:', error);
+      });
     }
   }, [isLoaded, user]);
 };

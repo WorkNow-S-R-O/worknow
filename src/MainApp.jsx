@@ -21,7 +21,6 @@ import Cancel from "./pages/Cancel.jsx";
 import Seekers from "./pages/Seekers.jsx";
 import SeekerDetails from "./pages/SeekerDetails.jsx";
 import "./18n.ts";
-import ClerkProfileSync from './components/ClerkProfileSync';
 import "./css/ripple.css";
 
 const router = createBrowserRouter([
@@ -131,7 +130,6 @@ const MainApp = () => {
       locale={currentLang}
     >
       <HelmetProvider>
-        <ClerkProfileSync />
         {/* 🔹 Глобальная SEO-оптимизация */}
         <Helmet>
           <title>WorkNow – Работа в Израиле | Поиск вакансий</title>
