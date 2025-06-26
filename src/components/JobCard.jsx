@@ -2,17 +2,19 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import useFetchCities from '../hooks/useFetchCities';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const JobCard = ({ job }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { cities } = useFetchCities();
+  const { cities, loading } = useFetchCities();
 
   // Получаем название города на нужном языке
-  let cityLabel = 'Не указано';
+  let cityLabel = null;
   if (job.cityId && Array.isArray(cities)) {
     const city = cities.find(c => c.value === job.cityId || c.id === job.cityId);
-    cityLabel = city?.label || city?.name || 'Не указано';
+    cityLabel = city?.label || city?.name || null;
   }
 
   return (
@@ -48,7 +50,12 @@ const JobCard = ({ job }) => {
           <strong>{t("salary_per_hour_card")}</strong>{" "}
           {job.salary || "Не указано"}
           <br />
-          <strong>{t("location_card")}</strong> {cityLabel}
+          <strong>{t("location_card")}</strong>{" "}
+          {loading ? (
+            <Skeleton width={80} height={18} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
+          ) : (
+            cityLabel || "Не указано"
+          )}
         </p>
         <p className="card-text">{job.description || "Описание отсутствует"}</p>
         <p className="card-text">
