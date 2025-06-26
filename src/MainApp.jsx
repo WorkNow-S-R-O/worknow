@@ -22,6 +22,7 @@ import Seekers from "./pages/Seekers.jsx";
 import SeekerDetails from "./pages/SeekerDetails.jsx";
 import "./18n.ts";
 import ClerkProfileSync from './components/ClerkProfileSync';
+import "./css/ripple.css";
 
 const router = createBrowserRouter([
   {
@@ -113,7 +114,12 @@ const MainApp = () => {
   }
 
   if (loading) {
-    return <div>🔄 Загрузка переводов...</div>;
+    return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh'}}>
+      <div className="ripple">
+        <div></div>
+        <div></div>
+      </div>
+    </div>;
   }
 
   return (
@@ -166,7 +172,12 @@ const MainApp = () => {
             })}
           </script>
         </Helmet>
-        <Suspense fallback={<div>🔄 Загрузка страницы...</div>}>
+        <Suspense fallback={<div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh'}}>
+          <div className="ripple">
+            <div></div>
+            <div></div>
+          </div>
+        </div>}>
           <RouterProvider router={router} />
         </Suspense>
         <Toaster position="top-center" />
