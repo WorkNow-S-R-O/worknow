@@ -1,8 +1,8 @@
 import { getCitiesService } from '../services/cityService.js';
 
 export const getCities = async (req, res) => {
-  
-  const result = await getCitiesService();
+  const lang = req.query.lang || 'ru';
+  const result = await getCitiesService(lang);
 
   if (result.error) {
     console.error("❌ Ошибка в getCitiesService:", result.error);

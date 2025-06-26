@@ -27,6 +27,16 @@ model City {
   id   Int    @id @default(autoincrement())
   name String @unique
   jobs Job[]
+  translations CityTranslation[]
+}
+
+model CityTranslation {
+  id      Int    @id @default(autoincrement())
+  city    City   @relation(fields: [cityId], references: [id])
+  cityId  Int
+  lang    String // 'ru', 'he', 'en'
+  name    String
+  @@unique([cityId, lang])
 }
 
 model Category {

@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import useLanguageStore from '../store/languageStore';
 
 const API_URL = import.meta.env.VITE_API_URL; // ✅ Используем переменную окружения
 
 const useFetchCities = () => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const language = useLanguageStore((state) => state.language) || 'ru';
 
   useEffect(() => {
     const loadCities = async () => {
       try {
-        const url = `${API_URL}/cities`; // ✅ Теперь путь корректный
-
+        const url = `${API_URL}/cities?lang=${language}`;
         const response = await axios.get(url);
 
         if (!Array.isArray(response.data)) {
@@ -35,7 +36,7 @@ const useFetchCities = () => {
     };
 
     loadCities();
-  }, []);
+  }, [language]);
 
   return { cities, loading };
 };

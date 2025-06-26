@@ -19,13 +19,13 @@ const JobListing = () => {
 
   const { jobs, loading } = useJobs();
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCity, setSelectedCity] = useState(defaultCity);
+  const [selectedCity, setSelectedCity] = useState({ value: null, label: defaultCity });
   const jobsPerPage = 10;
   const [filterOpen, setFilterOpen] = useState(false);
 
   // Фильтрация вакансий
   const filteredJobs = jobs.filter(job => {
-    const cityMatch = selectedCity === defaultCity || job.city?.name.toLowerCase() === selectedCity.toLowerCase();
+    const cityMatch = !selectedCity.value || job.cityId === selectedCity.value;
     const salaryMatch = !filters.salary || (job.salary && Number(job.salary) >= filters.salary);
     const categoryMatch = !filters.categoryId || job.categoryId === Number(filters.categoryId);
     return cityMatch && salaryMatch && categoryMatch;
@@ -35,18 +35,18 @@ const JobListing = () => {
   const currentJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
 
   // Генерация SEO-friendly заголовка
-  const pageTitle = selectedCity !== defaultCity
-    ? `${t('jobs_in', { city: selectedCity })} - WorkNow`
+  const pageTitle = selectedCity.value
+    ? `${t('jobs_in', { city: selectedCity.label })} - WorkNow`
     : `${defaultTitle} | WorkNow`;
 
   // Генерация динамического описания страницы
-  const pageDescription = selectedCity !== defaultCity
-    ? `${t('find_jobs_in', { city: selectedCity })}. ${t('new_vacancies_from_employers')}.`
+  const pageDescription = selectedCity.value
+    ? `${t('find_jobs_in', { city: selectedCity.label })}. ${t('new_vacancies_from_employers')}.`
     : `${t('job_search_platform')} - ${t('find_latest_jobs')}.`;
 
   // Формирование динамического URL для SEO
-  const pageUrl = selectedCity !== defaultCity
-    ? `https://worknowjob.com/jobs/${selectedCity.toLowerCase()}`
+  const pageUrl = selectedCity.value
+    ? `https://worknowjob.com/jobs/${selectedCity.label.toLowerCase()}`
     : `https://worknowjob.com/jobs`;
 
   return (
@@ -67,7 +67,7 @@ const JobListing = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "JobPosting",
-            "title": selectedCity !== defaultCity ? `Работа в ${selectedCity}` : "Работа в Израиле",
+            "title": selectedCity.value ? `Работа в ${selectedCity.label}` : "Работа в Израиле",
             "description": pageDescription,
             "datePosted": new Date().toISOString(),
             "employmentType": "Full-time",
@@ -80,7 +80,7 @@ const JobListing = () => {
               "@type": "Place",
               "address": {
                 "@type": "PostalAddress",
-                "addressLocality": selectedCity !== defaultCity ? selectedCity : "Израиль",
+                "addressLocality": selectedCity.value ? selectedCity.label : "Израиль",
                 "addressCountry": "IL"
               }
             }
