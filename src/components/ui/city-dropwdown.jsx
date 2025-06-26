@@ -19,7 +19,9 @@ const CityDropdown = ({ selectedCity, onCitySelect }) => {
         // Выводим id и label всех городов для поиска id регионов
         console.log('CITIES:', response.data.map(city => ({ id: city.id, label: city.label || city.name })));
       } catch (error) {
-        console.error('Ошибка загрузки городов:', error);
+        if (!(error?.code === 'ECONNABORTED')) {
+          console.error('Ошибка загрузки городов:', error);
+        }
       } finally {
         setLoading(false);
       }
