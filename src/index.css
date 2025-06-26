@@ -221,4 +221,28 @@ button:focus-visible {
   .d-lg-block .btn .bi {
     font-size: 16px !important;
   }
+  .d-lg-block .logo-container {
+    margin-top: -10px !important;
+  }
+  .d-lg-block .logo-img,
+  .d-lg-block .logo-text {
+    margin-top: -10px !important;
+  }
+  .d-lg-block .logo-img {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .d-lg-block .logo-text {
+    font-size: 1.7rem !important;
+    margin: 0 !important;
+    line-height: 1.1;
+    display: inline-block;
+    vertical-align: middle;
+  }
 }

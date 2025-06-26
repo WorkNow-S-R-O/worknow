@@ -39,11 +39,13 @@ const Navbar = () => {
       {/* Desktop Version */}
       <div className="d-none d-lg-block mb-10">
         <div className="absolute top-0 left-0 w-full h-16 bg-[#e3f2fd]"></div>
-        <div className="flex absolute top-0 left-0 m-3">
-          <Link to="/" className="d-flex align-items-center no-underline text-black">
-            <img className="w-12 bottom-2 relative ml-0 me-2" src="/images/logo.svg" alt="Logo" />
-            <h1 className="text-3xl ml-0">worknow</h1>
-          </Link>
+        <div className="flex absolute top-0 left-0 m-3 items-center">
+          <div className="logo-container">
+            <Link to="/" className="d-flex align-items-center no-underline text-black p-0 m-0" style={{gap: '6px'}}>
+              <img className="logo-img" src="/images/logo.svg" alt="Logo" />
+              <h1 className="logo-text">worknow</h1>
+            </Link>
+          </div>
           <ul className="flex justify-center items-center ml-0 gap-2 mb-2 text-gray-500">
             <li className="mr-3">
               <Link id="vacancies" to="/" className="nav-link text-base font-normal">
