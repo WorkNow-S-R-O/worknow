@@ -190,3 +190,35 @@ button:focus-visible {
 #supportDropdown:hover {
   color: #1a1a1a !important
 }
+
+.nav-slash {
+  color: #b0b0b0;
+  margin: 0 8px;
+  font-size: 18px;
+  user-select: none;
+  font-weight: 500;
+  line-height: 1;
+  display: inline-block;
+}
+
+.d-lg-block .nav-link {
+  font-size: 14px !important;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+@media (min-width: 992px) {
+  .d-lg-block .btn,
+  .d-lg-block .btn.btn-secondary,
+  .d-lg-block .btn.btn-warning,
+  .d-lg-block .btn.btn-primary {
+    font-size: 14px !important;
+    padding: 4px 16px !important;
+    height: 36px;
+    min-width: 0;
+    border-radius: 10px;
+  }
+  .d-lg-block .btn .bi {
+    font-size: 16px !important;
+  }
+}

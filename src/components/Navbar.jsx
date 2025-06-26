@@ -46,24 +46,27 @@ const Navbar = () => {
           </Link>
           <ul className="flex justify-center items-center ml-0 gap-2 mb-2 text-gray-500">
             <li className="mr-3">
-              <Link id="vacancies" to="/" className="nav-link text-lg font-normal">
+              <Link id="vacancies" to="/" className="nav-link text-base font-normal">
                 {t("vacancies")}
               </Link>
             </li>
+            <span className="nav-slash">/</span>
             <li className="mr-3">
-              <Link id="seekers" to="/seekers" className="nav-link text-lg font-normal">
+              <Link id="seekers" to="/seekers" className="nav-link text-base font-normal">
                 {t("seekers")}
               </Link>
             </li>
+            <span className="nav-slash">/</span>
             <li className="mr-3">
-              <Link id="jobs" to="/my-advertisements" className="nav-link text-lg font-normal">
+              <Link id="jobs" to="/my-advertisements" className="nav-link text-base font-normal">
                 {t("jobs")}
               </Link>
             </li>
             {/* Dropdown Support */}
+            <span className="nav-slash">/</span>
             <li className="nav-item dropdown">
               <button
-                className="nav-link text-lg font-normal dropdown-toggle"
+                className="nav-link text-base font-normal dropdown-toggle"
                 type="button"
                 id="supportDropdown"
                 data-bs-toggle="dropdown"
@@ -73,15 +76,14 @@ const Navbar = () => {
               </button>
               <ul id="supportDropdown" className="dropdown-menu mt-3 text-gray-600 " aria-labelledby="supportDropdown">
                 <li>
-                <a 
-  href="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca" 
-  className="dropdown-item" 
-  target="_blank" 
-  rel="noopener noreferrer"
->
-  {t("rules")}
-</a>
-
+                  <a 
+                    href="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca" 
+                    className="dropdown-item" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    {t("rules")}
+                  </a>
                 </li>
                 <li>
                   <Link to="/support" className="dropdown-item">
@@ -189,15 +191,14 @@ const Navbar = () => {
                 </button>
                 <ul className="dropdown-menu" aria-labelledby="mobileSupportDropdown">
                   <li>
-                  <a 
-  href="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca" 
-  className="dropdown-item" 
-  target="_blank" 
-  rel="noopener noreferrer"
->
-  {t("rules")}
-</a>
-
+                    <a 
+                      href="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca" 
+                      className="dropdown-item" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      {t("rules")}
+                    </a>
                   </li>
                   <li>
                     <Link to="/support" className="dropdown-item">
