@@ -1,10 +1,19 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import useFetchCities from '../hooks/useFetchCities';
 
 const JobCard = ({ job }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { cities } = useFetchCities();
+
+  // Получаем название города на нужном языке
+  let cityLabel = 'Не указано';
+  if (job.cityId && Array.isArray(cities)) {
+    const city = cities.find(c => c.value === job.cityId || c.id === job.cityId);
+    cityLabel = city?.label || city?.name || 'Не указано';
+  }
 
   return (
     <div
@@ -39,7 +48,7 @@ const JobCard = ({ job }) => {
           <strong>{t("salary_per_hour_card")}</strong>{" "}
           {job.salary || "Не указано"}
           <br />
-          <strong>{t("location_card")}</strong> {job.city?.name || "Не указано"}
+          <strong>{t("location_card")}</strong> {cityLabel}
         </p>
         <p className="card-text">{job.description || "Описание отсутствует"}</p>
         <p className="card-text">
@@ -53,23 +62,14 @@ const JobCard = ({ job }) => {
 // **Валидация пропсов**
 JobCard.propTypes = {
   job: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    salary: PropTypes.string,
-    city: PropTypes.shape({
-      name: PropTypes.string,
-    }),
-    category: PropTypes.shape({
-      name: PropTypes.string,
-    }),
+    cityId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    city: PropTypes.object,
+    title: PropTypes.string,
+    salary: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     description: PropTypes.string,
     phone: PropTypes.string,
-    user: PropTypes.shape({
-      clerkUserId: PropTypes.string,
-      imageUrl: PropTypes.string,
-      isPremium: PropTypes.bool,
-      name: PropTypes.string,
-    }),
+    category: PropTypes.object,
+    user: PropTypes.object,
   }).isRequired,
 };
 
