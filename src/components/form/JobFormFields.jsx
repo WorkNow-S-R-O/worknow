@@ -17,6 +17,18 @@ export const JobFormFields = ({
   const { t } = useTranslation();
   const [isAgreed, setIsAgreed] = useState(false);
 
+  // Сортировка: регионы в начале, остальные города после
+  const regionOrder = [
+    ['Центр страны', 'מרכז הארץ', 'Center'],
+    ['Юг страны', 'דרום הארץ', 'South'],
+    ['Север страны', 'צפון הארץ', 'North'],
+  ];
+  const regions = regionOrder
+    .map(labels => cities.find(city => labels.includes(city.label || city.name)))
+    .filter(Boolean);
+  const otherCities = cities.filter(city => !regions.includes(city));
+  const sortedCities = [...regions, ...otherCities];
+
   return (
     <>
       {/* Название вакансии */}
@@ -66,8 +78,8 @@ export const JobFormFields = ({
           <Skeleton height={40} />
         ) : (
           <Select
-            options={cities}
-            value={cities.find((city) => city.value === selectedCityId) || null}
+            options={sortedCities}
+            value={sortedCities.find((city) => city.value === selectedCityId) || null}
             onChange={(option) => setValue("cityId", option?.value)}
             placeholder="Выберите город"
             classNamePrefix="react-select"

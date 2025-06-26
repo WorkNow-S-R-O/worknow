@@ -6,6 +6,18 @@ import { useTranslation } from "react-i18next";
 const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCategoryId, cities, categories, loadingCities, loadingCategories, loadingJob }) => {
   const { t } = useTranslation();
 
+  // Сортировка: регионы в начале, остальные города после
+  const regionOrder = [
+    ['Центр страны', 'מרכז הארץ', 'Center'],
+    ['Юг страны', 'דרום הארץ', 'South'],
+    ['Север страны', 'צפון הארץ', 'North'],
+  ];
+  const regions = regionOrder
+    .map(labels => cities.find(city => labels.includes(city.label || city.name)))
+    .filter(Boolean);
+  const otherCities = cities.filter(city => !regions.includes(city));
+  const sortedCities = [...regions, ...otherCities];
+
   return (
     <>
       {/* Название вакансии */}
@@ -49,8 +61,8 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
           <Skeleton height={40} />
         ) : (
           <Select
-            options={cities}
-            value={cities.find((city) => city.value == selectedCityId) || null}
+            options={sortedCities}
+            value={sortedCities.find((city) => city.value == selectedCityId) || null}
             onChange={(option) => setValue('cityId', option?.value)}
             placeholder={t('choose_city')}
             classNamePrefix="react-select"
