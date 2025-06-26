@@ -4,6 +4,7 @@ import { Navbar } from "../components/Navbar";
 import {Footer} from "../components/Footer";
 import { useUser } from "@clerk/clerk-react";
 import '../css/seeker-details-mobile.css';
+import '../css/ripple.css';
 
 const API_URL = import.meta.env.VITE_API_URL; 
 
@@ -38,7 +39,15 @@ export default function SeekerDetails() {
       .catch(() => setLoading(false));
   }, [id, user]);
 
-  if (loading) return <div>Загрузка...</div>;
+  if (loading) return (
+    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh'}}>
+      <div className="ripple">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  );
+
   if (!seeker || !seeker.description) return <div>Соискатель не найден</div>;
 
   return (
