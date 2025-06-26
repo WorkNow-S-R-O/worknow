@@ -31,7 +31,6 @@ const useFetchCities = () => {
         if (!(error?.code === 'ECONNABORTED')) {
           console.error('Ошибка загрузки городов:', error);
         }
-        toast.error("Не удалось загрузить города!");
       } finally {
         setLoading(false);
       }
