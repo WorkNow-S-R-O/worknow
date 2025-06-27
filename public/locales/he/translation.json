@@ -83,5 +83,10 @@
   "find_latest_jobs": "מצא משרות אחרונות",
   "seekers": "מחפשי עבודה",
   "category": "קטגוריה",
-  "choose_category": "בחר קטגוריה"
+  "choose_category": "בחר קטגוריה",
+  "filter_modal_title": "סינון משרות",
+  "filter_salary_label": "שכר רצוי (₪/שעה):",
+  "filter_salary_placeholder": "לדוג' 50",
+  "reset": "איפוס",
+  "close_filter": "סגור סינון"
 } 

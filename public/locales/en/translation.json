@@ -83,5 +83,10 @@
   "find_latest_jobs": "Find latest jobs",
   "seekers": "Seekers",
   "category": "Category",
-  "choose_category": "Choose category"
+  "choose_category": "Choose category",
+  "filter_modal_title": "Job filter",
+  "filter_salary_label": "Desired salary (₪/hour):",
+  "filter_salary_placeholder": "For example, 50",
+  "reset": "Reset",
+  "close_filter": "Close filter"
 }

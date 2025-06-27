@@ -80,5 +80,10 @@
   "find_latest_jobs": "Поиск последних вакансий",
   "seekers": "Соискатели",
   "category": "Категория",
-  "choose_category": "Выберите категорию"
+  "choose_category": "Выберите категорию",
+  "filter_modal_title": "Фильтрация вакансий",
+  "filter_salary_label": "Желаемая зарплата (₪/час):",
+  "filter_salary_placeholder": "Например, 50",
+  "reset": "Сбросить",
+  "close_filter": "Закрыть фильтр"
 }

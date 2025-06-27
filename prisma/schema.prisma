@@ -43,6 +43,16 @@ model Category {
   id   Int    @id @default(autoincrement())
   name String @unique
   jobs Job[]
+  translations CategoryTranslation[]
+}
+
+model CategoryTranslation {
+  id         Int      @id @default(autoincrement())
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  lang       String   // 'ru', 'he', 'en'
+  name       String
+  @@unique([categoryId, lang])
 }
 
 model Job {
