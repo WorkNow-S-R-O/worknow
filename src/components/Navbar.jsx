@@ -212,6 +212,29 @@ const Navbar = () => {
             </ul>
 
             <div className="d-flex flex-column gap-2 mt-3">
+              <div className="dropdown mb-2">
+                <button
+                  className="btn btn-secondary dropdown-toggle w-100"
+                  type="button"
+                  id="mobileLanguageDropdown"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i className="bi bi-translate me-2"></i>
+                  {language === "en" ? "English" : language === "he" ? "עברית" : "Русский"}
+                </button>
+                <ul className="dropdown-menu w-100" aria-labelledby="mobileLanguageDropdown">
+                  <li>
+                    <button onClick={() => handleLanguageChange("en") } className="dropdown-item">English</button>
+                  </li>
+                  <li>
+                    <button onClick={() => handleLanguageChange("ru") } className="dropdown-item">Русский</button>
+                  </li>
+                  <li>
+                    <button onClick={() => handleLanguageChange("he") } className="dropdown-item">עברית</button>
+                  </li>
+                </ul>
+              </div>
               <SignedOut>
                 <SignInButton>
                   <span className="btn btn-primary d-flex align-items-center justify-content-center">
