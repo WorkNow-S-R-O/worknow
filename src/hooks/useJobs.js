@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'react-hot-toast';
+// import { toast } from 'react-hot-toast'; // больше не используется
 import useLanguageStore from '../store/languageStore';
 
 const API_URL = import.meta.env.VITE_API_URL; // ✅ Используем переменную окружения
@@ -26,7 +26,6 @@ const useJobs = () => {
         setJobs(response.data);
       } catch (error) {
         console.error("❌ Ошибка загрузки вакансий:", error);
-        toast.error("Не удалось загрузить вакансии!");
       } finally {
         setLoading(false);
       }
