@@ -34,7 +34,20 @@ export const getUserByClerkId = async (req, res) => {
 };
 
 export const getUserJobs = async (req, res) => {
+  const lang = req.query.lang || 'ru';
   const result = await getUserJobsService(req.params.clerkUserId, req.query);
   if (result.error) return res.status(500).json({ error: result.error });
-  res.status(200).json(result);
+  // Формируем ответ с переводом категории
+  const jobs = result.jobs.map(job => {
+    let categoryLabel = job.category?.name;
+    if (job.category?.translations?.length) {
+      const translation = job.category.translations.find(t => t.lang === lang);
+      if (translation) categoryLabel = translation.name;
+    }
+    return {
+      ...job,
+      category: job.category ? { ...job.category, label: categoryLabel } : null
+    };
+  });
+  res.status(200).json({ ...result, jobs });
 };

@@ -72,7 +72,7 @@ export const getUserJobsService = async (clerkUserId, query) => {
     
     const jobs = await prisma.job.findMany({
       where: { userId: user.id },
-      include: { city: true, user: true, category: true },
+      include: { city: true, user: true, category: { include: { translations: true } } },
       skip,
       take: limitInt,
       orderBy: { createdAt: "desc" },

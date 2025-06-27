@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import "react-loading-skeleton/dist/skeleton.css";
+import useLanguageStore from '../store/languageStore';
 
 const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
 
@@ -17,6 +18,7 @@ const UserJobs = () => {
   const { t } = useTranslation();
   const { user } = useUser();
   const navigate = useNavigate();
+  const language = useLanguageStore((state) => state.language) || 'ru';
 
   const [jobs, setJobs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,7 +34,7 @@ const UserJobs = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${API_URL}/users/user-jobs/${user.id}?page=${currentPage}&limit=5`
+        `${API_URL}/users/user-jobs/${user.id}?page=${currentPage}&limit=5&lang=${language}`
       );
 
       console.log('Ответ от сервера:', response.data.jobs);
@@ -51,7 +53,7 @@ const UserJobs = () => {
 
   useEffect(() => {
     fetchUserJobs();
-  }, [user, currentPage]);
+  }, [user, currentPage, language]);
 
   const handleDelete = async () => {
     if (!jobToDelete) return;
