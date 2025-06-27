@@ -88,5 +88,6 @@
   "filter_salary_label": "שכר רצוי (₪/שעה):",
   "filter_salary_placeholder": "לדוג' 50",
   "reset": "איפוס",
-  "close_filter": "סגור סינון"
+  "close_filter": "סגור סינון",
+  "not_specified": "לא צוין"
 } 

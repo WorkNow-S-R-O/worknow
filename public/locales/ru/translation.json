@@ -85,5 +85,6 @@
   "filter_salary_label": "Желаемая зарплата (₪/час):",
   "filter_salary_placeholder": "Например, 50",
   "reset": "Сбросить",
-  "close_filter": "Закрыть фильтр"
+  "close_filter": "Закрыть фильтр",
+  "not_specified": "Не указано"
 }

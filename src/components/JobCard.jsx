@@ -41,9 +41,9 @@ const JobCard = ({ job }) => {
     >
       <div className="card-body">
         <h5 className="card-title text-primary">{job.title}</h5>
-        {job.category?.name && (
+        {job.category?.label && (
           <div className="mb-2">
-            <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{job.category.name}</span>
+            <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{job.category.label}</span>
           </div>
         )}
         <p className="card-text">

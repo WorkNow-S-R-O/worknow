@@ -88,5 +88,6 @@
   "filter_salary_label": "Desired salary (₪/hour):",
   "filter_salary_placeholder": "For example, 50",
   "reset": "Reset",
-  "close_filter": "Close filter"
+  "close_filter": "Close filter",
+  "not_specified": "Not specified"
 }
