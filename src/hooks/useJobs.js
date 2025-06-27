@@ -25,7 +25,9 @@ const useJobs = () => {
 
         setJobs(response.data);
       } catch (error) {
-        console.error("❌ Ошибка загрузки вакансий:", error);
+        if (!(error?.code === 'ECONNABORTED')) {
+          console.error("❌ Ошибка загрузки вакансий:", error);
+        }
       } finally {
         setLoading(false);
       }
