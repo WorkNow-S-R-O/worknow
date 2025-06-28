@@ -254,60 +254,55 @@ button:focus-visible {
     justify-content: center;
   }
   .board-controls-scale {
-    transform: scale(0.9);
-    transform-origin: center top;
-    width: 100%;
-    max-width: 100%;
+    gap: 12px !important;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
   .board-btn,
   .city-dropdown-btn {
-    height: 34px !important;
+    min-height: 38px !important;
+    height: 38px !important;
     font-size: 1rem !important;
-    padding: 0 10px !important;
-    min-width: 0 !important;
+    font-weight: 600 !important;
+    padding: 0 18px !important;
+    border-radius: 999px !important;
+    background: #1976d2 !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.18s, color 0.18s;
     white-space: nowrap;
   }
+  .board-btn:active,
+  .city-dropdown-btn:active,
+  .board-btn:hover,
+  .city-dropdown-btn:hover {
+    background: #1256a0 !important;
+    color: #fff !important;
+  }
   .board-btn i,
   .city-dropdown-btn i {
-    font-size: 1.1em !important;
-  }
-  .city-dropdown-menu {
-    min-width: 60vw !important;
-    font-size: 1rem !important;
-    padding: 4px 0 !important;
-    max-height: 220px !important;
-    z-index: 3000 !important;
-  }
-  .city-dropdown-menu .dropdown-item {
-    padding: 6px 14px !important;
-    font-size: 1rem !important;
-  }
-  .city-dropdown-menu i {
-    font-size: 1.1em !important;
+    font-size: 1.15em !important;
+    margin-right: 7px;
+    color: #fff !important;
+    vertical-align: middle;
   }
 }
-@media (max-width: 400px) {
+@media (max-width: 900px) {
+  .board-controls-scale {
+    flex-direction: column;
+    gap: 10px !important;
+  }
   .board-btn,
   .city-dropdown-btn {
-    height: 28px !important;
-    font-size: 0.85rem !important;
-    padding: 0 4px !important;
-  }
-  .board-btn i,
-  .city-dropdown-btn i {
-    font-size: 0.95em !important;
-  }
-  .city-dropdown-menu {
-    min-width: 90vw !important;
-    font-size: 0.85rem !important;
-    max-height: 160px !important;
-  }
-  .city-dropdown-menu .dropdown-item {
-    padding: 4px 8px !important;
-    font-size: 0.85rem !important;
-  }
-  .city-dropdown-menu i {
-    font-size: 0.95em !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 8px !important;
+    font-size: 0.98rem !important;
   }
 }
 
