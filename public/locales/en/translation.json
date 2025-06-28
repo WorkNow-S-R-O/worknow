@@ -89,5 +89,6 @@
   "filter_salary_placeholder": "For example, 50",
   "reset": "Reset",
   "close_filter": "Close filter",
-  "not_specified": "Not specified"
+  "not_specified": "Not specified",
+  "board_settings": "Board settings"
 }

@@ -86,5 +86,6 @@
   "filter_salary_placeholder": "Например, 50",
   "reset": "Сбросить",
   "close_filter": "Закрыть фильтр",
-  "not_specified": "Не указано"
+  "not_specified": "Не указано",
+  "board_settings": "Настройка доски"
 }

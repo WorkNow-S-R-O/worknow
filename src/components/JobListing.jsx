@@ -5,7 +5,6 @@ import PaginationControl from '../components/PaginationControl';
 import CityDropdown from '../components/ui/city-dropwdown';
 import { useTranslation } from "react-i18next";
 import { Helmet } from 'react-helmet-async';
-import FilterIcon from '../components/ui/FilterIcon';
 import JobFilterModal from '../components/ui/JobFilterModal';
 import useFilterStore from '../store/filterStore';
 
@@ -89,11 +88,42 @@ const JobListing = () => {
       </Helmet>
 
       {/* Фильтр по городам */}
-      <div className="d-flex align-items-center mb-3">
-        <span onClick={() => setFilterOpen(true)} style={{ cursor: 'pointer' }}>
-          <FilterIcon />
-        </span>
-        <CityDropdown selectedCity={selectedCity} onCitySelect={setSelectedCity} />
+      <div className="board-controls-wrapper">
+        <div className="d-flex align-items-center mb-3 gap-2 board-controls-scale">
+          <button
+            className="d-flex align-items-center justify-content-center border border-primary rounded px-4 board-btn"
+            style={{
+              height: 40,
+              background: '#fff',
+              color: '#1976d2',
+              fontWeight: 500,
+              fontSize: 16,
+              boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)',
+              transition: 'box-shadow 0.2s',
+              gap: 8
+            }}
+            onClick={() => setFilterOpen(true)}
+          >
+            <i className="bi bi-gear me-2" style={{ fontSize: 20 }}></i>
+            {t('board_settings')}
+          </button>
+          <div style={{ height: 40, display: 'flex', alignItems: 'center' }}>
+            <CityDropdown
+              selectedCity={selectedCity}
+              onCitySelect={setSelectedCity}
+              dropdownStyle={{
+                height: 40,
+                minWidth: 180,
+                fontSize: 16,
+                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'center',
+                borderRadius: 8
+              }}
+              buttonClassName="city-dropdown-btn"
+            />
+          </div>
+        </div>
       </div>
       <JobFilterModal
         open={filterOpen}
