@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { Navbar } from "../components/Navbar";
 import {Footer} from "../components/Footer";
 import { useUser } from "@clerk/clerk-react";
+import { useTranslation } from "react-i18next";
 import '../css/seeker-details-mobile.css';
 import '../css/ripple.css';
 
 const API_URL = import.meta.env.VITE_API_URL; 
 
 export default function SeekerDetails() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const location = useLocation();
   const [seeker, setSeeker] = useState(null);
@@ -23,6 +25,34 @@ export default function SeekerDetails() {
   
   const nextSeekerId = hasNext ? seekerIds[currentIndex + 1] : null;
   const prevSeekerId = hasPrev ? seekerIds[currentIndex - 1] : null;
+
+  const getGenderLabel = (gender) => {
+    if (!gender) return '';
+    if (["мужчина", "male"].includes(gender.toLowerCase())) return t('seeker_profile_male');
+    if (["женщина", "female"].includes(gender.toLowerCase())) return t('seeker_profile_female');
+    return gender;
+  };
+
+  const getEmploymentLabel = (employment) => {
+    if (!employment) return '';
+    const key = `employment_${employment.toLowerCase()}`;
+    const translated = t(key);
+    return translated === key ? employment : translated;
+  };
+
+  const getCategoryLabel = (category) => {
+    if (!category) return '';
+    const key = `category_${category.toLowerCase()}`;
+    const translated = t(key);
+    return translated === key ? category : translated;
+  };
+
+  const getLangLabel = (lang) => {
+    if (!lang) return '';
+    const key = `lang_${lang.toLowerCase()}`;
+    const translated = t(key);
+    return translated === key ? lang : translated;
+  };
 
   useEffect(() => {
     setSeeker(null);
@@ -48,22 +78,25 @@ export default function SeekerDetails() {
     </div>
   );
 
-  if (!seeker || !seeker.description) return <div>Соискатель не найден</div>;
+  if (!seeker || !seeker.description) return <div>{t('seeker_profile_not_found')}</div>;
+
+  const daysAgo = seeker.createdAt ? Math.floor((Date.now() - new Date(seeker.createdAt)) / (1000*60*60*24)) : 0;
+  const formattedDate = seeker.createdAt ? new Date(seeker.createdAt).toLocaleDateString() : '';
 
   return (
     <>
       <Navbar />
       <div className="container" style={{ maxWidth: 600, paddingTop: '100px' }}>
         <div className="d-flex justify-content-between align-items-center mb-2">
-          <h2 className="fs-4 mb-0">Соискатели</h2>
-          <Link to="/seekers" style={{ color: '#1976d2', textDecoration: 'underline', whiteSpace: 'nowrap' }}>&larr; Вернуться к списку</Link>
+          <h2 className="fs-4 mb-0">{t('seeker_profile_title')}</h2>
+          <Link to="/seekers" style={{ color: '#1976d2', textDecoration: 'underline', whiteSpace: 'nowrap' }}>&larr; {t('seeker_profile_back')}</Link>
         </div>
-        <div className="text-muted mb-2">Опубликовано {seeker.createdAt ? `${Math.floor((Date.now() - new Date(seeker.createdAt)) / (1000*60*60*24))} дней назад` : ''} {seeker.createdAt && new Date(seeker.createdAt).toLocaleDateString()}</div>
+        <div className="text-muted mb-2">{t('seeker_profile_published', { days: daysAgo, date: formattedDate })}</div>
         <h3 className="mb-2">
           <span className="d-flex align-items-center flex-wrap gap-2">
             {seeker.name}
-            {seeker.gender && <span className="badge bg-dark">{seeker.gender}</span>}
-            {seeker.isDemanded && <span className="badge bg-primary">востребованный кандидат</span>}
+            {seeker.gender && <span className="badge bg-dark">{getGenderLabel(seeker.gender)}</span>}
+            {seeker.isDemanded && <span className="badge bg-primary">{t('seeker_profile_demanded')}</span>}
           </span>
         </h3>
         {isPremium && (seeker.contact || seeker.facebook) && (
@@ -78,48 +111,48 @@ export default function SeekerDetails() {
         )}
         {!isPremium && (seeker.contact || seeker.facebook) && (
           <div className="bg-light p-2 mb-2" style={{ fontWeight: 600, fontSize: 18 }}>
-            контакты доступны для платного тарифа
+            {t('seeker_profile_contacts_premium')}
           </div>
         )}
         <div className="mb-2">
-          <strong>Занятость:</strong> {seeker.employment && <span className="badge bg-secondary">{seeker.employment}</span>}
+          <strong>{t('seeker_profile_employment')}:</strong> {seeker.employment && <span className="badge bg-secondary">{getEmploymentLabel(seeker.employment)}</span>}
         </div>
         <div className="mb-2">
-          <strong>Категория:</strong> {seeker.category && <span className="badge bg-secondary">{seeker.category}</span>}
+          <strong>{t('seeker_profile_category')}:</strong> {seeker.category && <span className="badge bg-secondary">{getCategoryLabel(seeker.category)}</span>}
         </div>
         <div className="mb-2">
-          <strong>Языки:</strong> {Array.isArray(seeker.languages) && seeker.languages.map(lang => (
+          <strong>{t('seeker_profile_languages')}:</strong> {Array.isArray(seeker.languages) && seeker.languages.map(lang => (
             <span key={lang} className="badge bg-light text-dark border mx-1">
-              {lang}{seeker.nativeLanguage === lang && ' (родной)'}
+              {getLangLabel(lang)}{seeker.nativeLanguage === lang && ` ${t('seeker_profile_native')}`}
             </span>
           ))}
         </div>
         <div className="mb-2">
-          <strong>Документы:</strong> {seeker.documentType}
+          <strong>{t('seeker_profile_documents')}:</strong> {seeker.documentType}
         </div>
         <div className="mb-2">
-          <strong>Объявление:</strong>
+          <strong>{t('seeker_profile_announcement')}:</strong>
           <div>{seeker.announcement}</div>
         </div>
         <div className="mb-2">
-          <strong>Примечание:</strong> {seeker.note}
+          <strong>{t('seeker_profile_note')}:</strong> {seeker.note}
         </div>
-        <button className="btn btn-dark mt-2" onClick={() => window.print()}>Распечатать</button>
+        <button className="btn btn-dark mt-2" onClick={() => window.print()}>{t('seeker_profile_print')}</button>
         
         {seekerIds && (
         <div className="mt-4">
           <div className="text-muted mb-2">
-            {`${currentIndex + 1}-й из ${seekerIds.length}`}
+            {t('seeker_profile_of', { current: currentIndex + 1, total: seekerIds.length })}
           </div>
           <div className="d-flex gap-2">
             {hasPrev && (
               <Link to={`/seekers/${prevSeekerId}`} state={{ seekerIds, currentIndex: currentIndex - 1 }} className="btn btn-primary">
-                &larr; Назад
+                &larr; {t('seeker_profile_prev')}
               </Link>
             )}
             {hasNext && (
               <Link to={`/seekers/${nextSeekerId}`} state={{ seekerIds, currentIndex: currentIndex + 1 }} className="btn btn-primary">
-                Вперед &rarr;
+                {t('seeker_profile_next')} &rarr;
               </Link>
             )}
           </div>

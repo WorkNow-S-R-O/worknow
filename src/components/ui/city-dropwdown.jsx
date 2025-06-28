@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import useLanguageStore from '../../store/languageStore';
 import '../../index.css';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -14,6 +15,7 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
   const language = useLanguageStore((state) => state.language) || 'ru';
   const ref = useRef();
   const [dropdownCoords, setDropdownCoords] = useState({ top: 44, left: 0, width: 200 });
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -62,7 +64,6 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
   }, [open]);
 
   const handleCitySelect = (cityObj) => {
-    console.log('Выбран город:', cityObj);
     onCitySelect(cityObj);
     setOpen(false);
   };
@@ -97,7 +98,7 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
         onClick={() => setOpen((v) => !v)}
       >
         <i className="bi bi-geo-alt me-2" style={{ fontSize: 20 }}></i>
-        {selectedCity?.label || '\u0412\u0441\u0435 \u0433\u043e\u0440\u043e\u0434\u0430'}
+        {selectedCity?.label || t('city_all')}
         <i className="bi bi-caret-down-fill ms-2" style={{ fontSize: 14 }}></i>
       </button>
       {open && (
@@ -124,9 +125,9 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
               <div
                 className="dropdown-item"
                 style={{ cursor: 'pointer', padding: '8px 16px', color: '#1976d2', borderRadius: 8, fontWeight: 500 }}
-                onMouseDown={() => handleCitySelect({ value: null, label: 'Все города' })}
+                onMouseDown={() => handleCitySelect({ value: null, label: t('city_all') })}
               >
-                <i className="bi bi-geo-alt me-2"></i> Все города
+                <i className="bi bi-geo-alt me-2"></i> {t('city_all')}
               </div>
               {/* Регионы */}
               {regions.map((city) => (
@@ -180,9 +181,9 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
             <div
               className="dropdown-item"
               style={{ cursor: 'pointer', padding: '8px 16px', color: '#1976d2', borderRadius: 8, fontWeight: 500 }}
-              onMouseDown={() => handleCitySelect({ value: null, label: 'Все города' })}
+              onMouseDown={() => handleCitySelect({ value: null, label: t('city_all') })}
             >
-              <i className="bi bi-geo-alt me-2"></i> Все города
+              <i className="bi bi-geo-alt me-2"></i> {t('city_all')}
             </div>
             {/* Регионы */}
             {regions.map((city) => (
