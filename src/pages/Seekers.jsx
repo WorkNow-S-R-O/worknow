@@ -160,10 +160,10 @@ export default function Seekers() {
                       />
                     </th>
                   )}
-                  <th>Имя</th>
-                  <th>Контакт</th>
-                  <th>Город</th>
-                  <th>Описание</th>
+                  <th>{t('seekers_table_name')}</th>
+                  <th>{t('seekers_table_contact')}</th>
+                  <th>{t('seekers_table_city')}</th>
+                  <th>{t('seekers_table_description')}</th>
                 </tr>
               </thead>
               <tbody>

@@ -107,5 +107,9 @@
   "seeker_profile_male": "мужчина",
   "seeker_profile_female": "женщина",
   "seeker_profile_demanded": "востребованный кандидат",
-  "city_all": "Все города"
+  "city_all": "Все города",
+  "seekers_table_name": "Имя",
+  "seekers_table_contact": "Контакт",
+  "seekers_table_city": "Город",
+  "seekers_table_description": "Описание"
 }

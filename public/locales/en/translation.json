@@ -110,5 +110,9 @@
   "seeker_profile_male": "male",
   "seeker_profile_female": "female",
   "seeker_profile_demanded": "demanded candidate",
-  "city_all": "All cities"
+  "city_all": "All cities",
+  "seekers_table_name": "Name",
+  "seekers_table_contact": "Contact",
+  "seekers_table_city": "City",
+  "seekers_table_description": "Description"
 }

@@ -110,5 +110,9 @@
   "seeker_profile_male": "גבר",
   "seeker_profile_female": "אישה",
   "seeker_profile_demanded": "מועמד מבוקש",
-  "city_all": "כל הערים"
+  "city_all": "כל הערים",
+  "seekers_table_name": "שם",
+  "seekers_table_contact": "איש קשר",
+  "seekers_table_city": "עיר",
+  "seekers_table_description": "תיאור"
 } 

@@ -116,7 +116,7 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
                 border: '1px solid #e3eafc',
                 borderRadius: 12,
                 boxShadow: '0 4px 24px rgba(25, 118, 210, 0.13)',
-                maxHeight: 420,
+                maxHeight: 700,
                 overflowY: 'auto',
                 padding: 6,
                 transition: 'box-shadow 0.2s',
