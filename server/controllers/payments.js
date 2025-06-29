@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://worknowjob.com";
 
 export const createCheckoutSession = async (req, res) => {
-  const { clerkUserId } = req.body;
+  const { clerkUserId, priceId } = req.body;
 
   if (!clerkUserId) {
     return res.status(400).json({ error: 'clerkUserId is required' });
@@ -28,6 +28,10 @@ export const createCheckoutSession = async (req, res) => {
     const successUrl = `${FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${FRONTEND_URL}/cancel`;
 
+    // 🔹 Выбираем нужный priceId
+    const defaultPriceId = 'price_1Qt5J0COLiDbHvw1IQNl90uU'; // 99₪
+    const finalPriceId = priceId || defaultPriceId;
+
     // 🔹 Создаем Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -35,13 +39,13 @@ export const createCheckoutSession = async (req, res) => {
       customer_email: user.email,
       line_items: [
         {
-          price: 'price_1Qt5J0COLiDbHvw1IQNl90uU', // Твой Price ID из Stripe
+          price: finalPriceId,
           quantity: 1,
         },
       ],
       success_url: successUrl,
       cancel_url: cancelUrl,
-      metadata: { clerkUserId },
+      metadata: { clerkUserId, priceId: finalPriceId },
     });
 
     res.json({ url: session.url });
@@ -58,6 +62,7 @@ export const activatePremium = async (req, res) => {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     const clerkUserId = session.metadata.clerkUserId; // Получаем ID пользователя
     const subscriptionId = session.subscription; // ID подписки в Stripe
+    const priceId = session.metadata.priceId;
 
     if (session.payment_status === 'paid') {
       const user = await prisma.user.update({
@@ -67,6 +72,7 @@ export const activatePremium = async (req, res) => {
           premiumEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 дней подписки
           isAutoRenewal: !!subscriptionId,
           stripeSubscriptionId: subscriptionId || null,
+          premiumDeluxe: priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK',
         },
         include: { jobs: { include: { city: true } } }, // Подгружаем вакансии
       });

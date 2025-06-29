@@ -20,6 +20,7 @@ model User {
   lastName             String?
   premiumEndsAt        DateTime?
   stripeSubscriptionId String?
+  premiumDeluxe         Boolean   @default(false)
   jobs                 Job[]
 }
 

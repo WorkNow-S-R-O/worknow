@@ -12,6 +12,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import React from "react";
+import PremiumBenefitsCard from './PremiumBenefitsCard';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -32,6 +33,8 @@ const PremiumButton = () => {
   const [isPremium, setIsPremium] = useState(false);
   const [isAutoRenewal, setIsAutoRenewal] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedPremium2, setExpandedPremium2] = useState(false);
+  const [selectedTariff, setSelectedTariff] = useState('99');
 
   useEffect(() => {
     // Предварительная загрузка изображения
@@ -68,11 +71,13 @@ const PremiumButton = () => {
     }
 
     try {
+      const data = { clerkUserId: user.id };
+      if (selectedTariff === '199') {
+        data.priceId = 'price_1RfHjiCOLiDbHvw1repgIbnK';
+      }
       const response = await axios.post(
         `${API_URL}/payments/create-checkout-session`,
-        {
-          clerkUserId: user.id,
-        }
+        data
       );
 
       window.location.href = response.data.url;
@@ -94,6 +99,22 @@ const PremiumButton = () => {
       toast.error("Ошибка при отмене автопродления.");
     }
   };
+
+  // Бенефиты для тарифов
+  const benefits99 = [
+    { key: 'b1', value: t("premium_benefit_1") },
+    { key: 'b2', value: <a href="https://t.me/WORKNOW_JOBS" target="_blank" rel="noopener noreferrer" className="underline text-white">{t("premium_benefit_3")}</a> },
+    { key: 'b3', value: t("premium_benefit_5") },
+    { key: 'b4', value: <a href="https://www.facebook.com/groups/763040732570299" target="_blank" rel="noopener noreferrer" className="underline text-white">{t("premium_benefit_2")}</a> },
+  ];
+  const benefits199 = [
+    t("premium_benefit_1"),
+    t("premium_benefit_5"),
+    t("premium_benefit_3"),
+    t("premium_benefit_2"),
+    t("premium_benefit_4") || 'Доступ к функциям ИИ',
+    t("premium_benefit_extra") || 'Персональный менеджер',
+  ];
 
   return (
     <Sheet className="z-9999">
@@ -117,35 +138,36 @@ const PremiumButton = () => {
             <SheetDescription>{t("premium_description")}</SheetDescription>
           </SheetHeader>
 
-          <div className="my-4 p-4 bg-primary rounded-lg shadow">
-            <h3 className="text-lg font-bold text-white mb-2">
-              {t("premium_benefits_title")}
-            </h3>
-            <ul className="list-disc list-inside text-white">
-              <li>{t("premium_benefit_1")}</li>
-              <li>
-                <a
-                  href="https://t.me/WORKNOW_JOBS"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-white"
-                >
-                  {t("premium_benefit_3")}
-                </a>
-              </li>
-              <li>{t("premium_benefit_5")}</li>
-              <li>
-                <a
-                  href="https://www.facebook.com/groups/763040732570299"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-white"
-                >
-                  {t("premium_benefit_2")}
-                </a>
-              </li>
-            </ul>
-          </div>
+          {/* Первая плашка — всегда раскрыта */}
+          <PremiumBenefitsCard
+            title={t("premium_benefits_title") + " (99₪)"}
+            benefits={benefits99.map(b => ({...b}))}
+            color="#1976d2"
+            expanded={!expandedPremium2}
+            price={t("purchase")}
+            onToggle={() => {
+              setExpandedPremium2(false);
+              setSelectedTariff('99');
+            }}
+          />
+
+          {/* Вторая плашка — раскрывается по клику */}
+          <PremiumBenefitsCard
+            title={t("premium_benefits_title") + " (199₪)"}
+            benefits={benefits199}
+            color="#1565c0"
+            expanded={expandedPremium2}
+            onToggle={() => {
+              setExpandedPremium2(v => {
+                const next = !v;
+                setSelectedTariff(next ? '199' : '99');
+                return next;
+              });
+            }}
+            price={t("purchase_199") || "Приобрести за 199 ₪"}
+          >
+            {/* Можно добавить спец. описание или иконку */}
+          </PremiumBenefitsCard>
 
           <div className="flex justify-center items-center my-4">
             <img src="/images/premium.png" alt="premium" className="" />
@@ -182,7 +204,9 @@ const PremiumButton = () => {
               className="btn btn-primary w-full py-3 text-lg"
               onClick={handleCheckout}
             >
-              {t("purchase")}
+              {selectedTariff === '199'
+                ? (t("purchase_199") || 'Приобрести за 199 ₪')
+                : t("purchase")}
             </button>
           )}
         </div>
