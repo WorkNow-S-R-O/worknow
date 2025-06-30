@@ -8,6 +8,61 @@ import { useTranslation } from 'react-i18next';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t }) {
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = ''; };
+    }
+  }, [show]);
+  const filteredOtherCities = otherCities.filter(city => (city.label || city.name).toLowerCase().includes(search.toLowerCase()));
+  if (!show) return null;
+  return createPortal(
+    <div className="modal fade show" tabIndex="-1" style={{ display: 'block', background: 'rgba(0,0,0,0.35)', zIndex: 4000 }} onClick={onClose}>
+      <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: 420, margin: '0 auto', minHeight: '80vh' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-content" style={{ borderRadius: 18, maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
+          <div className="modal-header" style={{ borderBottom: '1px solid #eee' }}>
+            <h5 className="modal-title">{t('choose_city')}</h5>
+            <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
+          </div>
+          <div className="modal-body" style={{ padding: 16, flex: 1, overflowY: 'auto' }}>
+            <div className="input-group mb-3">
+              <span className="input-group-text"><i className="bi bi-search"></i></span>
+              <input type="text" className="form-control" placeholder={t('choose_city')} value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+            <ul className="list-group list-group-flush">
+              <li className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2', fontWeight: 500 }} onClick={() => { onCitySelect({ value: null, label: t('city_all') }); setSearch(""); onClose(); }}>
+                <i className="bi bi-geo-alt me-2"></i> {t('city_all')}
+              </li>
+              {regions.map(city => (
+                <li key={city.id} className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2' }} onClick={() => { onCitySelect({ value: city.id, label: city.label || city.name }); setSearch(""); onClose(); }}>
+                  <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
+                </li>
+              ))}
+              {filteredOtherCities.map(city => (
+                <li key={city.id} className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2' }} onClick={() => { onCitySelect({ value: city.id, label: city.label || city.name }); setSearch(""); onClose(); }}>
+                  <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+MobileCityModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  regions: PropTypes.array.isRequired,
+  otherCities: PropTypes.array.isRequired,
+  onCitySelect: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
+};
+
 const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,15 +70,12 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
   const language = useLanguageStore((state) => state.language) || 'ru';
   const ref = useRef();
   const { t } = useTranslation();
-  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
         const response = await axios.get(`${API_URL}/cities?lang=${language}`);
         setCities(response.data);
-        // Выводим id и label всех городов для поиска id регионов
-        console.log('CITIES:', response.data.map(city => ({ id: city.id, label: city.label || city.name })));
       } catch (error) {
         if (!(error?.code === 'ECONNABORTED')) {
           console.error('Ошибка загрузки городов:', error);
@@ -41,14 +93,9 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
         setOpen(false);
       }
     };
-    if (open) document.addEventListener('mousedown', handleClickOutside);
+    if (open && window.innerWidth > 600) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [open]);
-
-  const handleCitySelect = (cityObj) => {
-    onCitySelect(cityObj);
-    setOpen(false);
-  };
 
   // Явно сортируем регионы в нужном порядке по label
   const regionOrder = [
@@ -61,9 +108,43 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
     .filter(Boolean);
   const otherCities = cities.filter(city => !regions.includes(city));
 
-  // Фильтрация городов по поиску
-  const filteredOtherCities = otherCities.filter(city => (city.label || city.name).toLowerCase().includes(search.toLowerCase()));
+  // --- Мобильная модалка ---
+  if (open && window.innerWidth <= 600) {
+    return (
+      <>
+        <button
+          type="button"
+          className={`d-flex align-items-center justify-content-center border border-primary rounded px-4 ${buttonClassName}`}
+          style={{
+            height: 40,
+            background: '#fff',
+            color: '#1976d2',
+            fontWeight: 500,
+            fontSize: 16,
+            boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)',
+            transition: 'box-shadow 0.2s',
+            gap: 8,
+            width: '100%'
+          }}
+          onClick={() => setOpen(true)}
+        >
+          <i className="bi bi-geo-alt me-2" style={{ fontSize: 20 }}></i>
+          {selectedCity?.label || t('city_all')}
+          <i className="bi bi-caret-down-fill ms-2" style={{ fontSize: 14 }}></i>
+        </button>
+        <MobileCityModal
+          show={open}
+          onClose={() => setOpen(false)}
+          regions={regions}
+          otherCities={otherCities}
+          onCitySelect={onCitySelect}
+          t={t}
+        />
+      </>
+    );
+  }
 
+  // --- Десктопный dropdown ---
   return (
     <div ref={ref} style={{ position: 'relative', minWidth: 180 }}>
       <button
@@ -86,125 +167,67 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
         {selectedCity?.label || t('city_all')}
         <i className="bi bi-caret-down-fill ms-2" style={{ fontSize: 14 }}></i>
       </button>
-      {open && (
-        window.innerWidth <= 600 ? (
-          createPortal(
-            <>
-              {/* Затемнение */}
-              <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.35)', zIndex: 4000 }} onClick={() => setOpen(false)} />
-              {/* Модалка */}
-              <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100vw', maxHeight: '90vh', background: '#fff', borderTopLeftRadius: 18, borderTopRightRadius: 18, boxShadow: '0 -2px 24px rgba(25, 118, 210, 0.13)', zIndex: 4101, padding: 0, display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px 8px 20px', borderBottom: '1px solid #eee' }}>
-                  <span style={{ fontWeight: 600, fontSize: 18 }}>{t('choose_city')}</span>
-                  <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', fontSize: 26, color: '#888', cursor: 'pointer', padding: 0, marginLeft: 8 }}>&times;</button>
-                </div>
-                <div style={{ padding: '0 20px 8px 20px' }}>
-                  <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder={t('choose_city')} style={{ width: '100%', padding: 8, borderRadius: 8, border: '1px solid #e3eafc', marginBottom: 8, fontSize: 16 }} />
-                </div>
-                <div style={{ overflowY: 'auto', flex: 1, padding: '0 0 12px 0' }}>
-                  <div
-                    className="dropdown-item"
-                    style={{ cursor: 'pointer', padding: '12px 20px', color: '#1976d2', borderRadius: 8, fontWeight: 500 }}
-                    onClick={() => { handleCitySelect({ value: null, label: t('city_all') }); setSearch(""); }}
-                  >
-                    <i className="bi bi-geo-alt me-2"></i> {t('city_all')}
-                  </div>
-                  {/* Регионы */}
-                  {regions.map((city) => (
-                    <div
-                      key={city.id}
-                      className="dropdown-item"
-                      style={{ cursor: 'pointer', padding: '12px 20px', color: '#1976d2', borderRadius: 8 }}
-                      onClick={() => { handleCitySelect({ value: city.id, label: city.label || city.name }); setSearch(""); }}
-                    >
-                      <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
-                    </div>
-                  ))}
-                  {/* Остальные города */}
-                  {loading ? (
-                    <div className="dropdown-item" style={{ color: '#888', padding: '12px 20px' }}>Загрузка...</div>
-                  ) : (
-                    filteredOtherCities.map((city) => (
-                      <div
-                        key={city.id}
-                        className="dropdown-item"
-                        style={{ cursor: 'pointer', padding: '12px 20px', color: '#1976d2', borderRadius: 8 }}
-                        onClick={() => { handleCitySelect({ value: city.id, label: city.label || city.name }); setSearch(""); }}
-                      >
-                        <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </>,
-            document.body
-          )
-        ) : (
+      {open && window.innerWidth > 600 && (
+        <div
+          className="city-dropdown-menu"
+          style={{
+            position: 'absolute',
+            top: 44,
+            left: 0,
+            zIndex: 3000,
+            background: '#fff',
+            border: '1px solid #e3eafc',
+            borderRadius: 12,
+            boxShadow: '0 4px 24px rgba(25, 118, 210, 0.13)',
+            minWidth: 120,
+            maxWidth: '96vw',
+            maxHeight: 420,
+            overflowY: 'auto',
+            padding: 6,
+            transition: 'box-shadow 0.2s',
+          }}
+        >
           <div
-            className="city-dropdown-menu"
-            style={{
-              position: 'absolute',
-              top: 44,
-              left: 0,
-              zIndex: 3000,
-              background: '#fff',
-              border: '1px solid #e3eafc',
-              borderRadius: 12,
-              boxShadow: '0 4px 24px rgba(25, 118, 210, 0.13)',
-              minWidth: 120,
-              maxWidth: '96vw',
-              maxHeight: 420,
-              overflowY: 'auto',
-              padding: 6,
-              transition: 'box-shadow 0.2s',
-            }}
+            className="dropdown-item"
+            style={{ cursor: 'pointer', padding: '8px 16px', color: '#1976d2', borderRadius: 8, fontWeight: 500 }}
+            onMouseDown={() => onCitySelect({ value: null, label: t('city_all') })}
           >
+            <i className="bi bi-geo-alt me-2"></i> {t('city_all')}
+          </div>
+          {/* Регионы */}
+          {regions.map((city) => (
             <div
+              key={city.id}
               className="dropdown-item"
-              style={{ cursor: 'pointer', padding: '8px 16px', color: '#1976d2', borderRadius: 8, fontWeight: 500 }}
-              onMouseDown={() => handleCitySelect({ value: null, label: t('city_all') })}
+              style={{ cursor: 'pointer', padding: '8px 16px', color: '#1976d2', borderRadius: 8 }}
+              onMouseDown={() => onCitySelect({ value: city.id, label: city.label || city.name })}
             >
-              <i className="bi bi-geo-alt me-2"></i> {t('city_all')}
+              <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
             </div>
-            {/* Регионы */}
-            {regions.map((city) => (
+          ))}
+          {/* Остальные города */}
+          {loading ? (
+            <div className="dropdown-item" style={{ color: '#888', padding: '8px 16px' }}>Загрузка...</div>
+          ) : (
+            otherCities.map((city) => (
               <div
                 key={city.id}
                 className="dropdown-item"
                 style={{ cursor: 'pointer', padding: '8px 16px', color: '#1976d2', borderRadius: 8 }}
-                onMouseDown={() => handleCitySelect({ value: city.id, label: city.label || city.name })}
+                onMouseDown={() => onCitySelect({ value: city.id, label: city.label || city.name })}
               >
                 <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
               </div>
-            ))}
-            {/* Остальные города */}
-            {loading ? (
-              <div className="dropdown-item" style={{ color: '#888', padding: '8px 16px' }}>Загрузка...</div>
-            ) : (
-              otherCities.map((city) => (
-                <div
-                  key={city.id}
-                  className="dropdown-item"
-                  style={{ cursor: 'pointer', padding: '8px 16px', color: '#1976d2', borderRadius: 8 }}
-                  onMouseDown={() => handleCitySelect({ value: city.id, label: city.label || city.name })}
-                >
-                  <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
-                </div>
-              ))
-            )}
-          </div>
-        )
+            ))
+          )}
+        </div>
       )}
     </div>
   );
 };
 
 CityDropdown.propTypes = {
-  selectedCity: PropTypes.shape({
-    value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    label: PropTypes.string
-  }),
+  selectedCity: PropTypes.object,
   onCitySelect: PropTypes.func.isRequired,
   buttonClassName: PropTypes.string,
 };
