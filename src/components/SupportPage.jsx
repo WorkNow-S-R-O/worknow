@@ -1,14 +1,9 @@
-import { Navbar } from "./Navbar";
-import { Footer } from "./Footer";
 import { useTranslation } from "react-i18next";
 
 const SupportPage = () => {
   const { t } = useTranslation();
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      {/* Навигационная панель */}
-      <Navbar />
-
       {/* Основной контент */}
       <div className="flex-grow flex items-center justify-center p-4">
         <div className="bg-white shadow-lg rounded-lg p-6 text-center">
@@ -23,9 +18,6 @@ const SupportPage = () => {
           </a>
         </div>
       </div>
-
-      {/* Футер */}
-      <Footer />
     </div>
   );
 };

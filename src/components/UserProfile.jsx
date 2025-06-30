@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Navbar } from "./Navbar";
-import { Footer } from "./Footer";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Pagination } from "react-bootstrap";
@@ -169,7 +167,6 @@ const UserProfile = () => {
         </script>
       </Helmet>
 
-      <Navbar />
       <div className="container mt-20 d-flex flex-column align-items-center text-center">
         {loading ? (
           <SkeletonLoader jobsPerPage={jobsPerPage} />
@@ -204,7 +201,6 @@ const UserProfile = () => {
           </>
         )}
       </div>
-      <Footer />
     </>
   );
 };

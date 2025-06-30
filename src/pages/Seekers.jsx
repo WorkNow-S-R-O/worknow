@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { useTranslation } from "react-i18next";
-import {Footer} from "../components/Footer";
-import {Navbar} from "../components/Navbar";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import PaginationControl from "../components/PaginationControl";
@@ -113,7 +111,6 @@ export default function Seekers() {
 
   return (
     <>
-      <Navbar />
       <AddSeekerModal show={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddSeeker} />
       <div className="container" style={{ paddingTop: '100px' }}>
         <h2 className="fs-4">{t("seekers") || "Соискатели"}</h2>
@@ -212,7 +209,6 @@ export default function Seekers() {
           </>
         )}
       </div>
-      <Footer />
     </>
   );
 }

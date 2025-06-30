@@ -1,5 +1,3 @@
-import { Navbar } from "../components/index";
-import { Footer } from "../components/index";
 import { JobListing } from "../components/index";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -52,11 +50,9 @@ function Home() {
           `}
         </script>
       </Helmet>
-      <Navbar />
       <main className="flex-1">
         <JobListing />
       </main>
-      <Footer />
     </div>
   );
 }

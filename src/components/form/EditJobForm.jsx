@@ -9,8 +9,6 @@ import { updateJob } from '../../../server/editFormService';
 import { showToastError, showToastSuccess } from '../../../server/utils/toastUtils';
 import { EditJobFields } from './EditJobFields';
 import { useTranslation } from 'react-i18next';
-import { Navbar } from '../Navbar';
-import { Footer } from '../Footer';
 import { Helmet } from 'react-helmet-async'; // 🔹 SEO
 
 const EditJobForm = () => {
@@ -68,7 +66,6 @@ const EditJobForm = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <Navbar />
       <div className="flex-grow-1 d-flex justify-content-center align-items-center px-4">
         <div className="job-form my-5 w-full max-w-xl p-6 bg-white rounded-lg">
           <h1 className="text-2xl font-bold mb-4 mt-5 text-center">{t('edit_advertisement')}</h1>
@@ -93,7 +90,6 @@ const EditJobForm = () => {
           </form>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

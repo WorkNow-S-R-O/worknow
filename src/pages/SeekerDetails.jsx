@@ -1,7 +1,5 @@
 import { useParams, useLocation, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Navbar } from "../components/Navbar";
-import {Footer} from "../components/Footer";
 import { useUser } from "@clerk/clerk-react";
 import { useTranslation } from "react-i18next";
 import '../css/seeker-details-mobile.css';
@@ -85,7 +83,6 @@ export default function SeekerDetails() {
 
   return (
     <>
-      <Navbar />
       <div className="container" style={{ maxWidth: 600, paddingTop: '100px' }}>
         <div className="d-flex justify-content-between align-items-center mb-2">
           <h2 className="fs-4 mb-0">{t('seeker_profile_title')}</h2>
@@ -159,7 +156,6 @@ export default function SeekerDetails() {
         </div>
         )}
       </div>
-      <Footer />
     </>
   );
 } 

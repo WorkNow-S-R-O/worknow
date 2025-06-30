@@ -2,10 +2,9 @@ import { useMemo, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { baseTheme } from "@clerk/themes";
-import { RouterProvider } from "react-router-dom";
-import useLanguageStore from "./store/languageStore";
+import { RouterProvider, Outlet, createBrowserRouter } from "react-router-dom";
+import useLanguageStore from "./store/languageStore.ts";
 import { HelmetProvider, Helmet } from "react-helmet-async"; // 🔹 SEO
-import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import MyAds from "./pages/MyAds.jsx";
 import CreateNewAd from "./pages/CreateNewAd.jsx";
@@ -21,83 +20,45 @@ import Cancel from "./pages/Cancel.jsx";
 import Seekers from "./pages/Seekers.jsx";
 import SeekerDetails from "./pages/SeekerDetails.jsx";
 import PremiumPage from "./components/PremiumPage.jsx";
+import { Navbar } from "./components/Navbar.jsx";
+import { Footer } from "./components/Footer.jsx";
 import "./18n.ts";
 import "./css/ripple.css";
+
+function Layout() {
+  return (
+    <div className="d-flex flex-column min-vh-100">
+      <Navbar />
+      <div className="flex-grow-1">
+        <Outlet />
+      </div>
+      <Footer />
+    </div>
+  );
+}
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <Layout />, // Корневой layout с Navbar/Footer
     errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/my-advertisements",
-    element: <MyAds />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/create-new-advertisement",
-    element: (
-      <ProtectedRoute>
-        <CreateNewAd />
-      </ProtectedRoute>
-    ),
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/access-denied",
-    element: <AccessDenied />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/edit-job/:id",
-    element: (
-      <ProtectedRoute>
-        <EditJobForm />
-      </ProtectedRoute>
-    ),
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/profile/:clerkUserId",
-    element: <UserProfile />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/support",
-    element: <SupportPage />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/survey",
-    element: <SurveyWidget />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/success",
-    element: <Success />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/cancel",
-    element: <Cancel />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/seekers",
-    element: <Seekers />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/seekers/:id",
-    element: <SeekerDetails />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/premium",
-    element: <PremiumPage />,
-    errorElement: <NotFoundPage />,
-  },
+    children: [
+      { index: true, element: <Home /> },
+      { path: "my-advertisements", element: <MyAds /> },
+      { path: "create-new-advertisement", element: <ProtectedRoute><CreateNewAd /></ProtectedRoute> },
+      { path: "access-denied", element: <AccessDenied /> },
+      { path: "edit-job/:id", element: <ProtectedRoute><EditJobForm /></ProtectedRoute> },
+      { path: "profile/:clerkUserId", element: <UserProfile /> },
+      { path: "support", element: <SupportPage /> },
+      { path: "survey", element: <SurveyWidget /> },
+      { path: "success", element: <Success /> },
+      { path: "cancel", element: <Cancel /> },
+      { path: "seekers", element: <Seekers /> },
+      { path: "seekers/:id", element: <SeekerDetails /> },
+      { path: "premium", element: <PremiumPage /> },
+      { path: "*", element: <NotFoundPage /> },
+    ]
+  }
 ]);
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -107,7 +68,7 @@ if (!PUBLISHABLE_KEY || !PUBLISHABLE_KEY.startsWith('pk_')) {
   console.error('❌ Ошибка: Некорректный или отсутствует VITE_CLERK_PUBLISHABLE_KEY! Проверьте .env и перезапустите dev-сервер.');
 }
 
-const MainApp = () => {
+const App = () => {
   const localization = useLanguageStore((state) => state.localization);
   const loading = useLanguageStore((state) => state.loading);
   const currentLang = useLanguageStore((state) => state.language) || 'ru';
@@ -190,4 +151,4 @@ const MainApp = () => {
   );
 };
 
-export default MainApp;
+export default App;
