@@ -111,5 +111,6 @@
   "seekers_table_name": "Имя",
   "seekers_table_contact": "Контакт",
   "seekers_table_city": "Город",
-  "seekers_table_description": "Описание"
+  "seekers_table_description": "Описание",
+  "mail_new_badge": "НОВОЕ"
 }

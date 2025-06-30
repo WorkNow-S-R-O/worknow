@@ -114,5 +114,6 @@
   "seekers_table_name": "שם",
   "seekers_table_contact": "איש קשר",
   "seekers_table_city": "עיר",
-  "seekers_table_description": "תיאור"
+  "seekers_table_description": "תיאור",
+  "mail_new_badge": "חדש"
 } 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -12,6 +13,7 @@ export default function MailDropdown() {
   const [mailLoading, setMailLoading] = useState(false);
   const [openedMsgId, setOpenedMsgId] = useState(null);
   const mailRef = useRef();
+  const { t } = useTranslation();
 
   // Polling на новые письма (без toast)
   useEffect(() => {
@@ -137,7 +139,7 @@ export default function MailDropdown() {
                 >
                   <div className="d-flex justify-content-between align-items-center">
                     <span style={{fontWeight: msg.isRead ? 400 : 600, color: msg.isRead ? '#333' : '#1976d2'}}>{msg.title}</span>
-                    {!msg.isRead && <span className="badge bg-primary ms-2">NEW</span>}
+                    {!msg.isRead && <span className="badge bg-primary ms-2">{t('mail_new_badge')}</span>}
                   </div>
                   <div className="small text-muted mt-1">{new Date(msg.createdAt).toLocaleString()}</div>
                   {openedMsgId === msg.id && (

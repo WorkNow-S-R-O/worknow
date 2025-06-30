@@ -114,5 +114,6 @@
   "seekers_table_name": "Name",
   "seekers_table_contact": "Contact",
   "seekers_table_city": "City",
-  "seekers_table_description": "Description"
+  "seekers_table_description": "Description",
+  "mail_new_badge": "NEW"
 }

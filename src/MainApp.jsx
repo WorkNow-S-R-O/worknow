@@ -20,7 +20,6 @@ import Success from "./pages/Success.jsx";
 import Cancel from "./pages/Cancel.jsx";
 import Seekers from "./pages/Seekers.jsx";
 import SeekerDetails from "./pages/SeekerDetails.jsx";
-import Inbox from "./pages/Inbox.jsx";
 import "./18n.ts";
 import "./css/ripple.css";
 
@@ -91,11 +90,6 @@ const router = createBrowserRouter([
   {
     path: "/seekers/:id",
     element: <SeekerDetails />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/inbox",
-    element: <Inbox />,
     errorElement: <NotFoundPage />,
   },
 ]);
