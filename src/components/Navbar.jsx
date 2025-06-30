@@ -93,6 +93,11 @@ const Navbar = () => {
                     {t("technical_support")}
                   </Link>
                 </li>
+                <li>
+                  <Link to="/billing" className="dropdown-item">
+                    Выставление счетов
+                  </Link>
+                </li>
               </ul>
             </li>
           </ul>

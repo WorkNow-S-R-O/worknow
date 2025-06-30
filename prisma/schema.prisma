@@ -109,3 +109,12 @@ model Message {
   fromAdminId String?
   createdAt   DateTime @default(now())
 }
+
+model Payment {
+  id           Int      @id @default(autoincrement())
+  clerkUserId  String
+  month        String?
+  amount       Int
+  type         Int
+  date         DateTime
+}

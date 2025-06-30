@@ -1,6 +1,8 @@
 import stripe from '../utils/stripe.js';
 import { PrismaClient } from '@prisma/client';
 import { sendTelegramNotification } from '../utils/telegram.js';
+import { CLERK_SECRET_KEY } from '../config/clerkConfig.js';
+import fetch from 'node-fetch';
 const prisma = new PrismaClient();
 
 // ✅ URL для продакшена
@@ -110,6 +112,21 @@ export const activatePremium = async (req, res) => {
         // Email отправится автоматически через триггер в контроллере messages.js
       }
 
+      // --- Обновляем publicMetadata в Clerk ---
+      const publicMetadata = {
+        isPremium: true,
+        premiumDeluxe: priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK',
+      };
+      await fetch(`https://api.clerk.com/v1/users/${clerkUserId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${CLERK_SECRET_KEY}`,
+        },
+        body: JSON.stringify({ public_metadata: publicMetadata }),
+      });
+      // --- конец обновления Clerk ---
+
       res.json({ success: true });
     } else {
       res.status(400).json({ error: 'Платеж не прошел' });
@@ -155,5 +172,44 @@ export const cancelAutoRenewal = async (req, res) => {
   } catch (error) {
     console.error('❌ Ошибка при отключении автообновления:', error);
     res.status(500).json({ error: 'Ошибка при отключении автообновления' });
+  }
+};
+
+export const addPaymentHistory = async (req, res) => {
+  const { clerkUserId, month, amount, type, date } = req.body;
+  try {
+    const payment = await prisma.payment.create({
+      data: {
+        clerkUserId,
+        month,
+        amount,
+        type,
+        date: new Date(date),
+      },
+    });
+    res.json({ success: true, payment });
+  } catch (e) {
+    console.error('Ошибка при добавлении платежа:', e);
+    res.status(500).json({ error: 'Ошибка при добавлении платежа' });
+  }
+};
+
+export const getPaymentHistory = async (req, res) => {
+  const { clerkUserId } = req.query;
+
+  if (!clerkUserId) {
+    return res.status(400).json({ error: 'clerkUserId обязателен' });
+  }
+
+  try {
+    const payments = await prisma.payment.findMany({
+      where: { clerkUserId },
+      orderBy: { date: 'desc' },
+    });
+
+    res.json({ payments });
+  } catch (error) {
+    console.error('Ошибка при получении истории платежей:', error);
+    res.status(500).json({ error: 'Ошибка при получении истории платежей' });
   }
 };

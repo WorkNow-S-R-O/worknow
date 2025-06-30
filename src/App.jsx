@@ -24,6 +24,8 @@ import { Navbar } from "./components/Navbar.jsx";
 import { Footer } from "./components/Footer.jsx";
 import "./18n.ts";
 import "./css/ripple.css";
+import CancelSubscription from "./components/CancelSubscription.jsx";
+import BillingPage from "./components/BillingPage.jsx";
 
 function Layout() {
   return (
@@ -56,6 +58,8 @@ const router = createBrowserRouter([
       { path: "seekers", element: <Seekers /> },
       { path: "seekers/:id", element: <SeekerDetails /> },
       { path: "premium", element: <PremiumPage /> },
+      { path: "cancel-subscription", element: <CancelSubscription /> },
+      { path: "billing", element: <BillingPage /> },
       { path: "*", element: <NotFoundPage /> },
     ]
   }

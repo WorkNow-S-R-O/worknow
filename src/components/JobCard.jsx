@@ -20,17 +20,14 @@ const JobCard = ({ job }) => {
   return (
     <div
       className={`card shadow-sm mb-4 position-relative text-start ${
-        job.user?.isPremium ? "border border-warning premium-glow" : ""
+        job.user?.isPremium ? "premium-job" : ""
       }`}
       style={{
-        backgroundColor: "white",
+        backgroundColor: job.user?.isPremium ? "linear-gradient(90deg, #fffbe6 0%, #fff 100%)" : "white",
         width: "90%",
         maxWidth: "700px",
         borderRadius: "10px",
         minHeight: "220px",
-        boxShadow: job.user?.isPremium
-          ? "0px 0px 15px 5px rgba(255, 215, 0, 0.7)"
-          : "none",
         cursor: job.user?.clerkUserId ? "pointer" : "default",
       }}
       onClick={() => {
@@ -39,6 +36,12 @@ const JobCard = ({ job }) => {
         }
       }}
     >
+      {/* Плашка Премиум */}
+      {job.user?.isPremium && (
+        <div className="premium-badge">
+          <i className="bi bi-star-fill"></i> Премиум
+        </div>
+      )}
       <div className="card-body">
         <h5 className="card-title text-primary">{job.title}</h5>
         {job.category?.label && (
