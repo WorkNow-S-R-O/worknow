@@ -84,9 +84,9 @@ export const activatePremium = async (req, res) => {
         // Можно кастомизировать текст и контакты менеджера
         await prisma.message.create({
           data: {
-            userId: user.id,
+            clerkUserId,
             title: 'Добро пожаловать в Premium Deluxe!',
-            body: 'Для активации функции автопостинга напишите вашему персональному менеджеру: <a href="mailto:manager@worknowjob.com">manager@worknowjob.com</a>',
+            body: 'Для активации функции автопостинга напишите вашему персональному менеджеру: <a href="mailto:peterbaikov12@gmail.com">peterbaikov12@gmail.com</a>',
             type: 'system',
           }
         });
@@ -101,7 +101,7 @@ export const activatePremium = async (req, res) => {
           Если у вас возникнут вопросы — пишите в поддержку!`;
         await prisma.message.create({
           data: {
-            userId: user.id,
+            clerkUserId,
             title,
             body,
             type: 'system',

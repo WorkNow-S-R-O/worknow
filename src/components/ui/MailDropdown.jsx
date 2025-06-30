@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
-import { toast } from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,42 +12,54 @@ export default function MailDropdown() {
   const [mailLoading, setMailLoading] = useState(false);
   const [openedMsgId, setOpenedMsgId] = useState(null);
   const mailRef = useRef();
-  const prevUnread = useRef(0);
 
-  // Polling на новые письма + toast
+  // Polling на новые письма (без toast)
   useEffect(() => {
     if (!user) return;
     let timer;
     const fetchUnread = async () => {
       try {
-        const res = await axios.get(`${API_URL}/messages?userId=${user.id}`);
-        const msgs = res.data.messages || [];
-        const count = msgs.filter(m => !m.isRead).length;
-        prevUnread.current = unreadCount;
-        setUnreadCount(count);
-        if (count > unreadCount) {
-          toast(() => (
-            <span>
-              📩 Новое сообщение!{' '}
-              {/* Можно добавить действие по клику */}
-            </span>
-          ), { id: 'new-mail', duration: 7000 });
+        let res = await axios.get(`${API_URL}/messages?clerkUserId=${user.id}`);
+        let msgs = res.data.messages || [];
+        // Оставляем только 5 последних писем
+        if (msgs.length > 5) {
+          const toDelete = msgs.slice(5);
+          for (const m of toDelete) {
+            try {
+              await axios.delete(`${API_URL}/messages/${m.id}`);
+            } catch (e) {
+              if (!(e.response && e.response.status === 404)) {
+                console.error('Ошибка удаления сообщения:', e);
+              }
+              // Если 404 — игнорируем
+            }
+          }
+          msgs = msgs.slice(0, 5);
         }
-      } catch {}
+        const count = msgs.filter(m => !m.isRead).length;
+        console.log('unreadCount:', count, msgs); // Лог для диагностики
+        setMailMessages(msgs);
+        setUnreadCount(count);
+      } catch {
+        // Ошибка загрузки писем
+      }
     };
     fetchUnread();
-    timer = setInterval(fetchUnread, 30000);
+    timer = setInterval(fetchUnread, 12000);
     return () => clearInterval(timer);
-  }, [user, unreadCount]);
+  }, [user]);
 
-  // Получение последних писем для dropdown
+  // Получение последних писем для dropdown (только 5)
   const fetchMailMessages = async () => {
     if (!user) return;
     setMailLoading(true);
     try {
-      const res = await axios.get(`${API_URL}/messages?userId=${user.id}`);
-      setMailMessages(res.data.messages?.slice(0, 7) || []);
-    } catch {}
+      const res = await axios.get(`${API_URL}/messages?clerkUserId=${user.id}`);
+      let msgs = res.data.messages?.slice(0, 5) || [];
+      setMailMessages(msgs);
+    } catch {
+      // Ошибка загрузки последних писем
+    }
     setMailLoading(false);
   };
 
@@ -64,6 +75,24 @@ export default function MailDropdown() {
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [showMailDropdown]);
+
+  // Открывать первое сообщение при открытии popover и помечать его как прочитанное (только при первом открытии)
+  useEffect(() => {
+    if (showMailDropdown && mailMessages.length > 0) {
+      // Если popover только что открыт — выделяем первое письмо
+      setOpenedMsgId(prev => prev ?? mailMessages[0].id);
+      // Если первое письмо не прочитано — помечаем как прочитанное
+      if (!mailMessages[0].isRead) {
+        axios.patch(`${API_URL}/messages/${mailMessages[0].id}/read`).then(() => {
+          setMailMessages(msgs => msgs.map(m => m.id === mailMessages[0].id ? { ...m, isRead: true } : m));
+          setUnreadCount(count => count > 0 ? count - 1 : 0);
+        });
+      }
+    } else if (!showMailDropdown) {
+      // При закрытии popover сбрасываем выделение
+      setOpenedMsgId(null);
+    }
+  }, [showMailDropdown, mailMessages]);
 
   return (
     <div ref={mailRef} className="position-relative me-2">
@@ -84,7 +113,7 @@ export default function MailDropdown() {
         )}
       </button>
       {showMailDropdown && (
-        <div className="shadow rounded bg-white position-absolute end-0 mt-2" style={{ minWidth: 320, zIndex: 9999, maxWidth: 400 }}>
+        <div className="shadow rounded bg-white position-absolute end-0 mt-2" style={{ minWidth: 340, zIndex: 9999, maxWidth: 400 }}>
           <div className="p-2 border-bottom fw-bold">Входящие</div>
           {mailLoading ? (
             <div className="p-3 text-center text-muted">Загрузка...</div>
@@ -95,18 +124,25 @@ export default function MailDropdown() {
               {mailMessages.map(msg => (
                 <li
                   key={msg.id}
-                  className={`list-group-item px-3 py-2 ${!msg.isRead ? 'fw-bold bg-primary-subtle' : ''}`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setOpenedMsgId(openedMsgId === msg.id ? null : msg.id)}
+                  className={`list-group-item px-3 py-2 ${openedMsgId === msg.id ? 'bg-primary-subtle' : ''}`}
+                  style={{ cursor: 'pointer', borderLeft: openedMsgId === msg.id ? '4px solid #1976d2' : '4px solid transparent', transition: 'background 0.2s, border 0.2s' }}
+                  onClick={async () => {
+                    setOpenedMsgId(msg.id);
+                    if (!msg.isRead) {
+                      await axios.patch(`${API_URL}/messages/${msg.id}/read`);
+                      setMailMessages(msgs => msgs.map(m => m.id === msg.id ? { ...m, isRead: true } : m));
+                      setUnreadCount(count => count > 0 ? count - 1 : 0);
+                    }
+                  }}
                 >
                   <div className="d-flex justify-content-between align-items-center">
-                    <span>{msg.title}</span>
+                    <span style={{fontWeight: msg.isRead ? 400 : 600, color: msg.isRead ? '#333' : '#1976d2'}}>{msg.title}</span>
                     {!msg.isRead && <span className="badge bg-primary ms-2">NEW</span>}
                   </div>
+                  <div className="small text-muted mt-1">{new Date(msg.createdAt).toLocaleString()}</div>
                   {openedMsgId === msg.id && (
-                    <div className="mt-2 small text-dark" dangerouslySetInnerHTML={{ __html: msg.body }} />
+                    <div className="mt-2 small text-dark" style={{fontSize:15}} dangerouslySetInnerHTML={{ __html: msg.body }} />
                   )}
-                  <div className="text-muted small mt-1">{new Date(msg.createdAt).toLocaleString()}</div>
                 </li>
               ))}
             </ul>

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import PremiumButton from "./ui/premium-button";
 import useLanguageStore from "../store/languageStore"; // Импортируем Zustand хранилище
@@ -8,17 +8,13 @@ import {
   SignedOut,
   SignInButton,
   UserButton,
-  useUser,
 } from "@clerk/clerk-react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
 import MailDropdown from "./ui/MailDropdown";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const API_URL = import.meta.env.VITE_API_URL;
 
 if (!PUBLISHABLE_KEY || !googleClientId) {
   console.error("❌ Clerk API Key или Google Client ID не найдены!");
@@ -32,37 +28,12 @@ const Navbar = () => {
   const changeLanguage = useLanguageStore((state) => state.changeLanguage);
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const { user } = useUser();
 
   // Обработчик смены языка
   const handleLanguageChange = (lang) => {
     changeLanguage(lang); // Обновляем Zustand хранилище
     i18n.changeLanguage(lang); // Обновляем i18n
   };
-
-  // Polling на новые письма + toast
-  useEffect(() => {
-    if (!user) return;
-    let timer;
-    const fetchUnread = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/messages?userId=${user.id}`);
-        const msgs = res.data.messages || [];
-        const count = msgs.filter(m => !m.isRead).length;
-        if (count > 0) {
-          toast((t) => (
-            <span>
-              📩 Новое сообщение!{' '}
-              <button className="btn btn-link p-0 m-0 align-baseline" style={{color:'#1976d2',textDecoration:'underline'}} onClick={() => { window.location.href = '/inbox'; toast.dismiss(t.id); }}>Перейти во входящие</button>
-            </span>
-          ), { id: 'new-mail', duration: 7000 });
-        }
-      } catch {}
-    };
-    fetchUnread();
-    timer = setInterval(fetchUnread, 30000); // каждые 30 сек
-    return () => clearInterval(timer);
-  }, [user]);
 
   return (
     <>

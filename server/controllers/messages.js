@@ -7,16 +7,16 @@ const prisma = new PrismaClient();
 // Создать сообщение (и отправить email)
 export const createMessage = async (req, res) => {
   try {
-    const { userId, title, body, type = 'system', fromAdminId } = req.body;
-    if (!userId || !title || !body) {
-      return res.status(400).json({ error: 'userId, title и body обязательны' });
+    const { clerkUserId, title, body, type = 'system', fromAdminId } = req.body;
+    if (!clerkUserId || !title || !body) {
+      return res.status(400).json({ error: 'clerkUserId, title и body обязательны' });
     }
     // Создаём сообщение в базе
     const message = await prisma.message.create({
-      data: { userId, title, body, type, fromAdminId },
+      data: { clerkUserId, title, body, type, fromAdminId },
     });
     // Получаем email пользователя
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await prisma.user.findUnique({ where: { clerkUserId } });
     if (user && user.email) {
       // Отправляем email через nodemailer
       try {
@@ -32,15 +32,17 @@ export const createMessage = async (req, res) => {
   }
 };
 
-// Получить все сообщения пользователя (по userId)
+// Получить все сообщения пользователя (по clerkUserId)
 export const getUserMessages = async (req, res) => {
   try {
-    const { userId } = req.query;
-    if (!userId) return res.status(400).json({ error: 'userId обязателен' });
+    const { clerkUserId } = req.query;
+    console.log('clerkUserId из запроса:', clerkUserId);
+    if (!clerkUserId) return res.status(400).json({ error: 'clerkUserId обязателен' });
     const messages = await prisma.message.findMany({
-      where: { userId },
+      where: { clerkUserId },
       orderBy: { createdAt: 'desc' },
     });
+    console.log('Сообщения из базы:', messages);
     return res.json({ messages });
   } catch (error) {
     console.error('Ошибка получения сообщений:', error);
@@ -60,6 +62,46 @@ export const markMessageRead = async (req, res) => {
   } catch (error) {
     console.error('Ошибка отметки сообщения как прочитанного:', error);
     return res.status(500).json({ error: 'Ошибка отметки сообщения' });
+  }
+};
+
+// Массовая рассылка сообщений и email
+export const broadcastMessage = async (req, res) => {
+  try {
+    const { title, body, clerkUserIds } = req.body;
+    if (!title || !body) {
+      return res.status(400).json({ error: 'title и body обязательны' });
+    }
+    
+    let users;
+    if (Array.isArray(clerkUserIds) && clerkUserIds.length > 0) {
+      users = await prisma.user.findMany({ where: { clerkUserId: { in: clerkUserIds } } });
+    } else {
+      users = await prisma.user.findMany();
+    }
+    let sent = 0;
+    for (const user of users) {
+      await prisma.message.create({
+        data: {
+          clerkUserId: user.clerkUserId,
+          title,
+          body,
+          type: 'admin',
+        }
+      });
+      if (user.email) {
+        try {
+          await sendEmail(user.email, title, body);
+        } catch (e) {
+          console.error('Ошибка отправки email:', e);
+        }
+      }
+      sent++;
+    }
+    return res.json({ success: true, count: sent });
+  } catch (error) {
+    console.error('Ошибка рассылки:', error);
+    return res.status(500).json({ error: 'Ошибка рассылки' });
   }
 };
 
