@@ -90,7 +90,7 @@
   "reset": "Reset",
   "close_filter": "Close filter",
   "not_specified": "Not specified",
-  "board_settings": "Board settings",
+  "board_settings": "Filters",
   "seeker_profile_title": "Seekers",
   "seeker_profile_back": "Back to list",
   "seeker_profile_published": "Published {{days}} days ago {{date}}",

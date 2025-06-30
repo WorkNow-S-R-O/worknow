@@ -87,7 +87,7 @@
   "reset": "Сбросить",
   "close_filter": "Закрыть фильтр",
   "not_specified": "Не указано",
-  "board_settings": "Настройка доски",
+  "board_settings": "Фильтровать",
   "seeker_profile_title": "Соискатели",
   "seeker_profile_back": "Вернуться к списку",
   "seeker_profile_published": "Опубликовано {{days}} дней назад {{date}}",
