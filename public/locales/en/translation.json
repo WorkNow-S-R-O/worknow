@@ -115,5 +115,9 @@
   "seekers_table_contact": "Contact",
   "seekers_table_city": "City",
   "seekers_table_description": "Description",
-  "mail_new_badge": "NEW"
+  "mail_new_badge": "NEW",
+  "shuttle": "Shuttle",
+  "meals": "Meals",
+  "yes": "Yes",
+  "no": "No"
 }

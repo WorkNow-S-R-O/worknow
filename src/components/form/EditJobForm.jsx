@@ -28,7 +28,9 @@ const EditJobForm = () => {
       cityId: undefined, 
       categoryId: undefined,
       phone: '', 
-      description: '' 
+      description: '',
+      shuttle: false,
+      meals: false
     },
   });
 
@@ -42,6 +44,8 @@ const EditJobForm = () => {
         ...data,
         cityId: data.cityId ? parseInt(data.cityId, 10) : null,
         categoryId: data.categoryId ? parseInt(data.categoryId, 10) : null,
+        shuttle: !!data.shuttle,
+        meals: !!data.meals
       };
       await updateJob(id, updatedData);
       showToastSuccess('Объявление успешно обновлено!');

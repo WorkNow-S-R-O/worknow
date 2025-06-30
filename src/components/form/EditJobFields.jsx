@@ -123,6 +123,31 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
         )}
         {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
       </div>
+
+      {/* Подвозка */}
+      <div className="form-check mb-2">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id="shuttleCheckbox"
+          {...register("shuttle")}
+        />
+        <label className="form-check-label" htmlFor="shuttleCheckbox">
+          {t("shuttle") || "Подвозка"}
+        </label>
+      </div>
+      {/* Питание */}
+      <div className="form-check mb-4">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id="mealsCheckbox"
+          {...register("meals")}
+        />
+        <label className="form-check-label" htmlFor="mealsCheckbox">
+          {t("meals") || "Питание"}
+        </label>
+      </div>
     </>
   );
 };

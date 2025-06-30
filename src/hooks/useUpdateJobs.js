@@ -35,6 +35,8 @@ const useFetchJob = (id, setValue) => {
         setValue("categoryId", job.category ? job.category.id : null);
         setValue("phone", job.phone);
         setValue("description", job.description);
+        setValue("shuttle", job.shuttle ?? false);
+        setValue("meals", job.meals ?? false);
         
         setJob(job);
 

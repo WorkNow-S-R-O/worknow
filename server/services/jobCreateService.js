@@ -1,12 +1,11 @@
-import { PrismaClient } from '@prisma/client';
 import stringSimilarity from "string-similarity";
 import { containsBadWords, containsLinks } from '../middlewares/validation.js';
 import { sendNewJobNotificationToTelegram } from '../utils/telegram.js';
-
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const MAX_JOBS_PER_USER = 10;
 
-export const createJobService = async ({ title, salary, cityId, categoryId, phone, description, userId }) => {
+export const createJobService = async ({ title, salary, cityId, categoryId, phone, description, userId, shuttle, meals }) => {
   let errors = [];
 
   // Валидация на запрещенные слова и ссылки
@@ -52,6 +51,8 @@ export const createJobService = async ({ title, salary, cityId, categoryId, phon
       salary,
       phone,
       description,
+      shuttle,
+      meals,
       city: { connect: { id: parseInt(cityId) } },
       category: { connect: { id: parseInt(categoryId) } },
       user: { connect: { id: existingUser.id } }

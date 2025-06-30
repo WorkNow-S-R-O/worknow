@@ -27,7 +27,9 @@ const JobListing = () => {
     const cityMatch = !selectedCity.value || job.cityId === selectedCity.value;
     const salaryMatch = !filters.salary || (job.salary && Number(job.salary) >= filters.salary);
     const categoryMatch = !filters.categoryId || job.categoryId === Number(filters.categoryId);
-    return cityMatch && salaryMatch && categoryMatch;
+    const shuttleMatch = !filters.shuttleOnly || job.shuttle === true;
+    const mealsMatch = !filters.mealsOnly || job.meals === true;
+    return cityMatch && salaryMatch && categoryMatch && shuttleMatch && mealsMatch;
   });
 
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);

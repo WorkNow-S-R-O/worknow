@@ -158,6 +158,16 @@ const UserJobs = () => {
                 </p>
                 <p className="card-text">{job.description}</p>
                 <p className="card-text">
+                {typeof job.shuttle === 'boolean' && (
+                  <p className="card-text">
+                    <strong>{t("shuttle") || "Подвозка"}:</strong> {job.shuttle ? t("yes") || "да" : t("no") || "нет"}
+                  </p>
+                )}
+                {typeof job.meals === 'boolean' && (
+                  <p className="card-text">
+                    <strong>{t("meals") || "Питание"}:</strong> {job.meals ? t("yes") || "да" : t("no") || "нет"}
+                  </p>
+                )}
                   <strong>{t("phone_number_card")}</strong> {job.phone}
                 </p>
                 <div className="text-muted">

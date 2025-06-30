@@ -71,6 +71,8 @@ model Job {
   city        City      @relation(fields: [cityId], references: [id])
   user        User      @relation(fields: [userId], references: [id])
   category    Category  @relation(fields: [categoryId], references: [id])
+  shuttle     Boolean?  // Подвозка
+  meals       Boolean?  // Питание
 
   @@index([boostedAt])
 }

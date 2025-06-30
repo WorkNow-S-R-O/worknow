@@ -7,6 +7,8 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
   const [salary, setSalary] = useState(currentFilters.salary || '');
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(currentFilters.categoryId || '');
+  const [shuttleOnly, setShuttleOnly] = useState(currentFilters.shuttleOnly || false);
+  const [mealsOnly, setMealsOnly] = useState(currentFilters.mealsOnly || false);
   const modalRef = useRef();
   const language = useLanguageStore((state) => state.language) || 'ru';
   const { t } = useTranslation();
@@ -16,6 +18,8 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
       // Устанавливаем текущие фильтры при открытии
       setSalary(currentFilters.salary || '');
       setSelectedCategory(currentFilters.categoryId || '');
+      setShuttleOnly(currentFilters.shuttleOnly || false);
+      setMealsOnly(currentFilters.mealsOnly || false);
       
       document.body.style.overflow = 'hidden';
       fetch(`/api/categories?lang=${language}`)
@@ -51,6 +55,8 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
     onApply({
       salary: salary ? Number(salary) : undefined,
       categoryId: selectedCategory || undefined,
+      shuttleOnly: shuttleOnly || undefined,
+      mealsOnly: mealsOnly || undefined,
     });
     onClose();
   };
@@ -58,6 +64,8 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
   const handleReset = () => {
     setSalary('');
     setSelectedCategory('');
+    setShuttleOnly(false);
+    setMealsOnly(false);
     onApply({});
     onClose();
   };
@@ -80,6 +88,32 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
             ))}
           </select>
         </div>
+        <div className="form-check form-switch mb-3">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="shuttleSwitch"
+            checked={shuttleOnly}
+            onChange={e => setShuttleOnly(e.target.checked)}
+          />
+          <label className="form-check-label" htmlFor="shuttleSwitch">
+            {t('shuttle') || 'Подвозка'}
+          </label>
+        </div>
+        <div className="form-check form-switch mb-4">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            role="switch"
+            id="mealsSwitch"
+            checked={mealsOnly}
+            onChange={e => setMealsOnly(e.target.checked)}
+          />
+          <label className="form-check-label" htmlFor="mealsSwitch">
+            {t('meals') || 'Питание'}
+          </label>
+        </div>
         <div className="d-flex justify-content-between mt-4">
           <button className="btn btn-outline-secondary" onClick={handleReset}>{t('reset')}</button>
           <button className="btn btn-primary px-4" onClick={handleApply}>{t('save')}</button>
@@ -96,6 +130,8 @@ JobFilterModal.propTypes = {
   currentFilters: PropTypes.shape({
     salary: PropTypes.number,
     categoryId: PropTypes.string,
+    shuttleOnly: PropTypes.bool,
+    mealsOnly: PropTypes.bool,
   }),
 };
 

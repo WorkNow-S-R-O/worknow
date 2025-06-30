@@ -26,7 +26,9 @@ const JobForm = ({ onJobCreated }) => {
       cityId: undefined, 
       categoryId: undefined,
       phone: '', 
-      description: '' 
+      description: '',
+      shuttle: false,
+      meals: false
     },
   });
 
@@ -44,7 +46,9 @@ const JobForm = ({ onJobCreated }) => {
         ...data, 
         cityId: parseInt(data.cityId), 
         categoryId: parseInt(data.categoryId),
-        userId: user.id 
+        userId: user.id,
+        shuttle: !!data.shuttle,
+        meals: !!data.meals
       });
       showToastSuccess('Объявление успешно создано!');
       reset();

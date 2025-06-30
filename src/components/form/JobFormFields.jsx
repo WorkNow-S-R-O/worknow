@@ -153,17 +153,42 @@ export const JobFormFields = ({
         )}
       </div>
 
-      {/* Чекбокс "Согласие с пользовательским соглашением" */}
-      <div className="mb-4 flex items-center">
+      {/* Подвозка */}
+      <div className="form-check mb-2">
         <input
+          className="form-check-input"
+          type="checkbox"
+          id="shuttleCheckbox"
+          {...register("shuttle")}
+        />
+        <label className="form-check-label" htmlFor="shuttleCheckbox">
+          {t("shuttle") || "Подвозка"}
+        </label>
+      </div>
+      {/* Питание */}
+      <div className="form-check mb-4">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id="mealsCheckbox"
+          {...register("meals")}
+        />
+        <label className="form-check-label" htmlFor="mealsCheckbox">
+          {t("meals") || "Питание"}
+        </label>
+      </div>
+
+      {/* Чекбокс "Согласие с пользовательским соглашением" */}
+      <div className="form-check mb-4 flex items-center">
+        <input
+          className="form-check-input"
           type="checkbox"
           id="terms"
-          className="mr-2 w-4 h-4 bg-white border-2 border-primary rounded"
           checked={isAgreed}
           onChange={() => setIsAgreed(!isAgreed)}
         />
-        <label htmlFor="terms" className="text-gray-700 text-sm">
-          Я согласен с{" "}
+        <label className="form-check-label ms-2" htmlFor="terms">
+          Я согласен с{' '}
           <a
             href="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca"
             target="_blank"

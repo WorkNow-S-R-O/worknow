@@ -112,5 +112,9 @@
   "seekers_table_contact": "Контакт",
   "seekers_table_city": "Город",
   "seekers_table_description": "Описание",
-  "mail_new_badge": "НОВОЕ"
+  "mail_new_badge": "НОВОЕ",
+  "shuttle": "Подвозка",
+  "meals": "Питание",
+  "yes": "Да",
+  "no": "Нет"
 }

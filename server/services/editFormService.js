@@ -4,7 +4,7 @@ import { sendUpdatedJobListToTelegram } from '../utils/telegram.js';
 
 const prisma = new PrismaClient();
 
-export const updateJobService = async (id, { title, salary, cityId, phone, description, categoryId }) => {
+export const updateJobService = async (id, { title, salary, cityId, phone, description, categoryId, shuttle, meals }) => {
   let errors = [];
   if (containsBadWords(title)) errors.push("Заголовок содержит нецензурные слова.");
   if (containsBadWords(description)) errors.push("Описание содержит нецензурные слова.");
@@ -24,7 +24,9 @@ export const updateJobService = async (id, { title, salary, cityId, phone, descr
         phone, 
         description, 
         city: { connect: { id: parseInt(cityId) } },
-        category: { connect: { id: parseInt(categoryId) } }
+        category: { connect: { id: parseInt(categoryId) } },
+        shuttle,
+        meals
       },
       include: { city: true, user: true, category: true },
     });
