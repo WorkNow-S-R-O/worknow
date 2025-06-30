@@ -109,7 +109,7 @@ const Navbar = () => {
               aria-expanded="false"
             >
               <i className="bi bi-translate me-2"></i>
-              {language === "en" ? "English" : language === "he" ? "עברית" : "Русский"}
+              {language === "en" ? "English" : language === "he" ? "עברית" : language === "ar" ? "العربية" : "Русский"}
             </button>
             <ul className="dropdown-menu" aria-labelledby="languageDropdown">
               <li>
@@ -125,6 +125,11 @@ const Navbar = () => {
               <li>
                 <button onClick={() => handleLanguageChange("he")} className="dropdown-item">
                   עברית
+                </button>
+              </li>
+              <li>
+                <button onClick={() => handleLanguageChange("ar")} className="dropdown-item">
+                  العربية
                 </button>
               </li>
             </ul>
@@ -223,7 +228,7 @@ const Navbar = () => {
                   aria-expanded="false"
                 >
                   <i className="bi bi-translate me-2"></i>
-                  {language === "en" ? "English" : language === "he" ? "עברית" : "Русский"}
+                  {language === "en" ? "English" : language === "he" ? "עברית" : language === "ar" ? "العربية" : "Русский"}
                 </button>
                 <ul className="dropdown-menu w-100" aria-labelledby="mobileLanguageDropdown">
                   <li>
@@ -234,6 +239,9 @@ const Navbar = () => {
                   </li>
                   <li>
                     <button onClick={() => handleLanguageChange("he") } className="dropdown-item">עברית</button>
+                  </li>
+                  <li>
+                    <button onClick={() => handleLanguageChange("ar") } className="dropdown-item">العربية</button>
                   </li>
                 </ul>
               </div>
