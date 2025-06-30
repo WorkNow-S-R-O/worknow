@@ -20,6 +20,7 @@ import Success from "./pages/Success.jsx";
 import Cancel from "./pages/Cancel.jsx";
 import Seekers from "./pages/Seekers.jsx";
 import SeekerDetails from "./pages/SeekerDetails.jsx";
+import PremiumPage from "./components/PremiumPage.jsx";
 import "./18n.ts";
 import "./css/ripple.css";
 
@@ -90,6 +91,11 @@ const router = createBrowserRouter([
   {
     path: "/seekers/:id",
     element: <SeekerDetails />,
+    errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/premium",
+    element: <PremiumPage />,
     errorElement: <NotFoundPage />,
   },
 ]);
