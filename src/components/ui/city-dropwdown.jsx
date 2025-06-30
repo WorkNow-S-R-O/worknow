@@ -18,10 +18,20 @@ function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t 
   }, [show]);
   const filteredOtherCities = otherCities.filter(city => (city.label || city.name).toLowerCase().includes(search.toLowerCase()));
   if (!show) return null;
+
+  // Определяем десктоп или мобилка
+  const isMobile = window.innerWidth <= 600;
+  const modalStyle = isMobile
+    ? { maxWidth: 420, margin: '0 auto', minHeight: '80vh' }
+    : { width: 420, height: 520, maxWidth: '90vw', maxHeight: '90vh', margin: 'auto', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', position: 'fixed', display: 'flex', alignItems: 'center', justifyContent: 'center' };
+  const contentStyle = isMobile
+    ? { borderRadius: 18, maxHeight: '80vh', display: 'flex', flexDirection: 'column' }
+    : { borderRadius: 18, width: 420, height: 520, display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(25, 118, 210, 0.13)' };
+
   return createPortal(
     <div className="modal fade show" tabIndex="-1" style={{ display: 'block', background: 'rgba(0,0,0,0.35)', zIndex: 4000 }} onClick={onClose}>
-      <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: 420, margin: '0 auto', minHeight: '80vh' }} onClick={e => e.stopPropagation()}>
-        <div className="modal-content" style={{ borderRadius: 18, maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="modal-dialog modal-dialog-centered" style={modalStyle} onClick={e => e.stopPropagation()}>
+        <div className="modal-content" style={contentStyle}>
           <div className="modal-header" style={{ borderBottom: '1px solid #eee' }}>
             <h5 className="modal-title">{t('choose_city')}</h5>
             <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
@@ -65,7 +75,6 @@ MobileCityModal.propTypes = {
 
 const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
   const [cities, setCities] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const language = useLanguageStore((state) => state.language) || 'ru';
   const ref = useRef();
@@ -80,8 +89,6 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
         if (!(error?.code === 'ECONNABORTED')) {
           console.error('Ошибка загрузки городов:', error);
         }
-      } finally {
-        setLoading(false);
       }
     };
     fetchCities();
@@ -108,45 +115,8 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
     .filter(Boolean);
   const otherCities = cities.filter(city => !regions.includes(city));
 
-  // --- Мобильная модалка ---
-  if (open && window.innerWidth <= 600) {
-    return (
-      <>
-        <button
-          type="button"
-          className={`d-flex align-items-center justify-content-center border border-primary rounded px-4 ${buttonClassName}`}
-          style={{
-            height: 40,
-            background: '#fff',
-            color: '#1976d2',
-            fontWeight: 500,
-            fontSize: 16,
-            boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)',
-            transition: 'box-shadow 0.2s',
-            gap: 8,
-            width: '100%'
-          }}
-          onClick={() => setOpen(true)}
-        >
-          <i className="bi bi-geo-alt me-2" style={{ fontSize: 20 }}></i>
-          {selectedCity?.label || t('city_all')}
-          <i className="bi bi-caret-down-fill ms-2" style={{ fontSize: 14 }}></i>
-        </button>
-        <MobileCityModal
-          show={open}
-          onClose={() => setOpen(false)}
-          regions={regions}
-          otherCities={otherCities}
-          onCitySelect={onCitySelect}
-          t={t}
-        />
-      </>
-    );
-  }
-
-  // --- Десктопный dropdown ---
   return (
-    <div ref={ref} style={{ position: 'relative', minWidth: 180 }}>
+    <>
       <button
         type="button"
         className={`d-flex align-items-center justify-content-center border border-primary rounded px-4 ${buttonClassName}`}
@@ -161,68 +131,20 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
           gap: 8,
           width: '100%'
         }}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen(true)}
       >
         <i className="bi bi-geo-alt me-2" style={{ fontSize: 20 }}></i>
         {selectedCity?.label || t('city_all')}
-        <i className="bi bi-caret-down-fill ms-2" style={{ fontSize: 14 }}></i>
       </button>
-      {open && window.innerWidth > 600 && (
-        <div
-          className="city-dropdown-menu"
-          style={{
-            position: 'absolute',
-            top: 44,
-            left: 0,
-            zIndex: 3000,
-            background: '#fff',
-            border: '1px solid #e3eafc',
-            borderRadius: 12,
-            boxShadow: '0 4px 24px rgba(25, 118, 210, 0.13)',
-            minWidth: 120,
-            maxWidth: '96vw',
-            maxHeight: 420,
-            overflowY: 'auto',
-            padding: 6,
-            transition: 'box-shadow 0.2s',
-          }}
-        >
-          <div
-            className="dropdown-item"
-            style={{ cursor: 'pointer', padding: '8px 16px', color: '#1976d2', borderRadius: 8, fontWeight: 500 }}
-            onMouseDown={() => onCitySelect({ value: null, label: t('city_all') })}
-          >
-            <i className="bi bi-geo-alt me-2"></i> {t('city_all')}
-          </div>
-          {/* Регионы */}
-          {regions.map((city) => (
-            <div
-              key={city.id}
-              className="dropdown-item"
-              style={{ cursor: 'pointer', padding: '8px 16px', color: '#1976d2', borderRadius: 8 }}
-              onMouseDown={() => onCitySelect({ value: city.id, label: city.label || city.name })}
-            >
-              <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
-            </div>
-          ))}
-          {/* Остальные города */}
-          {loading ? (
-            <div className="dropdown-item" style={{ color: '#888', padding: '8px 16px' }}>Загрузка...</div>
-          ) : (
-            otherCities.map((city) => (
-              <div
-                key={city.id}
-                className="dropdown-item"
-                style={{ cursor: 'pointer', padding: '8px 16px', color: '#1976d2', borderRadius: 8 }}
-                onMouseDown={() => onCitySelect({ value: city.id, label: city.label || city.name })}
-              >
-                <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
-              </div>
-            ))
-          )}
-        </div>
-      )}
-    </div>
+      <MobileCityModal
+        show={open}
+        onClose={() => setOpen(false)}
+        regions={regions}
+        otherCities={otherCities}
+        onCitySelect={onCitySelect}
+        t={t}
+      />
+    </>
   );
 };
 
