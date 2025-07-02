@@ -146,15 +146,24 @@ export const cancelAutoRenewal = async (req, res) => {
       where: { clerkUserId },
     });
 
-
-    if (!user || !user.stripeSubscriptionId) {
-      console.error("❌ Ошибка: подписка не найдена.");
-      return res.status(404).json({ error: 'Подписка не найдена' });
+    if (!user) {
+      console.error("❌ Ошибка: пользователь не найден.");
+      return res.status(404).json({ error: 'Пользователь не найден' });
     }
 
     if (!user.isAutoRenewal) {
       console.warn("⚠️ Автопродление уже отключено.");
       return res.status(400).json({ error: 'Автопродление уже отключено' });
+    }
+
+    if (!user.stripeSubscriptionId) {
+      // Нет Stripe-подписки, но автопродление включено — просто отключаем в базе
+      console.warn(`⚠️ У пользователя ${user.email} нет stripeSubscriptionId, но isAutoRenewal=true. Отключаем только в базе.`);
+      await prisma.user.update({
+        where: { clerkUserId },
+        data: { isAutoRenewal: false },
+      });
+      return res.json({ success: true, message: 'Автопродление подписки отключено (без Stripe).' });
     }
 
     // 🔹 Отключаем автопродление в Stripe
