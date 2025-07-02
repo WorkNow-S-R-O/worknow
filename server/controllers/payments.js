@@ -222,3 +222,24 @@ export const getPaymentHistory = async (req, res) => {
     res.status(500).json({ error: 'Ошибка при получении истории платежей' });
   }
 };
+
+export const renewAutoRenewal = async (req, res) => {
+  const { clerkUserId } = req.body;
+  try {
+    const user = await prisma.user.findUnique({ where: { clerkUserId } });
+    if (!user) {
+      return res.status(404).json({ error: 'Пользователь не найден' });
+    }
+    if (user.isAutoRenewal) {
+      return res.status(400).json({ error: 'Автопродление уже включено' });
+    }
+    await prisma.user.update({
+      where: { clerkUserId },
+      data: { isAutoRenewal: true },
+    });
+    res.json({ success: true, message: 'Автопродление подписки включено.' });
+  } catch (error) {
+    console.error('❌ Ошибка при включении автопродления:', error);
+    res.status(500).json({ error: 'Ошибка при включении автопродления' });
+  }
+};
