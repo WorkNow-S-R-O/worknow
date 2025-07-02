@@ -89,14 +89,26 @@ const BillingPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {history.map((item) => (
-                  <tr key={item.id}>
-                    <td className="align-middle">{item.period ? item.period.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }) : '-'}</td>
-                    <td className="align-middle fw-bold">{item.amount ? `${item.amount}₪` : '-'}</td>
-                    <td className="align-middle">{item.type || '-'}</td>
-                    <td className="align-middle">{item.date ? new Date(item.date).toLocaleDateString() : '-'}</td>
-                  </tr>
-                ))}
+                {history.map((item) => {
+                  let periodStr = '-';
+                  if (item.period) {
+                    let periodDate = item.period;
+                    if (typeof periodDate === 'string' || typeof periodDate === 'number') {
+                      periodDate = new Date(periodDate);
+                    }
+                    if (periodDate instanceof Date && !isNaN(periodDate)) {
+                      periodStr = periodDate.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+                    }
+                  }
+                  return (
+                    <tr key={item.id}>
+                      <td className="align-middle">{periodStr}</td>
+                      <td className="align-middle fw-bold">{item.amount ? `${item.amount}₪` : '-'}</td>
+                      <td className="align-middle">{item.type || '-'}</td>
+                      <td className="align-middle">{item.date ? new Date(item.date).toLocaleDateString() : '-'}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
