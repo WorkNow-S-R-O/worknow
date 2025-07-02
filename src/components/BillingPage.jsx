@@ -78,34 +78,42 @@ const BillingPage = () => {
         <div className="alert alert-info">Нет платежей</div>
       ) : (
         <>
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Месяц</th>
-                <th>Сумма</th>
-                <th>Тип подписки</th>
-                <th>Дата</th>
-              </tr>
-            </thead>
-            <tbody>
-              {history.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.period ? item.period.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }) : '-'}</td>
-                  <td>{item.amount ? `${item.amount}₪` : '-'}</td>
-                  <td>{item.type || '-'}</td>
-                  <td>{item.date ? new Date(item.date).toLocaleDateString() : '-'}</td>
+          <div className="table-responsive">
+            <table className="table table-striped table-hover table-bordered shadow rounded text-center align-middle">
+              <thead className="table-primary">
+                <tr>
+                  <th className="align-middle">Месяц</th>
+                  <th className="align-middle">Сумма</th>
+                  <th className="align-middle">Тип подписки</th>
+                  <th className="align-middle">Дата</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="d-flex justify-content-between mt-3">
-            <button className="btn btn-outline-secondary" onClick={handlePrev} disabled={!hasPrev}>
-              Предыдущая страница
-            </button>
-            <button className="btn btn-outline-secondary" onClick={handleNext} disabled={!hasNext}>
-              Следующая страница
-            </button>
+              </thead>
+              <tbody>
+                {history.map((item) => (
+                  <tr key={item.id}>
+                    <td className="align-middle">{item.period ? item.period.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }) : '-'}</td>
+                    <td className="align-middle fw-bold">{item.amount ? `${item.amount}₪` : '-'}</td>
+                    <td className="align-middle">{item.type || '-'}</td>
+                    <td className="align-middle">{item.date ? new Date(item.date).toLocaleDateString() : '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+          <nav className="d-flex justify-content-center mt-3">
+            <ul className="pagination mb-0">
+              <li className="page-item">
+                <button className="page-link" onClick={handlePrev} disabled={!hasPrev}>
+                  &laquo; Предыдущая
+                </button>
+              </li>
+              <li className="page-item">
+                <button className="page-link" onClick={handleNext} disabled={!hasNext}>
+                  Следующая &raquo;
+                </button>
+              </li>
+            </ul>
+          </nav>
         </>
       )}
     </div>
