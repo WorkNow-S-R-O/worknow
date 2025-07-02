@@ -70,11 +70,7 @@ const BillingPage = () => {
         </Link>
       </div>
       <h5 className="mb-3">История платежей</h5>
-      {!user ? (
-        <div className="alert alert-info text-center">
-          Нет истории транзакций. Пожалуйста, <Link to="/sign-in" className="btn btn-primary ms-2">Войдите на сайт</Link>
-        </div>
-      ) : loading ? (
+      {loading ? (
         <div>Загрузка...</div>
       ) : error ? (
         <div className="alert alert-danger">{error}</div>
