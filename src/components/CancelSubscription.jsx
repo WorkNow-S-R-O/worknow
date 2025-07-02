@@ -1,4 +1,5 @@
 import { useUser } from "@clerk/clerk-react";
+import { useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
@@ -6,6 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const CancelSubscription = () => {
   const { user } = useUser();
+  const { redirectToSignIn } = useClerk();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isPremium, setIsPremium] = useState(null);
@@ -66,34 +68,49 @@ const CancelSubscription = () => {
   return (
     <div className="container" style={{ maxWidth: 480, margin: '0 auto', paddingTop: 60 }}>
       <h2 className="text-center mb-4">Отмена подписки</h2>
-      {isPremium && isAutoRenewal === false && (
-        <div className="alert alert-success text-center mb-4">Автопродление успешно отключено!</div>
-      )}
-      {isPremium && isAutoRenewal === false && (
-        <button
-          className="btn btn-primary w-100 mb-3"
-          onClick={handleRenew}
-          disabled={renewLoading}
-        >
-          {renewLoading ? "Включение..." : "Возобновить подписку"}
-        </button>
-      )}
-      {renewError && <div className="alert alert-danger text-center mb-3">{renewError}</div>}
-      {isPremium && isAutoRenewal && (
-        <>
-          <p className="mb-4 text-center">Вы действительно хотите отменить автопродление подписки?</p>
+      {!user ? (
+        <div className="alert alert-info text-center" style={{ background: '#d1f3fa' }}>
+          Нет действующей подписки. Пожалуйста,{' '}
           <button
-            className="btn btn-danger w-100"
-            onClick={handleCancel}
-            disabled={loading || !user || !isPremium}
+            className="btn btn-primary ms-2"
+            onClick={() => redirectToSignIn()}
+            type="button"
           >
-            {loading ? "Отмена..." : "Отменить подписку"}
+            Войдите в аккаунт
           </button>
-          {error && <div className="alert alert-danger mt-3 text-center">{error}</div>}
+        </div>
+      ) : (
+        <>
+          {isPremium && isAutoRenewal === false && (
+            <div className="alert alert-success text-center mb-4">Автопродление успешно отключено!</div>
+          )}
+          {isPremium && isAutoRenewal === false && (
+            <button
+              className="btn btn-primary w-100 mb-3"
+              onClick={handleRenew}
+              disabled={renewLoading}
+            >
+              {renewLoading ? "Включение..." : "Возобновить подписку"}
+            </button>
+          )}
+          {renewError && <div className="alert alert-danger text-center mb-3">{renewError}</div>}
+          {isPremium && isAutoRenewal && (
+            <>
+              <p className="mb-4 text-center">Вы действительно хотите отменить автопродление подписки?</p>
+              <button
+                className="btn btn-danger w-100"
+                onClick={handleCancel}
+                disabled={loading || !user || !isPremium}
+              >
+                {loading ? "Отмена..." : "Отменить подписку"}
+              </button>
+              {error && <div className="alert alert-danger mt-3 text-center">{error}</div>}
+            </>
+          )}
+          {!isPremium && isPremium !== null && (
+            <div className="alert alert-info mt-3 text-center">У вас нет активной премиум-подписки.</div>
+          )}
         </>
-      )}
-      {!isPremium && isPremium !== null && (
-        <div className="alert alert-info mt-3 text-center">У вас нет активной премиум-подписки.</div>
       )}
     </div>
   );

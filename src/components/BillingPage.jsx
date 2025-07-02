@@ -1,4 +1,5 @@
 import { useUser } from "@clerk/clerk-react";
+import { useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -8,6 +9,7 @@ const PAGE_SIZE = 10;
 
 const BillingPage = () => {
   const { user } = useUser();
+  const { redirectToSignIn } = useClerk();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -72,7 +74,14 @@ const BillingPage = () => {
       <h5 className="mb-3">История платежей</h5>
       {!user ? (
         <div className="alert alert-info text-center">
-          Нет истории транзакций. Пожалуйста, <Link to="/sign-in" className="btn btn-primary ms-2">Войдите на сайт</Link>
+          Нет истории транзакций. Пожалуйста,{' '}
+          <button
+            className="btn btn-primary ms-2"
+            onClick={() => redirectToSignIn()}
+            type="button"
+          >
+            Войдите на сайт
+          </button>
         </div>
       ) : loading ? (
         <div>Загрузка...</div>
