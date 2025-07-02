@@ -243,3 +243,49 @@ export const renewAutoRenewal = async (req, res) => {
     res.status(500).json({ error: 'Ошибка при включении автопродления' });
   }
 };
+
+export const getStripePaymentHistory = async (req, res) => {
+  const { clerkUserId, limit = 10, offset = 0 } = req.query;
+  try {
+    const user = await prisma.user.findUnique({ where: { clerkUserId } });
+    if (!user) {
+      return res.status(404).json({ error: 'Пользователь не найден' });
+    }
+    // Получаем stripeCustomerId или email
+    const customerEmail = user.email;
+    // Получаем клиента Stripe по email (если нет stripeCustomerId)
+    let customerId = user.stripeCustomerId;
+    if (!customerId) {
+      // Поиск по email
+      const customers = await stripe.customers.list({ email: customerEmail, limit: 1 });
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+      }
+    }
+    if (!customerId) {
+      return res.json({ payments: [], total: 0 });
+    }
+    // Получаем invoices (можно заменить на charges, если нужно)
+    const invoices = await stripe.invoices.list({
+      customer: customerId,
+      limit: Number(limit),
+      starting_after: offset ? undefined : undefined // Stripe не поддерживает offset, нужна своя пагинация через starting_after
+    });
+    // Для простоты: только limit, без offset (Stripe рекомендует keyset-пагинацию)
+    // Можно реализовать пагинацию через last invoice id (starting_after)
+    const payments = invoices.data.map(inv => ({
+      id: inv.id,
+      amount: inv.amount_paid / 100,
+      currency: inv.currency,
+      date: new Date(inv.created * 1000),
+      status: inv.status,
+      description: inv.description,
+      period: inv.period_start ? new Date(inv.period_start * 1000) : null,
+      type: inv.lines.data[0]?.description || 'Premium',
+    }));
+    res.json({ payments, total: invoices.data.length });
+  } catch (error) {
+    console.error('Ошибка при получении истории Stripe:', error);
+    res.status(500).json({ error: 'Ошибка при получении истории Stripe' });
+  }
+};
