@@ -1,5 +1,5 @@
 import express from 'express';
-import { createJob, updateJob, deleteJob, getJobs, boostJob } from '../controllers/jobsController.js';
+import { createJob, updateJob, deleteJob, getJobs, boostJob, updateJobWithImage } from '../controllers/jobsController.js';
 import { getJobById } from '../controllers/jobController.js';
 import multer from 'multer';
 import path from 'path';
@@ -24,6 +24,7 @@ router.post('/:id/boost', boostJob);
 router.get('/', getJobs);
 router.get('/:id', getJobById);
 router.put('/:id', upload.single('images'), updateJob);
+router.post('/:id/upload', upload.single('images'), updateJobWithImage);
 router.delete('/:id', deleteJob);
 
 export default router;
