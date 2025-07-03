@@ -10,6 +10,7 @@ import { showToastError, showToastSuccess } from '../../../server/utils/toastUti
 import { EditJobFields } from './EditJobFields';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async'; // 🔹 SEO
+import { useState } from 'react';
 
 const EditJobForm = () => {
   const { id } = useParams();
@@ -36,21 +37,42 @@ const EditJobForm = () => {
   const selectedCategoryId = watch('categoryId');
   const { loading: loadingJob, job } = useFetchJob(id, setValue);
 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [removeImage, setRemoveImage] = useState(false);
+
   const onSubmit = async (data) => {
     try {
-      const updatedData = {
-        ...data,
-        cityId: data.cityId ? parseInt(data.cityId, 10) : null,
-        categoryId: data.categoryId ? parseInt(data.categoryId, 10) : null,
-        shuttle: !!data.shuttle,
-        meals: !!data.meals
-      };
-      await updateJob(id, updatedData);
+      const formData = new FormData();
+      formData.append('cityId', data.cityId ? parseInt(data.cityId, 10) : '');
+      formData.append('categoryId', data.categoryId ? parseInt(data.categoryId, 10) : '');
+      formData.append('shuttle', !!data.shuttle);
+      formData.append('meals', !!data.meals);
+      formData.append('title', data.title);
+      formData.append('salary', data.salary);
+      formData.append('phone', data.phone);
+      formData.append('description', data.description);
+      if (selectedImage) formData.append('images', selectedImage);
+      if (removeImage) formData.append('removeImage', '1');
+      await updateJob(id, formData);
       showToastSuccess('Объявление успешно обновлено!');
       navigate('/');
     } catch (error) {
       showToastError(error);
     }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedImage(file);
+    setPreviewImage(file ? URL.createObjectURL(file) : null);
+    setRemoveImage(false);
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setPreviewImage(null);
+    setRemoveImage(true);
   };
 
   // 🔹 Динамический `title` и `description`
@@ -82,6 +104,12 @@ const EditJobForm = () => {
               loadingCities={loadingCities}
               loadingCategories={loadingCategories}
               loadingJob={loadingJob}
+              previewImage={previewImage}
+              selectedImage={selectedImage}
+              removeImage={removeImage}
+              handleImageChange={handleImageChange}
+              handleRemoveImage={handleRemoveImage}
+              job={job}
             />
 
             <button type="submit" className="btn btn-primary w-full text-white px-4 py-2 rounded">

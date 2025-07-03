@@ -339,3 +339,57 @@ button:focus-visible {
   margin-right: 6px;
 }
 
+.image-preview-wrapper:hover .remove-image-btn {
+  display: flex !important;
+}
+
+.remove-image-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-preview-wrapper {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.custom-cross {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: rgba(0,0,0,0.22);
+  color: #fff;
+  font-size: 32px;
+  font-weight: bold;
+  border-radius: 8px;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.25s cubic-bezier(.4,0,.2,1), transform 0.25s cubic-bezier(.4,0,.2,1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  pointer-events: none;
+  margin: 0;
+  padding: 0;
+}
+
+.image-preview-wrapper:hover .custom-cross {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.custom-cross:active {
+  background: rgba(0,0,0,0.65);
+}
+

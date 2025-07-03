@@ -61,7 +61,10 @@ export default function SeekerDetails() {
       .then((res) => res.json())
       .then((data) => {
         setSeeker(data);
-        setIsPremium(!!data.isPremium);
+        console.log('user.publicMetadata', user?.publicMetadata);
+        console.log('seeker data', data);
+        const hasPremium = !!user?.publicMetadata?.isPremium || !!user?.publicMetadata?.premiumDeluxe || !!data.isPremium || !!data.premiumDeluxe;
+        setIsPremium(hasPremium);
         setLoading(false);
       })
       .catch(() => setLoading(false));

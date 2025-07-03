@@ -38,7 +38,7 @@ export default function Seekers() {
   useEffect(() => {
     if (!user) return;
     axios.get(`${API_URL}/users/${user.id}`)
-      .then(res => setIsPremium(!!res.data.isPremium))
+      .then(res => setIsPremium(!!res.data.isPremium || !!res.data.premiumDeluxe))
       .catch(() => setIsPremium(false));
   }, [user]);
 

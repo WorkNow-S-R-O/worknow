@@ -7,15 +7,27 @@ import { boostJobService } from '../services/jobBoostService.js';
 
 
 export const createJob = async (req, res) => {
-  const result = await createJobService(req.body);
-  if (result.errors) return res.status(400).json({ success: false, errors: result.errors });
-  if (result.error) return res.status(400).json({ error: result.error });
-  
-  res.status(201).json(result.job);
+  const jobData = req.body;
+  // Если файл загружен, добавляем ссылку на изображение
+  if (req.file) {
+    jobData.imageUrl = `/images/jobs/${req.file.filename}`;
+  }
+
+  try {
+    const job = await createJobService(jobData);
+    res.status(201).json(job);
+  } catch (error) {
+    console.error("Ошибка создания объявления:", error.message);
+    res.status(500).json({ error: "Ошибка создания объявления", details: error.message });
+  }
 };
 
 export const updateJob = async (req, res) => {
-    const result = await updateJobService(req.params.id, req.body);
+    const jobData = req.body;
+    if (req.file) {
+      jobData.imageUrl = `/images/jobs/${req.file.filename}`;
+    }
+    const result = await updateJobService(req.params.id, jobData);
     if (result.error) return res.status(400).json({ error: result.error });
     if (result.errors) return res.status(400).json({ success: false, errors: result.errors });
     res.status(200).json(result.updatedJob);

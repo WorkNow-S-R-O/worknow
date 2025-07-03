@@ -68,12 +68,19 @@ export async function getSeekerByIdController(req, res) {
     let isPremium = false;
     const clerkUserId = req.query.clerkUserId;
     if (clerkUserId) {
-      const user = await getUserByClerkIdService(clerkUserId);
-      isPremium = !!user?.isPremium;
+      let user = await getUserByClerkIdService(clerkUserId);
+      if (user && user.user) user = user.user;
+      console.log('user from getUserByClerkIdService:', user);
+      if (!user) {
+        console.warn('Пользователь не найден по clerkUserId:', clerkUserId);
+      }
+      isPremium = !!user?.isPremium || !!user?.premiumDeluxe;
     }
-    res.json({ ...seeker, isPremium });
+    const result = { ...seeker, isPremium };
+    res.json(result);
   } catch (e) {
     console.error('Ошибка получения соискателя по id:', e);
     res.status(500).json({ error: 'Ошибка получения соискателя' });
   }
+  
 }

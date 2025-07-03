@@ -20,10 +20,10 @@ const JobCard = ({ job }) => {
   return (
     <div
       className={`card shadow-sm mb-4 position-relative text-start ${
-        job.user?.isPremium ? "premium-job" : ""
+        job.user?.isPremium || job.user?.premiumDeluxe ? "premium-job" : ""
       }`}
       style={{
-        backgroundColor: job.user?.isPremium ? "linear-gradient(90deg, #fffbe6 0%, #fff 100%)" : "white",
+        backgroundColor: job.user?.isPremium || job.user?.premiumDeluxe ? "linear-gradient(90deg, #fffbe6 0%, #fff 100%)" : "white",
         width: "90%",
         maxWidth: "700px",
         borderRadius: "10px",
@@ -36,8 +36,28 @@ const JobCard = ({ job }) => {
         }
       }}
     >
+      {/* Изображение вакансии */}
+      {job.imageUrl && (
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 12 }} onClick={e => e.stopPropagation()}>
+          <img
+            src={job.imageUrl}
+            alt="job-img"
+            style={{
+              width: 120,
+              height: 120,
+              objectFit: 'cover',
+              borderRadius: 10,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+              cursor: 'pointer',
+              transition: 'transform 0.15s',
+            }}
+            onMouseOver={e => (e.currentTarget.style.transform = 'scale(1.07)')}
+            onMouseOut={e => (e.currentTarget.style.transform = 'scale(1)')}
+          />
+        </div>
+      )}
       {/* Плашка Премиум */}
-      {job.user?.isPremium && (
+      {(job.user?.isPremium || job.user?.premiumDeluxe) && (
         <div className="premium-badge">
           <i className="bi bi-star-fill"></i> Премиум
         </div>
@@ -92,6 +112,7 @@ JobCard.propTypes = {
     user: PropTypes.object,
     shuttle: PropTypes.bool,
     meals: PropTypes.bool,
+    imageUrl: PropTypes.string,
   }).isRequired,
 };
 

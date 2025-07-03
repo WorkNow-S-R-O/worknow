@@ -73,6 +73,7 @@ model Job {
   category    Category  @relation(fields: [categoryId], references: [id])
   shuttle     Boolean?  // Подвозка
   meals       Boolean?  // Питание
+  imageUrl    String?   // Ссылка на изображение
 
   @@index([boostedAt])
 }

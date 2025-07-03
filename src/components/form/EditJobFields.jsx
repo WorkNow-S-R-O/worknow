@@ -3,7 +3,7 @@ import Select from 'react-select';
 import Skeleton from 'react-loading-skeleton';
 import { useTranslation } from "react-i18next";
 
-const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCategoryId, cities, categories, loadingCities, loadingCategories, loadingJob }) => {
+const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCategoryId, cities, categories, loadingCities, loadingCategories, loadingJob, previewImage, selectedImage, removeImage, handleImageChange, handleRemoveImage, job }) => {
   const { t } = useTranslation();
 
   // Сортировка: регионы в начале, остальные города после
@@ -124,6 +124,42 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
         {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
       </div>
 
+      {/* Загрузка изображения (как в создании) */}
+      <div className="mb-4">
+        <label className="form-label">{t('add_images_optional')}</label>
+        <input
+          type="file"
+          accept="image/*"
+          id="edit-job-image-upload"
+          style={{ display: 'none' }}
+          onChange={handleImageChange}
+          disabled={!!(previewImage || (job && job.imageUrl && !removeImage))}
+        />
+        <label htmlFor="edit-job-image-upload" className="form-control d-flex align-items-center" style={{ cursor: (previewImage || (job && job.imageUrl && !removeImage)) ? 'not-allowed' : 'pointer', height: '38px', padding: 0, marginBottom: 0, marginTop: 4 }}>
+          <i className="bi bi-image" style={{ fontSize: 20, marginLeft: 8 }}></i>
+          <div style={{ width: 1, height: '60%', background: '#ddd', margin: '0 12px' }}></div>
+          <span style={{ color: '#888', fontSize: 15, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+             {previewImage ? (selectedImage?.name || t('file_selected')) : (job && job.imageUrl && !removeImage ? job.imageUrl.split('/').pop() : t('file_not_selected'))}
+          </span>
+        </label>
+        {(previewImage || (job && job.imageUrl && !removeImage)) && (
+          <div className="image-preview-wrapper" style={{ marginTop: 8 }}>
+            <img
+              src={previewImage || job.imageUrl}
+              alt="preview"
+              style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }}
+            />
+            <button
+              type="button"
+              className="remove-image-btn custom-cross"
+              tabIndex={-1}
+              aria-label="Удалить изображение"
+              onClick={handleRemoveImage}
+            >×</button>
+          </div>
+        )}
+      </div>
+
       {/* Подвозка */}
       <div className="form-check mb-2">
         <input
@@ -163,6 +199,12 @@ EditJobFields.propTypes = {
   loadingCities: PropTypes.bool.isRequired,
   loadingCategories: PropTypes.bool.isRequired,
   loadingJob: PropTypes.bool.isRequired,
+  previewImage: PropTypes.string,
+  selectedImage: PropTypes.object,
+  removeImage: PropTypes.bool,
+  handleImageChange: PropTypes.func,
+  handleRemoveImage: PropTypes.func,
+  job: PropTypes.object,
 };
 
 export { EditJobFields };
