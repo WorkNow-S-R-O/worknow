@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const createJobService = async (jobData) => {
-  const { title, description, salary, cityId, categoryId, userId, phone, imageUrl } = jobData;
+  const { title, description, salary, cityId, categoryId, userId, phone } = jobData;
 
   try {
     const job = await prisma.job.create({
@@ -15,7 +15,6 @@ export const createJobService = async (jobData) => {
         userId,
         phone,
         status: 'ACTIVE',
-        imageUrl: imageUrl || null,
       },
       include: {
         city: true,

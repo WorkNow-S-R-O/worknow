@@ -56,8 +56,6 @@ const __dirname = path.dirname(__filename);
 
 // Раздача статических файлов фронта
 app.use(express.static(path.join(__dirname, "../dist")));
-// Раздача изображений вакансий
-app.use('/images/jobs', express.static(path.join(__dirname, '../public/images/jobs')));
 
 // --- РЕГИСТРАЦИЯ МАРШРУТОВ ---
 app.use('/api/payments', paymentRoutes);

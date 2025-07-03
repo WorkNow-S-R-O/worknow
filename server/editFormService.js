@@ -8,11 +8,6 @@ export const fetchJob = async (id) => {
 };
 
 export const updateJob = async (id, jobData) => {
-  if (jobData instanceof FormData) {
-    const response = await axios.post(`${API_URL}/jobs/${id}/upload`, jobData);
-    return response.data;
-  } else {
-    const response = await axios.put(`${API_URL}/jobs/${id}`, jobData);
-    return response.data;
-  }
+  const response = await axios.put(`${API_URL}/jobs/${id}`, jobData);  // ✅ Путь исправлен
+  return response.data;
 };

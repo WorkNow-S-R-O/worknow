@@ -128,18 +128,18 @@ const UserJobs = () => {
             <div
               key={job.id}
               className={`card mb-3 position-relative shadow-sm ${
-                job.user?.isPremium || job.user?.premiumDeluxe ? "premium-job" : ""
+                job.user?.isPremium ? "premium-job" : ""
               }`}
               style={{
                 width: "90%",
                 maxWidth: "700px",
                 margin: "0 auto",
-                background: job.user?.isPremium || job.user?.premiumDeluxe ? "linear-gradient(90deg, #fffbe6 0%, #fff 100%)" : "white",
+                background: job.user?.isPremium ? "linear-gradient(90deg, #fffbe6 0%, #fff 100%)" : "white",
                 borderRadius: "10px",
               }}
             >
               {/* Плашка Премиум */}
-              {(job.user?.isPremium || job.user?.premiumDeluxe) && (
+              {job.user?.isPremium && (
                 <div className="premium-badge">
                   <i className="bi bi-star-fill"></i> Премиум
                 </div>

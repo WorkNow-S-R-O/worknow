@@ -7,50 +7,27 @@ import { boostJobService } from '../services/jobBoostService.js';
 
 
 export const createJob = async (req, res) => {
-  const jobData = req.body;
-  // Если файл загружен, добавляем ссылку на изображение
-  if (req.file) {
-    jobData.imageUrl = `/images/jobs/${req.file.filename}`;
-  }
-
-  try {
-    const job = await createJobService(jobData);
-    res.status(201).json(job);
-  } catch (error) {
-    console.error("Ошибка создания объявления:", error.message);
-    res.status(500).json({ error: "Ошибка создания объявления", details: error.message });
-  }
+  const result = await createJobService(req.body);
+  if (result.errors) return res.status(400).json({ success: false, errors: result.errors });
+  if (result.error) return res.status(400).json({ error: result.error });
+  
+  res.status(201).json(result.job);
 };
 
 export const updateJob = async (req, res) => {
-    const jobData = req.body;
-    if (req.file) {
-      jobData.imageUrl = `/images/jobs/${req.file.filename}`;
-    }
-    const result = await updateJobService(req.params.id, jobData);
+    const result = await updateJobService(req.params.id, req.body);
     if (result.error) return res.status(400).json({ error: result.error });
     if (result.errors) return res.status(400).json({ success: false, errors: result.errors });
     res.status(200).json(result.updatedJob);
   };
 
-export const updateJobWithImage = async (req, res) => {
-  const jobData = req.body;
-  if (req.file) {
-    jobData.imageUrl = `/images/jobs/${req.file.filename}`;
-  }
-  const result = await updateJobService(req.params.id, jobData);
-  if (result.error) return res.status(400).json({ error: result.error });
-  if (result.errors) return res.status(400).json({ success: false, errors: result.errors });
-  res.status(200).json(result.updatedJob);
-};
-
-export const deleteJob = async (req, res) => {
+  export const deleteJob = async (req, res) => {
     const result = await deleteJobService(req.params.id);
     if (result.error) return res.status(400).json({ error: result.error });
     res.status(200).json({ message: 'Объявление удалено' });
   };
 
-export const getJobs = async (req, res) => {
+  export const getJobs = async (req, res) => {
     const lang = req.query.lang || 'ru';
     const result = await getJobsService(lang);
     if (result.error) return res.status(500).json({ error: result.error });
@@ -68,7 +45,7 @@ export const getJobs = async (req, res) => {
     res.status(200).json(jobs);
   };
 
-export const boostJob = async (req, res) => {
+  export const boostJob = async (req, res) => {
     const result = await boostJobService(req.params.id);
     if (result.error) return res.status(400).json({ error: result.error });
     res.status(200).json(result.boostedJob);

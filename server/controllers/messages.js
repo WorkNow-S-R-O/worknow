@@ -42,6 +42,7 @@ export const getUserMessages = async (req, res) => {
       where: { clerkUserId },
       orderBy: { createdAt: 'desc' },
     });
+    console.log('Сообщения из базы:', messages);
     return res.json({ messages });
   } catch (error) {
     console.error('Ошибка получения сообщений:', error);

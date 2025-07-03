@@ -13,9 +13,6 @@ export const JobFormFields = ({
   cities,
   categories,
   loading,
-  previewImages,
-  handleImageChange,
-  handleRemoveImage,
 }) => {
   const { t } = useTranslation();
   const [isAgreed, setIsAgreed] = useState(false);
@@ -156,57 +153,6 @@ export const JobFormFields = ({
         )}
       </div>
 
-      {/* Загрузка изображений */}
-      <div className="mb-4">
-        <label className="form-label">{t('add_images_optional')}</label>
-        <div style={{ width: '100%' }}>
-          <input
-            type="file"
-            accept="image/*"
-            id="job-image-upload"
-            style={{ display: 'none' }}
-            onChange={handleImageChange}
-            disabled={previewImages && previewImages.length > 0}
-            max={5}
-          />
-          <label htmlFor="job-image-upload" className="form-control d-flex align-items-center" style={{ cursor: 'pointer', height: '38px', padding: 0, marginBottom: 0 }}>
-            <i className="bi bi-image" style={{ fontSize: 20, marginLeft: 8 }}></i>
-            <div style={{ width: 1, height: '60%', background: '#ddd', margin: '0 12px' }}></div>
-            <span style={{ color: '#888', fontSize: 15, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {previewImages && previewImages.length > 0
-                ? previewImages.length === 1
-                  ? (document.getElementById('job-image-upload')?.files?.[0]?.name || 'Файл выбран')
-                  : Array.from(document.getElementById('job-image-upload')?.files || []).map(f => f.name).join(', ')
-                : 'Файл не выбран'}
-            </span>
-          </label>
-        </div>
-        <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
-          {previewImages && previewImages.map((src, idx) => (
-            <div
-              key={idx}
-              style={{ position: 'relative', width: 64, height: 64, display: 'inline-block' }}
-              className="image-preview-wrapper"
-            >
-              <img
-                src={src}
-                alt={`preview-${idx}`}
-                style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }}
-              />
-              <button
-                type="button"
-                onClick={e => { e.stopPropagation(); handleRemoveImage(idx); }}
-                className="remove-image-btn custom-cross"
-                tabIndex={-1}
-                aria-label="Удалить изображение"
-              >
-                ×
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Подвозка */}
       <div className="form-check mb-2">
         <input
@@ -268,25 +214,26 @@ export const JobFormFields = ({
   );
 };
 
+// **Валидация пропсов**
 JobFormFields.propTypes = {
   register: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   setValue: PropTypes.func.isRequired,
-  selectedCityId: PropTypes.string.isRequired,
-  selectedCategoryId: PropTypes.string.isRequired,
-  cities: PropTypes.array.isRequired,
-  categories: PropTypes.array.isRequired,
+  selectedCityId: PropTypes.number,
+  selectedCategoryId: PropTypes.number,
+  cities: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  categories: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.number.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   loading: PropTypes.bool.isRequired,
-  previewImages: PropTypes.array.isRequired,
-  handleImageChange: PropTypes.func.isRequired,
-  handleRemoveImage: PropTypes.func.isRequired,
 };
 
-/* CSS для показа крестика при наведении */
-<style>
-{`
-.image-preview-wrapper:hover .remove-image-btn {
-  display: flex !important;
-}
-`}
-</style>
+export default JobFormFields;

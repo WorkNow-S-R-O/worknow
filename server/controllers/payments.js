@@ -66,24 +66,23 @@ export const activatePremium = async (req, res) => {
     const priceId = session.metadata.priceId;
 
     if (session.payment_status === 'paid') {
-      const isDeluxe = priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK';
       const user = await prisma.user.update({
         where: { clerkUserId },
         data: {
           isPremium: true,
-          premiumDeluxe: isDeluxe,
           premiumEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 дней подписки
           isAutoRenewal: !!subscriptionId,
           stripeSubscriptionId: subscriptionId || null,
+          premiumDeluxe: priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK',
         },
-        include: { jobs: { include: { city: true } } },
+        include: { jobs: { include: { city: true } } }, // Подгружаем вакансии
       });
 
       // 🔹 Отправляем уведомление в Telegram
       await sendTelegramNotification(user, user.jobs);
 
       // Если deluxe — отправляем автоматическое сообщение
-      if (isDeluxe) {
+      if (priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK') {
         // Можно кастомизировать текст и контакты менеджера
         await prisma.message.create({
           data: {
@@ -116,7 +115,7 @@ export const activatePremium = async (req, res) => {
       // --- Обновляем publicMetadata в Clerk ---
       const publicMetadata = {
         isPremium: true,
-        premiumDeluxe: isDeluxe,
+        premiumDeluxe: priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK',
       };
       await fetch(`https://api.clerk.com/v1/users/${clerkUserId}`, {
         method: 'PATCH',

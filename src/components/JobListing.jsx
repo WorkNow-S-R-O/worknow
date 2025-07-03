@@ -32,20 +32,8 @@ const JobListing = () => {
     return cityMatch && salaryMatch && categoryMatch && shuttleMatch && mealsMatch;
   });
 
-  // Сортировка: премиум и enterprise сверху, внутри — по дате (новые сверху)
-  const sortedJobs = [...filteredJobs].sort((a, b) => {
-    const aPremium = a.user?.isPremium || a.user?.premiumDeluxe;
-    const bPremium = b.user?.isPremium || b.user?.premiumDeluxe;
-    if (aPremium && !bPremium) return -1;
-    if (!aPremium && bPremium) return 1;
-    // Если оба премиум или оба обычные — сортируем по дате (новые сверху)
-    const aDate = new Date(a.createdAt).getTime();
-    const bDate = new Date(b.createdAt).getTime();
-    return bDate - aDate;
-  });
-
-  const totalPages = Math.ceil(sortedJobs.length / jobsPerPage);
-  const currentJobs = sortedJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
+  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
+  const currentJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
 
   // Генерация SEO-friendly заголовка
   const pageTitle = selectedCity.value
@@ -150,7 +138,7 @@ const JobListing = () => {
       <JobList jobs={currentJobs} loading={loading} />
 
       {/* Пагинация */}
-      {sortedJobs.length > 0 && (
+      {filteredJobs.length > 0 && (
         <PaginationControl currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       )}
     </div>
