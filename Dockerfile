@@ -22,7 +22,6 @@
     COPY ./src ./src
     COPY ./prisma ./prisma
     COPY tsconfig.server.json ./
-    COPY ./dist-server ./dist-server
     # No backend build step needed for JavaScript backend
     
     # --- Stage 3: Production image ---
