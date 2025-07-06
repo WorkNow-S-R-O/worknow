@@ -1,0 +1,558 @@
+---
+alwaysApply: true
+---
+# WorkNow Backend Documentation
+
+## Overview
+
+The WorkNow backend is a Node.js/Express.js server that provides a robust API for the job search platform. Built with modern JavaScript, it features comprehensive authentication, payment processing, job management, and automated task scheduling. The backend serves as the foundation for the WorkNow platform, handling all business logic, data persistence, and external service integrations.
+
+## Technology Stack
+
+### Core Technologies
+- **Node.js** - Server runtime environment
+- **Express.js** - Web framework for creating APIs
+- **Prisma** - Modern ORM for database operations
+- **PostgreSQL** - Primary relational database
+- **TypeScript** - Type safety and better developer experience
+
+### Authentication & Authorization
+- **Clerk** - Complete authentication and user management
+- **JWT Tokens** - Secure token-based authentication
+- **Role-based Access Control** - Admin and user permissions
+
+### Payment Processing
+- **Stripe** - Payment processing and subscription management
+- **Webhook Handling** - Real-time payment event processing
+- **Subscription Management** - Automatic renewal and cancellation
+
+### External Services
+- **Nodemailer** - Email notifications and alerts
+- **Telegram Bot API** - Real-time notifications via Telegram
+- **Supabase** - Additional database services
+
+### Task Scheduling & Automation
+- **Node-cron** - Automated task scheduling
+- **Background Jobs** - Premium subscription management
+- **Email Notifications** - Automated user alerts
+
+### Development & Monitoring
+- **Winston** - Structured logging
+- **ESLint** - Code linting and quality
+- **Dotenv** - Environment configuration
+
+## Project Structure
+
+```
+server/
+├── index.js              # Main server entry point
+├── cron-jobs.js          # Automated task scheduling
+├── config/               # Configuration files
+│   └── clerkConfig.js    # Clerk authentication config
+├── controllers/          # Request handlers
+│   ├── jobController.js  # Job management
+│   ├── userController.js # User management
+│   ├── payments.js       # Payment processing
+│   ├── messages.js       # Messaging system
+│   └── webhookController.js # Webhook handlers
+├── routes/               # API route definitions
+│   ├── jobs.js          # Job endpoints
+│   ├── users.js         # User endpoints
+│   ├── payments.js      # Payment endpoints
+│   └── webhook.js       # Webhook endpoints
+├── services/            # Business logic layer
+│   ├── jobService.js    # Job business logic
+│   ├── userService.js   # User business logic
+│   └── webhookService.js # Webhook processing
+├── middlewares/         # Express middlewares
+│   ├── auth.js          # Authentication middleware
+│   └── validation.js    # Input validation
+└── utils/               # Utility functions
+    ├── mailer.js        # Email utilities
+    ├── telegram.js      # Telegram integration
+    ├── stripe.js        # Stripe utilities
+    └── badWordsList.js  # Content filtering
+```
+
+## Database Schema
+
+### Core Models
+
+#### User
+```prisma
+model User {
+  id                   String    @id @default(uuid())
+  email                String    @unique
+  clerkUserId          String    @unique
+  firstName            String?
+  lastName             String?
+  imageUrl             String?
+  isPremium            Boolean   @default(false)
+  isAutoRenewal        Boolean   @default(true)
+  premiumEndsAt        DateTime?
+  stripeSubscriptionId String?
+  premiumDeluxe        Boolean   @default(false)
+  isAdmin              Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  jobs                 Job[]
+}
+```
+
+#### Job
+```prisma
+model Job {
+  id          Int       @id @default(autoincrement())
+  title       String
+  salary      String
+  phone       String
+  description String
+  cityId      Int
+  userId      String
+  categoryId  Int
+  shuttle     Boolean?
+  meals       Boolean?
+  boostedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  city        City      @relation(fields: [cityId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+  category    Category  @relation(fields: [categoryId], references: [id])
+}
+```
+
+#### Seeker
+```prisma
+model Seeker {
+  id              Int      @id @default(autoincrement())
+  name            String
+  contact         String
+  city            String
+  description     String
+  slug            String?  @unique
+  isActive        Boolean  @default(true)
+  isDemanded      Boolean  @default(false)
+  gender          String?
+  facebook        String?
+  languages       String[]
+  nativeLanguage  String?
+  employment      String?
+  category        String?
+  documents       String?
+  note            String?
+  announcement    String?
+  documentType    String?
+  createdAt       DateTime @default(now())
+}
+```
+
+#### Message
+```prisma
+model Message {
+  id          String   @id @default(uuid())
+  clerkUserId String
+  title       String
+  body        String
+  isRead      Boolean  @default(false)
+  type        String   // 'system' | 'admin'
+  fromAdminId String?
+  createdAt   DateTime @default(now())
+}
+```
+
+### Internationalization Models
+
+#### CityTranslation & CategoryTranslation
+```prisma
+model CityTranslation {
+  id      Int    @id @default(autoincrement())
+  city    City   @relation(fields: [cityId], references: [id])
+  cityId  Int
+  lang    String // 'ru', 'he', 'en', 'ar'
+  name    String
+  @@unique([cityId, lang])
+}
+
+model CategoryTranslation {
+  id         Int      @id @default(autoincrement())
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  lang       String   // 'ru', 'he', 'en', 'ar'
+  name       String
+  @@unique([categoryId, lang])
+}
+```
+
+## API Endpoints
+
+### Job Management
+
+#### GET /api/jobs
+- **Description**: Retrieve job listings with pagination and filtering
+- **Query Parameters**: 
+  - `page` - Page number
+  - `limit` - Items per page
+  - `category` - Filter by category
+  - `city` - Filter by city
+  - `search` - Search term
+- **Response**: Paginated job listings with user and category data
+
+#### POST /api/jobs
+- **Description**: Create a new job listing
+- **Authentication**: Required
+- **Body**: Job details (title, salary, description, etc.)
+- **Response**: Created job object
+
+#### PUT /api/jobs/:id
+- **Description**: Update an existing job listing
+- **Authentication**: Required (owner only)
+- **Body**: Updated job details
+- **Response**: Updated job object
+
+#### DELETE /api/jobs/:id
+- **Description**: Delete a job listing
+- **Authentication**: Required (owner only)
+- **Response**: Success confirmation
+
+#### POST /api/jobs/:id/boost
+- **Description**: Boost a job listing (premium feature)
+- **Authentication**: Required (premium user)
+- **Response**: Updated job with boost timestamp
+
+### User Management
+
+#### GET /api/users
+- **Description**: Get user information
+- **Authentication**: Required
+- **Response**: User profile data
+
+#### PUT /api/users
+- **Description**: Update user profile
+- **Authentication**: Required
+- **Body**: Updated user data
+- **Response**: Updated user object
+
+#### POST /api/users/sync
+- **Description**: Synchronize user data with Clerk
+- **Authentication**: Required
+- **Response**: Synchronized user data
+
+### Payment Processing
+
+#### POST /api/payments/create-checkout-session
+- **Description**: Create Stripe checkout session
+- **Authentication**: Required
+- **Body**: Payment plan details
+- **Response**: Stripe checkout session URL
+
+#### POST /api/payments/cancel-subscription
+- **Description**: Cancel premium subscription
+- **Authentication**: Required
+- **Response**: Cancellation confirmation
+
+#### POST /api/payments/cancel-auto-renewal
+- **Description**: Disable automatic subscription renewal
+- **Authentication**: Required
+- **Response**: Auto-renewal disabled confirmation
+
+### Job Seekers
+
+#### GET /api/seekers
+- **Description**: Get job seekers listing
+- **Query Parameters**: 
+  - `page` - Page number
+  - `limit` - Items per page
+  - `category` - Filter by category
+  - `city` - Filter by city
+- **Response**: Paginated seekers listing
+
+#### POST /api/seekers
+- **Description**: Create new job seeker profile
+- **Body**: Seeker details
+- **Response**: Created seeker object
+
+#### GET /api/seekers/:id
+- **Description**: Get specific seeker details
+- **Response**: Detailed seeker information
+
+### Categories & Cities
+
+#### GET /api/categories
+- **Description**: Get all job categories
+- **Response**: Categories with translations
+
+#### GET /api/cities
+- **Description**: Get all cities
+- **Response**: Cities with translations
+
+### Messaging System
+
+#### GET /api/messages
+- **Description**: Get user messages
+- **Authentication**: Required
+- **Response**: User's message list
+
+#### POST /api/messages
+- **Description**: Send message to user (admin only)
+- **Authentication**: Required (admin)
+- **Body**: Message details
+- **Response**: Created message
+
+### Webhooks
+
+#### POST /webhook
+- **Description**: Handle external service webhooks
+- **Headers**: Webhook signature verification
+- **Body**: Webhook payload
+- **Response**: Success confirmation
+
+## Authentication & Authorization
+
+### Clerk Integration
+- **JWT Token Verification**: Secure token-based authentication
+- **User Session Management**: Persistent user sessions
+- **Multi-factor Authentication**: Enhanced security
+- **Social Login Support**: Google, Facebook integration
+
+### Role-based Access Control
+- **Regular Users**: Create/edit own job listings
+- **Premium Users**: Additional features (job boosting, extended stats)
+- **Administrators**: Full system access and user management
+
+### Middleware Implementation
+```javascript
+// Authentication middleware
+export const requireAuth = async (req, res, next) => {
+  // Verify Clerk JWT token
+  // Attach user data to request
+  // Handle authentication errors
+};
+
+// Admin authorization middleware
+export const requireAdmin = async (req, res, next) => {
+  // Check user admin status
+  // Verify admin permissions
+  // Handle authorization errors
+};
+```
+
+## Payment System
+
+### Stripe Integration
+- **Checkout Sessions**: Secure payment processing
+- **Subscription Management**: Automatic billing cycles
+- **Webhook Processing**: Real-time payment events
+- **Refund Handling**: Customer refund processing
+
+### Premium Features
+- **Job Boosting**: Priority placement in listings
+- **Extended Statistics**: Detailed job performance metrics
+- **Additional Postings**: Increased job posting limits
+- **Auto-renewal**: Seamless subscription continuation
+
+### Payment Flow
+1. User selects premium plan
+2. Create Stripe checkout session
+3. Process payment via Stripe
+4. Update user premium status
+5. Send confirmation email
+6. Handle webhook events
+
+## Automated Tasks
+
+### Cron Jobs
+
+#### Daily Job Ranking Check
+```javascript
+// Runs daily at 8:00 AM (Moscow time)
+cron.schedule('0 8 * * *', checkLowRankedJobs, {
+  timezone: "Europe/Moscow"
+});
+```
+- **Purpose**: Check job rankings and notify users
+- **Action**: Send email notifications for low-ranked jobs
+- **Frequency**: Daily
+
+#### Hourly Premium Expiration Check
+```javascript
+// Runs every hour
+cron.schedule('0 * * * *', disableExpiredPremiums, {
+  timezone: 'Europe/Prague'
+});
+```
+- **Purpose**: Disable expired premium subscriptions
+- **Action**: Update user premium status
+- **Frequency**: Hourly
+
+### Email Notifications
+- **Low-ranked Job Alerts**: Notify users when jobs drop in ranking
+- **Subscription Confirmations**: Payment success notifications
+- **Premium Expiration Warnings**: Subscription ending alerts
+- **Admin Notifications**: System status updates
+
+## External Integrations
+
+### Email Service (Nodemailer)
+```javascript
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+```
+
+### Telegram Bot Integration
+- **Real-time Notifications**: Instant system alerts
+- **Admin Commands**: System management via Telegram
+- **User Support**: Automated support responses
+
+### Content Filtering
+- **Bad Words Filter**: Automatic content moderation
+- **Spam Detection**: Prevent unwanted content
+- **Quality Control**: Maintain platform standards
+
+## Error Handling
+
+### Global Error Handler
+```javascript
+app.use((err, req, res, next) => {
+  console.error("❌ Server Error:", err);
+  res.status(500).json({ error: "Internal server error" });
+});
+```
+
+### Validation Middleware
+- **Input Validation**: Request data validation
+- **Schema Validation**: Prisma schema validation
+- **Error Responses**: Structured error messages
+
+### Logging
+- **Winston Logger**: Structured logging
+- **Error Tracking**: Comprehensive error monitoring
+- **Performance Monitoring**: Request/response timing
+
+## Security Measures
+
+### Data Protection
+- **Input Sanitization**: Prevent XSS attacks
+- **SQL Injection Prevention**: Prisma ORM protection
+- **CORS Configuration**: Cross-origin request control
+- **Rate Limiting**: API abuse prevention
+
+### Authentication Security
+- **JWT Token Validation**: Secure token verification
+- **Session Management**: Secure session handling
+- **Password Security**: Clerk-managed authentication
+- **API Key Protection**: Secure environment variables
+
+### Content Security
+- **Bad Words Filtering**: Automatic content moderation
+- **File Upload Validation**: Secure file handling
+- **Data Encryption**: Sensitive data protection
+
+## Performance Optimization
+
+### Database Optimization
+- **Indexes**: Optimized query performance
+- **Connection Pooling**: Efficient database connections
+- **Query Optimization**: Prisma query optimization
+- **Caching**: Response caching strategies
+
+### API Optimization
+- **Pagination**: Efficient data loading
+- **Compression**: Response compression
+- **Caching**: API response caching
+- **Load Balancing**: Request distribution
+
+## Development Workflow
+
+### Environment Setup
+```bash
+# Required environment variables
+DATABASE_URL=postgresql://...
+CLERK_SECRET_KEY=sk_...
+WEBHOOK_SECRET=whsec_...
+STRIPE_SECRET_KEY=sk_...
+EMAIL_USER=...
+EMAIL_PASS=...
+```
+
+### Development Scripts
+```json
+{
+  "dev": "npm run build:server && concurrently \"vite\" \"node server/index.js\"",
+  "build:server": "tsc -p tsconfig.server.json",
+  "start": "npm run build:server && node server/index.js"
+}
+```
+
+### Database Management
+```bash
+# Prisma commands
+npx prisma generate    # Generate Prisma client
+npx prisma db push     # Push schema changes
+npx prisma studio      # Database GUI
+npx prisma migrate dev # Run migrations
+```
+
+## Testing
+
+### API Testing
+- **Endpoint Testing**: Comprehensive API testing
+- **Authentication Testing**: Auth flow validation
+- **Payment Testing**: Stripe integration testing
+- **Error Handling**: Error scenario testing
+
+### Integration Testing
+- **Database Testing**: Prisma integration tests
+- **External Service Testing**: Third-party API testing
+- **Webhook Testing**: Webhook processing validation
+
+## Deployment
+
+### Production Considerations
+- **Environment Variables**: Secure configuration
+- **Database Migration**: Schema deployment
+- **SSL/TLS**: Secure HTTPS connections
+- **Monitoring**: Application performance monitoring
+
+### Scaling Strategies
+- **Horizontal Scaling**: Multiple server instances
+- **Database Scaling**: Read replicas and sharding
+- **Caching**: Redis caching implementation
+- **CDN**: Static asset delivery
+
+## Monitoring & Analytics
+
+### Performance Metrics
+- **Response Times**: API endpoint performance
+- **Error Rates**: System error monitoring
+- **Database Performance**: Query optimization
+- **User Activity**: Platform usage analytics
+
+### Business Metrics
+- **Job Postings**: Platform activity tracking
+- **Premium Conversions**: Subscription analytics
+- **User Engagement**: User behavior analysis
+- **Geographic Distribution**: User location data
+
+## Future Enhancements
+
+### Planned Features
+- **Real-time Notifications**: WebSocket implementation
+- **Advanced Search**: Elasticsearch integration
+- **Job Recommendations**: AI-powered suggestions
+- **Mobile API**: Native mobile app support
+
+### Technical Improvements
+- **GraphQL API**: Flexible data querying
+- **Microservices**: Service-oriented architecture
+- **Event Sourcing**: Event-driven architecture
+- **Advanced Caching**: Redis implementation
+
+## Conclusion
+
+The WorkNow backend provides a robust, scalable foundation for the job search platform. With comprehensive authentication, payment processing, and automated task management, it supports the full range of platform features while maintaining security, performance, and reliability. The modular architecture and modern technology stack ensure the system can grow and adapt to future requirements. 

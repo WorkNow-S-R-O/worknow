@@ -1,0 +1,415 @@
+---
+alwaysApply: true
+---
+# WorkNow Frontend Documentation
+
+## Overview
+
+The WorkNow frontend is a modern React 18 application built with Vite, providing a comprehensive job search platform for Israel. The application features a responsive design, internationalization support, and seamless integration with authentication and payment services.
+
+## Technology Stack
+
+### Core Technologies
+- **React 18** - Main UI library with modern hooks and concurrent features
+- **Vite** - Fast build tool and development server
+- **React Router DOM 7** - Client-side routing with data loading
+- **TypeScript** - Type safety and better developer experience
+
+### Styling & UI
+- **Tailwind CSS** - Utility-first CSS framework
+- **Bootstrap 5** - Component library for consistent UI
+- **Bootstrap Icons** - Icon library
+- **Lucide React** - Additional icon components
+- **React Loading Skeleton** - Loading state components
+
+### State Management & Forms
+- **Zustand** - Lightweight state management
+- **React Hook Form** - Form handling with validation
+- **Zod** - Schema validation for TypeScript
+
+### Authentication & User Management
+- **Clerk** - Complete authentication solution
+- **@clerk/clerk-react** - React components for auth
+- **@clerk/localizations** - Multi-language support
+
+### Payment Integration
+- **Stripe** - Payment processing
+- **@stripe/react-stripe-js** - React components for Stripe
+- **@stripe/stripe-js** - Stripe JavaScript SDK
+
+### Internationalization
+- **i18next** - Internationalization framework
+- **react-i18next** - React bindings for i18next
+- **i18next-browser-languagedetector** - Automatic language detection
+
+### Notifications & UX
+- **React Hot Toast** - Toast notifications
+- **React Toastify** - Additional notification options
+- **React Helmet Async** - SEO meta tag management
+
+### Development Tools
+- **ESLint** - Code linting
+- **Jest** - Testing framework
+- **@testing-library/react** - React testing utilities
+
+## Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── form/           # Form-related components
+│   ├── routes/         # Route-specific components
+│   ├── ui/             # Base UI components
+│   └── [feature components]
+├── pages/              # Page components
+├── hooks/              # Custom React hooks
+├── store/              # Zustand state stores
+├── lib/                # Utility functions and configurations
+├── css/                # Stylesheets
+└── tests/              # Test files
+```
+
+## Key Components
+
+### Core Components
+
+#### App.jsx
+The main application component that sets up:
+- Clerk authentication provider
+- React Router with protected routes
+- Internationalization
+- SEO optimization with React Helmet
+- Global toast notifications
+
+#### Layout Components
+- **Navbar** - Main navigation with language switcher and user menu
+- **Footer** - Application footer
+- **ProtectedRoute** - Route wrapper for authenticated users
+
+### Page Components
+
+#### Home.jsx
+- Landing page with job listings
+- Search and filter functionality
+- Featured jobs section
+
+#### Job Management Pages
+- **CreateNewAd.jsx** - Job creation form
+- **MyAds.jsx** - User's job listings
+- **EditJobForm** - Job editing interface
+
+#### User Pages
+- **UserProfile.jsx** - User profile management
+- **Seekers.jsx** - Job seekers listing
+- **SeekerDetails.jsx** - Individual seeker details
+
+#### Payment & Premium
+- **PremiumPage.jsx** - Premium features showcase
+- **BillingPage.jsx** - Billing management
+- **CancelSubscription.jsx** - Subscription cancellation
+
+### Form Components
+
+#### JobForm.jsx
+Comprehensive job creation/editing form with:
+- Multi-step form validation
+- File upload for job images
+- Category and city selection
+- Rich text description editor
+
+#### Form Fields
+- **JobFormFields.jsx** - Individual form field components
+- **EditJobFields.jsx** - Pre-populated edit fields
+- **AddSeekerModal.jsx** - Seeker addition modal
+
+### UI Components
+
+#### JobCard.jsx
+Individual job listing card with:
+- Job details display
+- Action buttons (edit, delete, boost)
+- Responsive design
+- Premium features highlighting
+
+#### JobList.jsx
+Job listings container with:
+- Pagination support
+- Filter integration
+- Loading states
+- Empty state handling
+
+#### Navigation & Controls
+- **PaginationControl.jsx** - Page navigation
+- **JobFilterModal.jsx** - Advanced filtering
+- **MailDropdown.jsx** - Email management
+- **FilterIcon.jsx** - Filter toggle
+
+## Routing Architecture
+
+### Route Structure
+```javascript
+/                           # Home page
+/my-advertisements          # User's job listings
+/create-new-advertisement   # Job creation (protected)
+/edit-job/:id              # Job editing (protected)
+/profile/:clerkUserId      # User profile
+/seekers                   # Job seekers listing
+/seekers/:id               # Individual seeker
+/premium                   # Premium features
+/billing                   # Billing management
+/cancel-subscription       # Subscription cancellation
+/support                   # Support page
+/survey                    # User survey
+/success                   # Payment success
+/cancel                    # Payment cancellation
+/access-denied             # Access denied page
+```
+
+### Protected Routes
+Routes requiring authentication are wrapped with `ProtectedRoute` component that:
+- Checks user authentication status
+- Redirects to login if not authenticated
+- Handles loading states
+
+## State Management
+
+### Zustand Stores
+
+#### languageStore.ts
+Manages internationalization state:
+- Current language selection
+- Localization data
+- Loading states
+- Language switching logic
+
+#### filterStore.js
+Manages job filtering state:
+- Search parameters
+- Category filters
+- City filters
+- Filter persistence
+
+### Custom Hooks
+
+#### useJobs.js
+Job data management:
+- Fetch job listings
+- Pagination handling
+- Filter application
+- Loading states
+
+#### useUpdateJobs.js
+Job modification operations:
+- Create new jobs
+- Update existing jobs
+- Delete jobs
+- Optimistic updates
+
+#### useFetchCategories.js & useFetchCities.js
+Data fetching for form options:
+- Category listing
+- City listing
+- Caching
+- Error handling
+
+#### useSyncClerkProfile.js
+Clerk profile synchronization:
+- User data sync
+- Profile updates
+- Error handling
+
+## Internationalization (i18n)
+
+### Supported Languages
+- **Russian** (ru) - Primary language
+- **English** (en) - Secondary language
+- **Hebrew** (he) - Local language
+- **Arabic** (ar) - Local language
+
+### Implementation
+- Automatic language detection
+- Manual language switching
+- RTL support for Hebrew and Arabic
+- Translation files in `public/locales/`
+
+### Usage
+```javascript
+import { useTranslation } from 'react-i18next';
+
+const { t } = useTranslation();
+return <h1>{t('welcome.title')}</h1>;
+```
+
+## Authentication Integration
+
+### Clerk Setup
+- JWT token management
+- User session handling
+- Multi-factor authentication
+- Social login providers
+
+### User Management
+- Profile synchronization
+- Role-based access control
+- Session persistence
+- Logout handling
+
+## Payment Integration
+
+### Stripe Integration
+- Checkout session creation
+- Payment processing
+- Subscription management
+- Webhook handling
+
+### Premium Features
+- Job boosting
+- Extended statistics
+- Priority placement
+- Additional posting capabilities
+
+## SEO Optimization
+
+### Meta Tags
+- Dynamic title and description
+- Open Graph tags
+- Twitter Card support
+- Canonical URLs
+
+### Schema.org Markup
+- WebSite schema
+- Organization schema
+- JobPosting schema
+- BreadcrumbList schema
+
+### Performance
+- Code splitting with React.lazy
+- Image optimization
+- Static resource caching
+- Lazy loading
+
+## Responsive Design
+
+### Mobile-First Approach
+- Bootstrap grid system
+- Tailwind responsive utilities
+- Touch-friendly interactions
+- Mobile-specific components
+
+### Breakpoints
+- Extra small (xs): < 576px
+- Small (sm): ≥ 576px
+- Medium (md): ≥ 768px
+- Large (lg): ≥ 992px
+- Extra large (xl): ≥ 1200px
+
+## Error Handling
+
+### Error Boundaries
+- React error boundaries for component errors
+- Graceful fallbacks
+- Error reporting
+
+### API Error Handling
+- Axios interceptors
+- Toast notifications
+- Retry mechanisms
+- Offline handling
+
+## Testing
+
+### Test Structure
+- Jest configuration
+- React Testing Library
+- Component testing
+- Hook testing
+- Integration testing
+
+### Test Files
+- `JobCard.test.jsx` - Job card component tests
+- `user-header.test.js` - User header tests
+- Snapshot testing
+
+## Development Workflow
+
+### Scripts
+```json
+{
+  "dev": "npm run build:server && concurrently \"vite\" \"node server/index.js\"",
+  "build": "vite build",
+  "test": "jest",
+  "lint": "eslint .",
+  "preview": "vite preview"
+}
+```
+
+### Environment Variables
+- `VITE_CLERK_PUBLISHABLE_KEY` - Clerk authentication key
+- `VITE_API_URL` - Backend API URL
+- `VITE_STRIPE_PUBLISHABLE_KEY` - Stripe public key
+
+## Performance Optimizations
+
+### Code Splitting
+- Route-based code splitting
+- Component lazy loading
+- Dynamic imports
+
+### Caching
+- API response caching
+- Static asset caching
+- Browser caching strategies
+
+### Bundle Optimization
+- Tree shaking
+- Dead code elimination
+- Asset compression
+- Source map optimization
+
+## Security Considerations
+
+### Input Validation
+- Client-side validation with Zod
+- Server-side validation
+- XSS prevention
+- CSRF protection
+
+### Authentication Security
+- JWT token validation
+- Secure token storage
+- Session management
+- Role-based access
+
+## Deployment
+
+### Build Process
+1. TypeScript compilation
+2. Vite build optimization
+3. Asset optimization
+4. Environment variable injection
+
+### Production Considerations
+- Environment-specific configurations
+- CDN integration
+- Monitoring and analytics
+- Error tracking
+
+## Future Enhancements
+
+### Planned Features
+- Real-time notifications
+- Advanced search filters
+- Job recommendations
+- Mobile app development
+- PWA capabilities
+
+### Technical Improvements
+- Server-side rendering (SSR)
+- Static site generation (SSG)
+- Advanced caching strategies
+- Performance monitoring
+- A/B testing framework
+
+## Conclusion
+
+The WorkNow frontend is a modern, scalable React application that provides an excellent user experience for job seekers and employers in Israel. With its comprehensive feature set, internationalization support, and robust architecture, it serves as a solid foundation for future development and expansion. 

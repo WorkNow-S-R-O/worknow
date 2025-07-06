@@ -1,0 +1,585 @@
+---
+alwaysApply: true
+---
+
+# WorkNow - Project Architecture
+
+## Project Overview
+
+**WorkNow** is a full-featured job search platform for Israel, built on modern technology stack. The project is a web application with client-server architecture, supporting multilingualism (Russian, English, Hebrew, Arabic) and integration with external services.
+
+## Technology Stack
+
+### Frontend
+- **React 18** - main library for building user interface
+- **Vite** - build tool and dev server for fast development
+- **React Router DOM 7** - client-side routing
+- **Tailwind CSS** - utility-first CSS framework for styling
+- **Bootstrap 5** - additional CSS framework for components
+- **React Hook Form** - form management with validation
+- **Zod** - schema validation for TypeScript
+- **Zustand** - lightweight state management
+- **React Hot Toast** - user notifications
+- **React Helmet Async** - meta tag management for SEO
+
+### Backend
+- **Node.js** - server runtime environment
+- **Express.js** - web framework for creating APIs
+- **Prisma** - ORM for database operations
+- **PostgreSQL** - primary database
+- **Clerk** - authentication and user management
+- **Stripe** - payment system
+- **Nodemailer** - email notifications
+- **Winston** - logging
+- **Node-cron** - task scheduler
+
+### Integrations and Services
+- **Clerk** - authentication, authorization, user profiles
+- **Stripe** - payment processing and subscriptions
+- **Supabase** - additional database and services
+- **Telegram Bot API** - notifications via Telegram
+- **i18next** - internationalization and localization
+
+## Application Architecture
+
+### 1. Client-Side (Frontend)
+
+#### Component Structure
+```
+src/
+├── components/          # Reusable components
+│   ├── form/           # Form components
+│   ├── routes/         # Routing components
+│   ├── ui/             # UI components
+│   └── [other components]
+├── pages/              # Application pages
+├── hooks/              # Custom React hooks
+├── store/              # State management (Zustand)
+├── lib/                # Utilities and configurations
+└── css/                # Styles
+```
+
+#### Key Components:
+- **JobCard** - job listing card
+- **JobList** - job listings with pagination
+- **JobForm** - job creation/editing form
+- **Navbar** - navigation panel
+- **UserProfile** - user profile
+- **PremiumPage** - premium features page
+
+#### Routing
+The application uses React Router with protected routes:
+- `/` - home page
+- `/my-advertisements` - my advertisements
+- `/create-new-advertisement` - create advertisement (protected)
+- `/edit-job/:id` - edit advertisement (protected)
+- `/profile/:clerkUserId` - user profile
+- `/premium` - premium features
+- `/seekers` - job seekers search
+
+### 2. Server-Side (Backend)
+
+#### Server Structure
+```
+server/
+├── controllers/        # Request handlers
+├── routes/            # API route definitions
+├── services/          # Business logic
+├── middlewares/       # Middleware
+├── utils/             # Utilities and helper functions
+├── config/            # Configurations
+└── cron-jobs.js       # Task scheduler
+```
+
+#### API Endpoints
+- `/api/jobs` - job management
+- `/api/users` - user management
+- `/api/cities` - cities
+- `/api/categories` - job categories
+- `/api/seekers` - job seekers
+- `/api/payments` - payments
+- `/api/messages` - messages
+- `/webhook` - webhooks from external services
+
+#### Middleware
+- **Authentication** - Clerk token verification
+- **Validation** - input data validation
+- **CORS** - cross-origin request configuration
+- **Logging** - request and error logging
+
+### 3. Database
+
+#### Data Schema (Prisma)
+```sql
+-- Main models:
+User           # System users
+Job            # Job listings
+City           # Cities
+Category       # Job categories
+Seeker         # Job seekers
+Message        # Messages
+Payment        # Payments
+
+-- Translations for internationalization:
+CityTranslation     # City name translations
+CategoryTranslation # Category name translations
+```
+
+#### Key Features:
+- **UUID** for users and messages
+- **Auto-increment** for other entities
+- **Indexes** for query optimization
+- **Relationships** between tables via foreign keys
+- **Soft deletion** via activity flags
+
+### 4. Authentication and Authorization
+
+#### Clerk Integration
+- **JWT tokens** for authentication
+- **Webhook handlers** for data synchronization
+- **Multi-factor authentication**
+- **Social logins** (Google, Facebook)
+- **User profile management**
+
+#### Roles and Permissions
+- **Regular users** - create/edit their own job listings
+- **Premium users** - additional features
+- **Administrators** - full system access
+
+### 5. Payment System
+
+#### Stripe Integration
+- **Subscriptions** for premium features
+- **Automatic renewal** of subscriptions
+- **Webhook handlers** for payment events
+- **Subscription cancellation** management
+
+#### Premium Features
+- **Job boosting** - priority placement
+- **Extended statistics**
+- **Additional posting** capabilities
+
+### 6. Internationalization
+
+#### i18next Configuration
+- **4 languages**: Russian, English, Hebrew, Arabic
+- **Automatic language detection** for users
+- **Translations** for all interface texts
+- **RTL support** for Hebrew and Arabic
+
+#### Translation Structure
+```
+public/locales/
+├── ru/translation.json
+├── en/translation.json
+├── he/translation.json
+└── ar/translation.json
+```
+
+### 7. SEO and Performance
+
+#### SEO Optimization
+- **React Helmet** for meta tag management
+- **Schema.org markup** for search engines
+- **Sitemap** automatic generation
+- **Open Graph** tags for social networks
+
+#### Performance
+- **Code splitting** with React.lazy
+- **Image optimization**
+- **Static resource caching**
+- **Lazy loading** of components
+
+### 8. Monitoring and Logging
+
+#### Winston Logger
+- **Log levels** (error, warn, info, debug)
+- **Log rotation** for file size management
+- **Structured logging** in JSON format
+
+#### Cron Jobs
+- **Automatic renewal** of premium subscriptions
+- **Cleanup** of outdated data
+- **User notification** sending
+
+### 9. Security
+
+#### Security Measures
+- **HTTPS** for all connections
+- **Input validation** at all levels
+- **SQL injection protection** via Prisma
+- **CORS settings** for access restriction
+- **Rate limiting** for API endpoints
+- **Content filtering** from unwanted words
+
+### 10. Deployment
+
+#### Build Configuration
+- **Vite** for client-side building
+- **TypeScript** compilation for server
+- **Docker** readiness (if required)
+- **Environment variables** for configuration
+
+#### Environment Variables
+```env
+DATABASE_URL=postgresql://...
+VITE_CLERK_PUBLISHABLE_KEY=pk_...
+CLERK_SECRET_KEY=sk_...
+STRIPE_SECRET_KEY=sk_...
+WEBHOOK_SECRET=whsec_...
+```
+
+## Data Flows
+
+### 1. Job Creation
+1. User fills out form on client
+2. Data validation via Zod
+3. POST request to `/api/jobs`
+4. Authentication check on server
+5. Database save via Prisma
+6. Return result to client
+
+### 2. Authentication
+1. User logs in via Clerk
+2. Clerk returns JWT token
+3. Token stored in localStorage
+4. All subsequent requests include token
+5. Server verifies token via Clerk SDK
+
+### 3. Payments
+1. User selects premium plan
+2. Create checkout session in Stripe
+3. Redirect to Stripe Checkout
+4. Process successful payment via webhook
+5. Update user status in database
+
+## Scalability
+
+### Horizontal Scaling
+- **Stateless server** - easy to scale
+- **Database** - ready for replication
+- **CDN** - for static resources
+- **Load balancer** - for load distribution
+
+### Vertical Scaling
+- **Query optimization** for database
+- **Caching** of frequently used data
+- **Indexes** for search acceleration
+- **Pagination** for large lists
+
+## Monitoring and Analytics
+
+### Performance Metrics
+- **Response time** of API endpoints
+- **Memory and CPU usage**
+- **Requests per second**
+- **Errors** and their types
+
+### Business Metrics
+- **Number of active users**
+- **Conversion** to premium subscriptions
+- **Number of created job listings**
+- **Geographic distribution** of users
+
+## Conclusion
+
+WorkNow represents a modern, scalable web application with clear separation of responsibilities between components. The architecture provides:
+
+- **High performance** through optimization and caching
+- **Security** through multi-level protection
+- **Scalability** through modular architecture
+- **Developer experience** through modern tools
+- **Internationalization** for global market
+- **SEO optimization** for better search visibility
+
+The project is ready for production and further development with the ability to add new features and integrations. # WorkNow - Project Architecture
+
+## Project Overview
+
+**WorkNow** is a full-featured job search platform for Israel, built on modern technology stack. The project is a web application with client-server architecture, supporting multilingualism (Russian, English, Hebrew, Arabic) and integration with external services.
+
+## Technology Stack
+
+### Frontend
+- **React 18** - main library for building user interface
+- **Vite** - build tool and dev server for fast development
+- **React Router DOM 7** - client-side routing
+- **Tailwind CSS** - utility-first CSS framework for styling
+- **Bootstrap 5** - additional CSS framework for components
+- **React Hook Form** - form management with validation
+- **Zod** - schema validation for TypeScript
+- **Zustand** - lightweight state management
+- **React Hot Toast** - user notifications
+- **React Helmet Async** - meta tag management for SEO
+
+### Backend
+- **Node.js** - server runtime environment
+- **Express.js** - web framework for creating APIs
+- **Prisma** - ORM for database operations
+- **PostgreSQL** - primary database
+- **Clerk** - authentication and user management
+- **Stripe** - payment system
+- **Nodemailer** - email notifications
+- **Winston** - logging
+- **Node-cron** - task scheduler
+
+### Integrations and Services
+- **Clerk** - authentication, authorization, user profiles
+- **Stripe** - payment processing and subscriptions
+- **Supabase** - additional database and services
+- **Telegram Bot API** - notifications via Telegram
+- **i18next** - internationalization and localization
+
+## Application Architecture
+
+### 1. Client-Side (Frontend)
+
+#### Component Structure
+```
+src/
+├── components/          # Reusable components
+│   ├── form/           # Form components
+│   ├── routes/         # Routing components
+│   ├── ui/             # UI components
+│   └── [other components]
+├── pages/              # Application pages
+├── hooks/              # Custom React hooks
+├── store/              # State management (Zustand)
+├── lib/                # Utilities and configurations
+└── css/                # Styles
+```
+
+#### Key Components:
+- **JobCard** - job listing card
+- **JobList** - job listings with pagination
+- **JobForm** - job creation/editing form
+- **Navbar** - navigation panel
+- **UserProfile** - user profile
+- **PremiumPage** - premium features page
+
+#### Routing
+The application uses React Router with protected routes:
+- `/` - home page
+- `/my-advertisements` - my advertisements
+- `/create-new-advertisement` - create advertisement (protected)
+- `/edit-job/:id` - edit advertisement (protected)
+- `/profile/:clerkUserId` - user profile
+- `/premium` - premium features
+- `/seekers` - job seekers search
+
+### 2. Server-Side (Backend)
+
+#### Server Structure
+```
+server/
+├── controllers/        # Request handlers
+├── routes/            # API route definitions
+├── services/          # Business logic
+├── middlewares/       # Middleware
+├── utils/             # Utilities and helper functions
+├── config/            # Configurations
+└── cron-jobs.js       # Task scheduler
+```
+
+#### API Endpoints
+- `/api/jobs` - job management
+- `/api/users` - user management
+- `/api/cities` - cities
+- `/api/categories` - job categories
+- `/api/seekers` - job seekers
+- `/api/payments` - payments
+- `/api/messages` - messages
+- `/webhook` - webhooks from external services
+
+#### Middleware
+- **Authentication** - Clerk token verification
+- **Validation** - input data validation
+- **CORS** - cross-origin request configuration
+- **Logging** - request and error logging
+
+### 3. Database
+
+#### Data Schema (Prisma)
+```sql
+-- Main models:
+User           # System users
+Job            # Job listings
+City           # Cities
+Category       # Job categories
+Seeker         # Job seekers
+Message        # Messages
+Payment        # Payments
+
+-- Translations for internationalization:
+CityTranslation     # City name translations
+CategoryTranslation # Category name translations
+```
+
+#### Key Features:
+- **UUID** for users and messages
+- **Auto-increment** for other entities
+- **Indexes** for query optimization
+- **Relationships** between tables via foreign keys
+- **Soft deletion** via activity flags
+
+### 4. Authentication and Authorization
+
+#### Clerk Integration
+- **JWT tokens** for authentication
+- **Webhook handlers** for data synchronization
+- **Multi-factor authentication**
+- **Social logins** (Google, Facebook)
+- **User profile management**
+
+#### Roles and Permissions
+- **Regular users** - create/edit their own job listings
+- **Premium users** - additional features
+- **Administrators** - full system access
+
+### 5. Payment System
+
+#### Stripe Integration
+- **Subscriptions** for premium features
+- **Automatic renewal** of subscriptions
+- **Webhook handlers** for payment events
+- **Subscription cancellation** management
+
+#### Premium Features
+- **Job boosting** - priority placement
+- **Extended statistics**
+- **Additional posting** capabilities
+
+### 6. Internationalization
+
+#### i18next Configuration
+- **4 languages**: Russian, English, Hebrew, Arabic
+- **Automatic language detection** for users
+- **Translations** for all interface texts
+- **RTL support** for Hebrew and Arabic
+
+#### Translation Structure
+```
+public/locales/
+├── ru/translation.json
+├── en/translation.json
+├── he/translation.json
+└── ar/translation.json
+```
+
+### 7. SEO and Performance
+
+#### SEO Optimization
+- **React Helmet** for meta tag management
+- **Schema.org markup** for search engines
+- **Sitemap** automatic generation
+- **Open Graph** tags for social networks
+
+#### Performance
+- **Code splitting** with React.lazy
+- **Image optimization**
+- **Static resource caching**
+- **Lazy loading** of components
+
+### 8. Monitoring and Logging
+
+#### Winston Logger
+- **Log levels** (error, warn, info, debug)
+- **Log rotation** for file size management
+- **Structured logging** in JSON format
+
+#### Cron Jobs
+- **Automatic renewal** of premium subscriptions
+- **Cleanup** of outdated data
+- **User notification** sending
+
+### 9. Security
+
+#### Security Measures
+- **HTTPS** for all connections
+- **Input validation** at all levels
+- **SQL injection protection** via Prisma
+- **CORS settings** for access restriction
+- **Rate limiting** for API endpoints
+- **Content filtering** from unwanted words
+
+### 10. Deployment
+
+#### Build Configuration
+- **Vite** for client-side building
+- **TypeScript** compilation for server
+- **Docker** readiness (if required)
+- **Environment variables** for configuration
+
+#### Environment Variables
+```env
+DATABASE_URL=postgresql://...
+VITE_CLERK_PUBLISHABLE_KEY=pk_...
+CLERK_SECRET_KEY=sk_...
+STRIPE_SECRET_KEY=sk_...
+WEBHOOK_SECRET=whsec_...
+```
+
+## Data Flows
+
+### 1. Job Creation
+1. User fills out form on client
+2. Data validation via Zod
+3. POST request to `/api/jobs`
+4. Authentication check on server
+5. Database save via Prisma
+6. Return result to client
+
+### 2. Authentication
+1. User logs in via Clerk
+2. Clerk returns JWT token
+3. Token stored in localStorage
+4. All subsequent requests include token
+5. Server verifies token via Clerk SDK
+
+### 3. Payments
+1. User selects premium plan
+2. Create checkout session in Stripe
+3. Redirect to Stripe Checkout
+4. Process successful payment via webhook
+5. Update user status in database
+
+## Scalability
+
+### Horizontal Scaling
+- **Stateless server** - easy to scale
+- **Database** - ready for replication
+- **CDN** - for static resources
+- **Load balancer** - for load distribution
+
+### Vertical Scaling
+- **Query optimization** for database
+- **Caching** of frequently used data
+- **Indexes** for search acceleration
+- **Pagination** for large lists
+
+## Monitoring and Analytics
+
+### Performance Metrics
+- **Response time** of API endpoints
+- **Memory and CPU usage**
+- **Requests per second**
+- **Errors** and their types
+
+### Business Metrics
+- **Number of active users**
+- **Conversion** to premium subscriptions
+- **Number of created job listings**
+- **Geographic distribution** of users
+
+## Conclusion
+
+WorkNow represents a modern, scalable web application with clear separation of responsibilities between components. The architecture provides:
+
+- **High performance** through optimization and caching
+- **Security** through multi-level protection
+- **Scalability** through modular architecture
+- **Developer experience** through modern tools
+- **Internationalization** for global market
+- **SEO optimization** for better search visibility
+
+The project is ready for production and further development with the ability to add new features and integrations. 
