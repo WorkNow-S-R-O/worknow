@@ -1,6 +1,6 @@
-# WorkNow - Job Listing Platform  🚀
+# WorkNow – Job Search Platform for Israel 🚀
 
-WorkNow is a platform that helps employers find employees and job seekers find work. It allows users to post job listings, browse job offers, and contact employers.
+WorkNow is a modern, full-featured job search platform designed for the Israeli market. It connects employers and job seekers, supporting multilingualism (Russian, English, Hebrew, Arabic), premium features, and seamless integration with external services like Stripe, Clerk, and Telegram.
 
 ![WorkNow](./screenshots/WorkNow.png)
 
@@ -8,19 +8,43 @@ WorkNow is a platform that helps employers find employees and job seekers find w
 
 ## ✨ Features
 
-- ✅ Authentication via Clerk
-- ✅ Job posting for employers
-- ✅ Browsing job listings
-- ✅ Support for English and Russian languages
-- ✅ Telegram bot notifications
-- ✅ SEO optimization and OpenGraph meta tags
-- ✅ **Job Seekers tab**: browse and manage job seekers (admin only)
-- ✅ **Premium access**: unlocks hidden contacts and extra features
-- ✅ **Admin panel**: add/edit job seekers (access by login/password or Google account)
+- **Authentication via Clerk** (social login, JWT, MFA)
+- **Job posting and management** for employers
+- **Job seeker profiles** and search
+- **Premium access** (job boosting, hidden contacts, extra features)
+- **Admin panel** (manage users, jobs, seekers)
+- **Internationalization** (Russian, English, Hebrew, Arabic; RTL support)
+- **Telegram bot notifications**
+- **Stripe payments & subscriptions**
+- **SEO optimization** (OpenGraph, Schema.org, meta tags)
+- **Responsive design** (mobile-first, Bootstrap + Tailwind)
+- **Automated tasks** (cron jobs for premium, notifications)
+- **Content moderation** (bad words filter)
 
 ---
 
-## 📦 Installation
+## 🛠️ Technology Stack
+
+### Frontend
+- React 18, Vite, React Router DOM 7
+- Tailwind CSS, Bootstrap 5, Bootstrap Icons, Lucide React
+- Zustand (state), React Hook Form, Zod (validation)
+- i18next (internationalization), React Hot Toast, React Helmet Async
+
+### Backend
+- Node.js, Express.js
+- Prisma ORM, PostgreSQL
+- Clerk (authentication & user management)
+- Stripe (payments & subscriptions)
+- Nodemailer (email), Telegram Bot API (notifications)
+- Winston (logging), Node-cron (task scheduling)
+
+### Integrations
+- Clerk, Stripe, Supabase, Telegram, i18next
+
+---
+
+## 📦 Installation & Setup
 
 1. **Clone the repository:**
    ```sh
@@ -32,14 +56,12 @@ WorkNow is a platform that helps employers find employees and job seekers find w
    npm install
    ```
 3. **Configure environment variables:**
-   - Copy `.env.example` to `.env` and fill in your database and Clerk credentials.
+   - Copy `.env.example` to `.env` and fill in your database, Clerk, Stripe, and email credentials.
 4. **Setup the database:**
    ```sh
    npx prisma db push
    npx prisma generate
-   ```
-   Or, if you want to apply migrations:
-   ```sh
+   # Or, to apply migrations:
    npx prisma migrate dev
    ```
 5. **(Optional) Generate test data:**
@@ -55,39 +77,79 @@ WorkNow is a platform that helps employers find employees and job seekers find w
 
 ## 🗂 Project Structure
 
-- `src/` — frontend React components, pages, hooks, store
-- `server/` — backend controllers, routes, services, utils
-- `prisma/` — Prisma schema, migrations, seed scripts
-- `public/` — static files, images, locales
-- `screenshots/` — screenshots for documentation
+```
+worknow/
+├── src/         # Frontend (React, components, pages, hooks, store)
+├── server/      # Backend (controllers, routes, services, utils)
+├── prisma/      # Prisma schema, migrations, seed scripts
+├── public/      # Static files, images, locales
+├── screenshots/ # Screenshots for documentation
+└── docs/        # Project documentation
+```
 
 ---
 
-## 🔒 Access & Roles
+## 🔒 Roles & Permissions
 
-- **Admin panel**: Only accessible by admin (login/password or Google account: `worknow.notifications@gmail.com`)
-- **Premium users**: See hidden contacts of job seekers and extra features
-- **Regular users**: Can browse jobs and seekers, but contacts are hidden
+- **Administrators**: Full access to admin panel, user/job/seeker management
+- **Premium users**: Access to hidden contacts, job boosting, extra features
+- **Regular users**: Can browse jobs and seekers, but some data is hidden
+
+---
+
+## 🔗 Main API Endpoints
+
+- `GET /api/jobs` – List job postings (with filters, pagination)
+- `POST /api/jobs` – Create a new job (auth required)
+- `PUT /api/jobs/:id` – Update a job (auth, owner only)
+- `DELETE /api/jobs/:id` – Delete a job (auth, owner only)
+- `POST /api/jobs/:id/boost` – Boost a job (premium only)
+- `GET /api/seekers` – List job seekers (with filters, pagination)
+- `POST /api/seekers` – Create a seeker profile
+- `GET /api/seekers/:id` – Get seeker details
+- `GET /api/users` – Get user profile (auth required)
+- `PUT /api/users` – Update user profile (auth required)
+- `POST /api/payments/create-checkout-session` – Stripe checkout (auth required)
+- `POST /api/payments/cancel-subscription` – Cancel premium (auth required)
+- `POST /api/payments/cancel-auto-renewal` – Disable auto-renewal (auth required)
+- `GET /api/messages` – Get user messages (auth required)
+- `POST /api/messages` – Send message (admin only)
+- `POST /webhook` – Handle external webhooks (Stripe, Clerk)
+
+---
+
+## ⏰ Automated Tasks (Cron Jobs)
+
+- **Daily job ranking check**: Notifies users if their jobs drop in ranking
+- **Hourly premium expiration check**: Disables expired premium subscriptions
+- **Automated email notifications**: For premium, job status, and system events
+
+---
+
+## 🛡️ Security & Performance
+
+- JWT authentication (Clerk)
+- Role-based access control (admin, premium, regular)
+- Input validation (Zod, Prisma)
+- SQL injection protection (Prisma)
+- CORS, rate limiting, and content filtering
+- HTTPS-ready, environment-based configuration
+- Code splitting, caching, and lazy loading for frontend performance
+
+---
+
+## 🌍 Internationalization
+
+- 4 languages: Russian, English, Hebrew, Arabic
+- Automatic language detection and manual switching
+- RTL support for Hebrew and Arabic
+- Translation files in `public/locales/`
 
 ---
 
 ## 📸 Screenshots
 
 ![Main page](./screenshots/CleanShot%202025-06-13%20at%2017.38.47@2x.png)
-
----
-
-## 🔗 API Endpoints
-
-- Get job listings: `GET /users/user-jobs/:clerkUserId`
-- Get user profile: `GET /users/:clerkUserId`
-- Get seekers: `GET /seekers` (admin: `POST /seekers`)
-
----
-
-## 🛠️ Technologies Used
-
-- React, Vite, Clerk, Prisma ORM, PostgreSQL, Node.js, Express, Bootstrap, i18next
 
 ---
 
