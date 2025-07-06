@@ -18,7 +18,7 @@ const JobCard = ({ job }) => {
   }
 
   return (
-    <div
+    <div 
       className={`card shadow-sm mb-4 position-relative text-start ${
         job.user?.isPremium ? "premium-job" : ""
       }`}

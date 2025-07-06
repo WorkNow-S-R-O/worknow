@@ -15,6 +15,6 @@
       ]
     }
   },
-  "include": ["server/**/*", "src/lib/**/*"],
-  "exclude": ["node_modules", "dist", "dist-server"]
+  "include": ["server/**/*"],
+  "exclude": ["node_modules", "dist", "dist-server", "src/lib/jobs.ts"]
 } 

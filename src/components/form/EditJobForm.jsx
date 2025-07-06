@@ -5,8 +5,8 @@ import { jobSchema } from './JobFormSchema';
 import useFetchCities from '../../hooks/useFetchCities';
 import useFetchCategories from '../../hooks/useFetchCategories';
 import useFetchJob from '../../hooks/useUpdateJobs';
-import { updateJob } from '../../../server/editFormService';
-import { showToastError, showToastSuccess } from '../../../server/utils/toastUtils';
+import { updateJob } from '../../lib/jobs';
+import { showToastError, showToastSuccess } from '../../lib/utils';
 import { EditJobFields } from './EditJobFields';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async'; // 🔹 SEO

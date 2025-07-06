@@ -15,7 +15,6 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
 
   useEffect(() => {
     if (open) {
-      // Устанавливаем текущие фильтры при открытии
       setSalary(currentFilters.salary || '');
       setSelectedCategory(currentFilters.categoryId || '');
       setShuttleOnly(currentFilters.shuttleOnly || false);
@@ -83,9 +82,13 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
           <label>{t('category')}</label>
           <select className="form-select" value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
             <option value="">{t('choose_category')}</option>
-            {categories.map(cat => (
-              <option key={cat.id} value={cat.id}>{cat.label}</option>
-            ))}
+            {Array.isArray(categories) ? (
+              categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.label}</option>
+              ))
+            ) : (
+              <option value="" disabled>{t('categories_load_error') || 'Ошибка загрузки категорий'}</option>
+            )}
           </select>
         </div>
         <div className="form-check form-switch mb-3">

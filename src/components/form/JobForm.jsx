@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 import { jobSchema } from './JobFormSchema';
 import useFetchCities from '../../hooks/useFetchCities';
 import useFetchCategories from '../../hooks/useFetchCategories';
-import { createJob } from '../../../server/formService';
-import { showToastError, showToastSuccess } from '../../../server/utils/toastUtils';
+import { createJob } from '../../lib/jobs';
+import { showToastError, showToastSuccess } from '../../lib/utils';
 import JobFormFields from './JobFormFields';
 import { useTranslation } from 'react-i18next';
 
