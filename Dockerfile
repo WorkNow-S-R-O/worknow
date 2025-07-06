@@ -3,6 +3,17 @@
     WORKDIR /app
     COPY package.json package-lock.json ./
     RUN apt-get update && apt-get install -y openssl
+    
+    # Accept Vite env vars as build args
+    ARG VITE_CLERK_PUBLISHABLE_KEY
+    ARG VITE_API_URL
+    ARG VITE_STRIPE_PUBLISHABLE_KEY
+    
+    # Set them as environment variables for the build
+    ENV VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY
+    ENV VITE_API_URL=$VITE_API_URL
+    ENV VITE_STRIPE_PUBLISHABLE_KEY=$VITE_STRIPE_PUBLISHABLE_KEY
+    
     RUN npm ci --ignore-scripts
     COPY ./src ./src
     COPY ./public ./public
