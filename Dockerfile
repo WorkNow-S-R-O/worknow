@@ -31,7 +31,7 @@
     RUN apt-get update && apt-get install -y openssl
     RUN npm ci --ignore-scripts
     COPY ./apps ./apps
-    COPY ./src ./src
+    COPY ./apps/client/src ./apps/client/src
     COPY ./prisma ./prisma
     COPY tsconfig.server.json ./
     # No backend build step needed for JavaScript backend
