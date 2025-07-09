@@ -75,29 +75,36 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
 
 ---
 
-## 🗂 Project Structure
+## 🐳 Running Locally with Docker
 
+You can run the entire WorkNow platform locally using Docker and Docker Compose. This is the recommended way to ensure all services (backend, frontend, database) work together seamlessly.
+
+### Prerequisites
+- [Docker](https://www.docker.com/get-started) installed
+- [Docker Compose](https://docs.docker.com/compose/) (if not included with Docker Desktop)
+
+### 1. Configure Environment Variables
+- Copy `.env.example` to `.env` and fill in your credentials (database, Clerk, Stripe, email, etc).
+- Make sure all required variables are set for both backend and frontend.
+
+### 2. Build and Start the Services
+From the project root, run:
+```sh
+# Build and start all services (frontend, backend, database)
+docker-compose up --build
 ```
-worknow/
-├── src/         # Frontend (React, components, pages, hooks, store)
-├── server/      # Backend (controllers, routes, services, utils)
-├── prisma/      # Prisma schema, migrations, seed scripts
-├── public/      # Static files, images, locales
-├── screenshots/ # Screenshots for documentation
-└── docs/        # Project documentation
+- This will build the Docker images and start the containers as defined in `docker-compose.yml`.
+
+### 3. Access the Application
+- **Frontend:** Open [http://localhost:3000](http://localhost:3000)
+- **Backend API:** Accessible at [http://localhost:3001](http://localhost:3001)
+- **Postgres Database:** Exposed on port 5432 (see `docker-compose.yml` for credentials)
+
+### 4. Stopping the Services
+To stop all running containers:
+```sh
+docker-compose down
 ```
-
----
-
-## 🔒 Roles & Permissions
-
-- **Administrators**: Full access to admin panel, user/job/seeker management
-- **Premium users**: Access to hidden contacts, job boosting, extra features
-- **Regular users**: Can browse jobs and seekers, but some data is hidden
-
----
-
-## 🔗 Main API Endpoints
 
 - `GET /api/jobs` – List job postings (with filters, pagination)
 - `POST /api/jobs` – Create a new job (auth required)
@@ -115,6 +122,61 @@ worknow/
 - `GET /api/messages` – Get user messages (auth required)
 - `POST /api/messages` – Send message (admin only)
 - `POST /webhook` – Handle external webhooks (Stripe, Clerk)
+
+---
+
+## 🖥️ Running Locally Without Docker
+
+You can also run WorkNow directly on your machine without Docker. This is useful for development and debugging.
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [PostgreSQL](https://www.postgresql.org/) (running locally or accessible remotely)
+
+### 1. Configure Environment Variables
+- Copy `.env.example` to `.env` and fill in your credentials (database, Clerk, Stripe, email, etc).
+- Make sure your PostgreSQL server is running and the credentials match your `.env`.
+
+### 2. Install Dependencies
+```sh
+npm install
+```
+
+### 3. Set Up the Database
+```sh
+npx prisma db push
+npx prisma generate
+# Or, to apply migrations:
+npx prisma migrate dev
+```
+
+### 4. (Optional) Seed Test Data
+```sh
+node prisma/seed.js
+```
+
+### 5. Run the Application
+In one terminal, start the backend and frontend together:
+```sh
+npm run dev
+```
+- This will start both the backend (on [http://localhost:3001](http://localhost:3001)) and the frontend (on [http://localhost:3000](http://localhost:3000)).
+
+**Alternatively, you can run them separately:**
+- **Backend:**
+  ```sh
+  node apps/api/index.js
+  ```
+- **Frontend:**
+  ```sh
+  vite --config vite.config.js
+  ```
+
+### 6. Useful Tips
+- If you change the Prisma schema, re-run `npx prisma generate`.
+- Logs and errors will appear in your terminal.
+- Make sure your database is running before starting the app.
 
 ---
 
@@ -146,6 +208,10 @@ worknow/
 - Translation files in `public/locales/`
 
 ---
+### 5. Useful Tips
+- If you change dependencies or Dockerfile, re-run with `--build`.
+- Database migrations are handled automatically on container startup (see Dockerfile and compose setup).
+- Logs for each service can be viewed with `docker-compose logs -f`.
 
 ## 📬 Contacts & Support
 
@@ -154,6 +220,20 @@ worknow/
 
 ---
 
-## 📜 License
+## 🗂 Project Structure
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+```
+worknow/
+├── apps/
+│   ├── api/         # Backend (Express, controllers, routes, services)
+│   └── client/      # Frontend (React, components, pages, hooks, store)
+├── libs/            # Shared utility libraries
+├── prisma/          # Prisma schema, migrations, seed scripts
+├── public/          # Static files, images, locales
+├── tests/           # Test files
+├── tools/           # Development and utility scripts
+├── Dockerfile       # Docker build instructions
+├── docker-compose.yml # Multi-service orchestration
+├── package.json     # Project metadata and scripts
+└── README.md        # Project documentation
+```
