@@ -180,6 +180,25 @@ npm run dev
 
 ---
 
+## 🗂 Project Structure
+
+```
+worknow/
+├── apps/
+│   ├── api/         # Backend (Express, controllers, routes, services)
+│   └── client/      # Frontend (React, components, pages, hooks, store)
+├── libs/            # Shared utility libraries
+├── prisma/          # Prisma schema, migrations, seed scripts
+├── public/          # Static files, images, locales
+├── tests/           # Test files
+├── tools/           # Development and utility scripts
+├── Dockerfile       # Docker build instructions
+├── docker-compose.yml # Multi-service orchestration
+├── package.json     # Project metadata and scripts
+└── README.md        # Project documentation
+```
+
+
 ## ⏰ Automated Tasks (Cron Jobs)
 
 - **Daily job ranking check**: Notifies users if their jobs drop in ranking
@@ -217,23 +236,3 @@ npm run dev
 
 - Telegram: [@worknowjob](https://t.me/WORKNOW_JOBS)
 - Email: worknow.notifications@gmail.com
-
----
-
-## 🗂 Project Structure
-
-```
-worknow/
-├── apps/
-│   ├── api/         # Backend (Express, controllers, routes, services)
-│   └── client/      # Frontend (React, components, pages, hooks, store)
-├── libs/            # Shared utility libraries
-├── prisma/          # Prisma schema, migrations, seed scripts
-├── public/          # Static files, images, locales
-├── tests/           # Test files
-├── tools/           # Development and utility scripts
-├── Dockerfile       # Docker build instructions
-├── docker-compose.yml # Multi-service orchestration
-├── package.json     # Project metadata and scripts
-└── README.md        # Project documentation
-```
