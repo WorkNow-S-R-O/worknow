@@ -1,7 +1,7 @@
 {
   "name": "job-searcher",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "url": "https://github.com/MostOfLuck/job-listing",
   "scripts": {
@@ -104,6 +104,7 @@
     "postcss": "^8.4.49",
     "prisma": "^6.1.0",
     "sass": "^1.83.0",
+    "standard-version": "^9.5.0",
     "supabase": "^2.9.6",
     "tailwindcss": "^3.4.16",
     "ts-node": "^10.9.2",
