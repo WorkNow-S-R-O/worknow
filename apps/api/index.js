@@ -55,7 +55,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Раздача статических файлов фронта
-app.use(express.static(path.join(__dirname, "../dist")));
+app.use(express.static(path.join(__dirname, "../../dist")));
 
 // --- РЕГИСТРАЦИЯ МАРШРУТОВ ---
 app.use('/api/payments', paymentRoutes);
@@ -72,7 +72,7 @@ app.use('/payments', paymentsRouter);
 
 // React Router должен отдавать index.html
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../dist", "index.html"));
+  res.sendFile(path.join(__dirname, "../../dist", "index.html"));
 });
 
 // Обработчик ошибок (защита от падения)
