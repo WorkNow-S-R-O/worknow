@@ -11,11 +11,17 @@
     "preview": "vite preview",
     "start": "node apps/api/index.js",
     "lint": "eslint .",
+    "prepare": "husky install",
     "release": "standard-version",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
     "prisma:seed": "node prisma/seed.js",
     "postinstall": "prisma generate"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.20.4",
@@ -101,8 +107,10 @@
     "eslint-plugin-react-refresh": "^0.4.14",
     "eslint-plugin-testing-library": "^7.1.1",
     "globals": "^15.12.0",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.5.2",
     "postcss": "^8.4.49",
     "prisma": "^6.1.0",
     "release-it": "^17.11.0",
