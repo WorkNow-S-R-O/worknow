@@ -2,6 +2,7 @@
     FROM node:20-slim AS frontend-build
     WORKDIR /app
     COPY package.json package-lock.json ./
+    COPY apps/client ./apps/client
     RUN apt-get update && apt-get install -y openssl
     
     # Accept Vite env vars as build args
