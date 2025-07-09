@@ -1,7 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import pkg from '@prisma/client';
+const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
 
-// Массив городов с переводами
+
 const cities = [
   { ru: "Весь Израиль", he: "כל ישראל", en: "All Israel", ar: "كل إسرائيل" },
   { ru: "Центр страны", he: "מרכז הארץ", en: "Center", ar: "وسط البلاد" },
@@ -136,7 +137,7 @@ async function main() {
   for (const city of cities) {
     await prisma.city.create({
       data: {
-        name: city.ru, // для уникальности
+        name: city.ru,
         translations: {
           create: [
             { lang: 'ru', name: city.ru },
@@ -226,7 +227,6 @@ async function main() {
 
   console.log("📌 Добавляем тестовых соискателей...");
   function generateSlug(name, description) {
-    // Простой slug: имя + первая строка описания, латиницей, в нижнем регистре, без пробелов
     return (
       (name + '-' + description.split('\n')[0])
         .toLowerCase()

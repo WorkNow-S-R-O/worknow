@@ -2,7 +2,7 @@
 
 WorkNow is a modern, full-featured job search platform designed for the Israeli market. It connects employers and job seekers, supporting multilingualism (Russian, English, Hebrew, Arabic), premium features, and seamless integration with external services like Stripe, Clerk, and Telegram.
 
-![WorkNow](./screenshots/WorkNow.png)
+![WorkNow](./public/images/worknow-logo.jpg)
 
 ---
 
@@ -144,12 +144,6 @@ worknow/
 - Automatic language detection and manual switching
 - RTL support for Hebrew and Arabic
 - Translation files in `public/locales/`
-
----
-
-## 📸 Screenshots
-
-![Main page](./screenshots/CleanShot%202025-06-13%20at%2017.38.47@2x.png)
 
 ---
 

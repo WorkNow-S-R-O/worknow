@@ -1,10 +1,11 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: ["class"],
-    content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+	content: [
+		"./apps/client/index.html",
+		"./apps/client/src/**/*.{js,ts,jsx,tsx}",
+	  ],
   theme: {
   	extend: {
   		borderRadius: {

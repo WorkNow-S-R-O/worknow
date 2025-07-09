@@ -1,5 +1,6 @@
 import fs from 'fs';
-import { PrismaClient } from '@prisma/client';
+import pkg from '@prisma/client';
+const { PrismaClient } = pkg;
 import path from 'path';
 
 const prisma = new PrismaClient();

@@ -15,9 +15,10 @@
     ENV VITE_STRIPE_PUBLISHABLE_KEY=$VITE_STRIPE_PUBLISHABLE_KEY
     
     RUN npm ci --ignore-scripts
-    COPY ./src ./src
+    COPY ./apps/client/src ./src
+    COPY ./libs ./libs
     COPY ./public ./public
-    COPY index.html ./
+    COPY ./apps/client/index.html ./
     COPY vite.config.js ./
     COPY tailwind.config.js ./
     COPY postcss.config.js ./
@@ -29,7 +30,7 @@
     COPY package.json package-lock.json ./
     RUN apt-get update && apt-get install -y openssl
     RUN npm ci --ignore-scripts
-    COPY ./server ./server
+    COPY ./apps ./apps
     COPY ./src ./src
     COPY ./prisma ./prisma
     COPY tsconfig.server.json ./
@@ -47,9 +48,9 @@
     RUN npm ci --only=production --ignore-scripts
     
     # Copy built frontend
-    COPY --from=frontend-build /app/dist ./dist
+    COPY --from=frontend-build /app/apps/client/dist ./dist
     # Copy backend source
-    COPY --from=backend-build /app/server ./server
+    COPY --from=backend-build /app/apps/api ./apps/api
     COPY --from=backend-build /app/prisma ./prisma
     COPY --from=backend-build /app/tsconfig.server.json ./
     
@@ -67,4 +68,4 @@
     EXPOSE 3001
     
     # Start the server
-    CMD ["node", "server/index.js"] 
+    CMD ["node", "api/index.js"] 
