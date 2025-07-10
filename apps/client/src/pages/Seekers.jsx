@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import PaginationControl from "../components/PaginationControl";
 import AddSeekerModal from "../components/form/AddSeekerModal";
 import '../css/seekers-table-mobile.css';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -140,7 +142,30 @@ export default function Seekers() {
             )}
           </div>
         )}
-        {loading && <div>Загрузка...</div>}
+        {loading && (
+          <table className="table table-bordered">
+            <thead>
+              <tr className="table-light">
+                {isAdmin && deleteMode && <th></th>}
+                <th>{t('seekers_table_name')}</th>
+                <th>{t('seekers_table_contact')}</th>
+                <th>{t('seekers_table_city')}</th>
+                <th>{t('seekers_table_description')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...Array(10)].map((_, idx) => (
+                <tr key={idx} style={{ marginBottom: 12 }}>
+                  {isAdmin && deleteMode && <td><Skeleton height={24} /></td>}
+                  <td><Skeleton height={24} width={100} /></td>
+                  <td><Skeleton height={24} width={140} /></td>
+                  <td><Skeleton height={24} width={90} /></td>
+                  <td><Skeleton height={24} width={220} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
         {error && <div className="text-danger">{error}</div>}
         {!loading && !error && seekers.length === 0 && <div>Нет соискателей</div>}
         {!loading && !error && seekers.length > 0 && (
