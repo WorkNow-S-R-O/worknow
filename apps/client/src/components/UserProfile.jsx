@@ -208,13 +208,6 @@ const UserProfile = () => {
 // Компонент заглушки (скелетон)
 const SkeletonLoader = ({ jobsPerPage }) => (
   <>
-    <div className="d-flex flex-column align-items-center mb-4">
-      <Skeleton circle height={100} width={100} className="mb-3" />
-      <div>
-        <Skeleton width={200} height={24} />
-        <Skeleton width={150} height={18} className="mt-2" />
-      </div>
-    </div>
     <h4>
       <Skeleton width={200} height={24} />
     </h4>
