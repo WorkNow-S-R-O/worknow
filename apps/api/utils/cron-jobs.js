@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import stripe from './utils/stripe.js';
+import stripe from './stripe.js';
 import nodemailer from 'nodemailer';
 import pkg from '@prisma/client';
 const { PrismaClient } = pkg;

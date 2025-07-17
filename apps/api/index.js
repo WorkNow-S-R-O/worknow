@@ -6,7 +6,6 @@ import path from "path";
 import { fileURLToPath } from "url"
 import paymentRoutes from './routes/payments.js';
 import { cancelAutoRenewal } from './controllers/payments.js';
-import './cron-jobs.js';
 import jobsRoutes from './routes/jobs.js';
 import citiesRoutes from './routes/cities.js';
 import boostJob from './routes/jobs.js';
