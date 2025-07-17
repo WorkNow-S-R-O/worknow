@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const prisma = new PrismaClient();
+// eslint-disable-next-line no-undef
 const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
 
 export const syncUserService = async (clerkUserId) => {

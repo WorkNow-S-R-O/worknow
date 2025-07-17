@@ -1,8 +1,10 @@
 import stringSimilarity from "string-similarity";
 import { containsBadWords, containsLinks } from '../middlewares/validation.js';
 import { sendNewJobNotificationToTelegram } from '../utils/telegram.js';
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient()
+
 const MAX_JOBS_PER_USER = 10;
 
 export const createJobService = async ({ title, salary, cityId, categoryId, phone, description, userId, shuttle, meals }) => {

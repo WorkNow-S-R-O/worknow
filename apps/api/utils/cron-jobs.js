@@ -14,7 +14,9 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, // true для 465, false для 587
   auth: {
+    // eslint-disable-next-line no-undef
     user: process.env.EMAIL_USER,
+    // eslint-disable-next-line no-undef
     pass: process.env.EMAIL_PASS,
   },
 });
@@ -66,6 +68,7 @@ const checkLowRankedJobs = async () => {
       const jobTitles = jobs.map((j) => `- ${j.title} (страница ${j.page})`).join('\n');
       
       const mailOptions = {
+        // eslint-disable-next-line no-undef
         from: `"Worknow Notifications" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: 'Ваши объявления опустились вниз',
@@ -114,6 +117,7 @@ export const cancelAutoRenewal = async (req, res) => {
 
 
     const mailOptions = {
+      // eslint-disable-next-line no-undef
       from: `"Worknow" <${process.env.EMAIL_USER}>`,
       to: user.email,
       subject: "Автопродление подписки отключено",

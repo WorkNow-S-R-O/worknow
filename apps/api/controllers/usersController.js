@@ -2,6 +2,7 @@ import { syncUserService, getUserByClerkIdService, getUserJobsService } from '..
 
 // Вебхук для Clerk
 export const clerkWebhook = async (req, res) => {
+  // eslint-disable-next-line no-undef
   const { WEBHOOK_SECRET } = process.env;
   if (!WEBHOOK_SECRET) return res.status(500).json({ error: 'Missing Clerk Webhook Secret' });
 

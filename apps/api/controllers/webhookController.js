@@ -1,10 +1,12 @@
 import { Webhook } from 'svix';
 import { processClerkWebhookService } from '../services/webhookService.js';
 
+// eslint-disable-next-line no-undef
 const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
 
 if (!WEBHOOK_SECRET) {
   console.error('❌ Missing Clerk Webhook Secret!');
+  // eslint-disable-next-line no-undef
   process.exit(1);
 }
 
@@ -29,6 +31,7 @@ export const clerkWebhook = async (req, res) => {
     if (result.error) return res.status(400).json({ error: result.error });
 
     res.status(200).json({ success: true });
+  // eslint-disable-next-line no-unused-vars
   } catch (error) {
     res.status(400).json({ error: 'Webhook verification failed' });
   }

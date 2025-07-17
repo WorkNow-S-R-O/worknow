@@ -7,6 +7,7 @@ import fetch from 'node-fetch';
 const prisma = new PrismaClient();
 
 // ✅ URL для продакшена
+// eslint-disable-next-line no-undef
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://worknowjob.com";
 
 export const createCheckoutSession = async (req, res) => {
