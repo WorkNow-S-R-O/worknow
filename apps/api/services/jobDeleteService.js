@@ -1,5 +1,4 @@
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import { PrismaClient } from '@prisma/client';
 import { sendUpdatedJobListToTelegram } from '../utils/telegram.js';
 
 const prisma = new PrismaClient();

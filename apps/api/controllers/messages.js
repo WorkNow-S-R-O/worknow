@@ -1,5 +1,4 @@
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import { PrismaClient } from '@prisma/client';
 import { sendEmail } from '../utils/mailer.js';
 // import nodemailer from 'nodemailer'; // Для реальной отправки email
 

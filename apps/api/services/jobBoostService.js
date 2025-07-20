@@ -1,5 +1,4 @@
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 const ONE_DAY = 24 * 60 * 60 * 1000;

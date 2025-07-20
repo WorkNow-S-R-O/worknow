@@ -1,6 +1,5 @@
 import stripe from '../utils/stripe.js';
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import { PrismaClient } from '@prisma/client';
 import { sendTelegramNotification } from '../utils/telegram.js';
 import { CLERK_SECRET_KEY } from '../config/clerkConfig.js';
 import fetch from 'node-fetch';

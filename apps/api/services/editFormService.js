@@ -1,5 +1,4 @@
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import { PrismaClient } from '@prisma/client';
 import { containsBadWords, containsLinks } from '../middlewares/validation.js';
 import { sendUpdatedJobListToTelegram } from '../utils/telegram.js';
 

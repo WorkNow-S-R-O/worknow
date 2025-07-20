@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import { PrismaClient } from '@prisma/client';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import { Webhook } from 'svix';
