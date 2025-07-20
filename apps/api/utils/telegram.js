@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import fetch from 'node-fetch';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
