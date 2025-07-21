@@ -15,7 +15,11 @@
 ## Apps Directory
 ### apps/client/
 - `index.html` - Main HTML entry point
-- `src/` - React application source code
+  - `src/` - React application source code
+    - `components/` - Reusable UI components
+      - `JobCard.jsx` - Job card component (UPDATED with new premium color)
+      - `UserJobs.jsx` - User job listings component (UPDATED with new premium color)
+    - `index.css` - Global styles (UPDATED with new premium color scheme)
 - `dist/` - Built frontend assets
 
 ### apps/api/

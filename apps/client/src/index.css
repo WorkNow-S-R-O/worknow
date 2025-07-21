@@ -314,17 +314,16 @@ button:focus-visible {
 }
 
 .premium-job {
-  border: 2px solid;
-  border-image: linear-gradient(90deg, #FFD700, #FF8C00) 1;
-  box-shadow: 0 4px 24px 0 rgba(255, 215, 0, 0.10), 0 1.5px 0 0 #FFD700;
-  background: linear-gradient(90deg, #fffbe6 0%, #fff 100%);
+  border: 2px solid #D4E6F9;
+  box-shadow: 0 4px 24px 0 rgba(212, 230, 249, 0.10), 0 1.5px 0 0 #D4E6F9;
+  background: #D4E6F9;
   position: relative;
 }
 .premium-badge {
   position: absolute;
   top: -12px;
   left: 16px;
-  background: linear-gradient(90deg, #FFD700, #FF8C00);
+  background: #1976d2;
   color: #fff;
   font-weight: 600;
   font-size: 0.95em;
@@ -332,7 +331,7 @@ button:focus-visible {
   border-radius: 12px;
   display: flex;
   align-items: center;
-  box-shadow: 0 2px 8px 0 rgba(255, 215, 0, 0.10);
+  box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.10);
   z-index: 2;
 }
 .premium-badge i {

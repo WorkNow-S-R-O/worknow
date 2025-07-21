@@ -23,7 +23,7 @@ const JobCard = ({ job }) => {
         job.user?.isPremium ? "premium-job" : ""
       }`}
       style={{
-        backgroundColor: job.user?.isPremium ? "linear-gradient(90deg, #fffbe6 0%, #fff 100%)" : "white",
+        backgroundColor: job.user?.isPremium ? "#D4E6F9" : "white",
         width: "90%",
         maxWidth: "700px",
         borderRadius: "10px",

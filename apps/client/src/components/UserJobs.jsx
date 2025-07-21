@@ -134,7 +134,7 @@ const UserJobs = () => {
                 width: "90%",
                 maxWidth: "700px",
                 margin: "0 auto",
-                background: job.user?.isPremium ? "linear-gradient(90deg, #fffbe6 0%, #fff 100%)" : "white",
+                background: job.user?.isPremium ? "#D4E6F9" : "white",
                 borderRadius: "10px",
               }}
             >
