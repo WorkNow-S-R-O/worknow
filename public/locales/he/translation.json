@@ -96,6 +96,7 @@
   "seeker_profile_published": "פורסם לפני {{days}} ימים {{date}}",
   "seeker_profile_not_found": "המחפש לא נמצא",
   "seeker_profile_contacts_premium": "פרטי קשר זמינים במסלול בתשלום",
+  "seeker_profile_note_premium": "הערה זמינה במסלול בתשלום",
   "seeker_profile_employment": "העסקה",
   "seeker_profile_category": "קטגוריה",
   "seeker_profile_languages": "שפות",

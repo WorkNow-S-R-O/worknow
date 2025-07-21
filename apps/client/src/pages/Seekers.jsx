@@ -154,13 +154,25 @@ export default function Seekers() {
               </tr>
             </thead>
             <tbody>
-              {[...Array(10)].map((_, idx) => (
-                <tr key={idx} style={{ marginBottom: 12 }}>
-                  {isAdmin && deleteMode && <td><Skeleton height={24} /></td>}
-                  <td><Skeleton height={24} width={100} /></td>
-                  <td><Skeleton height={24} width={140} /></td>
-                  <td><Skeleton height={24} width={90} /></td>
-                  <td><Skeleton height={24} width={220} /></td>
+              {[...Array(5)].map((_, idx) => (
+                <tr key={idx} className="py-3">
+                  {isAdmin && deleteMode && (
+                    <td className="py-3">
+                      <Skeleton height={20} width={20} />
+                    </td>
+                  )}
+                  <td className="py-3">
+                    <Skeleton height={20} width={75} />
+                  </td>
+                  <td className="py-3">
+                    <Skeleton height={20} width={50} />
+                  </td>
+                  <td className="py-3">
+                    <Skeleton height={20} width={50} />
+                  </td>
+                  <td className="py-3">
+                    <Skeleton height={20} width={480} />
+                  </td>
                 </tr>
               ))}
             </tbody>

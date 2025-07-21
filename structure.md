@@ -31,6 +31,11 @@
 ## Other Directories
 - `libs/` - Shared utility libraries
 - `prisma/` - Database schema and migrations
-- `public/` - Static assets and locales
+  - `public/` - Static assets and locales
+    - `locales/` - Translation files
+      - `ru/translation.json` - Russian translations (UPDATED with note premium message)
+      - `en/translation.json` - English translations (UPDATED with note premium message)
+      - `he/translation.json` - Hebrew translations (UPDATED with note premium message)
+      - `ar/translation.json` - Arabic translations (UPDATED with note premium message)
 - `tests/` - Test files
 - `tools/` - Development and utility scripts 

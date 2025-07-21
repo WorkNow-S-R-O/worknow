@@ -96,6 +96,7 @@
   "seeker_profile_published": "Published {{days}} days ago {{date}}",
   "seeker_profile_not_found": "Seeker not found",
   "seeker_profile_contacts_premium": "contacts available for premium plan",
+  "seeker_profile_note_premium": "note available for premium plan",
   "seeker_profile_employment": "Employment",
   "seeker_profile_category": "Category",
   "seeker_profile_languages": "Languages",

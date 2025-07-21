@@ -131,9 +131,19 @@ export default function SeekerDetails() {
           <strong>{t('seeker_profile_announcement')}:</strong>
           <div>{seeker.announcement}</div>
         </div>
-        <div className="mb-2">
-          <strong>{t('seeker_profile_note')}:</strong> {seeker.note}
-        </div>
+        {isPremium && (
+          <div className="mb-2">
+            <strong>{t('seeker_profile_note')}:</strong> {seeker.note || ''}
+          </div>
+        )}
+        {!isPremium && (
+          <div className="mb-2">
+            <strong>{t('seeker_profile_note')}:</strong>
+            <div className="bg-light p-2" style={{ fontWeight: 600, fontSize: 18 }}>
+              {t('seeker_profile_note_premium')}
+            </div>
+          </div>
+        )}
         <button className="btn btn-dark mt-2" onClick={() => window.print()}>{t('seeker_profile_print')}</button>
         
         {seekerIds && (

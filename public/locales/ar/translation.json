@@ -96,6 +96,7 @@
     "seeker_profile_published": "تم النشر منذ {{days}} يوم {{date}}",
     "seeker_profile_not_found": "الباحث غير موجود",
     "seeker_profile_contacts_premium": "جهات الاتصال متاحة لخطة بريميوم",
+    "seeker_profile_note_premium": "الملاحظة متاحة لخطة بريميوم",
     "seeker_profile_employment": "نوع العمل",
     "seeker_profile_category": "الفئة",
     "seeker_profile_languages": "اللغات",
