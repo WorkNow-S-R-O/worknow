@@ -140,6 +140,7 @@ export default function SeekerDetails() {
           <div className="mb-2">
             <strong>{t('seeker_profile_note')}:</strong>
             <div className="bg-light p-2" style={{ fontWeight: 600, fontSize: 18 }}>
+              <i className="bi bi-info-circle me-2"></i>
               {t('seeker_profile_note_premium')}
             </div>
           </div>
