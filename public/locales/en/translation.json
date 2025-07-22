@@ -1,6 +1,6 @@
 {
   "login": "Login",
-  "premium": "Premium",
+  "premium": "Plans",
   "vacancies": "Jobs",
   "jobs": "My advertisements",
   "facebook_group": "Facebook group",
@@ -120,5 +120,14 @@
   "shuttle": "Shuttle",
   "meals": "Meals",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "job_image": "Job Image",
+  "optional": "optional",
+  "uploading": "Uploading...",
+  "change_image": "Change Image",
+  "remove_image": "Remove",
+  "click_to_upload": "Click to upload image",
+  "image_upload_hint": "JPG, PNG, GIF up to 5MB",
+  "image_upload_success": "Image uploaded successfully!",
+  "image_upload_error": "Failed to upload image"
 }

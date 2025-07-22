@@ -1,6 +1,6 @@
 {
   "login": "Войти",
-  "premium": "Премиум",
+  "premium": "Тарифы",
   "vacancies": "Вакансии",
   "jobs": "Мои обьявления",
   "facebook_group": "Группа Facebook",
@@ -117,5 +117,14 @@
   "shuttle": "Подвозка",
   "meals": "Питание",
   "yes": "Да",
-  "no": "Нет"
+  "no": "Нет",
+  "job_image": "Изображение вакансии",
+  "optional": "необязательно",
+  "uploading": "Загрузка...",
+  "change_image": "Изменить изображение",
+  "remove_image": "Удалить",
+  "click_to_upload": "Нажмите для загрузки изображения",
+  "image_upload_hint": "JPG, PNG, GIF до 5МБ",
+  "image_upload_success": "Изображение успешно загружено!",
+  "image_upload_error": "Ошибка загрузки изображения"
 }
