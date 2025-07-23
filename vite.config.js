@@ -17,10 +17,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     cors: true,
-    port: 3000
+    port: 3000,
+    strictPort: false
   },
   proxy: {
-    '/api': 'https://worknowjob.com',
+    '/api': 'http://localhost:3001',
   },
   resolve: {
     alias: {

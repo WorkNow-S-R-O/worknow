@@ -3,6 +3,7 @@ import Select from "react-select";
 import Skeleton from "react-loading-skeleton";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import ImageUpload from "../ui/ImageUpload";
 
 export const JobFormFields = ({
   register,
@@ -13,6 +14,8 @@ export const JobFormFields = ({
   cities,
   categories,
   loading,
+  onImageUpload,
+  currentImageUrl,
 }) => {
   const { t } = useTranslation();
   const [isAgreed, setIsAgreed] = useState(false);
@@ -132,6 +135,14 @@ export const JobFormFields = ({
         )}
       </div>
 
+      {/* Изображение вакансии */}
+      <div className="mb-4">
+        <ImageUpload 
+          onImageUpload={onImageUpload}
+          currentImageUrl={currentImageUrl}
+        />
+      </div>
+
       {/* Описание */}
       <div className="mb-4">
         <label htmlFor="description" className="block text-gray-700 mb-2">
@@ -234,6 +245,8 @@ JobFormFields.propTypes = {
     })
   ).isRequired,
   loading: PropTypes.bool.isRequired,
+  onImageUpload: PropTypes.func, // (url: string, file: File) => void
+  currentImageUrl: PropTypes.string,
 };
 
 export default JobFormFields;

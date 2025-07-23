@@ -4,7 +4,7 @@ import { sendUpdatedJobListToTelegram } from '../utils/telegram.js';
 
 const prisma = new PrismaClient();
 
-export const updateJobService = async (id, { title, salary, cityId, phone, description, categoryId, shuttle, meals }) => {
+export const updateJobService = async (id, { title, salary, cityId, phone, description, categoryId, shuttle, meals, imageUrl }) => {
   let errors = [];
   if (containsBadWords(title)) errors.push("Заголовок содержит нецензурные слова.");
   if (containsBadWords(description)) errors.push("Описание содержит нецензурные слова.");
@@ -16,6 +16,19 @@ export const updateJobService = async (id, { title, salary, cityId, phone, descr
     const existingJob = await prisma.job.findUnique({ where: { id: parseInt(id) }, include: { user: true } });
     if (!existingJob) return { error: 'Объявление не найдено' };
 
+    console.log('🔍 updateJobService - Updating job with imageUrl:', imageUrl);
+    console.log('🔍 updateJobService - Full update data:', {
+      title, 
+      salary, 
+      phone, 
+      description, 
+      imageUrl,
+      cityId,
+      categoryId,
+      shuttle,
+      meals
+    });
+
     const updatedJob = await prisma.job.update({
       where: { id: parseInt(id) },
       data: { 
@@ -23,6 +36,7 @@ export const updateJobService = async (id, { title, salary, cityId, phone, descr
         salary, 
         phone, 
         description, 
+        imageUrl, // Add imageUrl to the update data
         city: { connect: { id: parseInt(cityId) } },
         category: { connect: { id: parseInt(categoryId) } },
         shuttle,

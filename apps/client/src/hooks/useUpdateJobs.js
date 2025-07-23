@@ -21,6 +21,8 @@ const useFetchJob = (id, setValue) => {
         const response = await axios.get(`${API_URL}/jobs/${id}`);
         const job = response.data;
 
+        console.log('🔍 useFetchJob - Received job data:', job);
+
         if (!job || typeof job !== "object") {
           console.error("❌ API вернул некорректные данные:", job);
           toast.error("Ошибка загрузки объявления");
@@ -37,6 +39,7 @@ const useFetchJob = (id, setValue) => {
         setValue("description", job.description);
         setValue("shuttle", job.shuttle ?? false);
         setValue("meals", job.meals ?? false);
+        setValue("imageUrl", job.imageUrl || null); // Add imageUrl to form values
         
         setJob(job);
 

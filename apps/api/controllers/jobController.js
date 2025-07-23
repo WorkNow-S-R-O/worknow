@@ -1,4 +1,4 @@
-import { getJobByIdService } from "../services/getJobService.js";
+import { getJobByIdService } from "../services/getJobById.js";
 import { createJobService } from "../services/createJobService.js";
 
 export const getJobById = async (req, res) => {
@@ -9,13 +9,14 @@ export const getJobById = async (req, res) => {
   }
 
   try {
-    const job = await getJobByIdService(Number(id)); // Передаем число
+    const result = await getJobByIdService(Number(id)); // Передаем число
 
-    if (!job) {
-      return res.status(404).json({ error: "Объявление не найдено" });
+    if (result.error) {
+      return res.status(404).json({ error: result.error });
     }
 
-    res.status(200).json(job);
+    console.log('🔍 getJobById - Job data:', result.job);
+    res.status(200).json(result.job);
   } catch (error) {
     console.error("Ошибка получения объявления:", error.message);
     res.status(500).json({ error: "Ошибка получения объявления", details: error.message });

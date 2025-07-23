@@ -2,8 +2,9 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 import Skeleton from 'react-loading-skeleton';
 import { useTranslation } from "react-i18next";
+import ImageUpload from '../ui/ImageUpload';
 
-const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCategoryId, cities, categories, loadingCities, loadingCategories, loadingJob }) => {
+const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCategoryId, cities, categories, loadingCities, loadingCategories, loadingJob, onImageUpload, currentImageUrl }) => {
   const { t } = useTranslation();
 
   // Сортировка: регионы в начале, остальные города после
@@ -107,6 +108,15 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
         {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
       </div>
 
+      {/* Изображение вакансии */}
+      <div className="mb-4">
+        {console.log('🔍 EditJobFields - Rendering ImageUpload with:', { currentImageUrl, onImageUpload: !!onImageUpload })}
+        <ImageUpload 
+          onImageUpload={onImageUpload}
+          currentImageUrl={currentImageUrl}
+        />
+      </div>
+
       {/* Описание */}
       <div className="mb-4">
         <label className="block text-gray-700 mb-2">{t('description')}</label>
@@ -163,6 +173,8 @@ EditJobFields.propTypes = {
   loadingCities: PropTypes.bool.isRequired,
   loadingCategories: PropTypes.bool.isRequired,
   loadingJob: PropTypes.bool.isRequired,
+  onImageUpload: PropTypes.func,
+  currentImageUrl: PropTypes.string,
 };
 
 export { EditJobFields };

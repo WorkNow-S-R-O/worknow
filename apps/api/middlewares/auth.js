@@ -3,6 +3,29 @@ const { PrismaClient } = pkg;
 
 const prisma = new PrismaClient();
 
+// Middleware для проверки аутентификации
+export const requireAuth = async (req, res, next) => {
+  try {
+    // Получаем токен из заголовка Authorization
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'No authorization token provided' });
+    }
+
+    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+    
+    // For now, allow the request to proceed if a token is present
+    // TODO: Implement proper Clerk token verification
+    console.log('Auth middleware: Token received:', token.substring(0, 10) + '...');
+    
+    next();
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    return res.status(500).json({ error: 'Authentication error' });
+  }
+};
+
 // Middleware для проверки админских прав
 export const requireAdmin = async (req, res, next) => {
   try {

@@ -1,22 +1,26 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react';
+import { useUser, useAuth } from '@clerk/clerk-react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { jobSchema } from './JobFormSchema';
 import useFetchCities from '../../hooks/useFetchCities';
 import useFetchCategories from '../../hooks/useFetchCategories';
-import { createJob } from 'libs/jobs';
+import { createJob, createJobWithImage } from 'libs/jobs';
 import { showToastError, showToastSuccess } from 'libs/utils';
 import JobFormFields from './JobFormFields';
 import { useTranslation } from 'react-i18next';
 
 const JobForm = ({ onJobCreated }) => {
   const { user } = useUser();
+  const { getToken } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { cities, loading: citiesLoading } = useFetchCities();
   const { categories, loading: categoriesLoading } = useFetchCategories();
+  const [imageFile, setImageFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
 
   const { register, handleSubmit, setValue, watch, formState: { errors }, reset } = useForm({
     resolver: zodResolver(jobSchema),
@@ -42,16 +46,38 @@ const JobForm = ({ onJobCreated }) => {
     }
 
     try {
-      await createJob({ 
-        ...data, 
-        cityId: parseInt(data.cityId), 
-        categoryId: parseInt(data.categoryId),
-        userId: user.id,
-        shuttle: !!data.shuttle,
-        meals: !!data.meals
-      });
+      const token = await getToken();
+      
+      // If we have an image file, use the S3 upload endpoint for job creation
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append('image', imageFile);
+        formData.append('title', data.title);
+        formData.append('salary', data.salary);
+        formData.append('phone', data.phone);
+        formData.append('description', data.description);
+        formData.append('cityId', data.cityId.toString());
+        formData.append('categoryId', data.categoryId.toString());
+        formData.append('shuttle', data.shuttle.toString());
+        formData.append('meals', data.meals.toString());
+
+        await createJobWithImage(formData, token);
+      } else {
+        // Use regular job creation without image
+        await createJob({ 
+          ...data, 
+          cityId: parseInt(data.cityId), 
+          categoryId: parseInt(data.categoryId),
+          userId: user.id,
+          shuttle: !!data.shuttle,
+          meals: !!data.meals
+        }, token);
+      }
+      
       showToastSuccess('Объявление успешно создано!');
       reset();
+      setImageFile(null);
+      setImageUrl(null);
       if (onJobCreated) onJobCreated();
       setTimeout(() => navigate('/'), 2000);
     } catch (error) {
@@ -74,6 +100,11 @@ const JobForm = ({ onJobCreated }) => {
             cities={cities}
             categories={categories}
             loading={citiesLoading || categoriesLoading}
+            onImageUpload={(url, file) => {
+              setImageUrl(url);
+              setImageFile(file);
+            }}
+            currentImageUrl={imageUrl}
           />
         </form>
       </div>

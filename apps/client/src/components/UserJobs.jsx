@@ -38,6 +38,11 @@ const UserJobs = () => {
       );
 
       console.log('Ответ от сервера:', response.data.jobs);
+      console.log('🔍 UserJobs - Jobs with images:', response.data.jobs.map(job => ({
+        id: job.id,
+        title: job.title,
+        imageUrl: job.imageUrl
+      })));
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
     } catch (error) {
@@ -145,6 +150,24 @@ const UserJobs = () => {
                 </div>
               )}
               <div className="card-body">
+                {job.imageUrl && (
+                  <div className="mb-3">
+                    {console.log('🔍 UserJobs - Rendering image for job:', job.id, 'URL:', job.imageUrl)}
+                    <img 
+                      src={job.imageUrl} 
+                      alt={job.title}
+                      className="img-fluid rounded"
+                      style={{
+                        width: '100%',
+                        height: '200px',
+                        objectFit: 'cover',
+                        borderRadius: '8px'
+                      }}
+                      onError={(e) => console.error('❌ UserJobs - Image failed to load:', job.imageUrl, e)}
+                      onLoad={() => console.log('✅ UserJobs - Image loaded successfully:', job.imageUrl)}
+                    />
+                  </div>
+                )}
                 <h5 className="card-title text-primary">{job.title}</h5>
                 {job.category?.label && (
                   <div className="mb-2">

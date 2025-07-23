@@ -43,6 +43,24 @@ const JobCard = ({ job }) => {
         </div>
       )}
       <div className="card-body">
+        {job.imageUrl && (
+          <div className="mb-3">
+            {console.log('🔍 JobCard - Rendering image for job:', job.id, 'URL:', job.imageUrl)}
+            <img 
+              src={job.imageUrl} 
+              alt={job.title}
+              className="img-fluid rounded"
+              style={{
+                width: '100%',
+                height: '200px',
+                objectFit: 'cover',
+                borderRadius: '8px'
+              }}
+              onError={(e) => console.error('❌ JobCard - Image failed to load:', job.imageUrl, e)}
+              onLoad={() => console.log('✅ JobCard - Image loaded successfully:', job.imageUrl)}
+            />
+          </div>
+        )}
         <h5 className="card-title text-primary">{job.title}</h5>
         {job.category?.label && (
           <div className="mb-2">
@@ -82,6 +100,7 @@ const JobCard = ({ job }) => {
 // **Валидация пропсов**
 JobCard.propTypes = {
   job: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     cityId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     city: PropTypes.object,
     title: PropTypes.string,
@@ -92,6 +111,7 @@ JobCard.propTypes = {
     user: PropTypes.object,
     shuttle: PropTypes.bool,
     meals: PropTypes.bool,
+    imageUrl: PropTypes.string,
   }).isRequired,
 };
 

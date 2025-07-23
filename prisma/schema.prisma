@@ -66,6 +66,7 @@ model Job {
   cityId      Int
   userId      String
   categoryId  Int
+  imageUrl    String?   // URL to the job image
   createdAt   DateTime  @default(now())
   boostedAt   DateTime?
   city        City      @relation(fields: [cityId], references: [id])

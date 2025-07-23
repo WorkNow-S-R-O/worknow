@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { jobSchema } from './JobFormSchema';
 import useFetchCities from '../../hooks/useFetchCities';
 import useFetchCategories from '../../hooks/useFetchCategories';
@@ -35,6 +36,18 @@ const EditJobForm = () => {
   const selectedCityId = watch('cityId');
   const selectedCategoryId = watch('categoryId');
   const { loading: loadingJob, job } = useFetchJob(id, setValue);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  // Set initial image URL when job data is loaded
+  useEffect(() => {
+    console.log('🔍 EditJobForm - Job data loaded:', job);
+    if (job && job.imageUrl) {
+      console.log('🔍 EditJobForm - Setting image URL:', job.imageUrl);
+      setImageUrl(job.imageUrl);
+    } else {
+      console.log('🔍 EditJobForm - No image URL found in job data');
+    }
+  }, [job]);
 
   const onSubmit = async (data) => {
     try {
@@ -43,7 +56,8 @@ const EditJobForm = () => {
         cityId: data.cityId ? parseInt(data.cityId, 10) : null,
         categoryId: data.categoryId ? parseInt(data.categoryId, 10) : null,
         shuttle: !!data.shuttle,
-        meals: !!data.meals
+        meals: !!data.meals,
+        imageUrl: imageUrl // Include the image URL in the update
       };
       await updateJob(id, updatedData);
       showToastSuccess('Объявление успешно обновлено!');
@@ -82,6 +96,8 @@ const EditJobForm = () => {
               loadingCities={loadingCities}
               loadingCategories={loadingCategories}
               loadingJob={loadingJob}
+              onImageUpload={setImageUrl}
+              currentImageUrl={imageUrl}
             />
 
             <button type="submit" className="btn btn-primary w-full text-white px-4 py-2 rounded">

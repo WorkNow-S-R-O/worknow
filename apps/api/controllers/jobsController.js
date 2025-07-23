@@ -7,17 +7,26 @@ import { boostJobService } from '../services/jobBoostService.js';
 
 
 export const createJob = async (req, res) => {
+  console.log('🔍 createJob controller - Request body:', req.body);
+  console.log('🔍 createJob controller - imageUrl in request:', req.body.imageUrl);
+  
   const result = await createJobService(req.body);
   if (result.errors) return res.status(400).json({ success: false, errors: result.errors });
   if (result.error) return res.status(400).json({ error: result.error });
   
+  console.log('🔍 createJob controller - Job created:', result.job);
   res.status(201).json(result.job);
 };
 
 export const updateJob = async (req, res) => {
+    console.log('🔍 updateJob controller - Request body:', req.body);
+    console.log('🔍 updateJob controller - imageUrl in request:', req.body.imageUrl);
+    
     const result = await updateJobService(req.params.id, req.body);
     if (result.error) return res.status(400).json({ error: result.error });
     if (result.errors) return res.status(400).json({ success: false, errors: result.errors });
+    
+    console.log('🔍 updateJob controller - Job updated:', result.updatedJob);
     res.status(200).json(result.updatedJob);
   };
 
@@ -29,7 +38,7 @@ export const updateJob = async (req, res) => {
 
   export const getJobs = async (req, res) => {
     const lang = req.query.lang || 'ru';
-    const result = await getJobsService(lang);
+    const result = await getJobsService();
     if (result.error) return res.status(500).json({ error: result.error });
     const jobs = result.jobs.map(job => {
       let categoryLabel = job.category?.name;

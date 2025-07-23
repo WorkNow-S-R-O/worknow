@@ -11,12 +11,31 @@ export const getJobByIdService = async (id) => {
 
     const job = await prisma.job.findUnique({
       where: { id: Number(id) }, // Преобразуем id в число
-      include: { city: true },
+      include: { 
+        city: true,
+        category: true,
+        user: {
+          select: {
+            id: true,
+            isPremium: true,
+            firstName: true,
+            lastName: true,
+            clerkUserId: true
+          }
+        },
+      },
     });
 
     if (!job) {
       return { error: "Объявление не найдено" };
     }
+
+    console.log('🔍 getJobByIdService - Job with imageUrl:', {
+      id: job.id,
+      title: job.title,
+      imageUrl: job.imageUrl,
+      hasImageUrl: !!job.imageUrl
+    });
 
     return { job };
   } catch (error) {

@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 
 const MAX_JOBS_PER_USER = 10;
 
-export const createJobService = async ({ title, salary, cityId, categoryId, phone, description, userId, shuttle, meals }) => {
+export const createJobService = async ({ title, salary, cityId, categoryId, phone, description, userId, shuttle, meals, imageUrl }) => {
   let errors = [];
 
   // Валидация на запрещенные слова и ссылки
@@ -46,6 +46,20 @@ export const createJobService = async ({ title, salary, cityId, categoryId, phon
     return { error: `Вы уже разместили ${MAX_JOBS_PER_USER} объявлений.` };
   }
 
+  console.log('🔍 createJobService - Creating job with imageUrl:', imageUrl);
+  console.log('🔍 createJobService - Full data object:', {
+    title,
+    salary,
+    phone,
+    description,
+    shuttle,
+    meals,
+    imageUrl,
+    cityId,
+    categoryId,
+    userId
+  });
+  
   // Создание новой вакансии
   const job = await prisma.job.create({
     data: {
@@ -55,11 +69,18 @@ export const createJobService = async ({ title, salary, cityId, categoryId, phon
       description,
       shuttle,
       meals,
+      imageUrl,
       city: { connect: { id: parseInt(cityId) } },
       category: { connect: { id: parseInt(categoryId) } },
       user: { connect: { id: existingUser.id } }
     },
     include: { city: true, user: true, category: true },
+  });
+
+  console.log('🔍 createJobService - Job created successfully:', {
+    id: job.id,
+    title: job.title,
+    imageUrl: job.imageUrl
   });
 
   // Если пользователь премиум — отправляем уведомление в Telegram

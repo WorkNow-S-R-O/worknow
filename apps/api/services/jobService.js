@@ -12,6 +12,14 @@ export const getJobsService = async () => {
         { createdAt: 'desc' }
       ]
     });
+    
+    console.log('🔍 getJobsService - Jobs with images:', jobs.map(job => ({
+      id: job.id,
+      title: job.title,
+      imageUrl: job.imageUrl,
+      hasImageUrl: !!job.imageUrl
+    })));
+    
     return { jobs };
   } catch (error) {
     return { error: 'Ошибка получения объявлений', details: error.message };

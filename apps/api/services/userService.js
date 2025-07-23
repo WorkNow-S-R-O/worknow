@@ -71,6 +71,8 @@ export const getUserJobsService = async (clerkUserId, query) => {
     }
 
     
+    console.log('🔍 getUserJobsService - Fetching jobs for user:', user.id);
+    
     const jobs = await prisma.job.findMany({
       where: { userId: user.id },
       include: { city: true, user: true, category: { include: { translations: true } } },
@@ -78,6 +80,13 @@ export const getUserJobsService = async (clerkUserId, query) => {
       take: limitInt,
       orderBy: { createdAt: "desc" },
     });
+
+    console.log('🔍 getUserJobsService - Jobs found:', jobs.map(job => ({
+      id: job.id,
+      title: job.title,
+      imageUrl: job.imageUrl,
+      hasImageUrl: !!job.imageUrl
+    })));
 
     const totalJobs = await prisma.job.count({ where: { userId: user.id } });
 
