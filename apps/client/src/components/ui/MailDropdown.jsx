@@ -21,25 +21,31 @@ export default function MailDropdown() {
     let timer;
     const fetchUnread = async () => {
       try {
-        let res = await axios.get(`${API_URL}/messages?clerkUserId=${user.id}`);
+        let res = await axios.get(`${API_URL}/api/messages?clerkUserId=${user.id}`);
         let msgs = res.data.messages || [];
         // Оставляем только 5 последних писем
         if (msgs.length > 5) {
           const toDelete = msgs.slice(5);
+          const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
+          
           for (const m of toDelete) {
-            try {
-              await axios.delete(`${API_URL}/messages/${m.id}`);
-            } catch (e) {
-              if (!(e.response && e.response.status === 404)) {
-                console.error('Ошибка удаления сообщения:', e);
+            // Only delete messages older than 1 hour
+            if (new Date(m.createdAt) < oneHourAgo) {
+              try {
+                await axios.delete(`${API_URL}/api/messages/${m.id}`);
+              } catch (e) {
+                // Игнорируем ошибки 404 (сообщение уже удалено) и 500 (временные ошибки сервера)
+                if (e.response && (e.response.status === 404 || e.response.status === 500)) {
+                  console.log(`Message ${m.id} could not be deleted:`, e.response.status);
+                } else {
+                  console.error('Ошибка удаления сообщения:', e);
+                }
               }
-              // Если 404 — игнорируем
             }
           }
           msgs = msgs.slice(0, 5);
         }
         const count = msgs.filter(m => !m.isRead).length;
-        console.log('unreadCount:', count, msgs); // Лог для диагностики
         setMailMessages(msgs);
         setUnreadCount(count);
       } catch {
@@ -47,7 +53,7 @@ export default function MailDropdown() {
       }
     };
     fetchUnread();
-    timer = setInterval(fetchUnread, 12000);
+    timer = setInterval(fetchUnread, 30000); // Changed from 12000 to 30000 (30 seconds)
     return () => clearInterval(timer);
   }, [user]);
 
@@ -56,7 +62,7 @@ export default function MailDropdown() {
     if (!user) return;
     setMailLoading(true);
     try {
-      const res = await axios.get(`${API_URL}/messages?clerkUserId=${user.id}`);
+      const res = await axios.get(`${API_URL}/api/messages?clerkUserId=${user.id}`);
       let msgs = res.data.messages?.slice(0, 5) || [];
       setMailMessages(msgs);
     } catch {
@@ -85,7 +91,7 @@ export default function MailDropdown() {
       setOpenedMsgId(prev => prev ?? mailMessages[0].id);
       // Если первое письмо не прочитано — помечаем как прочитанное
       if (!mailMessages[0].isRead) {
-        axios.patch(`${API_URL}/messages/${mailMessages[0].id}/read`).then(() => {
+        axios.patch(`${API_URL}/api/messages/${mailMessages[0].id}/read`).then(() => {
           setMailMessages(msgs => msgs.map(m => m.id === mailMessages[0].id ? { ...m, isRead: true } : m));
           setUnreadCount(count => count > 0 ? count - 1 : 0);
         });
@@ -131,7 +137,7 @@ export default function MailDropdown() {
                   onClick={async () => {
                     setOpenedMsgId(msg.id);
                     if (!msg.isRead) {
-                      await axios.patch(`${API_URL}/messages/${msg.id}/read`);
+                      await axios.patch(`${API_URL}/api/messages/${msg.id}/read`);
                       setMailMessages(msgs => msgs.map(m => m.id === msg.id ? { ...m, isRead: true } : m));
                       setUnreadCount(count => count > 0 ? count - 1 : 0);
                     }

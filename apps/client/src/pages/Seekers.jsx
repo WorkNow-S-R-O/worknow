@@ -31,7 +31,7 @@ export default function Seekers() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`${API_URL}/seekers`)
+    axios.get(`${API_URL}/api/seekers`)
       .then(res => setSeekers(Array.isArray(res.data) ? res.data : []))
       .catch(() => setError("Ошибка загрузки соискателей"))
       .finally(() => setLoading(false));
@@ -39,14 +39,14 @@ export default function Seekers() {
 
   useEffect(() => {
     if (!user) return;
-    axios.get(`${API_URL}/users/${user.id}`)
+    axios.get(`${API_URL}/api/users/${user.id}`)
       .then(res => setIsPremium(!!res.data.isPremium))
       .catch(() => setIsPremium(false));
   }, [user]);
 
   const handleAddSeeker = async (form) => {
     try {
-      const res = await axios.post(`${API_URL}/seekers`, form);
+      const res = await axios.post(`${API_URL}/api/seekers`, form);
       const created = res.data;
       setShowAddModal(false);
       if (created && created.id) {
@@ -54,7 +54,7 @@ export default function Seekers() {
         return;
       }
       setLoading(true);
-      axios.get(`${API_URL}/seekers`)
+      axios.get(`${API_URL}/api/seekers`)
         .then(res => setSeekers(Array.isArray(res.data) ? res.data : []))
         .catch(() => setError("Ошибка загрузки соискателей"))
         .finally(() => setLoading(false));
@@ -90,12 +90,12 @@ export default function Seekers() {
   const handleConfirmDelete = async () => {
     if (!window.confirm('Удалить выбранных соискателей?')) return;
     try {
-      await Promise.all(selectedIds.map(id => axios.delete(`${API_URL}/seekers/${id}`)));
+      await Promise.all(selectedIds.map(id => axios.delete(`${API_URL}/api/seekers/${id}`)));
       toast.success('Успешно удалено');
       setSelectedIds([]);
       setDeleteMode(false);
       setLoading(true);
-      axios.get(`${API_URL}/seekers`)
+      axios.get(`${API_URL}/api/seekers`)
         .then(res => setSeekers(Array.isArray(res.data) ? res.data : []))
         .catch(() => setError("Ошибка загрузки соискателей"))
         .finally(() => setLoading(false));

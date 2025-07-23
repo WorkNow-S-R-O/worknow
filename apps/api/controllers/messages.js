@@ -105,6 +105,53 @@ export const broadcastMessage = async (req, res) => {
   }
 };
 
+// Удалить сообщение
+export const deleteMessage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('Attempting to delete message with ID:', id);
+    
+    if (!id) {
+      console.log('No message ID provided');
+      return res.status(400).json({ error: 'Message ID is required' });
+    }
+    
+    // Проверяем, существует ли сообщение
+    const message = await prisma.message.findUnique({
+      where: { id }
+    });
+    
+    console.log('Message found:', message ? 'Yes' : 'No');
+    
+    if (!message) {
+      console.log('Message not found for ID:', id);
+      return res.status(404).json({ error: 'Сообщение не найдено' });
+    }
+    
+    // Удаляем сообщение
+    const deletedMessage = await prisma.message.delete({
+      where: { id }
+    });
+    
+    console.log('Message deleted successfully:', deletedMessage.id);
+    
+    return res.json({ success: true, message: 'Сообщение удалено' });
+  } catch (error) {
+    console.error('Error in deleteMessage:', error);
+    
+    // Handle specific Prisma errors
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: 'Сообщение не найдено' });
+    }
+    
+    if (error.code === 'P2002') {
+      return res.status(400).json({ error: 'Invalid message ID format' });
+    }
+    
+    return res.status(500).json({ error: 'Ошибка удаления сообщения' });
+  }
+};
+
 // Заготовка для отправки email (реализовать через nodemailer)
 // async function sendEmail(to, subject, text) {
 //   // ...

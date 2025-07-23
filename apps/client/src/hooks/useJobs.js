@@ -14,7 +14,7 @@ const useJobs = () => {
     const loadJobs = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_URL}/jobs?lang=${language}`);
+        const response = await axios.get(`${API_URL}/api/jobs?lang=${language}`);
       
         
         if (!Array.isArray(response.data)) {

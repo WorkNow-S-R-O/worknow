@@ -5,7 +5,6 @@ import cors from 'cors';
 import path from "path";
 import { fileURLToPath } from "url"
 import paymentRoutes from './routes/payments.js';
-import { cancelAutoRenewal } from './controllers/payments.js';
 import jobsRoutes from './routes/jobs.js';
 import citiesRoutes from './routes/cities.js';
 import { boostJob } from './controllers/jobsController.js';
@@ -15,7 +14,6 @@ import userSyncRoutes from './routes/userSync.js';
 import seekersRoutes from './routes/seekers.js';
 import categoriesRoutes from './routes/categories.js';
 import messagesRoutes from './routes/messages.js';
-import paymentsRouter from './routes/payments.js';
 import uploadRoutes from './routes/upload.js';
 import s3UploadRoutes from './routes/s3Upload.js';
 
@@ -61,9 +59,6 @@ app.use(express.json({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Раздача статических файлов фронта
-app.use(express.static(path.join(__dirname, "../../dist")));
-
 // Раздача статических файлов изображений
 app.use('/images', express.static(path.join(__dirname, "../../public/images")));
 
@@ -78,7 +73,6 @@ app.use('/api/jobs', jobsRoutes);
 app.use('/api/seekers', seekersRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/messages', messagesRoutes);
-app.use('/payments', paymentsRouter);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/s3-upload', s3UploadRoutes);
 
@@ -112,11 +106,6 @@ app.get('/api/test-disable-premium', async (req, res) => {
   res.json({ success: true });
 });
 
-// React Router должен отдавать index.html
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../dist", "index.html"));
-});
-
 // Обработчик ошибок (защита от падения)
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => { // next обязателен для error-handling middleware
@@ -124,10 +113,6 @@ app.use((err, req, res, next) => { // next обязателен для error-han
   res.status(500).json({ error: "Внутренняя ошибка сервера" });
 });
 
-
-
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-
-app.post('/api/payments/cancel-auto-renewal', cancelAutoRenewal);

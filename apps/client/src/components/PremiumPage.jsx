@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import axios from "axios";
+import { useUserSync } from "../hooks/useUserSync.js";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -52,7 +53,7 @@ const plans = [
     button: {
       text: "Купить Enterprise",
       variant: "primary",
-      priceId: "price_1RfHjiCOLiDbHvw1repgIbnK"
+      priceId: "price_1Qt63NCOLiDbHvw13PRhpenX" // Test mode price ID for 99 ILS
     }
   }
 ];
@@ -61,14 +62,7 @@ const PremiumPage = () => {
   const { user } = useUser();
   const { redirectToSignIn } = useClerk();
   const [loading, setLoading] = useState(false);
-  const [dbUser, setDbUser] = useState(null);
-
-  useEffect(() => {
-    if (!user) return;
-    axios.get(`${API_URL}/users/${user.id}`)
-      .then(res => setDbUser(res.data))
-      .catch(() => setDbUser(null));
-  }, [user]);
+  const { dbUser, loading: userLoading, error: userError } = useUserSync();
 
   const handlePay = async (priceId) => {
     if (!user) {
@@ -79,13 +73,25 @@ const PremiumPage = () => {
     try {
       const data = { clerkUserId: user.id };
       if (priceId) data.priceId = priceId;
+      
+      console.log('Creating checkout session with data:', data);
+      
       const response = await axios.post(
-        `${API_URL}/payments/create-checkout-session`,
+        `${API_URL}/api/payments/create-checkout-session`,
         data
       );
+      
+      console.log('Checkout session created:', response.data);
       window.location.href = response.data.url;
-    } catch {
-      alert("Ошибка оплаты. Попробуйте позже.");
+    } catch (error) {
+      console.error('Payment error:', error);
+      if (error.response?.status === 404) {
+        alert("Пользователь не найден. Попробуйте войти заново.");
+      } else if (error.response?.data?.error) {
+        alert(`Ошибка оплаты: ${error.response.data.error}`);
+      } else {
+        alert("Ошибка оплаты. Попробуйте позже.");
+      }
     } finally {
       setLoading(false);
     }
@@ -98,10 +104,16 @@ const PremiumPage = () => {
         Quickly build an effective pricing table for your potential customers with this Bootstrap example. It&apos;s built with default Bootstrap components and utilities with little customization.
       </p>
       {/* Показываем спиннер только если user есть, но dbUser ещё не загружен */}
-      {user && dbUser === null ? (
+      {user && userLoading ? (
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 200 }}>
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Загрузка...</span>
+          </div>
+        </div>
+      ) : userError ? (
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 200 }}>
+          <div className="alert alert-warning" role="alert">
+            Ошибка загрузки данных пользователя: {userError}
           </div>
         </div>
       ) : (
@@ -115,7 +127,7 @@ const PremiumPage = () => {
             if (plan.name === "Enterprise" && dbUser?.isPremium && !dbUser?.premiumDeluxe) {
               displayPrice = 100;
               buttonText = "Улучшить до Enterprise";
-              priceId = "price_1Rfli2COLiDbHvw1xdMaguLf";
+              priceId = "price_1Qt63NCOLiDbHvw13PRhpenX"; // Test mode price ID
             }
             if (plan.name === "Pro") {
               isActive = dbUser?.isPremium || dbUser?.premiumDeluxe;

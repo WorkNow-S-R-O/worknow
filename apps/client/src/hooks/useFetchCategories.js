@@ -11,7 +11,7 @@ const useFetchCategories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`${API_URL}/categories?lang=${language}`);
+        const response = await fetch(`${API_URL}/api/categories?lang=${language}`);
         const data = await response.json();
         const formattedCategories = data.map(category => ({
           value: category.id,

@@ -34,7 +34,7 @@ const UserJobs = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${API_URL}/users/user-jobs/${user.id}?page=${currentPage}&limit=5&lang=${language}`
+        `${API_URL}/api/users/user-jobs/${user.id}?page=${currentPage}&limit=5&lang=${language}`
       );
 
       console.log('Ответ от сервера:', response.data.jobs);
@@ -64,7 +64,7 @@ const UserJobs = () => {
     if (!jobToDelete) return;
 
     try {
-      await axios.delete(`${API_URL}/jobs/${jobToDelete}`);
+      await axios.delete(`${API_URL}/api/jobs/${jobToDelete}`);
       toast.success("Объявление удалено!");
       setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobToDelete));
     } catch (error) {
@@ -87,7 +87,7 @@ const UserJobs = () => {
 
   const handleBoost = async (jobId) => {
     try {
-      await axios.post(`${API_URL}/jobs/${jobId}/boost`);
+      await axios.post(`${API_URL}/api/jobs/${jobId}/boost`);
       toast.success("Объявление поднято в топ!");
       fetchUserJobs();
     } catch (error) {
@@ -186,19 +186,21 @@ const UserJobs = () => {
                   {job.city?.name || "Не указано"}
                 </p>
                 <p className="card-text">{job.description}</p>
-                <p className="card-text">
-                {typeof job.shuttle === 'boolean' && (
-                  <p className="card-text">
-                    <strong>{t("shuttle") || "Подвозка"}:</strong> {job.shuttle ? t("yes") || "да" : t("no") || "нет"}
+                <div className="card-text">
+                  {typeof job.shuttle === 'boolean' && (
+                    <p className="card-text mb-1">
+                      <strong>{t("shuttle") || "Подвозка"}:</strong> {job.shuttle ? t("yes") || "да" : t("no") || "нет"}
+                    </p>
+                  )}
+                  {typeof job.meals === 'boolean' && (
+                    <p className="card-text mb-1">
+                      <strong>{t("meals") || "Питание"}:</strong> {job.meals ? t("yes") || "да" : t("no") || "нет"}
+                    </p>
+                  )}
+                  <p className="card-text mb-0">
+                    <strong>{t("phone_number_card")}</strong> {job.phone}
                   </p>
-                )}
-                {typeof job.meals === 'boolean' && (
-                  <p className="card-text">
-                    <strong>{t("meals") || "Питание"}:</strong> {job.meals ? t("yes") || "да" : t("no") || "нет"}
-                  </p>
-                )}
-                  <strong>{t("phone_number_card")}</strong> {job.phone}
-                </p>
+                </div>
                 <div className="text-muted">
                   <small>
                     <span className="d-none d-sm-inline">

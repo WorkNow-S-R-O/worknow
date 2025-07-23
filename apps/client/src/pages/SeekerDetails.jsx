@@ -56,7 +56,7 @@ export default function SeekerDetails() {
     setSeeker(null);
     setLoading(true);
     const clerkUserId = user?.id;
-    const url = clerkUserId ? `${API_URL}/seekers/${id}?clerkUserId=${clerkUserId}` : `${API_URL}/seekers/${id}`;
+    const url = clerkUserId ? `${API_URL}/api/seekers/${id}?clerkUserId=${clerkUserId}` : `${API_URL}/seekers/${id}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {

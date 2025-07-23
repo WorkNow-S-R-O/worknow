@@ -22,7 +22,7 @@ const Cancel = () => {
 
   const handleCheckout = async () => {
     try {
-      const response = await axios.post(`${API_URL}/payments/create-checkout-session`, {
+      const response = await axios.post(`${API_URL}/api/payments/create-checkout-session`, {
         clerkUserId: user.id,
       });
 

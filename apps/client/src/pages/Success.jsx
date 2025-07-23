@@ -15,7 +15,7 @@ const Success = () => {
   useEffect(() => {
     const activatePremium = async () => {
       try {
-        await axios.post(`${API_URL}/payments/activate-premium`, {
+        await axios.post(`${API_URL}/api/payments/activate-premium`, {
           sessionId,
           clerkUserId: user.id,
         });

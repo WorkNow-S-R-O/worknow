@@ -20,7 +20,7 @@ const CancelSubscription = () => {
   const fetchUserStatus = async () => {
     if (!user) return;
     try {
-      const res = await axios.get(`${API_URL}/users/${user.id}`);
+      const res = await axios.get(`${API_URL}/api/users/${user.id}`);
       setIsPremium(res.data.isPremium);
       setIsAutoRenewal(res.data.isAutoRenewal);
     } catch {
@@ -39,7 +39,7 @@ const CancelSubscription = () => {
     setLoading(true);
     setError("");
     try {
-      await axios.post(`${API_URL}/payments/cancel-auto-renewal`, {
+      await axios.post(`${API_URL}/api/payments/cancel-auto-renewal`, {
         clerkUserId: user.id,
       });
       await fetchUserStatus();
@@ -55,7 +55,7 @@ const CancelSubscription = () => {
     setRenewLoading(true);
     setRenewError("");
     try {
-      await axios.post(`${API_URL}/payments/renew-auto-renewal`, {
+      await axios.post(`${API_URL}/api/payments/renew-auto-renewal`, {
         clerkUserId: user.id,
       });
       await fetchUserStatus();

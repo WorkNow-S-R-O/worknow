@@ -16,9 +16,11 @@ export const createCheckoutSession = async (req, res) => {
     return res.status(400).json({ error: 'clerkUserId is required' });
   }
 
+  let user, finalPriceId;
+
   try {
     // 🔹 Получаем пользователя из базы
-    const user = await prisma.user.findUnique({
+    user = await prisma.user.findUnique({
       where: { clerkUserId },
     });
 
@@ -31,8 +33,16 @@ export const createCheckoutSession = async (req, res) => {
     const cancelUrl = `${FRONTEND_URL}/cancel`;
 
     // 🔹 Выбираем нужный priceId
-    const defaultPriceId = 'price_1Qt5J0COLiDbHvw1IQNl90uU'; // 99₪
-    const finalPriceId = priceId || defaultPriceId;
+    const defaultPriceId = 'price_1Qt63NCOLiDbHvw13PRhpenX'; // Test mode recurring subscription price ID
+    finalPriceId = priceId || defaultPriceId;
+
+    console.log('🔍 Creating Stripe session with:', {
+      clerkUserId,
+      priceId: finalPriceId,
+      userEmail: user.email,
+      successUrl,
+      cancelUrl
+    });
 
     // 🔹 Создаем Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -50,9 +60,18 @@ export const createCheckoutSession = async (req, res) => {
       metadata: { clerkUserId, priceId: finalPriceId },
     });
 
+    console.log('✅ Stripe session created successfully:', session.id);
     res.json({ url: session.url });
   } catch (error) {
     console.error('❌ Ошибка при создании Checkout Session:', error);
+    console.error('❌ Error details:', {
+      message: error.message,
+      type: error.type,
+      code: error.code,
+      statusCode: error.statusCode,
+      raw: error.raw
+    });
+    console.error('❌ Request data:', { clerkUserId, priceId, userEmail: user?.email });
     res.status(500).json({ error: 'Ошибка при создании сессии' });
   }
 };

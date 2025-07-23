@@ -83,7 +83,7 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get(`${API_URL}/cities?lang=${language}`);
+        const response = await axios.get(`${API_URL}/api/cities?lang=${language}`);
         setCities(response.data);
       } catch (error) {
         if (!(error?.code === 'ECONNABORTED')) {

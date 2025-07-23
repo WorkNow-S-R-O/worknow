@@ -27,7 +27,7 @@ const UserProfile = () => {
   const fetchJobs = async (page) => {
     try {
       const response = await axios.get(
-        `${API_URL}/users/user-jobs/${clerkUserId}?page=${page}&limit=${jobsPerPage}`
+        `${API_URL}/api/users/user-jobs/${clerkUserId}?page=${page}&limit=${jobsPerPage}`
       );
       console.log('Вакансии, полученные от сервера в UserProfile:', response.data.jobs);
       setJobs(response.data.jobs);
@@ -41,7 +41,7 @@ const UserProfile = () => {
     try {
       const timestamp = new Date().getTime();
       const userResponse = await axios.get(
-        `${API_URL}/users/${clerkUserId}?t=${timestamp}`
+        `${API_URL}/api/users/${clerkUserId}?t=${timestamp}`
       );
 
       if (!userResponse.data || !userResponse.data.firstName) {

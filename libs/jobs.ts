@@ -27,7 +27,7 @@ export const createJob = async (jobData: any, token?: string) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
   
-  const response = await axios.post(`${API_URL}/jobs`, jobData, config);
+  const response = await axios.post(`${API_URL}/api/jobs`, jobData, config);
   return response.data;
 };
 
@@ -39,7 +39,7 @@ export const createJobWithImage = async (formData: FormData, token?: string) => 
     config.headers.Authorization = `Bearer ${token}`;
   }
   
-  const response = await axios.post(`${API_URL}/s3-upload/job-with-image`, formData, config);
+  const response = await axios.post(`${API_URL}/api/s3-upload/job-with-image`, formData, config);
   return response.data;
 };
 
@@ -49,7 +49,7 @@ export const updateJob = async (id: number, jobData: any, token?: string) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
   
-  const response = await axios.put(`${API_URL}/jobs/${id}`, jobData, config);
+  const response = await axios.put(`${API_URL}/api/jobs/${id}`, jobData, config);
   return response.data;
 };
 
@@ -64,7 +64,7 @@ export const updateJobImage = async (jobId: number, imageFile: File, token?: str
     config.headers.Authorization = `Bearer ${token}`;
   }
   
-  const response = await axios.put(`${API_URL}/s3-upload/update-job-image/${jobId}`, formData, config);
+  const response = await axios.put(`${API_URL}/api/s3-upload/update-job-image/${jobId}`, formData, config);
   return response.data;
 };
 
@@ -74,7 +74,7 @@ export const deleteJobImage = async (imageUrl: string, token?: string) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
   
-  const response = await axios.delete(`${API_URL}/s3-upload/delete-image`, {
+  const response = await axios.delete(`${API_URL}/api/s3-upload/delete-image`, {
     ...config,
     data: { imageUrl },
   });

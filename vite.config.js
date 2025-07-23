@@ -14,11 +14,12 @@ const isDocker = process.env.DOCKER_BUILD === "true";
 export default defineConfig({
   root: isDocker ? "." : "apps/client",
   publicDir: isDocker ? "../public" : "../../public",
+  envDir: isDocker ? "." : "../..", // Load environment variables from root directory
   plugins: [react()],
   server: {
     cors: true,
     port: 3000,
-    strictPort: false
+    strictPort: true
   },
   proxy: {
     '/api': 'http://localhost:3001',

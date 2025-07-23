@@ -12,7 +12,7 @@ const useFetchCities = () => {
   useEffect(() => {
     const loadCities = async () => {
       try {
-        const url = `${API_URL}/cities?lang=${language}`;
+        const url = `${API_URL}/api/cities?lang=${language}`;
         const response = await axios.get(url);
 
         if (!Array.isArray(response.data)) {

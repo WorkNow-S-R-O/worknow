@@ -19,6 +19,7 @@
     - `components/` - Reusable UI components
       - `JobCard.jsx` - Job card component (UPDATED with new premium color, image display, and debugging)
       - `UserJobs.jsx` - User job listings component (UPDATED with new premium color, image display, and debugging)
+      - `PremiumPage.jsx` - Premium pricing page (UPDATED with user sync and test mode price IDs)
       - `ui/ImageUpload.jsx` - Image upload component (UPDATED with useEffect for prop changes)
       - `form/JobForm.jsx` - Job creation form (UPDATED with image upload)
       - `form/JobFormFields.jsx` - Job form fields (UPDATED with image upload field)
@@ -27,6 +28,7 @@
     - `contexts/ImageUploadContext.jsx` - Image upload context (NEW)
     - `hooks/` - Custom React hooks
       - `useUpdateJobs.js` - Job update hooks (UPDATED with imageUrl support)
+      - `useUserSync.js` - User synchronization hook (NEW)
     - `index.css` - Global styles (UPDATED with new premium color scheme)
 - `dist/` - Built frontend assets
 

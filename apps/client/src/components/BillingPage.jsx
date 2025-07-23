@@ -23,7 +23,7 @@ const BillingPage = () => {
     setLoading(true);
     setError("");
     try {
-      let url = `${API_URL}/payments/stripe-history?clerkUserId=${user.id}&limit=${PAGE_SIZE}`;
+      let url = `${API_URL}/api/payments/stripe-history?clerkUserId=${user.id}&limit=${PAGE_SIZE}`;
       if (startingAfter) url += `&starting_after=${startingAfter}`;
       const res = await axios.get(url);
       setHistory(res.data.payments || []);

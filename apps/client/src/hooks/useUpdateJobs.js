@@ -18,7 +18,7 @@ const useFetchJob = (id, setValue) => {
 
     const loadJob = async () => {
       try {
-        const response = await axios.get(`${API_URL}/jobs/${id}`);
+        const response = await axios.get(`${API_URL}/api/jobs/${id}`);
         const job = response.data;
 
         console.log('🔍 useFetchJob - Received job data:', job);

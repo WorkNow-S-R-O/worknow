@@ -13,6 +13,8 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
   const language = useLanguageStore((state) => state.language) || 'ru';
   const { t } = useTranslation();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     if (open) {
       setSalary(currentFilters.salary || '');
@@ -21,7 +23,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
       setMealsOnly(currentFilters.mealsOnly || false);
       
       document.body.style.overflow = 'hidden';
-      fetch(`/api/categories?lang=${language}`)
+      fetch(`${API_URL}/api/categories?lang=${language}`)
         .then(res => res.json())
         .then(data => setCategories(data));
     } else {
@@ -30,7 +32,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
     return () => {
       document.body.style.overflow = '';
     };
-  }, [open, currentFilters, language]);
+  }, [open, currentFilters, language, API_URL]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
