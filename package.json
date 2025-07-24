@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "concurrently \"vite --config vite.config.js\" \"node apps/api/index.js\"",
     "build": "vite build --config vite.config.js",
+    "build:server": "npm run build && npm run start",
     "test": "jest",
     "preview": "vite preview",
     "start": "node apps/api/index.js",

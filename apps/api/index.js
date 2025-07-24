@@ -56,11 +56,36 @@ app.use(express.json({
   verify: (req, res, buf) => { req.rawBody = buf.toString(); }
 }));
 
+// Security headers for production
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://clerk.worknowjob.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://clerk.worknowjob.com; frame-src https://js.stripe.com https://clerk.worknowjob.com;"
+    );
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    next();
+  });
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Раздача статических файлов изображений
 app.use('/images', express.static(path.join(__dirname, "../../public/images")));
+
+// Serve static files from the React build
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the React build directory
+  app.use(express.static(path.join(__dirname, '../../dist')));
+  
+  // Handle React routing, return all requests to React app
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../dist/index.html'));
+  });
+}
 
 // --- РЕГИСТРАЦИЯ МАРШРУТОВ ---
 app.use('/api/payments', paymentRoutes);

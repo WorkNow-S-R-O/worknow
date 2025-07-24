@@ -70,17 +70,15 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
       <div className="image-upload-area">
         {previewUrl ? (
           <div className="image-preview-container">
-            <img 
-              src={previewUrl} 
-              alt="Preview" 
-              className="image-preview"
-              style={{
-                maxWidth: '100%',
-                maxHeight: '200px',
-                objectFit: 'cover',
-                borderRadius: '8px'
-              }}
-            />
+            {console.log('🔍 ImageUpload - uploading state:', uploading)}
+            {console.log('🔍 ImageUpload - CSS class:', `image-with-glance ${uploading ? 'uploading' : ''}`)}
+            <div className={`image-with-glance ${uploading ? 'uploading' : ''}`}>
+              <img 
+                src={previewUrl} 
+                alt="Preview" 
+                className="image-preview"
+              />
+            </div>
             <div className="image-actions mt-2">
               <button
                 type="button"

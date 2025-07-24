@@ -17,8 +17,8 @@
 - `index.html` - Main HTML entry point
   - `src/` - React application source code
     - `components/` - Reusable UI components
-      - `JobCard.jsx` - Job card component (UPDATED with new premium color, image display, and debugging)
-      - `UserJobs.jsx` - User job listings component (UPDATED with new premium color, image display, and debugging)
+          - `JobCard.jsx` - Job card component (UPDATED with new premium color, image display, debugging, and fixed glance animation to only show during upload)
+    - `UserJobs.jsx` - User job listings component (UPDATED with new premium color, image display, debugging, and fixed glance animation to only show during upload)
       - `PremiumPage.jsx` - Premium pricing page (UPDATED with user sync and test mode price IDs)
       - `ui/ImageUpload.jsx` - Image upload component (UPDATED with useEffect for prop changes)
       - `form/JobForm.jsx` - Job creation form (UPDATED with image upload)
@@ -33,7 +33,7 @@
 - `dist/` - Built frontend assets
 
 ### apps/api/
-      - `index.js` - Main server entry point (UPDATED with upload routes, CORS configuration, static image serving, test endpoints, and database debugging)
+      - `index.js` - Main server entry point (UPDATED with upload routes, CORS configuration, static image serving, test endpoints, database debugging, production static file serving, and security headers)
 - `cron-jobs.js` - Automated task scheduling
 - `controllers/` - Request handlers
 - `routes/` - API route definitions

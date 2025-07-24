@@ -235,23 +235,20 @@ const UserJobs = () => {
                           }}
                         />
                       )}
-                      <img 
-                        src={job.imageUrl} 
-                        alt={job.title}
-                        className="img-fluid rounded"
-                        style={{
-                          width: '120px',
-                          height: '80px',
-                          objectFit: 'cover',
-                          borderRadius: '6px',
-                          border: '1px solid #e0e0e0',
-                          cursor: 'pointer',
-                          display: imageLoadingStates[job.id] ? 'none' : 'block'
-                        }}
-                        onClick={(e) => handleImageClick(e, job.imageUrl, job.title)}
-                        onError={(e) => handleImageError(job.id, e)}
-                        onLoad={() => handleImageLoad(job.id)}
-                      />
+                      <div className="image-with-glance mini">
+                        <img 
+                          src={job.imageUrl} 
+                          alt={job.title}
+                          className="img-fluid rounded"
+                          style={{
+                            cursor: 'pointer',
+                            display: imageLoadingStates[job.id] ? 'none' : 'block'
+                          }}
+                          onClick={(e) => handleImageClick(e, job.imageUrl, job.title)}
+                          onError={(e) => handleImageError(job.id, e)}
+                          onLoad={() => handleImageLoad(job.id)}
+                        />
+                      </div>
                     </div>
                   )}
                   

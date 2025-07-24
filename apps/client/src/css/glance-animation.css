@@ -1,0 +1,122 @@
+/* Glance Animation - Appears inside the image */
+@keyframes glance {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Image container with glance animation */
+.image-with-glance {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  border-radius: 8px;
+}
+
+/* Glance effect that appears inside the image */
+.image-with-glance::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: glance 3s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 8px;
+}
+
+/* Image styling */
+.image-with-glance img {
+  position: relative;
+  z-index: 0;
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Mini image variant for job cards */
+.image-with-glance.mini img {
+  width: 120px;
+  height: 80px;
+  max-width: 120px;
+  max-height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Animation only shows when uploading */
+.image-with-glance.uploading::before {
+  display: block;
+}
+
+.image-with-glance:not(.uploading)::before {
+  display: none;
+}
+
+/* TEMPORARY TEST: Force animation to always show for debugging */
+.image-with-glance::before {
+  display: block !important;
+}
+
+/* Ensure dropdown menus appear above glance animation - only for job forms */
+.job-form .react-select__menu,
+.edit-job-form .react-select__menu {
+  z-index: 9999 !important;
+}
+
+.job-form .react-select__menu-list,
+.edit-job-form .react-select__menu-list {
+  z-index: 9999 !important;
+}
+
+/* Bootstrap dropdown menus - only for job forms */
+.job-form .dropdown-menu,
+.edit-job-form .dropdown-menu {
+  z-index: 9999 !important;
+}
+
+/* Main page dropdowns should have normal z-index */
+.react-select__menu {
+  z-index: 1 !important;
+}
+
+.react-select__menu-list {
+  z-index: 1 !important;
+}
+
+/* Bootstrap dropdown menus - normal z-index for main page */
+.dropdown-menu {
+  z-index: 1 !important;
+}
+
+/* Lower z-index for dropdown arrow icons */
+.react-select__dropdown-indicator {
+  z-index: 1 !important;
+}
+
+.react-select__dropdown-indicator svg {
+  z-index: 1 !important;
+}
+
+/* Ensure dropdown control doesn't have high z-index */
+.react-select__control {
+  z-index: 1 !important;
+}
+
+/* Only the actual dropdown menu should have high z-index */
+.react-select__menu {
+  z-index: 9999 !important;
+} 
