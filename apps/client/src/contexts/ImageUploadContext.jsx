@@ -33,7 +33,6 @@ export const ImageUploadProvider = ({ children }) => {
       throw new Error('File size must be less than 5MB');
     }
 
-    console.log('🔍 ImageUploadContext - Setting uploading to true');
     setUploading(true);
     setUploadError(null);
 
@@ -74,7 +73,6 @@ export const ImageUploadProvider = ({ children }) => {
       setUploadError(errorMessage);
       throw new Error(errorMessage);
     } finally {
-      console.log('🔍 ImageUploadContext - Setting uploading to false');
       setUploading(false);
     }
   };

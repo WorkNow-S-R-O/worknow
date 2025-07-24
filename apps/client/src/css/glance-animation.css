@@ -66,7 +66,7 @@
   display: none;
 }
 
-/* TEMPORARY TEST: Force animation to always show for debugging */
+
 .image-with-glance::before {
   display: block !important;
 }

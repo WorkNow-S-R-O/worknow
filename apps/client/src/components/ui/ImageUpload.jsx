@@ -70,8 +70,6 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
       <div className="image-upload-area">
         {previewUrl ? (
           <div className="image-preview-container">
-            {console.log('🔍 ImageUpload - uploading state:', uploading)}
-            {console.log('🔍 ImageUpload - CSS class:', `image-with-glance ${uploading ? 'uploading' : ''}`)}
             <div className={`image-with-glance ${uploading ? 'uploading' : ''}`}>
               <img 
                 src={previewUrl} 

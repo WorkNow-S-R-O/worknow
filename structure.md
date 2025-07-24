@@ -33,7 +33,7 @@
 - `dist/` - Built frontend assets
 
 ### apps/api/
-      - `index.js` - Main server entry point (UPDATED with upload routes, CORS configuration, static image serving, test endpoints, database debugging, production static file serving, and security headers)
+      - `index.js` - Main server entry point (UPDATED with upload routes, CORS configuration, static image serving, test endpoints, database debugging, production static file serving, security headers, proper route ordering, and API error handling)
 - `cron-jobs.js` - Automated task scheduling
 - `controllers/` - Request handlers
 - `routes/` - API route definitions
