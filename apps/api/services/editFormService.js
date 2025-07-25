@@ -4,7 +4,7 @@ import { sendUpdatedJobListToTelegram } from '../utils/telegram.js';
 
 const prisma = new PrismaClient();
 
-export const updateJobService = async (id, { title, salary, cityId, phone, description, categoryId, shuttle, meals, imageUrl }) => {
+export const updateJobService = async (id, { title, salary, cityId, phone, description, categoryId, shuttle, meals, imageUrl, userId }) => {
   let errors = [];
   if (containsBadWords(title)) errors.push("Заголовок содержит нецензурные слова.");
   if (containsBadWords(description)) errors.push("Описание содержит нецензурные слова.");
@@ -15,6 +15,11 @@ export const updateJobService = async (id, { title, salary, cityId, phone, descr
   try {
     const existingJob = await prisma.job.findUnique({ where: { id: parseInt(id) }, include: { user: true } });
     if (!existingJob) return { error: 'Объявление не найдено' };
+
+    // Check if the authenticated user owns this job
+    if (existingJob.user.clerkUserId !== userId) {
+      return { error: 'У вас нет прав для редактирования этого объявления' };
+    }
 
     console.log('🔍 updateJobService - Updating job with imageUrl:', imageUrl);
     console.log('🔍 updateJobService - Full update data:', {

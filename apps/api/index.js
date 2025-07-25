@@ -61,11 +61,20 @@ if (process.env.NODE_ENV === 'production') {
   app.use((req, res, next) => {
     res.setHeader(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://clerk.worknowjob.com https://cdn.jsdelivr.net blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://clerk.worknowjob.com; frame-src https://js.stripe.com https://clerk.worknowjob.com; worker-src 'self' blob:;"
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://clerk.worknowjob.com https://*.clerk.accounts.dev https://cdn.jsdelivr.net https://widget.survicate.com blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://clerk.worknowjob.com https://*.clerk.accounts.dev; frame-src https://js.stripe.com https://clerk.worknowjob.com https://*.clerk.accounts.dev; worker-src 'self' blob:;"
     );
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('X-XSS-Protection', '1; mode=block');
+    next();
+  });
+} else {
+  // More permissive CSP for development
+  app.use((req, res, next) => {
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http: blob:; style-src 'self' 'unsafe-inline' https: http:; font-src 'self' https: http:; img-src 'self' data: https: http:; connect-src 'self' https: http:; frame-src https: http:; worker-src 'self' blob:;"
+    );
     next();
   });
 }
@@ -89,17 +98,6 @@ app.use('/api/categories', categoriesRoutes);
 app.use('/api/messages', messagesRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/s3-upload', s3UploadRoutes);
-
-// Serve static files from the React build (AFTER API routes)
-if (process.env.NODE_ENV === 'production') {
-  // Serve static files from the React build directory
-  app.use(express.static(path.join(__dirname, '../../dist')));
-  
-  // Handle React routing, return all requests to React app (LAST)
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../dist/index.html'));
-  });
-}
 
 // Тестовый endpoint для проверки сервера (NEW)
 app.get('/api/test-server', (req, res) => {
@@ -130,6 +128,25 @@ app.get('/api/test-disable-premium', async (req, res) => {
   await disableExpiredPremiums();
   res.json({ success: true });
 });
+
+// Serve static files from the React build (AFTER API routes)
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the React build directory
+  app.use(express.static(path.join(__dirname, '../../dist')));
+  
+  // Handle React routing, return all requests to React app (LAST)
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../dist/index.html'));
+  });
+} else {
+  // In development, serve the built frontend from the dist directory
+  app.use(express.static(path.join(__dirname, '../../dist')));
+  
+  // Handle React routing for development
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../dist/index.html'));
+  });
+}
 
 // API error handler - handle 404 for API routes
 app.use('/api/*', (req, res) => {

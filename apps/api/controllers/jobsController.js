@@ -9,8 +9,15 @@ import { boostJobService } from '../services/jobBoostService.js';
 export const createJob = async (req, res) => {
   console.log('🔍 createJob controller - Request body:', req.body);
   console.log('🔍 createJob controller - imageUrl in request:', req.body.imageUrl);
+  console.log('🔍 createJob controller - Authenticated user:', req.user);
   
-  const result = await createJobService(req.body);
+  // Use the authenticated user's clerkUserId instead of the one from request body
+  const jobData = {
+    ...req.body,
+    userId: req.user?.clerkUserId
+  };
+  
+  const result = await createJobService(jobData);
   if (result.errors) return res.status(400).json({ success: false, errors: result.errors });
   if (result.error) return res.status(400).json({ error: result.error });
   
@@ -21,8 +28,15 @@ export const createJob = async (req, res) => {
 export const updateJob = async (req, res) => {
     console.log('🔍 updateJob controller - Request body:', req.body);
     console.log('🔍 updateJob controller - imageUrl in request:', req.body.imageUrl);
+    console.log('🔍 updateJob controller - Authenticated user:', req.user);
     
-    const result = await updateJobService(req.params.id, req.body);
+    // Include the authenticated user's clerkUserId in the update data
+    const updateData = {
+      ...req.body,
+      userId: req.user?.clerkUserId
+    };
+    
+    const result = await updateJobService(req.params.id, updateData);
     if (result.error) return res.status(400).json({ error: result.error });
     if (result.errors) return res.status(400).json({ success: false, errors: result.errors });
     
@@ -31,7 +45,9 @@ export const updateJob = async (req, res) => {
   };
 
   export const deleteJob = async (req, res) => {
-    const result = await deleteJobService(req.params.id);
+    console.log('🔍 deleteJob controller - Authenticated user:', req.user);
+    
+    const result = await deleteJobService(req.params.id, req.user?.clerkUserId);
     if (result.error) return res.status(400).json({ error: result.error });
     res.status(200).json({ message: 'Объявление удалено' });
   };

@@ -36,13 +36,11 @@ export const createMessage = async (req, res) => {
 export const getUserMessages = async (req, res) => {
   try {
     const { clerkUserId } = req.query;
-    console.log('clerkUserId из запроса:', clerkUserId);
     if (!clerkUserId) return res.status(400).json({ error: 'clerkUserId обязателен' });
     const messages = await prisma.message.findMany({
       where: { clerkUserId },
       orderBy: { createdAt: 'desc' },
     });
-    console.log('Сообщения из базы:', messages);
     return res.json({ messages });
   } catch (error) {
     console.error('Ошибка получения сообщений:', error);

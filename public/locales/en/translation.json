@@ -19,7 +19,7 @@
   "write_city_or_detailed_address": "Write city or detailed address",
   "description": "Description",
   "write_job_description": "Write job description",
-  "create": "Create",
+  "create": "Publish",
   "button_create_new_advertisement": "Create new advertisement",
   "create_new_advertisement_tab": "Create new advertisement | WorkNow",
   "phone_number": "Phone number",
@@ -129,5 +129,10 @@
   "click_to_upload": "Click to upload image",
   "image_upload_hint": "JPG, PNG, GIF up to 5MB",
   "image_upload_success": "Image uploaded successfully!",
-  "image_upload_error": "Failed to upload image"
+  "image_upload_error": "Failed to upload image",
+  "image_deleted_success": "Image deleted successfully!",
+  "image_delete_error": "Failed to delete image",
+  "saving": "Saving",
+  "creating": "Creating",
+  "publishing": "Publishing"
 }

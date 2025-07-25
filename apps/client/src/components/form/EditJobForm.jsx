@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useUser, useAuth } from '@clerk/clerk-react';
 import { jobSchema } from './JobFormSchema';
 import useFetchCities from '../../hooks/useFetchCities';
 import useFetchCategories from '../../hooks/useFetchCategories';
@@ -11,13 +12,17 @@ import { showToastError, showToastSuccess } from 'libs/utils';
 import { EditJobFields } from './EditJobFields';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async'; // 🔹 SEO
+import { useLoadingProgress } from '../../hooks/useLoadingProgress';
 
 const EditJobForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useUser();
+  const { getToken } = useAuth();
   const { cities, loading: loadingCities } = useFetchCities();
   const { categories, loading: loadingCategories } = useFetchCategories();
+  const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
     resolver: zodResolver(jobSchema),
@@ -37,6 +42,7 @@ const EditJobForm = () => {
   const selectedCategoryId = watch('categoryId');
   const { loading: loadingJob, job } = useFetchJob(id, setValue);
   const [imageUrl, setImageUrl] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Set initial image URL when job data is loaded
   useEffect(() => {
@@ -50,7 +56,16 @@ const EditJobForm = () => {
   }, [job]);
 
   const onSubmit = async (data) => {
+    if (!user) {
+      showToastError({ response: { data: { error: 'Вы должны быть авторизованы!' } } });
+      return;
+    }
+
+    setIsSubmitting(true);
+    startLoadingWithProgress(2500); // Start loading progress for form submission
+    
     try {
+      const token = await getToken();
       const updatedData = {
         ...data,
         cityId: data.cityId ? parseInt(data.cityId, 10) : null,
@@ -59,11 +74,15 @@ const EditJobForm = () => {
         meals: !!data.meals,
         imageUrl: imageUrl // Include the image URL in the update
       };
-      await updateJob(id, updatedData);
+      await updateJob(id, updatedData, token);
+      completeLoading(); // Complete loading when done
       showToastSuccess('Объявление успешно обновлено!');
       navigate('/');
     } catch (error) {
+      completeLoading(); // Complete loading even on error
       showToastError(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -100,8 +119,19 @@ const EditJobForm = () => {
               currentImageUrl={imageUrl}
             />
 
-            <button type="submit" className="btn btn-primary w-full text-white px-4 py-2 rounded">
-              {t('save')}
+            <button 
+              type="submit" 
+              className="btn btn-primary w-full text-white px-4 py-2 rounded"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  {t('saving')}...
+                </>
+              ) : (
+                t('save')
+              )}
             </button>
           </form>
         </div>

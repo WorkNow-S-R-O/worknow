@@ -16,6 +16,7 @@ export const JobFormFields = ({
   loading,
   onImageUpload,
   currentImageUrl,
+  isSubmitting = false,
 }) => {
   const { t } = useTranslation();
   const [isAgreed, setIsAgreed] = useState(false);
@@ -215,11 +216,18 @@ export const JobFormFields = ({
       <button
         type="submit"
         className={`btn btn-primary w-full text-white px-4 py-2 rounded ${
-          !isAgreed ? "opacity-50 cursor-not-allowed" : ""
+          !isAgreed || isSubmitting ? "opacity-50 cursor-not-allowed" : ""
         }`}
-        disabled={!isAgreed}
+        disabled={!isAgreed || isSubmitting}
       >
-        {t("create")}
+        {isSubmitting ? (
+          <>
+            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            {t('publishing')}...
+          </>
+        ) : (
+          t("create")
+        )}
       </button>
     </>
   );
@@ -247,6 +255,7 @@ JobFormFields.propTypes = {
   loading: PropTypes.bool.isRequired,
   onImageUpload: PropTypes.func, // (url: string, file: File) => void
   currentImageUrl: PropTypes.string,
+  isSubmitting: PropTypes.bool,
 };
 
 export default JobFormFields;

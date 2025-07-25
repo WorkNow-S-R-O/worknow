@@ -17,7 +17,7 @@
   "write_city_or_detailed_address": "Введите город или точный адрес",
   "description": "Описание",
   "write_job_description": "Введите описание вакансии",
-  "create": "Создать",
+  "create": "Опубликовать",
   "button_create_new_advertisement": "Создать новое обьявление",
   "button_create_first_advertisement": "Создать новое обьявление",
   "create_new_advertisement_tab": "Создать новое обьявление | WorkNow",
@@ -126,5 +126,10 @@
   "click_to_upload": "Нажмите для загрузки изображения",
   "image_upload_hint": "JPG, PNG, GIF до 5МБ",
   "image_upload_success": "Изображение успешно загружено!",
-  "image_upload_error": "Ошибка загрузки изображения"
+  "image_upload_error": "Ошибка загрузки изображения",
+  "image_deleted_success": "Изображение успешно удалено!",
+  "image_delete_error": "Ошибка удаления изображения",
+  "saving": "Сохранение",
+  "creating": "Создание",
+  "publishing": "Публикуем"
 }

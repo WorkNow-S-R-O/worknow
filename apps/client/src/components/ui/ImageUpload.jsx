@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useImageUpload } from '../../contexts/ImageUploadContext.jsx';
+import { deleteJobImage } from 'libs/jobs';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@clerk/clerk-react';
 
 const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
   const { t } = useTranslation();
+  const { getToken } = useAuth();
   const { uploadImage, uploading, uploadError, clearError } = useImageUpload();
   const [previewUrl, setPreviewUrl] = useState(currentImageUrl || null);
   const fileInputRef = useRef(null);
@@ -46,13 +49,35 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
     }
   };
 
-  const handleRemoveImage = () => {
-    setPreviewUrl(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-    if (onImageUpload) {
-      onImageUpload(null, null);
+  const handleRemoveImage = async () => {
+    try {
+      // If there's a current image URL, delete it from S3
+      if (currentImageUrl) {
+        const token = await getToken();
+        await deleteJobImage(currentImageUrl, token);
+        console.log('✅ ImageUpload - Image deleted from S3:', currentImageUrl);
+        toast.success(t('image_deleted_success') || 'Image deleted successfully!');
+      }
+      
+      // Clear local state
+      setPreviewUrl(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      if (onImageUpload) {
+        onImageUpload(null, null);
+      }
+    } catch (error) {
+      console.error('❌ ImageUpload - Error deleting image:', error);
+      toast.error(t('image_delete_error') || 'Failed to delete image');
+      // Still clear local state even if S3 deletion fails
+      setPreviewUrl(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      if (onImageUpload) {
+        onImageUpload(null, null);
+      }
     }
   };
 

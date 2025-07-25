@@ -2,11 +2,10 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { Modal, Button } from "react-bootstrap";
-import { X } from "react-bootstrap-icons";
 import useFetchCities from '../hooks/useFetchCities';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { ImageModal } from './ui';
 
 const JobCard = ({ job }) => {
   const { t } = useTranslation();
@@ -137,39 +136,13 @@ const JobCard = ({ job }) => {
       </div>
 
       {/* Image Modal */}
-      <Modal 
+      <ImageModal 
         show={showImageModal} 
         onHide={handleCloseModal}
-        centered
-        size="lg"
-        className="image-modal"
-      >
-        <Modal.Body className="text-center p-0 position-relative">
-          <Button 
-            variant="link" 
-            onClick={handleCloseModal}
-            className="position-absolute top-0 end-0 p-2"
-            style={{ 
-              zIndex: 1050,
-              color: '#6c757d',
-              textDecoration: 'none'
-            }}
-          >
-            <X size={32} />
-          </Button>
-          <img 
-            src={job.imageUrl} 
-            alt={job.title}
-            className="img-fluid"
-            style={{
-              maxHeight: '80vh',
-              maxWidth: '100%',
-              objectFit: 'contain'
-            }}
-            onError={(e) => console.error('❌ JobCard - Modal image failed to load:', job.imageUrl, e)}
-          />
-        </Modal.Body>
-      </Modal>
+        imageUrl={job.imageUrl}
+        imageAlt={job.title}
+        onImageError={(e) => console.error('❌ JobCard - Modal image failed to load:', job.imageUrl, e)}
+      />
     </>
   );
 };

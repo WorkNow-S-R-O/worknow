@@ -1,7 +1,7 @@
 # --- Stage 1: Build frontend ---
 FROM node:20-slim AS frontend-build
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY ../package.json ../package-lock.json ./
 RUN apt-get update && apt-get install -y openssl
 
 # Accept Vite env vars as build args
@@ -17,14 +17,14 @@ ENV VITE_STRIPE_PUBLISHABLE_KEY=$VITE_STRIPE_PUBLISHABLE_KEY
 RUN npm ci --ignore-scripts
 
 # Copy all necessary files for frontend build
-COPY apps/client ./apps/client
-COPY libs ./libs
-COPY public ./public
-COPY vite.config.js ./
-COPY tailwind.config.js ./
-COPY postcss.config.js ./
-COPY tsconfig.json ./
-COPY tsconfig.app.json ./
+COPY ../apps/client ./apps/client
+COPY ../libs ./libs
+COPY ../public ./public
+COPY ../vite.config.js ./
+COPY ../tailwind.config.js ./
+COPY ../postcss.config.js ./
+COPY ../tsconfig.json ./
+COPY ../tsconfig.app.json ./
 
 # Build the frontend
 WORKDIR /app/apps/client
@@ -33,14 +33,14 @@ RUN npm run build
 # --- Stage 2: Prepare backend ---
 FROM node:20-slim AS backend-build
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY ../package.json ../package-lock.json ./
 RUN apt-get update && apt-get install -y openssl
 RUN npm ci --ignore-scripts
 
 # Copy backend source and necessary files
-COPY apps/api ./apps/api
-COPY prisma ./prisma
-COPY tsconfig.server.json ./
+COPY ../apps/api ./apps/api
+COPY ../prisma ./prisma
+COPY ../tsconfig.server.json ./
 
 # --- Stage 3: Production image ---
 FROM node:20-slim AS production
@@ -51,7 +51,7 @@ ENV NODE_ENV=production
 RUN apt-get update && apt-get install -y openssl
 
 # Install only production dependencies
-COPY package.json package-lock.json ./
+COPY ../package.json ../package-lock.json ./
 RUN npm ci --only=production --ignore-scripts
 
 # Copy built frontend
@@ -63,7 +63,7 @@ COPY --from=backend-build /app/prisma ./prisma
 COPY --from=backend-build /app/tsconfig.server.json ./
 
 # Copy static assets
-COPY public ./public
+COPY ../public ./public
 
 # Prisma: generate client
 RUN npx prisma generate

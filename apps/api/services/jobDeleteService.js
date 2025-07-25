@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { sendUpdatedJobListToTelegram } from '../utils/telegram.js';
+import { deleteFromS3 } from '../utils/s3Upload.js';
 
 const prisma = new PrismaClient();
 
-export const deleteJobService = async (id) => {
+export const deleteJobService = async (id, userId) => {
   try {
     const job = await prisma.job.findUnique({
       where: { id: parseInt(id) },
@@ -11,6 +12,28 @@ export const deleteJobService = async (id) => {
     });
     if (!job) return { error: 'Объявление не найдено' };
 
+    // Check if the authenticated user owns this job
+    if (job.user.clerkUserId !== userId) {
+      return { error: 'У вас нет прав для удаления этого объявления' };
+    }
+
+    // Delete image from S3 if it exists
+    if (job.imageUrl) {
+      try {
+        console.log('🔍 deleteJobService - Deleting image from S3:', job.imageUrl);
+        const imageDeleted = await deleteFromS3(job.imageUrl);
+        if (imageDeleted) {
+          console.log('✅ deleteJobService - Image deleted from S3 successfully');
+        } else {
+          console.warn('⚠️ deleteJobService - Failed to delete image from S3, but continuing with job deletion');
+        }
+      } catch (imageError) {
+        console.error('❌ deleteJobService - Error deleting image from S3:', imageError);
+        // Continue with job deletion even if image deletion fails
+      }
+    }
+
+    // Delete the job from database
     await prisma.job.delete({ where: { id: parseInt(id) } });
 
     if (job.user.isPremium) {

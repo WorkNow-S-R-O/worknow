@@ -190,33 +190,33 @@ router.post('/job-with-image', requireAuth, upload.single('image'), async (req, 
       }
     }
 
-    // Create job in database
-    const job = await prisma.job.create({
-      data: {
-        title,
-        salary,
-        phone,
-        description,
-        cityId: parseInt(cityId),
-        categoryId: parseInt(categoryId),
-        userId: req.user.clerkUserId,
-        imageUrl,
-        shuttle: shuttle === 'true',
-        meals: meals === 'true'
-      },
-      include: {
-        city: true,
-        category: true,
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true
-          }
-        }
-      }
-    });
+    // Create job using the service to ensure all validation and business logic is applied
+    const { createJobService } = await import('../services/jobCreateService.js');
+    
+    const jobData = {
+      title,
+      salary,
+      phone,
+      description,
+      cityId: parseInt(cityId),
+      categoryId: parseInt(categoryId),
+      userId: req.user.clerkUserId,
+      imageUrl,
+      shuttle: shuttle === 'true',
+      meals: meals === 'true'
+    };
+
+    const result = await createJobService(jobData);
+    
+    if (result.errors) {
+      return res.status(400).json({ success: false, errors: result.errors });
+    }
+    
+    if (result.error) {
+      return res.status(400).json({ error: result.error });
+    }
+    
+    const job = result.job;
 
     console.log('✅ Job created successfully with image:', job.id);
 

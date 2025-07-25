@@ -11,6 +11,7 @@ import { createJob, createJobWithImage } from 'libs/jobs';
 import { showToastError, showToastSuccess } from 'libs/utils';
 import JobFormFields from './JobFormFields';
 import { useTranslation } from 'react-i18next';
+import { useLoadingProgress } from '../../hooks/useLoadingProgress';
 
 const JobForm = ({ onJobCreated }) => {
   const { user } = useUser();
@@ -21,6 +22,8 @@ const JobForm = ({ onJobCreated }) => {
   const { categories, loading: categoriesLoading } = useFetchCategories();
   const [imageFile, setImageFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
 
   const { register, handleSubmit, setValue, watch, formState: { errors }, reset } = useForm({
     resolver: zodResolver(jobSchema),
@@ -44,6 +47,9 @@ const JobForm = ({ onJobCreated }) => {
       showToastError({ response: { data: { error: 'Вы должны быть авторизованы!' } } });
       return;
     }
+
+    setIsSubmitting(true);
+    startLoadingWithProgress(3000); // Start loading progress for form submission
 
     try {
       const token = await getToken();
@@ -74,6 +80,7 @@ const JobForm = ({ onJobCreated }) => {
         }, token);
       }
       
+      completeLoading(); // Complete loading when done
       showToastSuccess('Объявление успешно создано!');
       reset();
       setImageFile(null);
@@ -81,7 +88,10 @@ const JobForm = ({ onJobCreated }) => {
       if (onJobCreated) onJobCreated();
       setTimeout(() => navigate('/'), 2000);
     } catch (error) {
+      completeLoading(); // Complete loading even on error
       showToastError(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -105,6 +115,7 @@ const JobForm = ({ onJobCreated }) => {
               setImageFile(file);
             }}
             currentImageUrl={imageUrl}
+            isSubmitting={isSubmitting}
           />
         </form>
       </div>

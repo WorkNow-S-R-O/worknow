@@ -1,4 +1,5 @@
 import pkg from '@prisma/client';
+import { Buffer } from 'buffer';
 const { PrismaClient } = pkg;
 
 const prisma = new PrismaClient();
@@ -15,11 +16,44 @@ export const requireAuth = async (req, res, next) => {
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
     
-    // For now, allow the request to proceed if a token is present
-    // TODO: Implement proper Clerk token verification
-    console.log('Auth middleware: Token received:', token.substring(0, 10) + '...');
-    
-    next();
+    try {
+      // For development, we'll use a simpler approach to extract user ID from the token
+      // This is a temporary solution that works with Clerk's JWT format
+      const tokenParts = token.split('.');
+      if (tokenParts.length !== 3) {
+        console.error('Invalid JWT token format');
+        return res.status(401).json({ error: 'Invalid token format' });
+      }
+
+      // Decode the payload (second part) - this is safe for development
+      const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+      
+      console.log('🔍 Auth middleware - Token payload:', payload);
+      
+      // Extract user ID from the token payload
+      const clerkUserId = payload.sub;
+      
+      if (!clerkUserId) {
+        console.error('No user ID found in token payload');
+        return res.status(401).json({ error: 'Invalid token - no user ID' });
+      }
+
+      // Set user information in request object
+      req.user = {
+        clerkUserId: clerkUserId,
+        email: payload.email,
+        firstName: payload.first_name,
+        lastName: payload.last_name,
+        imageUrl: payload.image_url
+      };
+
+      console.log('Auth middleware: User authenticated:', req.user.clerkUserId);
+      
+      next();
+    } catch (decodeError) {
+      console.error('Token decode error:', decodeError);
+      return res.status(401).json({ error: 'Token verification failed' });
+    }
   } catch (error) {
     console.error('Auth middleware error:', error);
     return res.status(500).json({ error: 'Authentication error' });

@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useUser } from '@clerk/clerk-react';
+import { useLoadingProgress } from '../hooks/useLoadingProgress';
 import JobCard from "./JobCard";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -23,6 +24,7 @@ const UserProfile = () => {
   const [totalPages, setTotalPages] = useState(1);
   const jobsPerPage = 5;
   const { clerkUserId } = useParams();
+  const { startLoadingWithProgress, completeLoading, stopLoadingImmediately } = useLoadingProgress();
 
   const fetchJobs = async (page) => {
     try {
@@ -39,6 +41,8 @@ const UserProfile = () => {
 
   const fetchProfileData = async () => {
     try {
+      startLoadingWithProgress(2000); // Start progress bar for 2 seconds
+      
       const timestamp = new Date().getTime();
       const userResponse = await axios.get(
         `${API_URL}/api/users/${clerkUserId}?t=${timestamp}`
@@ -52,9 +56,11 @@ const UserProfile = () => {
       }
 
       await fetchJobs(currentPage);
+      completeLoading(); // Complete the progress bar
     } catch (error) {
       console.error("❌ Ошибка загрузки данных профиля:", error);
       setUser(null);
+      stopLoadingImmediately(); // Stop progress bar on error
     } finally {
       setLoading(false);
     }

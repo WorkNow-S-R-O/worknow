@@ -6,6 +6,8 @@ import { RouterProvider, Outlet, createBrowserRouter } from "react-router-dom";
 import useLanguageStore from "./store/languageStore.ts";
 import { HelmetProvider, Helmet } from "react-helmet-async"; // 🔹 SEO
 import { ImageUploadProvider } from "./contexts/ImageUploadContext.jsx";
+import { LoadingProvider } from "./contexts/LoadingContext.jsx";
+import ProgressBar from "./components/ui/ProgressBar.jsx";
 import Home from "./pages/Home.jsx";
 import MyAds from "./pages/MyAds.jsx";
 import CreateNewAd from "./pages/CreateNewAd.jsx";
@@ -101,59 +103,62 @@ const App = () => {
       localization={memoizedLocalization}
       locale={currentLang}
     >
-      <ImageUploadProvider>
-        <HelmetProvider>
-          {/* 🔹 Глобальная SEO-оптимизация */}
-          <Helmet>
-            <title>WorkNow – Работа в Израиле | Поиск вакансий</title>
-            <meta name="description" content="Найти работу в Израиле стало проще! Поиск свежих вакансий в Тель-Авиве, Иерусалиме, Хайфе. Начните карьеру с WorkNow!" />
-            <meta name="keywords" content="работа в Израиле, вакансии в Израиле, поиск работы Израиль, работа Тель-Авив, работа Хайфа" />
-            <meta property="og:title" content="WorkNow – Поиск работы в Израиле" />
-            <meta property="og:description" content="Лучшие вакансии в Израиле. Найдите работу мечты в Тель-Авиве, Иерусалиме, Хайфе и других городах!" />
-            <meta property="og:url" content="https://worknowjob.com/" />
-            <meta property="og:image" content="https://worknowjob.com/images/logo.svg" />
-            <meta name="robots" content="index, follow" />
+      <LoadingProvider>
+        <ImageUploadProvider>
+          <HelmetProvider>
+            {/* 🔹 Глобальная SEO-оптимизация */}
+            <Helmet>
+              <title>WorkNow – Работа в Израиле | Поиск вакансий</title>
+              <meta name="description" content="Найти работу в Израиле стало проще! Поиск свежих вакансий в Тель-Авиве, Иерусалиме, Хайфе. Начните карьеру с WorkNow!" />
+              <meta name="keywords" content="работа в Израиле, вакансии в Израиле, поиск работы Израиль, работа Тель-Авив, работа Хайфа" />
+              <meta property="og:title" content="WorkNow – Поиск работы в Израиле" />
+              <meta property="og:description" content="Лучшие вакансии в Израиле. Найдите работу мечты в Тель-Авиве, Иерусалиме, Хайфе и других городах!" />
+              <meta property="og:url" content="https://worknowjob.com/" />
+              <meta property="og:image" content="https://worknowjob.com/images/logo.svg" />
+              <meta name="robots" content="index, follow" />
 
-            {/* 🔹 Schema.org (WebSite + Organization) */}
-            <script type="application/ld+json">
-              {JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "WebSite",
-                "name": "WorkNow",
-                "url": "https://worknowjob.com",
-                "potentialAction": {
-                  "@type": "SearchAction",
-                  "target": "https://worknowjob.com/search?q={search_term_string}",
-                  "query-input": "required name=search_term_string"
-                }
-              })}
-            </script>
-            <script type="application/ld+json">
-              {JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "Organization",
-                "name": "WorkNow",
-                "url": "https://worknowjob.com",
-                "logo": "https://worknowjob.com/images/logo.svg",
-                "sameAs": [
-                  "https://www.facebook.com/worknow",
-                  "https://twitter.com/worknow",
-                  "https://www.linkedin.com/company/worknow"
-                ]
-              })}
-            </script>
-          </Helmet>
-          <Suspense fallback={<div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh'}}>
-            <div className="ripple">
-              <div></div>
-              <div></div>
-            </div>
-          </div>}>
-            <RouterProvider router={router} />
-          </Suspense>
-          <Toaster position="top-center" />
-        </HelmetProvider>
-      </ImageUploadProvider>
+              {/* 🔹 Schema.org (WebSite + Organization) */}
+              <script type="application/ld+json">
+                {JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "WebSite",
+                  "name": "WorkNow",
+                  "url": "https://worknowjob.com",
+                  "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "https://worknowjob.com/search?q={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                  }
+                })}
+              </script>
+              <script type="application/ld+json">
+                {JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "Organization",
+                  "name": "WorkNow",
+                  "url": "https://worknowjob.com",
+                  "logo": "https://worknowjob.com/images/logo.svg",
+                  "sameAs": [
+                    "https://www.facebook.com/worknow",
+                    "https://twitter.com/worknow",
+                    "https://www.linkedin.com/company/worknow"
+                  ]
+                })}
+              </script>
+            </Helmet>
+            <ProgressBar />
+            <Suspense fallback={<div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh'}}>
+              <div className="ripple">
+                <div></div>
+                <div></div>
+              </div>
+            </div>}>
+              <RouterProvider router={router} />
+            </Suspense>
+            <Toaster position="top-center" />
+          </HelmetProvider>
+        </ImageUploadProvider>
+      </LoadingProvider>
     </ClerkProvider>
   );
 };

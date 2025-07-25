@@ -104,7 +104,9 @@ const Navbar = () => {
         </div>
 
         <div className="d-flex align-items-center absolute top-0 right-0 m-3">
-          <MailDropdown />
+          <SignedIn>
+            <MailDropdown />
+          </SignedIn>
           <div className="dropdown me-2">
             <button
               className="btn btn-secondary dropdown-toggle"
@@ -262,7 +264,9 @@ const Navbar = () => {
                 <UserButton />
               </SignedIn>
               <PremiumButton />
-              <MailDropdown />
+              <SignedIn>
+                <MailDropdown />
+              </SignedIn>
             </div>
           </div>
         </div>

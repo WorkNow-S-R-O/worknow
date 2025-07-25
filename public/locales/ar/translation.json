@@ -19,7 +19,7 @@
     "write_city_or_detailed_address": "اكتب المدينة أو العنوان بالتفصيل",
     "description": "الوصف",
     "write_job_description": "اكتب وصف الوظيفة",
-    "create": "إنشاء",
+    "create": "نشر",
     "button_create_new_advertisement": "إنشاء إعلان جديد",
     "create_new_advertisement_tab": "إنشاء إعلان جديد | WorkNow",
     "phone_number": "رقم الهاتف",
@@ -120,6 +120,20 @@
     "shuttle": "توصيل",
     "meals": "وجبات",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "job_image": "صورة الوظيفة",
+    "optional": "اختياري",
+    "uploading": "جاري الرفع...",
+    "change_image": "تغيير الصورة",
+    "remove_image": "إزالة",
+    "click_to_upload": "انقر لرفع صورة",
+    "image_upload_hint": "JPG, PNG, GIF حتى 5MB",
+    "image_upload_success": "تم رفع الصورة بنجاح!",
+    "image_upload_error": "فشل في رفع الصورة",
+    "image_deleted_success": "تم حذف الصورة بنجاح!",
+    "image_delete_error": "فشل في حذف الصورة",
+    "saving": "حفظ",
+    "creating": "إنشاء",
+    "publishing": "نشر"
   }
   

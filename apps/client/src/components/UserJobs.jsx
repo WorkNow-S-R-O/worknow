@@ -1,24 +1,28 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useAuth } from "@clerk/clerk-react";
 import { Pagination, Modal, Button } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { Trash, PencilSquare, SortUp, X } from "react-bootstrap-icons";
+import { Trash, PencilSquare, SortUp } from "react-bootstrap-icons";
 import Skeleton from "react-loading-skeleton";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import "react-loading-skeleton/dist/skeleton.css";
 import useLanguageStore from '../store/languageStore';
+import { useLoadingProgress } from '../hooks/useLoadingProgress';
+import { ImageModal } from './ui';
 
 const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
 
 const UserJobs = () => {
   const { t } = useTranslation();
   const { user } = useUser();
+  const { getToken } = useAuth();
   const navigate = useNavigate();
   const language = useLanguageStore((state) => state.language) || 'ru';
+  const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
 
   const [jobs, setJobs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,6 +40,8 @@ const UserJobs = () => {
     if (!user) return;
 
     setLoading(true);
+    startLoadingWithProgress(1500); // Start loading progress
+    
     try {
       const response = await axios.get(
         `${API_URL}/api/users/user-jobs/${user.id}?page=${currentPage}&limit=5&lang=${language}`
@@ -52,12 +58,14 @@ const UserJobs = () => {
       
       // Don't initialize loading states - let images load naturally
       setImageLoadingStates({});
+      completeLoading(); // Complete loading when done
     } catch (error) {
       console.error(
         "❌ Ошибка загрузки объявлений пользователя:",
         error.response?.data || error.message
       );
       toast.error("Ошибка загрузки ваших объявлений!");
+      completeLoading(); // Complete loading even on error
     } finally {
       setLoading(false);
     }
@@ -65,17 +73,26 @@ const UserJobs = () => {
 
   useEffect(() => {
     fetchUserJobs();
-  }, [user, currentPage, language]);
+  }, [user, currentPage, language]); // Loading functions are stable now
 
   const handleDelete = async () => {
     if (!jobToDelete) return;
 
+    startLoadingWithProgress(2000); // Start loading progress for deletion
+    
     try {
-      await axios.delete(`${API_URL}/api/jobs/${jobToDelete}`);
+      const token = await getToken();
+      await axios.delete(`${API_URL}/api/jobs/${jobToDelete}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      completeLoading(); // Complete loading when done
       toast.success("Объявление удалено!");
       setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobToDelete));
     } catch (error) {
       console.error("Ошибка удаления объявления:", error);
+      completeLoading(); // Complete loading even on error
       toast.error("Ошибка удаления объявления!");
     } finally {
       setShowModal(false);
@@ -93,11 +110,20 @@ const UserJobs = () => {
   };
 
   const handleBoost = async (jobId) => {
+    startLoadingWithProgress(1500); // Start loading progress for boost
+    
     try {
-      await axios.post(`${API_URL}/api/jobs/${jobId}/boost`);
+      const token = await getToken();
+      await axios.post(`${API_URL}/api/jobs/${jobId}/boost`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      completeLoading(); // Complete loading when done
       toast.success("Объявление поднято в топ!");
       fetchUserJobs();
     } catch (error) {
+      completeLoading(); // Complete loading even on error
       toast.error(error.response?.data?.error || "Ошибка поднятия объявления");
     }
   };
@@ -317,39 +343,13 @@ const UserJobs = () => {
         </Modal>
 
         {/* Image Modal */}
-        <Modal 
+        <ImageModal 
           show={showImageModal} 
           onHide={handleCloseImageModal}
-          centered
-          size="lg"
-          className="image-modal"
-        >
-          <Modal.Body className="text-center p-0 position-relative">
-            <Button 
-              variant="link" 
-              onClick={handleCloseImageModal}
-              className="position-absolute top-0 end-0 p-2"
-              style={{ 
-                zIndex: 1050,
-                color: '#6c757d',
-                textDecoration: 'none'
-              }}
-            >
-              <X size={32} />
-            </Button>
-            <img 
-              src={selectedImageUrl} 
-              alt={selectedImageTitle}
-              className="img-fluid"
-              style={{
-                maxHeight: '80vh',
-                maxWidth: '100%',
-                objectFit: 'contain'
-              }}
-              onError={(e) => console.error('❌ UserJobs - Modal image failed to load:', selectedImageUrl, e)}
-            />
-          </Modal.Body>
-        </Modal>
+          imageUrl={selectedImageUrl}
+          imageAlt={selectedImageTitle}
+          onImageError={(e) => console.error('❌ UserJobs - Modal image failed to load:', selectedImageUrl, e)}
+        />
       </div>
     </>
   );

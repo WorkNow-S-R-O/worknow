@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useUserSync } from "../hooks/useUserSync.js";
+import { useLoadingProgress } from '../hooks/useLoadingProgress';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -63,6 +64,7 @@ const PremiumPage = () => {
   const { redirectToSignIn } = useClerk();
   const [loading, setLoading] = useState(false);
   const { dbUser, loading: userLoading, error: userError } = useUserSync();
+  const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
 
   const handlePay = async (priceId) => {
     if (!user) {
@@ -70,6 +72,8 @@ const PremiumPage = () => {
       return;
     }
     setLoading(true);
+    startLoadingWithProgress(2000); // Start progress bar for payment process
+    
     try {
       const data = { clerkUserId: user.id };
       if (priceId) data.priceId = priceId;
@@ -82,9 +86,11 @@ const PremiumPage = () => {
       );
       
       console.log('Checkout session created:', response.data);
+      completeLoading(); // Complete progress when checkout session is created
       window.location.href = response.data.url;
     } catch (error) {
       console.error('Payment error:', error);
+      completeLoading(); // Complete progress even on error
       if (error.response?.status === 404) {
         alert("Пользователь не найден. Попробуйте войти заново.");
       } else if (error.response?.data?.error) {
