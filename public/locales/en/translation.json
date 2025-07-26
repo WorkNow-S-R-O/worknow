@@ -134,5 +134,7 @@
   "image_delete_error": "Failed to delete image",
   "saving": "Saving",
   "creating": "Creating",
-  "publishing": "Publishing"
+  "publishing": "Publishing",
+  "pricing_description": "Choose the plan that suits you best and start using the platform to the fullest! After payment, the subscription becomes active immediately and will last for 30 days. You can cancel the subscription at any time.",
+  "pricing_title": "Plans"
 }

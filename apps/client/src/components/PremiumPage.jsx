@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useUserSync } from "../hooks/useUserSync.js";
+import { useTranslation } from "react-i18next";
 import { useLoadingProgress } from '../hooks/useLoadingProgress';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -65,6 +66,7 @@ const PremiumPage = () => {
   const [loading, setLoading] = useState(false);
   const { dbUser, loading: userLoading, error: userError } = useUserSync();
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
+  const { t } = useTranslation();
 
   const handlePay = async (priceId) => {
     if (!user) {
@@ -105,9 +107,9 @@ const PremiumPage = () => {
 
   return (
     <div className="container" style={{ paddingTop: 80, paddingBottom: 40 }}>
-      <h1 className="text-center mb-3" style={{fontSize:48, fontWeight:700}}>Pricing</h1>
+      <h1 className="text-center mb-3" style={{fontSize:48, fontWeight:700}}>{t('pricing_title')}</h1>
       <p className="text-center mb-5 text-muted" style={{maxWidth: 600, margin: '0 auto', fontSize:20}}>
-        Quickly build an effective pricing table for your potential customers with this Bootstrap example. It&apos;s built with default Bootstrap components and utilities with little customization.
+        {t('pricing_description')}
       </p>
       {/* Показываем спиннер только если user есть, но dbUser ещё не загружен */}
       {user && userLoading ? (
