@@ -16,6 +16,7 @@ import categoriesRoutes from './routes/categories.js';
 import messagesRoutes from './routes/messages.js';
 import uploadRoutes from './routes/upload.js';
 import s3UploadRoutes from './routes/s3Upload.js';
+import redisService from './services/redisService.js';
 
 import { WEBHOOK_SECRET, CLERK_SECRET_KEY } from './config/clerkConfig.js';
 import { disableExpiredPremiums } from './utils/cron-jobs.js';
@@ -106,6 +107,67 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development'
   });
+});
+
+// Redis health check endpoint
+app.get('/api/redis/health', async (req, res) => {
+  try {
+    const redisHealth = await redisService.healthCheck();
+    res.status(200).json({
+      status: 'healthy',
+      redis: redisHealth,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'unhealthy',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Cache management endpoints
+app.get('/api/redis/cache/stats', async (req, res) => {
+  try {
+    const keys = await redisService.redis.keys('*');
+    const jobKeys = await redisService.redis.keys('jobs:*');
+    const sessionKeys = await redisService.redis.keys('session:*');
+    
+    res.json({
+      totalKeys: keys.length,
+      jobCacheKeys: jobKeys.length,
+      sessionKeys: sessionKeys.length,
+      memory: await redisService.redis.info('memory'),
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/redis/cache/clear', async (req, res) => {
+  try {
+    await redisService.redis.flushall();
+    res.json({ 
+      message: 'All cache cleared successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/redis/cache/jobs', async (req, res) => {
+  try {
+    await redisService.invalidateJobsCache();
+    res.json({ 
+      message: 'Job cache cleared successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Тестовый endpoint для проверки сервера (NEW)

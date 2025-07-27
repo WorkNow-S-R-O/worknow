@@ -33,12 +33,12 @@
       - `src/` - React application source code
       - `components/` - Reusable UI components
           - `Navbar.jsx` - Navigation panel (UPDATED to hide mail icon when user is not logged in)
-          - `JobCard.jsx` - Job card component (UPDATED with new premium color, image display, debugging, fixed glance animation to only show during upload, and uses ImageModal component)
-    - `UserJobs.jsx` - User job listings component (UPDATED with new premium color, image display, debugging, fixed glance animation to only show during upload, loading progress, authentication token handling for delete and boost operations, and uses ImageModal component)
+          - `JobCard.jsx` - Job card component (UPDATED with new premium color, image display, debugging, fixed glance animation to only show during upload, uses ImageModal component, and FIXED null imageUrl prop issue by conditionally rendering ImageModal)
+    - `UserJobs.jsx` - User job listings component (UPDATED with new premium color, image display, debugging, fixed glance animation to only show during upload, loading progress, authentication token handling for delete and boost operations, uses ImageModal component, and FIXED null imageUrl prop issue by conditionally rendering ImageModal)
       - `UserProfile.jsx` - User profile component (UPDATED with loading progress)
       - `PremiumPage.jsx` - Premium pricing page (UPDATED with user sync and test mode price IDs)
       - `ui/ImageUpload.jsx` - Image upload component (UPDATED with useEffect for prop changes and S3 image deletion functionality)
-      - `ui/ImageModal.jsx` - Reusable image modal component for displaying images in modal
+      - `ui/ImageModal.jsx` - Reusable image modal component for displaying images in modal (UPDATED to handle null/undefined imageUrl values and made imageUrl prop optional)
       - `ui/ProgressBar.jsx` - Progress bar component for loading states (NEW)
       - `form/JobForm.jsx` - Job creation form (UPDATED with image upload, loading progress, submit button with loading state, and publish button text)
       - `form/EditJobForm.jsx` - Job editing form (UPDATED with authentication token handling and user authorization)
@@ -59,7 +59,7 @@
 - `dist/` - Built frontend assets
 
 ### apps/api/
-      - `index.js` - Main server entry point (UPDATED with upload routes, CORS configuration, static image serving, test endpoints, database debugging, production static file serving, security headers, proper route ordering, API error handling, improved CSP for development, static file serving for development mode, and fixed route order for API endpoints)
+      - `index.js` - Main server entry point (UPDATED with upload routes, CORS configuration, static image serving, test endpoints, database debugging, production static file serving, security headers, proper route ordering, API error handling, improved CSP for development, static file serving for development mode, fixed route order for API endpoints, and Redis health check and cache management endpoints)
 - `cron-jobs.js` - Automated task scheduling
 - `controllers/` - Request handlers
   - `messages.js` - Messages controller (UPDATED with reduced logging to prevent spam)
@@ -73,10 +73,12 @@
   - `jobDeleteService.js` - Job deletion service (UPDATED with user authorization check and S3 image cleanup)
   - `getJobService.js` - Job fetching service (UPDATED with user and imageUrl support and debugging)
   - `getJobById.js` - Job fetching service (UPDATED with user and imageUrl support)
-  - `jobService.js` - Job service (UPDATED with reduced logging)
+  - `jobService.js` - Job service (UPDATED with Redis caching, pagination, and cache invalidation)
   - `userService.js` - User service (UPDATED with reduced logging)
+  - `redisService.js` - Redis caching and session management service (NEW)
 - `middlewares/` - Express middlewares
   - `auth.js` - Authentication middleware (UPDATED with JWT token decoding and user extraction for development)
+  - `cache.js` - Redis caching and rate limiting middleware (NEW)
 - `utils/` - Utility functions
   - `upload.js` - File upload configuration (NEW)
 - `config/` - Configuration files

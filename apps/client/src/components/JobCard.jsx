@@ -135,14 +135,16 @@ const JobCard = ({ job }) => {
         </div>
       </div>
 
-      {/* Image Modal */}
-      <ImageModal 
-        show={showImageModal} 
-        onHide={handleCloseModal}
-        imageUrl={job.imageUrl}
-        imageAlt={job.title}
-        onImageError={(e) => console.error('❌ JobCard - Modal image failed to load:', job.imageUrl, e)}
-      />
+      {/* Image Modal - Only render if there's an image URL */}
+      {job.imageUrl && (
+        <ImageModal 
+          show={showImageModal} 
+          onHide={handleCloseModal}
+          imageUrl={job.imageUrl}
+          imageAlt={job.title}
+          onImageError={(e) => console.error('❌ JobCard - Modal image failed to load:', job.imageUrl, e)}
+        />
+      )}
     </>
   );
 };

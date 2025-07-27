@@ -342,14 +342,16 @@ const UserJobs = () => {
           </Modal.Footer>
         </Modal>
 
-        {/* Image Modal */}
-        <ImageModal 
-          show={showImageModal} 
-          onHide={handleCloseImageModal}
-          imageUrl={selectedImageUrl}
-          imageAlt={selectedImageTitle}
-          onImageError={(e) => console.error('❌ UserJobs - Modal image failed to load:', selectedImageUrl, e)}
-        />
+        {/* Image Modal - Only render if there's an image URL */}
+        {selectedImageUrl && (
+          <ImageModal 
+            show={showImageModal} 
+            onHide={handleCloseImageModal}
+            imageUrl={selectedImageUrl}
+            imageAlt={selectedImageTitle}
+            onImageError={(e) => console.error('❌ UserJobs - Modal image failed to load:', selectedImageUrl, e)}
+          />
+        )}
       </div>
     </>
   );

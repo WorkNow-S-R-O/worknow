@@ -9,6 +9,11 @@ const ImageModal = ({
   imageAlt, 
   onImageError = (e) => console.error('❌ ImageModal - Image failed to load:', e)
 }) => {
+  // Don't render the modal if there's no image URL
+  if (!imageUrl) {
+    return null;
+  }
+
   return (
     <Modal 
       show={show} 
@@ -57,11 +62,9 @@ const ImageModal = ({
 ImageModal.propTypes = {
   show: PropTypes.bool.isRequired,
   onHide: PropTypes.func.isRequired,
-  imageUrl: PropTypes.string.isRequired,
+  imageUrl: PropTypes.string, // Changed from isRequired to optional
   imageAlt: PropTypes.string.isRequired,
   onImageError: PropTypes.func
 };
-
-
 
 export default ImageModal; 
