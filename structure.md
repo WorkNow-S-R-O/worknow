@@ -13,10 +13,16 @@
 - `.env.local` - Frontend environment variables (VITE_*) (NEW)
 
 ## Docker Directory
-- `docker/Dockerfile` - Production Docker configuration (UPDATED with proper paths)
-- `docker/Dockerfile.dev` - Development Docker configuration (UPDATED with environment variables, proper paths, Alpine Linux base, OpenSSL installation, and .env.local support)
-- `docker/setup-env.sh` - Docker environment setup script (NEW)
-- `docker/setup-env-local.sh` - Frontend environment setup script (NEW)
+- `docker/Dockerfile.prod` - Production Dockerfile with multi-stage build
+- `docker/Dockerfile.dev` - Development Dockerfile with hot reloading
+- `docker/docker-compose.prod.yml` - Production services (PostgreSQL, Redis, Nginx)
+- `docker/docker-compose.dev.yml` - Development services with Prisma Studio
+- `docker/docker-compose.override.yml` - Local development overrides
+- `docker/nginx/nginx.conf` - Nginx reverse proxy configuration
+- `docker/init-db.sql` - Database initialization script
+- `docker/env.example` - Environment variables template
+- `docker/.dockerignore` - Docker build exclusions
+- `docker/README.md` - Docker setup and usage documentation
 
 ## GitHub Workflows
 - `.github/workflows/docker-image.yml` - Docker CI/CD workflow (UPDATED to reference docker/Dockerfile)

@@ -1,88 +1,54 @@
-# --- Stage 1: Build frontend ---
-FROM node:20-alpine AS frontend-build
+# Development Dockerfile for WorkNow
+# Optimized for development with hot reloading
+
+FROM node:20-alpine
+
+# Install necessary packages for development
+RUN apk add --no-cache \
+    dumb-init \
+    git \
+    openssh-client \
+    && rm -rf /var/cache/apk/*
+
+# Create app user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S worknow -u 1001
+
 WORKDIR /app
 
-# Install dependencies for build
-RUN apk add --no-cache python3 make g++
+# Copy package files first for better caching
+COPY package*.json ./
+COPY apps/client/package*.json ./apps/client/
+COPY apps/api/package*.json ./apps/api/
 
-COPY ../package.json ../package-lock.json ./
-RUN npm ci --ignore-scripts
+# Copy Prisma schema for postinstall script
+COPY prisma/ ./prisma/
 
-# Copy frontend files
-COPY ../apps/client ./apps/client
-COPY ../public ./public
-COPY ../vite.config.js ./
-COPY ../tailwind.config.js ./
-COPY ../libs ./libs
-COPY ../postcss.config.js ./
-COPY ../tsconfig.json ./
-COPY ../tsconfig.app.json ./
+# Install all dependencies (including dev dependencies)
+RUN npm ci
 
-# Copy environment files for frontend build
-COPY ../.env.local ./.env.local
+# Copy remaining source code
+COPY . .
 
-# Set environment variables for build
-ARG VITE_CLERK_PUBLISHABLE_KEY
-ARG VITE_API_URL
-ARG VITE_STRIPE_PUBLISHABLE_KEY
-
-ENV VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY
-ENV VITE_API_URL=$VITE_API_URL
-ENV VITE_STRIPE_PUBLISHABLE_KEY=$VITE_STRIPE_PUBLISHABLE_KEY
-
-# Build the frontend
-WORKDIR /app/apps/client
-RUN npm run build
-
-# --- Stage 2: Prepare backend (no build needed) ---
-FROM node:20-alpine AS backend-build
-WORKDIR /app
-
-# Install OpenSSL and other dependencies
-RUN apk add --no-cache openssl
-
-COPY ../package.json ../package-lock.json ./
-RUN npm ci --ignore-scripts
-COPY ../apps/api ./apps/api
-COPY ../prisma ./prisma
-COPY ../tsconfig.server.json ./
-
-# --- Stage 3: Production image ---
-FROM node:20-alpine AS production
-WORKDIR /app
-ENV NODE_ENV=development
-
-# Install OpenSSL and other dependencies for Prisma
-RUN apk add --no-cache openssl
-
-# Install only production dependencies
-COPY ../package.json ../package-lock.json ./
-RUN npm ci --only=production --ignore-scripts
-
-# Copy built frontend
-COPY --from=frontend-build /app/apps/client/dist ./dist
-# Copy backend source
-COPY --from=backend-build /app/apps/api ./apps/api
-COPY --from=backend-build /app/prisma ./prisma
-COPY --from=backend-build /app/tsconfig.server.json ./
-
-# Prisma: generate client
+# Generate Prisma client
 RUN npx prisma generate
 
-# Copy any other needed files (e.g., static assets)
-COPY ../public ./public
+# Create necessary directories and set permissions
+RUN mkdir -p /app/logs /app/dist && \
+    chown -R worknow:nodejs /app
 
-# Copy startup script
-COPY ./start.sh ./start.sh
-RUN chmod +x ./start.sh
+# Switch to non-root user
+USER worknow
 
-# Use a non-root user for security
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
-USER nodejs
+# Expose ports for frontend and backend
+EXPOSE 3000 3001
 
-# Expose Express port
-EXPOSE 3001
+# Health check for development
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3001/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
 
-# Start the server with database seeding
-CMD ["./start.sh"] 
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start development server with hot reloading
+CMD ["npm", "run", "dev"] 

@@ -99,6 +99,15 @@ app.use('/api/messages', messagesRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/s3-upload', s3UploadRoutes);
 
+// Health check endpoint for Docker
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Тестовый endpoint для проверки сервера (NEW)
 app.get('/api/test-server', (req, res) => {
   res.json({ 
@@ -139,13 +148,9 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, '../../dist/index.html'));
   });
 } else {
-  // In development, serve the built frontend from the dist directory
-  app.use(express.static(path.join(__dirname, '../../dist')));
-  
-  // Handle React routing for development
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../dist/index.html'));
-  });
+  // In development, only serve API routes and let Vite handle frontend
+  // Don't serve static files or handle React routing in development
+  console.log('🔧 Development mode: Frontend served by Vite dev server');
 }
 
 // API error handler - handle 404 for API routes

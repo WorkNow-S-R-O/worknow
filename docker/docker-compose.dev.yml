@@ -1,0 +1,138 @@
+# Docker Compose Development Configuration
+
+services:
+  # PostgreSQL Database for Development
+  postgres-dev:
+    image: postgres:15-alpine
+    container_name: worknow-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: worknow_dev
+      POSTGRES_USER: worknow_dev
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-worknow_dev_password}
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"  # Different port to avoid conflicts
+    networks:
+      - worknow-dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U worknow_dev -d worknow_dev"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis for Development
+  redis-dev:
+    image: redis:7-alpine
+    container_name: worknow-redis-dev
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_dev_password}
+    volumes:
+      - redis_dev_data:/data
+    ports:
+      - "6380:6379"  # Different port to avoid conflicts
+    networks:
+      - worknow-dev-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # WorkNow Development Application
+  worknow-dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    container_name: worknow-app-dev
+    restart: unless-stopped
+    environment:
+      # Database
+      DATABASE_URL: postgresql://worknow_dev:${POSTGRES_PASSWORD:-worknow_dev_password}@postgres-dev:5432/worknow_dev
+      
+      # Node environment
+      NODE_ENV: development
+      PORT: 3001
+      
+      # Clerk Authentication
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET}
+      
+      # Stripe
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      
+      # Email
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
+      
+      # AWS S3
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+      
+      # Redis
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_dev_password}@redis-dev:6379
+      
+      # Application
+      VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY}
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3001}
+      VITE_STRIPE_PUBLISHABLE_KEY: ${VITE_STRIPE_PUBLISHABLE_KEY}
+      
+      # Development specific
+      CHOKIDAR_USEPOLLING: true
+      WATCHPACK_POLLING: true
+      DOCKER_BUILD: true
+    ports:
+      - "3000:3000"  # Frontend
+      - "3001:3001"  # Backend
+    volumes:
+      - ../:/app
+      - /app/node_modules
+      - /app/apps/client/node_modules
+      - /app/apps/api/node_modules
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+      redis-dev:
+        condition: service_healthy
+    networks:
+      - worknow-dev-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Prisma Studio for Database Management
+  prisma-studio:
+    image: node:20-alpine
+    container_name: worknow-prisma-studio
+    working_dir: /app
+    command: >
+      sh -c "npm install -g prisma &&
+             prisma studio --hostname 0.0.0.0 --port 5555"
+    environment:
+      DATABASE_URL: postgresql://worknow_dev:${POSTGRES_PASSWORD:-worknow_dev_password}@postgres-dev:5432/worknow_dev
+    ports:
+      - "5555:5555"
+    volumes:
+      - ../prisma:/app/prisma
+    depends_on:
+      - postgres-dev
+    networks:
+      - worknow-dev-network
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+
+networks:
+  worknow-dev-network:
+    driver: bridge 

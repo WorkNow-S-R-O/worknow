@@ -2,32 +2,29 @@ import path from "path"
 import react from '@vitejs/plugin-react'
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite'
-import process from 'process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Use "." as root if in Docker, otherwise "apps/client"
-const isDocker = process.env.DOCKER_BUILD === "true";
-
 // https://vite.dev/config/
 export default defineConfig({
-  root: isDocker ? "." : "apps/client",
-  publicDir: isDocker ? "../public" : "../../public",
-  envDir: isDocker ? "." : "../..", // Load environment variables from root directory
+  root: "apps/client",
+  publicDir: "../../public",
+  envDir: "../..", // Load environment variables from root directory
   plugins: [react()],
   server: {
     cors: true,
     port: 3000,
-    strictPort: true
+    strictPort: true,
+    host: "0.0.0.0"
   },
   proxy: {
     '/api': 'http://localhost:3001',
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, isDocker ? "./src" : "client/src"),
-      "libs": path.resolve(__dirname, isDocker ? "../../libs" : "libs"),
+      "@": path.resolve(__dirname, "apps/client/src"),
+      "libs": path.resolve(__dirname, "libs"),
     },
   },
 })

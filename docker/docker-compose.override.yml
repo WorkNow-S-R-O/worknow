@@ -1,0 +1,51 @@
+# Docker Compose Override for Local Development
+# This file allows you to customize the development environment
+# Copy this file and modify as needed for your local setup
+
+version: '3.8'
+
+services:
+  # Override development environment variables
+  worknow-dev:
+    environment:
+      # Override with your local environment variables
+      DATABASE_URL: postgresql://worknow_dev:worknow_dev_password@postgres-dev:5432/worknow_dev
+      REDIS_URL: redis://:redis_dev_password@redis-dev:6379
+      
+      # Development specific overrides
+      NODE_ENV: development
+      LOG_LEVEL: debug
+      
+    # Add additional volumes for development
+    volumes:
+      - ../:/app
+      - /app/node_modules
+      - /app/apps/client/node_modules
+      - /app/apps/api/node_modules
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+      # Add your local SSL certificates if needed
+      # - ./ssl:/app/ssl:ro
+
+  # Optional: Add additional development services
+  # mailhog:
+  #   image: mailhog/mailhog
+  #   container_name: worknow-mailhog
+  #   ports:
+  #     - "1025:1025"  # SMTP
+  #     - "8025:8025"  # Web UI
+  #   networks:
+  #     - worknow-dev-network
+
+  # Optional: Add Redis Commander for Redis management
+  # redis-commander:
+  #   image: rediscommander/redis-commander
+  #   container_name: worknow-redis-commander
+  #   environment:
+  #     REDIS_HOSTS: local:redis-dev:6379:0:redis_dev_password
+  #   ports:
+  #     - "8081:8081"
+  #   depends_on:
+  #     - redis-dev
+  #   networks:
+  #     - worknow-dev-network 

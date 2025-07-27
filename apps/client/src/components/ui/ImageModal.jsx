@@ -7,7 +7,7 @@ const ImageModal = ({
   onHide, 
   imageUrl, 
   imageAlt, 
-  onImageError 
+  onImageError = (e) => console.error('❌ ImageModal - Image failed to load:', e)
 }) => {
   return (
     <Modal 
@@ -62,8 +62,6 @@ ImageModal.propTypes = {
   onImageError: PropTypes.func
 };
 
-ImageModal.defaultProps = {
-  onImageError: (e) => console.error('❌ ImageModal - Image failed to load:', e)
-};
+
 
 export default ImageModal; 
