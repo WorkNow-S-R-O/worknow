@@ -64,9 +64,6 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -292,6 +289,7 @@ button:focus-visible {
     color: #fff !important;
     vertical-align: middle;
   }
+
 }
 @media (max-width: 900px) {
   .board-controls-scale {

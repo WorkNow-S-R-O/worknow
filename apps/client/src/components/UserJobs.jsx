@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useUser, useAuth } from "@clerk/clerk-react";
-import { Pagination, Modal, Button } from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Trash, PencilSquare, SortUp } from "react-bootstrap-icons";
@@ -13,6 +13,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import useLanguageStore from '../store/languageStore';
 import { useLoadingProgress } from '../hooks/useLoadingProgress';
 import { ImageModal } from './ui';
+import PaginationControl from './PaginationControl';
 
 const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
 
@@ -130,6 +131,7 @@ const UserJobs = () => {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleImageClick = (e, imageUrl, title) => {
@@ -312,17 +314,13 @@ const UserJobs = () => {
                 </div>
               </div>
             ))}
-            <Pagination className="mt-3 justify-content-center">
-              {[...Array(totalPages)].map((_, i) => (
-                <Pagination.Item
-                  key={i + 1}
-                  active={i + 1 === currentPage}
-                  onClick={() => handlePageChange(i + 1)}
-                >
-                  {i + 1}
-                </Pagination.Item>
-              ))}
-            </Pagination>
+            {totalPages > 1 && (
+              <PaginationControl
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
           </div>
         )}
 

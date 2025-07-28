@@ -10,48 +10,142 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t }) {
   const [search, setSearch] = useState("");
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  
+  // Определяем десктоп или мобилка - moved to top
+  const isMobile = window.innerWidth <= 768;
+  
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+  
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientY);
+  };
+  
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientY);
+  };
+  
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isUpSwipe = distance > minSwipeDistance;
+    
+    if (isUpSwipe) {
+      onClose();
+    }
+  };
+
   useEffect(() => {
     if (show) {
       document.body.style.overflow = 'hidden';
-      return () => { document.body.style.overflow = ''; };
+      // Prevent iOS Safari from bouncing when modal is open
+      if (isMobile) {
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+      }
+      return () => { 
+        document.body.style.overflow = '';
+        if (isMobile) {
+          document.body.style.position = '';
+          document.body.style.width = '';
+        }
+      };
     }
-  }, [show]);
+  }, [show, isMobile]);
+  
   const filteredOtherCities = otherCities.filter(city => (city.label || city.name).toLowerCase().includes(search.toLowerCase()));
   if (!show) return null;
 
-  // Определяем десктоп или мобилка
-  const isMobile = window.innerWidth <= 600;
+  // Fullscreen modal for mobile
   const modalStyle = isMobile
-    ? { maxWidth: 420, margin: '0 auto', minHeight: '80vh' }
-    : { width: 420, height: 520, maxWidth: '90vw', maxHeight: '90vh', margin: 'auto', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', position: 'fixed', display: 'flex', alignItems: 'center', justifyContent: 'center' };
+    ? { 
+        position: 'fixed', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        bottom: 0, 
+        width: '100vw', 
+        height: '100vh',
+        margin: 0,
+        maxWidth: '100vw',
+        maxHeight: '100vh'
+      }
+    : { 
+        width: 420, 
+        height: 520, 
+        maxWidth: '90vw', 
+        maxHeight: '90vh', 
+        margin: 'auto', 
+        top: '50%', 
+        left: '50%', 
+        transform: 'translate(-50%, -50%)', 
+        position: 'fixed', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center' 
+      };
+  
   const contentStyle = isMobile
-    ? { borderRadius: 18, maxHeight: '80vh', display: 'flex', flexDirection: 'column' }
-    : { borderRadius: 18, width: 420, height: 520, display: 'flex', flexDirection: 'column', boxShadow: '0 8px 32px rgba(25, 118, 210, 0.13)' };
+    ? { 
+        borderRadius: 0, 
+        height: '100vh', 
+        width: '100vw',
+        display: 'flex', 
+        flexDirection: 'column',
+        border: 'none',
+        boxShadow: 'none'
+      }
+    : { 
+        borderRadius: 18, 
+        width: 500, 
+        height: 600, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        boxShadow: '0 8px 32px rgba(25, 118, 210, 0.13)' 
+      };
 
   return createPortal(
-    <div className="modal fade show" tabIndex="-1" style={{ display: 'block', background: 'rgba(0,0,0,0.35)', zIndex: 4000 }} onClick={onClose}>
+    <div 
+      className="modal fade show" 
+      tabIndex="-1" 
+      style={{ display: 'block', background: isMobile ? '#fff' : 'rgba(0,0,0,0.35)', zIndex: 4000 }} 
+      onClick={isMobile ? undefined : onClose}
+      onTouchStart={isMobile ? onTouchStart : undefined}
+      onTouchMove={isMobile ? onTouchMove : undefined}
+      onTouchEnd={isMobile ? onTouchEnd : undefined}
+    >
       <div className="modal-dialog modal-dialog-centered" style={modalStyle} onClick={e => e.stopPropagation()}>
         <div className="modal-content" style={contentStyle}>
-          <div className="modal-header" style={{ borderBottom: '1px solid #eee' }}>
-            <h5 className="modal-title">{t('choose_city')}</h5>
-            <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
+          <div className="modal-header" style={{ borderBottom: '1px solid #eee', padding: isMobile ? '20px 16px' : '16px' }}>
+            <h5 className="modal-title" style={{ fontSize: isMobile ? '20px' : '16px', fontWeight: '600' }}>{t('choose_city')}</h5>
+            <button type="button" className="btn-close" aria-label="Close" onClick={onClose} style={{ fontSize: isMobile ? '24px' : '16px' }}></button>
           </div>
-          <div className="modal-body" style={{ padding: 16, flex: 1, overflowY: 'auto' }}>
-            <div className="input-group mb-3">
+          <div className="modal-body" style={{ padding: isMobile ? '0 16px 20px' : '16px', flex: 1, overflowY: 'auto' }}>
+            <div className="input-group mb-3" style={{ marginTop: isMobile ? '12px' : '0' }}>
               <span className="input-group-text"><i className="bi bi-search"></i></span>
-              <input type="text" className="form-control" placeholder={t('choose_city')} value={search} onChange={e => setSearch(e.target.value)} />
+              <input 
+                type="text" 
+                className="form-control" 
+                placeholder={t('choose_city')} 
+                value={search} 
+                onChange={e => setSearch(e.target.value)}
+                style={{ fontSize: isMobile ? '16px' : '14px' }}
+              />
             </div>
             <ul className="list-group list-group-flush">
-              <li className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2', fontWeight: 500 }} onClick={() => { onCitySelect({ value: null, label: t('city_all') }); setSearch(""); onClose(); }}>
+              <li className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2', fontWeight: 500, fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '16px 0' : '12px 0' }} onClick={() => { onCitySelect({ value: null, label: t('city_all') }); setSearch(""); onClose(); }}>
                 <i className="bi bi-geo-alt me-2"></i> {t('city_all')}
               </li>
               {regions.map(city => (
-                <li key={city.id} className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2' }} onClick={() => { onCitySelect({ value: city.id, label: city.label || city.name }); setSearch(""); onClose(); }}>
+                <li key={city.id} className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2', fontWeight: '500', fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '16px 0' : '12px 0' }} onClick={() => { onCitySelect({ value: city.id, label: city.label || city.name }); setSearch(""); onClose(); }}>
                   <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
                 </li>
               ))}
               {filteredOtherCities.map(city => (
-                <li key={city.id} className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2' }} onClick={() => { onCitySelect({ value: city.id, label: city.label || city.name }); setSearch(""); onClose(); }}>
+                <li key={city.id} className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2', fontWeight: '500', fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '16px 0' : '12px 0' }} onClick={() => { onCitySelect({ value: city.id, label: city.label || city.name }); setSearch(""); onClose(); }}>
                   <i className="bi bi-geo-alt me-2"></i> {city.label || city.name}
                 </li>
               ))}
@@ -100,7 +194,7 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
         setOpen(false);
       }
     };
-    if (open && window.innerWidth > 600) document.addEventListener('mousedown', handleClickOutside);
+    if (open && window.innerWidth > 768) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [open]);
 
@@ -119,15 +213,11 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
     <>
       <button
         type="button"
-        className={`d-flex align-items-center justify-content-center border border-primary rounded px-4 ${buttonClassName}`}
+        className={`btn btn-outline-primary d-flex align-items-center justify-content-center ${buttonClassName}`}
         style={{
           height: 40,
-          background: '#fff',
-          color: '#1976d2',
           fontWeight: 500,
           fontSize: 16,
-          boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)',
-          transition: 'box-shadow 0.2s',
           gap: 8,
           width: '100%'
         }}

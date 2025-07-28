@@ -53,22 +53,41 @@ export const updateJob = async (req, res) => {
   };
 
   export const getJobs = async (req, res) => {
-    const lang = req.query.lang || 'ru';
-    const result = await getJobsService();
-    if (result.error) return res.status(500).json({ error: result.error });
-    const jobs = result.jobs.map(job => {
-      let categoryLabel = job.category?.name;
-      if (job.category?.translations?.length) {
-        const translation = job.category.translations.find(t => t.lang === lang);
-        if (translation) categoryLabel = translation.name;
-      }
-      return {
-        ...job,
-        category: job.category ? { ...job.category, label: categoryLabel } : null
-      };
-    });
-    res.status(200).json(jobs);
+  const lang = req.query.lang || 'ru';
+  const { page, limit, category, city, salary, shuttle, meals } = req.query;
+  
+  // Pass all query parameters to the service
+  const filters = {
+    page: page ? parseInt(page) : 1,
+    limit: limit ? parseInt(limit) : 10,
+    category,
+    city,
+    salary: salary ? parseInt(salary) : undefined,
+    shuttle: shuttle === 'true',
+    meals: meals === 'true'
   };
+  
+  const result = await getJobsService(filters);
+  if (result.error) return res.status(500).json({ error: result.error });
+  
+  const jobs = result.jobs.map(job => {
+    let categoryLabel = job.category?.name;
+    if (job.category?.translations?.length) {
+      const translation = job.category.translations.find(t => t.lang === lang);
+      if (translation) categoryLabel = translation.name;
+    }
+    return {
+      ...job,
+      category: job.category ? { ...job.category, label: categoryLabel } : null
+    };
+  });
+  
+  // Return both jobs and pagination info
+  res.status(200).json({
+    jobs,
+    pagination: result.pagination
+  });
+};
 
   export const boostJob = async (req, res) => {
     const result = await boostJobService(req.params.id);

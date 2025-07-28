@@ -8,6 +8,9 @@ import { Facebook } from "react-bootstrap-icons";
 import { Helmet } from "react-helmet-async";
 import PaginationControl from "../components/PaginationControl";
 import AddSeekerModal from "../components/form/AddSeekerModal";
+import SeekerFilterModal from "../components/ui/SeekerFilterModal";
+import useSeekerFilterStore from "../store/seekerFilterStore";
+import useSeekers from "../hooks/useSeekers";
 import '../css/seekers-table-mobile.css';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -91,72 +94,22 @@ export default function Seekers() {
   const { t } = useTranslation();
   const { user } = useUser();
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
-  const [seekers, setSeekers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { filters, setFilters } = useSeekerFilterStore();
   const [currentPage, setCurrentPage] = useState(1);
-  const seekersPerPage = 10;
+  const { seekers, loading, error, pagination } = useSeekers(currentPage, filters);
 
   const [isPremium, setIsPremium] = useState(false);
   const isAdmin = user?.emailAddresses?.[0]?.emailAddress === 'worknow.notifications@gmail.com';
   
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setLoading(true);
-    startLoadingWithProgress(1500); // Start loading progress
-    
-    axios.get(`${API_URL}/api/seekers`)
-      .then(res => {
-        setSeekers(Array.isArray(res.data) ? res.data : []);
-        completeLoading(); // Complete loading when done
-      })
-      .catch(() => {
-        setError("Ошибка загрузки соискателей");
-        completeLoading(); // Complete loading even on error
-      })
-      .finally(() => setLoading(false));
-  }, []); // Removed loading functions from dependencies
-
-  useEffect(() => {
-    if (!user) return;
-    axios.get(`${API_URL}/api/users/${user.id}`)
-      .then(res => setIsPremium(!!res.data.isPremium))
-      .catch(() => setIsPremium(false));
-  }, [user]);
-
-  const handleAddSeeker = async (form) => {
-    startLoadingWithProgress(2000); // Start loading progress for adding seeker
-    
-    try {
-      const res = await axios.post(`${API_URL}/api/seekers`, form);
-      const created = res.data;
-      setShowAddModal(false);
-      if (created && created.id) {
-        completeLoading(); // Complete loading when done
-        navigate(`/seekers/${created.id}`);
-        return;
-      }
-      setLoading(true);
-      axios.get(`${API_URL}/api/seekers`)
-        .then(res => {
-          setSeekers(Array.isArray(res.data) ? res.data : []);
-          completeLoading(); // Complete loading when done
-        })
-        .catch(() => {
-          setError("Ошибка загрузки соискателей");
-          completeLoading(); // Complete loading even on error
-        })
-        .finally(() => setLoading(false));
-    } catch {
-      completeLoading(); // Complete loading even on error
-      alert('Ошибка при добавлении соискателя');
-    }
-  };
-
+  // Use server-side pagination if available, otherwise fall back to client-side
+  const totalPages = pagination ? pagination.pages : Math.ceil(seekers.length / 10);
+  
   const handleSelect = (id) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
@@ -164,10 +117,10 @@ export default function Seekers() {
   };
 
   const handleSelectAll = () => {
-    if (selectedIds.length === currentSeekers.length) {
+    if (selectedIds.length === seekers.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(currentSeekers.map((s) => s.id));
+      setSelectedIds(seekers.map((s) => s.id));
     }
   };
 
@@ -192,22 +145,53 @@ export default function Seekers() {
       toast.success('Успешно удалено');
       setSelectedIds([]);
       setDeleteMode(false);
-      setLoading(true);
-      axios.get(`${API_URL}/api/seekers`)
-        .then(res => setSeekers(Array.isArray(res.data) ? res.data : []))
-        .catch(() => setError("Ошибка загрузки соискателей"))
-        .finally(() => setLoading(false));
+      // Refresh the seekers list after deletion
+      window.location.reload();
     } catch {
       completeLoading(); // Complete loading even on error
       toast.error('Ошибка при удалении');
     }
   };
 
-  const totalPages = Math.ceil(seekers.length / seekersPerPage);
-  const currentSeekers = seekers.slice((currentPage - 1) * seekersPerPage, currentPage * seekersPerPage);
+  // Use server-side pagination data if available, otherwise fall back to client-side
+  const currentSeekers = seekers;
   
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleFilterApply = (newFilters) => {
+    console.log('🎯 Applying filters:', newFilters);
+    setFilters(newFilters);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    axios.get(`${API_URL}/api/users/${user.id}`)
+      .then(res => setIsPremium(!!res.data.isPremium))
+      .catch(() => setIsPremium(false));
+  }, [user]);
+
+  const handleAddSeeker = async (form) => {
+    startLoadingWithProgress(2000); // Start loading progress for adding seeker
+    
+    try {
+      const res = await axios.post(`${API_URL}/api/seekers`, form);
+      const created = res.data;
+      setShowAddModal(false);
+      if (created && created.id) {
+        completeLoading(); // Complete loading when done
+        navigate(`/seekers/${created.id}`);
+        return;
+      }
+      // Refresh the seekers list after adding
+      window.location.reload();
+    } catch {
+      completeLoading(); // Complete loading even on error
+      alert('Ошибка при добавлении соискателя');
+    }
   };
 
   return (
@@ -217,13 +201,38 @@ export default function Seekers() {
         <meta name="description" content={t("seekers_description") || "Список соискателей на вакансии"} />
       </Helmet>
       <AddSeekerModal show={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddSeeker} />
+      <SeekerFilterModal 
+        open={showFilterModal} 
+        onClose={() => setShowFilterModal(false)} 
+        onApply={handleFilterApply}
+        currentFilters={filters}
+      />
       <div className="container" style={{ paddingTop: '100px' }}>
-        <h2 className="fs-4">{t("seekers") || "Соискатели"}</h2>
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h2 className="fs-4 mb-0">{t("seekers") || "Соискатели"}</h2>
+          <div className="d-flex gap-2">
+            <button 
+              className="btn btn-outline-primary d-flex align-items-center gap-2"
+              onClick={() => setShowFilterModal(true)}
+              style={{
+                height: 40,
+                fontSize: 14,
+                padding: '8px 16px'
+              }}
+            >
+              <i className="bi bi-gear" style={{ fontSize: 16 }}></i>
+              {t('filters') || 'Фильтры'}
+            </button>
+            {isAdmin && (
+              <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
+                {showAddModal ? 'Скрыть форму' : 'Добавить соискателя'}
+              </button>
+            )}
+          </div>
+        </div>
+        
         {isAdmin && (
           <div className="mb-3 d-flex gap-2">
-            <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-              {showAddModal ? 'Скрыть форму' : 'Добавить соискателя'}
-            </button>
             {!deleteMode && (
               <button className="btn btn-danger" onClick={handleStartDeleteMode}>
                 Удалить соискателя
@@ -245,6 +254,7 @@ export default function Seekers() {
             )}
           </div>
         )}
+        
         {loading && (
           <table className="table table-bordered">
             <thead>
@@ -282,8 +292,8 @@ export default function Seekers() {
           </table>
         )}
         {error && <div className="text-danger">{error}</div>}
-        {!loading && !error && seekers.length === 0 && <div>Нет соискателей</div>}
-        {!loading && !error && seekers.length > 0 && (
+        {!loading && seekers.length === 0 && <div>Нет соискателей</div>}
+        {!loading && seekers.length > 0 && (
           <>
             <table className="table table-bordered">
               <thead>
@@ -292,7 +302,7 @@ export default function Seekers() {
                     <th>
                       <input
                         type="checkbox"
-                        checked={selectedIds.length === currentSeekers.length && currentSeekers.length > 0}
+                        checked={selectedIds.length === seekers.length && seekers.length > 0}
                         onChange={handleSelectAll}
                       />
                     </th>
@@ -318,14 +328,14 @@ export default function Seekers() {
                     <td className="py-3">
                       <Link
                         to={`/seekers/${seeker.id}`}
-                        state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * seekersPerPage + index }}
+                        state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * 10 + index }}
                         style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
                       >
                         {seeker.name}
                       </Link>
                     </td>
                     <td className="py-3">
-                      {renderContactCell(seeker.contact, isPremium, seeker.id, seekers.map(s => s.id), (currentPage - 1) * seekersPerPage + index, seeker.facebook)}
+                      {renderContactCell(seeker.contact, isPremium, seeker.id, seekers.map(s => s.id), (currentPage - 1) * 10 + index, seeker.facebook)}
                     </td>
                     <td className="py-3">{seeker.city}</td>
                     <td className="py-3">{seeker.description}</td>

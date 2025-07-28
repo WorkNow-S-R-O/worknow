@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Pagination } from "react-bootstrap";
 import Skeleton from "react-loading-skeleton";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
@@ -11,6 +10,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useUser } from '@clerk/clerk-react';
 import { useLoadingProgress } from '../hooks/useLoadingProgress';
 import JobCard from "./JobCard";
+import PaginationControl from "./PaginationControl";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -191,17 +191,11 @@ const UserProfile = () => {
                     job={job}
                   />
                 ))}
-                <Pagination className="justify-content-center">
-                  {[...Array(totalPages)].map((_, i) => (
-                    <Pagination.Item
-                      key={i + 1}
-                      active={i + 1 === currentPage}
-                      onClick={() => handlePageChange(i + 1)}
-                    >
-                      {i + 1}
-                    </Pagination.Item>
-                  ))}
-                </Pagination>
+                <PaginationControl
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
               </>
             )}
           </>

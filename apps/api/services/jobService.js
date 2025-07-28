@@ -4,17 +4,17 @@ import redisService from './redisService.js';
 const prisma = new PrismaClient();
 
 export const getJobsService = async (filters = {}) => {
-  const { category, city, page = 1, limit = 20 } = filters;
+  const { category, city, salary, shuttle, meals, page = 1, limit = 20 } = filters;
   
   try {
     // Try to get from cache first
-    const cacheKey = `jobs:${category || 'all'}:${city || 'all'}:${page}:${limit}`;
-    const cachedJobs = await redisService.get(cacheKey);
+    // const cacheKey = `jobs:${category || 'all'}:${city || 'all'}:${salary || 'all'}:${shuttle || 'all'}:${meals || 'all'}:${page}:${limit}`;
+    // const cachedJobs = await redisService.get(cacheKey);
     
-    if (cachedJobs) {
-      console.log('🚀 Jobs served from Redis cache!');
-      return cachedJobs;
-    }
+    // if (cachedJobs) {
+    //   console.log('🚀 Jobs served from Redis cache!');
+    //   return cachedJobs;
+    // }
     
     console.log('💾 Fetching jobs from database...');
     
@@ -22,41 +22,62 @@ export const getJobsService = async (filters = {}) => {
     const where = {};
     if (category) where.categoryId = parseInt(category);
     if (city) where.cityId = parseInt(city);
+    if (shuttle) where.shuttle = true;
+    if (meals) where.meals = true;
+    
+    // For salary filtering, we'll need to handle it differently since salary is stored as string
+    // We'll filter in JavaScript after fetching the jobs
     
     const skip = (page - 1) * limit;
     
-    const [jobs, total] = await Promise.all([
-      prisma.job.findMany({
-        where,
-        include: { 
-          city: true, 
-          user: true, 
-          category: { include: { translations: true } } 
-        },
-        orderBy: [
-          { user: { isPremium: 'desc' } },
-          { boostedAt: { sort: 'desc', nulls: 'last' } },
-          { createdAt: 'desc' }
-        ],
-        skip,
-        take: limit
-      }),
-      prisma.job.count({ where })
-    ]);
+    // Get total count first (without pagination)
+    const total = await prisma.job.count({ where });
+    
+    // Get jobs with pagination
+    const jobs = await prisma.job.findMany({
+      where,
+      include: { 
+        city: true, 
+        user: true, 
+        category: { include: { translations: true } } 
+      },
+      orderBy: [
+        { user: { isPremium: 'desc' } },
+        { boostedAt: { sort: 'desc', nulls: 'last' } },
+        { createdAt: 'desc' }
+      ],
+      skip,
+      take: limit
+    });
+    
+    // Filter by salary if specified (since salary is stored as string)
+    let filteredJobs = jobs;
+    if (salary) {
+      const minSalary = parseInt(salary);
+      filteredJobs = jobs.filter(job => {
+        // Extract numeric value from salary string (e.g., "45" from "45 шек/час")
+        const salaryMatch = job.salary.match(/(\d+)/);
+        if (salaryMatch) {
+          const jobSalary = parseInt(salaryMatch[1]);
+          return jobSalary >= minSalary;
+        }
+        return false;
+      });
+    }
     
     const result = { 
-      jobs, 
+      jobs: filteredJobs, 
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
-        total,
+        total: total,
         pages: Math.ceil(total / limit)
       }
     };
     
     // Cache the result for 5 minutes
-    await redisService.set(cacheKey, result, 300);
-    console.log('💾 Jobs cached in Redis for 5 minutes');
+    // await redisService.set(cacheKey, result, 300);
+    // console.log('💾 Jobs cached in Redis for 5 minutes');
     
     return result;
   } catch (error) {

@@ -3,9 +3,26 @@ import { getUserByClerkIdService } from '../services/getUserByClerkService.js';
 
 export async function getSeekers(req, res) {
   try {
-    const data = await getAllSeekers(req.query);
+    console.log('🔍 Backend received query:', req.query);
+    
+    // Handle languages array from query parameters
+    const query = { ...req.query };
+    if (req.query.languages) {
+      // If languages is already an array, use it as is
+      if (Array.isArray(req.query.languages)) {
+        query.languages = req.query.languages;
+      } else {
+        // If it's a single value, convert to array
+        query.languages = [req.query.languages];
+      }
+    }
+    
+    console.log('🔧 Processed query for service:', query);
+    const data = await getAllSeekers(query);
+    console.log('📤 Sending response with', data.seekers?.length || 0, 'seekers');
     res.json(data);
-  } catch {
+  } catch (error) {
+    console.error('❌ Error getting seekers:', error);
     res.status(500).json({ error: 'Ошибка получения соискателей' });
   }
 }

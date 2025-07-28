@@ -40,6 +40,7 @@
       - `ui/ImageUpload.jsx` - Image upload component (UPDATED with useEffect for prop changes and S3 image deletion functionality)
       - `ui/ImageModal.jsx` - Reusable image modal component for displaying images in modal (UPDATED to handle null/undefined imageUrl values and made imageUrl prop optional)
       - `ui/ProgressBar.jsx` - Progress bar component for loading states (NEW)
+      - `ui/SeekerFilterModal.jsx` - Filter modal component for seekers with city, category, employment, documentType, languages (array), gender, and demanded status filters matching AddSeekerModal parameters (FIXED with proper state management, array handling for languages, and missing translation keys)
       - `form/JobForm.jsx` - Job creation form (UPDATED with image upload, loading progress, submit button with loading state, and publish button text)
       - `form/EditJobForm.jsx` - Job editing form (UPDATED with authentication token handling and user authorization)
       - `form/JobFormFields.jsx` - Job form fields (UPDATED with image upload field and loading state for submit button)
@@ -52,9 +53,16 @@
         - `useUserSync.js` - User synchronization hook (NEW)
         - `useLoadingProgress.js` - Loading progress management hook (NEW)
         - `useJobs.js` - Job fetching hook (UPDATED with loading progress)
+        - `useSeekers.js` - Seeker data management with filtering and pagination
+        - `useFetchCategories.js` - Category data fetching
+        - `useFetchCities.js` - City data fetching
     - `pages/` - Application pages
-      - `Seekers.jsx` - Job seekers listing page (UPDATED with loading progress and React Helmet for SEO)
+      - `Seekers.jsx` - Job seekers listing page (UPDATED with comprehensive filtering system matching AddSeekerModal parameters, loading progress, React Helmet for SEO, and FIXED array handling for languages filter)
       - `SeekerDetails.jsx` - Seeker details page (UPDATED with loading progress, fixed API URL for logged out users, and React Helmet for SEO)
+    - `store/` - State management stores
+      - `filterStore.js` - Job filtering state management
+      - `seekerFilterStore.js` - Seeker filtering state management with city, category, employment, documentType, languages (array), gender, and demanded status filters matching AddSeekerModal parameters (FIXED with proper array initialization for languages)
+      - `languageStore.ts` - Language state management
     - `index.css` - Global styles (UPDATED with new premium color scheme)
 - `dist/` - Built frontend assets
 
@@ -64,6 +72,7 @@
 - `controllers/` - Request handlers
   - `messages.js` - Messages controller (UPDATED with reduced logging to prevent spam)
   - `jobsController.js` - Jobs controller (UPDATED with proper user authentication and clerkUserId extraction for create, update, and delete operations)
+  - `seekerController.js` - Seekers controller (UPDATED with comprehensive filtering support for city, category, employment, documentType, languages (array), gender, and demanded status matching AddSeekerModal parameters and FIXED array handling for languages from query parameters)
 - `routes/` - API route definitions
         - `upload.js` - Image upload routes (UPDATED with full URL generation and debugging)
         - `jobs.js` - Job routes (UPDATED with authentication middleware and proper user extraction)
@@ -74,12 +83,17 @@
   - `getJobService.js` - Job fetching service (UPDATED with user and imageUrl support and debugging)
   - `getJobById.js` - Job fetching service (UPDATED with user and imageUrl support)
   - `jobService.js` - Job service (UPDATED with Redis caching, pagination, and cache invalidation)
+  - `aiJobTitleService.js` - AI-powered job title generation service (NEW)
   - `userService.js` - User service (UPDATED with reduced logging)
   - `redisService.js` - Redis caching and session management service (NEW)
+  - `seekerService.js` - Seeker service (UPDATED with comprehensive filtering and pagination support matching AddSeekerModal parameters and FIXED array handling for languages with hasSome Prisma operator)
 - `middlewares/` - Express middlewares
   - `auth.js` - Authentication middleware (UPDATED with JWT token decoding and user extraction for development)
   - `cache.js` - Redis caching and rate limiting middleware (NEW)
 - `utils/` - Utility functions
+  - `testAITitleGeneration.js` - AI job title generation test suite (NEW)
+  - `updateJobsWithAITitles.js` - AI-powered job title update script (NEW)
+  - `showCurrentJobTitles.js` - Job title display and analysis script (NEW)
   - `upload.js` - File upload configuration (NEW)
 - `config/` - Configuration files
 
@@ -88,9 +102,9 @@
 - `prisma/` - Database schema and migrations
   - `public/` - Static assets and locales
     - `locales/` - Translation files
-          - `ru/translation.json` - Russian translations (UPDATED with note premium message, publish button text, publishing loading state, and image deletion messages)
-    - `en/translation.json` - English translations (UPDATED with note premium message, publish button text, publishing loading state, and image deletion messages)
-    - `he/translation.json` - Hebrew translations (UPDATED with note premium message, publish button text, publishing loading state, image deletion messages, and complete image upload translations)
-    - `ar/translation.json` - Arabic translations (UPDATED with note premium message, publish button text, publishing loading state, image deletion messages, and complete image upload translations)
+          - `ru/translation.json` - Russian translations (UPDATED with note premium message, publish button text, publishing loading state, image deletion messages, seeker filter translations matching AddSeekerModal parameters, and FIXED missing translation keys for city, choose_city, and seekers_description)
+    - `en/translation.json` - English translations (UPDATED with note premium message, publish button text, publishing loading state, image deletion messages, seeker filter translations matching AddSeekerModal parameters, and FIXED missing translation keys for city, choose_city, and seekers_description)
+    - `he/translation.json` - Hebrew translations (UPDATED with note premium message, publish button text, publishing loading state, image deletion messages, seeker filter translations matching AddSeekerModal parameters, and FIXED missing translation keys for city, choose_city, and seekers_description)
+    - `ar/translation.json` - Arabic translations (UPDATED with note premium message, publish button text, publishing loading state, image deletion messages, seeker filter translations matching AddSeekerModal parameters, and FIXED missing translation keys for city, choose_city, and seekers_description)
 - `tests/` - Test files
 - `tools/` - Development and utility scripts 

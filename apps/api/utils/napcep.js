@@ -2,31 +2,10 @@ import puppeteer from 'puppeteer';
 import pkg from '@prisma/client';
 const { PrismaClient } = pkg;
 import { fakerRU as faker } from '@faker-js/faker';
+import AIJobTitleService from '../services/aiJobTitleService.js';
 
 const prisma = new PrismaClient();
 const MAX_JOBS = 200;
-
-// Ключевые слова для определения типа работы
-const jobTitlesMap = [
-    { keywords: ["уборка", "чистка", "мойка"], title: "Уборщик" },
-    { keywords: ["официант", "ресторан", "подача"], title: "Официант" },
-    { keywords: ["грузчик", "переноска", "склад"], title: "Грузчик" },
-    { keywords: ["водитель", "доставка", "машина"], title: "Водитель" },
-    { keywords: ["продажа", "консультирование", "магазин"], title: "Продавец-консультант" },
-    { keywords: ["программирование", "разработка", "веб"], title: "Программист" },
-    { keywords: ["касса", "клиент", "торговый центр"], title: "Кассир" },
-    { keywords: ["сборка", "производство", "завод"], title: "Рабочий на производство" },
-];
-
-// Функция определения заголовка вакансии по описанию
-function generateJobTitle(description) {
-    for (const job of jobTitlesMap) {
-        if (job.keywords.some(keyword => description.toLowerCase().includes(keyword))) {
-            return job.title;
-        }
-    }
-    return "Общая вакансия";
-}
 
 // Очистка старых данных перед загрузкой новых
 async function clearOldData() {
@@ -69,20 +48,26 @@ async function fetchJobDescriptions() {
                     title = "Без названия";
                 }
 
-                jobData.push({ title, description, city, phone });
+                // ✅ Только добавляем вакансии с телефонными номерами
+                if (phone) {
+                    jobData.push({ title, description, city, phone });
+                }
             });
 
             return jobData;
         });
 
         // Генерация заголовков для вакансий без названия
-        newJobs.forEach(job => {
+        for (const job of newJobs) {
             if (job.title === "Без названия") {
-                job.title = generateJobTitle(job.description);
+                const titleData = await AIJobTitleService.generateAITitle(job.description);
+                job.title = titleData.title;
             }
-        });
+        }
 
+        console.log(`   📊 Найдено ${newJobs.length} вакансий на странице ${currentPage}`);
         jobs = [...jobs, ...newJobs];
+        console.log(`   📈 Всего собрано: ${jobs.length} вакансий`);
 
         if (jobs.length >= MAX_JOBS) {
             console.log("✅ Достигли лимита вакансий.");
@@ -141,8 +126,8 @@ async function createFakeUsersWithJobs(jobs) {
 
         const clerkUserId = `user_${faker.string.uuid()}`;
 
-        // ✅ Если номер найден в описании, берем его, иначе генерируем случайный
-        const phone = job.phone || `+972-${faker.number.int({ min: 50, max: 59 })}-${faker.number.int({ min: 1000000, max: 9999999 })}`;
+        // ✅ Используем только реальный номер телефона из объявления
+        const phone = job.phone;
 
         // Генерация реалистичной зарплаты
         const salary = `${faker.number.int({ min: 35, max: 50 })}`;

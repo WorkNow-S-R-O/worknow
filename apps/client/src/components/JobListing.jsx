@@ -16,24 +16,28 @@ const JobListing = () => {
   const defaultCity = ready ? t('choose_city_dashboard') : 'Выбрать город';
   const defaultTitle = ready ? t('latest_jobs') : 'Последние вакансии';
 
-  const { jobs, loading } = useJobs();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCity, setSelectedCity] = useState({ value: null, label: defaultCity });
-  const jobsPerPage = 10;
   const [filterOpen, setFilterOpen] = useState(false);
 
-  // Фильтрация вакансий
-  const filteredJobs = jobs.filter(job => {
-    const cityMatch = !selectedCity.value || job.cityId === selectedCity.value;
-    const salaryMatch = !filters.salary || (job.salary && Number(job.salary) >= filters.salary);
-    const categoryMatch = !filters.categoryId || job.categoryId === Number(filters.categoryId);
-    const shuttleMatch = !filters.shuttleOnly || job.shuttle === true;
-    const mealsMatch = !filters.mealsOnly || job.meals === true;
-    return cityMatch && salaryMatch && categoryMatch && shuttleMatch && mealsMatch;
-  });
+  // Combine filters with city selection
+  const combinedFilters = {
+    ...filters,
+    city: selectedCity.value
+  };
+  
+  const { jobs, loading, pagination } = useJobs(currentPage, combinedFilters);
 
-  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
-  const currentJobs = filteredJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
+  // Use server-side pagination if available, otherwise fall back to client-side
+  const totalPages = pagination ? pagination.pages : Math.ceil(jobs.length / 10);
+  const currentJobs = jobs; // Jobs are already paginated from server
+
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Генерация SEO-friendly заголовка
   const pageTitle = selectedCity.value
@@ -93,15 +97,11 @@ const JobListing = () => {
       <div className="board-controls-wrapper">
         <div className="d-flex align-items-center mb-3 gap-2 board-controls-scale">
           <button
-            className="d-flex align-items-center justify-content-center border border-primary rounded px-4 board-btn"
+            className="btn btn-outline-primary d-flex align-items-center justify-content-center board-btn"
             style={{
               height: 40,
-              background: '#fff',
-              color: '#1976d2',
               fontWeight: 500,
               fontSize: 16,
-              boxShadow: '0 1px 4px rgba(25, 118, 210, 0.06)',
-              transition: 'box-shadow 0.2s',
               gap: 8
             }}
             onClick={() => setFilterOpen(true)}
@@ -138,8 +138,8 @@ const JobListing = () => {
       <JobList jobs={currentJobs} loading={loading} />
 
       {/* Пагинация */}
-      {filteredJobs.length > 0 && (
-        <PaginationControl currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      {jobs.length > 0 && (
+        <PaginationControl currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       )}
     </div>
   );
