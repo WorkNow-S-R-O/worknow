@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import { sendSingleCandidateNotification } from './notificationService.js';
+
 const prisma = new PrismaClient();
 
 function generateSlug(name, description) {
@@ -121,7 +123,9 @@ export async function getAllSeekers(query = {}) {
 
 export async function createSeeker(data) {
   const { name, contact, city, description, gender, isDemanded, facebook, languages, nativeLanguage, category, employment, documents, announcement, note, documentType } = data;
-  return prisma.seeker.create({
+  
+  // Create the seeker
+  const seeker = await prisma.seeker.create({
     data: {
       name,
       contact,
@@ -141,6 +145,18 @@ export async function createSeeker(data) {
       slug: generateSlug(name, description)
     }
   });
+
+  // Send notification to all users about the new candidate
+  try {
+    console.log('📧 Sending notification for new candidate:', seeker.name);
+    await sendSingleCandidateNotification(seeker);
+    console.log('✅ Notification sent successfully for:', seeker.name);
+  } catch (error) {
+    console.error('❌ Failed to send notification for new candidate:', error);
+    // Don't fail the seeker creation if notification fails
+  }
+
+  return seeker;
 }
 
 export async function getSeekerBySlug(slug) {

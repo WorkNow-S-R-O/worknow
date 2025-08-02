@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useUserSync } from "../hooks/useUserSync.js";
@@ -55,7 +55,7 @@ const plans = [
     button: {
       text: "Купить Enterprise",
       variant: "primary",
-      priceId: "price_1Qt63NCOLiDbHvw13PRhpenX" // Test mode price ID for 99 ILS
+      priceId: "price_1RqXuoCOLiDbHvw1LLew4Mo8" // Test mode price ID for 99 ILS
     }
   }
 ];
@@ -64,9 +64,19 @@ const PremiumPage = () => {
   const { user } = useUser();
   const { redirectToSignIn } = useClerk();
   const [loading, setLoading] = useState(false);
-  const { dbUser, loading: userLoading, error: userError } = useUserSync();
+  const { dbUser, loading: userLoading, error: userError, refreshUser } = useUserSync();
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
   const { t } = useTranslation();
+
+  // Auto-refresh user data when coming from success page
+  useEffect(() => {
+    const fromSuccess = window.location.search.includes('fromSuccess=true');
+    if (fromSuccess && user && !userLoading) {
+      refreshUser();
+      // Remove the parameter to prevent infinite refresh
+      window.history.replaceState({}, '', '/premium');
+    }
+  }, [user, userLoading, refreshUser]);
 
   const handlePay = async (priceId) => {
     if (!user) {
@@ -80,18 +90,13 @@ const PremiumPage = () => {
       const data = { clerkUserId: user.id };
       if (priceId) data.priceId = priceId;
       
-      console.log('Creating checkout session with data:', data);
-      
       const response = await axios.post(
         `${API_URL}/api/payments/create-checkout-session`,
         data
       );
-      
-      console.log('Checkout session created:', response.data);
       completeLoading(); // Complete progress when checkout session is created
       window.location.href = response.data.url;
     } catch (error) {
-      console.error('Payment error:', error);
       completeLoading(); // Complete progress even on error
       if (error.response?.status === 404) {
         alert("Пользователь не найден. Попробуйте войти заново.");
@@ -131,16 +136,23 @@ const PremiumPage = () => {
             let displayPrice = plan.price;
             let buttonText = plan.button.text;
             let priceId = plan.button.priceId;
-            // Логика апгрейда
-            if (plan.name === "Enterprise" && dbUser?.isPremium && !dbUser?.premiumDeluxe) {
+
+            // Determine plan status based on user subscription
+            if (plan.name === "Free") {
+              // Free plan is always active for logged-in users
+              isActive = !!user;
+            } else if (plan.name === "Pro") {
+              isActive = dbUser?.isPremium || dbUser?.premiumDeluxe;
+            } else if (plan.name === "Enterprise") {
+              isActive = dbUser?.premiumDeluxe;
+            }
+
+            // Enterprise upgrade logic - only for logged-in users with Pro but not Enterprise
+            if (plan.name === "Enterprise" && user && dbUser?.isPremium && !dbUser?.premiumDeluxe) {
               displayPrice = 100;
               buttonText = "Улучшить до Enterprise";
-              priceId = "price_1Qt63NCOLiDbHvw13PRhpenX"; // Test mode price ID
+              priceId = "price_1RqXveCOLiDbHvw18RQxj2g6";
             }
-            if (plan.name === "Pro") {
-              isActive = dbUser?.isPremium || dbUser?.premiumDeluxe;
-            }
-            if (plan.name === "Enterprise" && dbUser?.premiumDeluxe) isActive = true;
             return (
               <div className="col-12 col-md-6 col-lg-4 d-flex" key={plan.name}>
                 <div className="card shadow-sm flex-fill d-flex flex-column h-100" style={{minWidth:0}}>
@@ -164,9 +176,9 @@ const PremiumPage = () => {
                         ) : (
                           <button
                             className={`btn btn-lg w-100 btn-${plan.button.variant}`}
-                            disabled
+                            disabled={isActive}
                           >
-                            Активен
+                            {isActive ? 'Активен' : buttonText}
                           </button>
                         )
                       ) : (

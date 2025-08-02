@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useAuth } from '@clerk/clerk-react';
+import { useTranslation } from 'react-i18next';
 
 const ImageUploadContext = createContext();
 
@@ -17,6 +18,7 @@ export const ImageUploadProvider = ({ children }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const { getToken } = useAuth();
+  const { t } = useTranslation();
 
   const uploadImage = async (file) => {
     if (!file) {
@@ -44,7 +46,7 @@ export const ImageUploadProvider = ({ children }) => {
       
       // Fallback for development if VITE_API_URL is not set or points to production
       if (!API_URL || API_URL.includes('worknowjob.com')) {
-        API_URL = 'http://localhost:3001';
+        API_URL = 'http://localhost:3000';
         console.log('🔍 ImageUploadContext - Using fallback API_URL for development:', API_URL);
       }
       
@@ -69,7 +71,16 @@ export const ImageUploadProvider = ({ children }) => {
       console.error('❌ ImageUploadContext - Error response:', error.response);
       console.error('❌ ImageUploadContext - Error message:', error.message);
       
-      const errorMessage = error.response?.data?.error || error.message || 'Upload failed';
+      // Handle moderation errors specifically
+      let errorMessage;
+      if (error.response?.data?.code === 'CONTENT_REJECTED') {
+        errorMessage = t('image_moderation_error');
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else {
+        errorMessage = t('image_upload_error') || 'Upload failed';
+      }
+      
       setUploadError(errorMessage);
       throw new Error(errorMessage);
     } finally {

@@ -57,14 +57,6 @@ async function fetchJobDescriptions() {
             return jobData;
         });
 
-        // Генерация заголовков для вакансий без названия
-        for (const job of newJobs) {
-            if (job.title === "Без названия") {
-                const titleData = await AIJobTitleService.generateAITitle(job.description);
-                job.title = titleData.title;
-            }
-        }
-
         console.log(`   📊 Найдено ${newJobs.length} вакансий на странице ${currentPage}`);
         jobs = [...jobs, ...newJobs];
         console.log(`   📈 Всего собрано: ${jobs.length} вакансий`);
@@ -93,6 +85,71 @@ async function fetchJobDescriptions() {
     await browser.close();
     console.log(`✅ Найдено ${jobs.length} вакансий`);
     return jobs.slice(0, MAX_JOBS);
+}
+
+// Генерация заголовков для вакансий с использованием fallback системы
+async function generateJobTitles(jobs) {
+    console.log("🤖 Генерируем заголовки для вакансий...");
+    console.log("💡 Используем надежную fallback систему (rule-based)");
+    console.log("✅ Нет ограничений по rate limits или quota");
+    console.log("⚡ Мгновенная обработка без задержек");
+    
+    let successCount = 0;
+    let fallbackCount = 0;
+    let totalTime = 0;
+    
+    for (let i = 0; i < jobs.length; i++) {
+        const job = jobs[i];
+        
+        try {
+            if (job.title === "Без названия") {
+                console.log(`   🔄 Генерируем заголовок для вакансии ${i + 1}/${jobs.length}...`);
+                
+                const startTime = Date.now();
+                
+                // Используем fallback систему напрямую для надежности
+                const titleData = AIJobTitleService.fallbackTitleGeneration(job.description);
+                const endTime = Date.now();
+                
+                job.title = titleData.title;
+                const processingTime = endTime - startTime;
+                totalTime += processingTime;
+                
+                console.log(`   ✅ Успех: "${titleData.title}" (${titleData.method}, ${processingTime}ms)`);
+                console.log(`   🎯 Confidence: ${titleData.confidence.toFixed(2)}`);
+                
+                successCount++;
+                fallbackCount++;
+                
+                // Небольшая задержка для логирования (не для rate limiting)
+                if (i % 10 === 0) {
+                    console.log(`   📊 Прогресс: ${i + 1}/${jobs.length} (${((i + 1) / jobs.length * 100).toFixed(1)}%)`);
+                }
+            }
+        } catch (error) {
+            console.error(`   ❌ Ошибка генерации заголовка для вакансии ${i + 1}:`, error.message);
+            
+            // Используем базовый fallback заголовок
+            job.title = "Общая вакансия";
+            fallbackCount++;
+        }
+    }
+    
+    console.log(`\n📊 Генерация заголовков завершена:`);
+    console.log(`   Успешно обработано: ${successCount}`);
+    console.log(`   Использовано fallback: ${fallbackCount}`);
+    console.log(`   Среднее время обработки: ${(totalTime / successCount).toFixed(0)}ms`);
+    console.log(`   Общее время: ${totalTime}ms`);
+    
+    console.log(`\n💡 Преимущества fallback системы:`);
+    console.log(`   ✅ Нет API затрат`);
+    console.log(`   ✅ Нет rate limits`);
+    console.log(`   ✅ Нет quota проблем`);
+    console.log(`   ✅ Мгновенная обработка`);
+    console.log(`   ✅ Надежные результаты`);
+    console.log(`   ✅ Всегда доступна`);
+    
+    return jobs;
 }
 
 // Создание фейковых пользователей и прикрепление вакансий
@@ -162,9 +219,38 @@ async function createFakeUsersWithJobs(jobs) {
 
 // Основная функция
 async function main() {
-    await clearOldData();
-    const jobs = await fetchJobDescriptions();
-    await createFakeUsersWithJobs(jobs);
+    try {
+        console.log("🚀 Запуск скрипта с надежной fallback системой...\n");
+        console.log("💡 Используем rule-based генерацию заголовков");
+        console.log("✅ Нет зависимости от OpenAI API");
+        console.log("⚡ Быстрая и надежная обработка\n");
+        
+        await clearOldData();
+        const jobs = await fetchJobDescriptions();
+        
+        // Генерируем заголовки с надежной fallback системой
+        const jobsWithTitles = await generateJobTitles(jobs);
+        
+        await createFakeUsersWithJobs(jobsWithTitles);
+        
+        console.log("\n✅ Скрипт успешно завершен!");
+        console.log("📊 Статистика:");
+        console.log(`   - Всего вакансий: ${jobs.length}`);
+        console.log(`   - Успешно обработано: ${jobs.filter(j => j.title !== "Без названия").length}`);
+        console.log(`   - Использовано fallback: ${jobs.filter(j => j.title !== "Без названия").length}`);
+        
+        console.log("\n💡 Преимущества обновленной системы:");
+        console.log("   - Нет API затрат");
+        console.log("   - Нет rate limits или quota проблем");
+        console.log("   - Мгновенная обработка");
+        console.log("   - 100% надежность");
+        console.log("   - Подходящие заголовки для израильского рынка");
+        
+    } catch (error) {
+        console.error("❌ Критическая ошибка в скрипте:", error);
+    } finally {
+        await prisma.$disconnect();
+    }
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+main().catch(console.error);

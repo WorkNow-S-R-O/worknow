@@ -1,7 +1,8 @@
 import express from 'express';
-import { upload, uploadToS3, deleteFromS3, validateS3Config } from '../utils/s3Upload.js';
+import { upload, uploadToS3, uploadToS3WithModeration, deleteFromS3, validateS3Config } from '../utils/s3Upload.js';
 import { requireAuth } from '../middlewares/auth.js';
 import { PrismaClient } from '@prisma/client';
+import process from 'process';
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -91,8 +92,118 @@ router.post('/test-upload', upload.single('image'), async (req, res) => {
 });
 
 /**
+ * POST /api/s3-upload/test-upload-no-auth
+ * Test S3 upload without authentication (for debugging)
+ */
+router.post('/test-upload-no-auth', upload.single('image'), async (req, res) => {
+  try {
+    console.log('🔍 S3 Test Upload No Auth - Request received:', {
+      hasFile: !!req.file,
+      fileInfo: req.file ? {
+        originalname: req.file.originalname,
+        size: req.file.size,
+        mimetype: req.file.mimetype
+      } : null
+    });
+
+    if (!req.file) {
+      return res.status(400).json({ 
+        error: 'No image file provided',
+        code: 'MISSING_FILE'
+      });
+    }
+
+    // Validate file size
+    if (req.file.size > 5 * 1024 * 1024) {
+      return res.status(400).json({ 
+        error: 'File too large. Maximum size is 5MB.',
+        code: 'FILE_TOO_LARGE'
+      });
+    }
+
+    // Upload to S3
+    const imageUrl = await uploadToS3(
+      req.file.buffer,
+      req.file.originalname,
+      req.file.mimetype,
+      'test'
+    );
+
+    console.log('✅ S3 test upload no auth successful');
+    
+    res.json({
+      success: true,
+      imageUrl: imageUrl,
+      filename: req.file.originalname,
+      size: req.file.size
+    });
+
+  } catch (error) {
+    console.error('❌ S3 test upload no auth error:', error);
+    res.status(500).json({ 
+      error: 'Failed to upload image to S3',
+      details: error.message,
+      code: 'UPLOAD_FAILED'
+    });
+  }
+});
+
+/**
+ * POST /api/s3-upload/test-moderation
+ * Test image moderation without uploading to S3
+ */
+router.post('/test-moderation', upload.single('image'), async (req, res) => {
+  try {
+    console.log('🔍 Test Moderation - Request received:', {
+      hasFile: !!req.file,
+      fileInfo: req.file ? {
+        originalname: req.file.originalname,
+        size: req.file.size,
+        mimetype: req.file.mimetype
+      } : null
+    });
+
+    if (!req.file) {
+      return res.status(400).json({ 
+        error: 'No image file provided',
+        code: 'MISSING_FILE'
+      });
+    }
+
+    // Validate file size
+    if (req.file.size > 5 * 1024 * 1024) {
+      return res.status(400).json({ 
+        error: 'File too large. Maximum size is 5MB.',
+        code: 'FILE_TOO_LARGE'
+      });
+    }
+
+    // Test moderation only
+    const { moderateImage } = await import('../services/imageModerationService.js');
+    const moderationResult = await moderateImage(req.file.buffer);
+
+    console.log('✅ Test moderation completed');
+    
+    res.json({
+      success: true,
+      moderationResult,
+      filename: req.file.originalname,
+      size: req.file.size
+    });
+
+  } catch (error) {
+    console.error('❌ Test moderation error:', error);
+    res.status(500).json({ 
+      error: 'Failed to moderate image',
+      details: error.message,
+      code: 'MODERATION_FAILED'
+    });
+  }
+});
+
+/**
  * POST /api/s3-upload/job-image
- * Upload a single image for a job
+ * Upload a single image for a job with moderation
  */
 router.post('/job-image', requireAuth, upload.single('image'), async (req, res) => {
   try {
@@ -121,21 +232,37 @@ router.post('/job-image', requireAuth, upload.single('image'), async (req, res) 
       });
     }
 
-    // Upload to S3
-    const imageUrl = await uploadToS3(
+    // Upload to S3 with moderation
+    const uploadResult = await uploadToS3WithModeration(
       req.file.buffer,
       req.file.originalname,
       req.file.mimetype,
       'jobs'
     );
 
-    console.log('✅ S3 upload successful for user:', req.user?.clerkUserId);
+    if (!uploadResult.success) {
+      if (uploadResult.code === 'CONTENT_REJECTED') {
+        return res.status(400).json({
+          error: uploadResult.error,
+          code: uploadResult.code,
+          moderationDetails: uploadResult.moderationResult
+        });
+      }
+      
+      return res.status(500).json({
+        error: uploadResult.error,
+        code: uploadResult.code
+      });
+    }
+
+    console.log('✅ S3 upload with moderation successful for user:', req.user?.clerkUserId);
     
     res.json({
       success: true,
-      imageUrl: imageUrl,
+      imageUrl: uploadResult.imageUrl,
       filename: req.file.originalname,
-      size: req.file.size
+      size: req.file.size,
+      moderationResult: uploadResult.moderationResult
     });
 
   } catch (error) {
@@ -175,12 +302,29 @@ router.post('/job-with-image', requireAuth, upload.single('image'), async (req, 
     // Upload image if provided
     if (req.file) {
       try {
-        imageUrl = await uploadToS3(
+        const uploadResult = await uploadToS3WithModeration(
           req.file.buffer,
           req.file.originalname,
           req.file.mimetype,
           'jobs'
         );
+
+        if (!uploadResult.success) {
+          if (uploadResult.code === 'CONTENT_REJECTED') {
+            return res.status(400).json({
+              error: uploadResult.error,
+              code: uploadResult.code,
+              moderationDetails: uploadResult.moderationResult
+            });
+          }
+          
+          return res.status(500).json({
+            error: uploadResult.error,
+            code: uploadResult.code
+          });
+        }
+
+        imageUrl = uploadResult.imageUrl;
       } catch (uploadError) {
         console.error('❌ Image upload failed:', uploadError);
         return res.status(500).json({
@@ -324,13 +468,30 @@ router.put('/update-job-image/:jobId', requireAuth, upload.single('image'), asyn
           await deleteFromS3(existingJob.imageUrl);
         }
 
-        // Upload new image
-        imageUrl = await uploadToS3(
+        // Upload new image with moderation
+        const uploadResult = await uploadToS3WithModeration(
           req.file.buffer,
           req.file.originalname,
           req.file.mimetype,
           'jobs'
         );
+
+        if (!uploadResult.success) {
+          if (uploadResult.code === 'CONTENT_REJECTED') {
+            return res.status(400).json({
+              error: uploadResult.error,
+              code: uploadResult.code,
+              moderationDetails: uploadResult.moderationResult
+            });
+          }
+          
+          return res.status(500).json({
+            error: uploadResult.error,
+            code: uploadResult.code
+          });
+        }
+
+        imageUrl = uploadResult.imageUrl;
       } catch (uploadError) {
         console.error('❌ Image upload failed:', uploadError);
         return res.status(500).json({

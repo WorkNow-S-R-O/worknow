@@ -19,7 +19,6 @@ export default {
     },
     plugins: ['react', 'jest', 'testing-library'],
     rules: {
-      // свои кастомные правила тут (по желанию)
       'react/prop-types': 'off',
     },
     settings: {

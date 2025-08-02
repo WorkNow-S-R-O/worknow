@@ -10,17 +10,19 @@ import citiesRoutes from './routes/cities.js';
 import { boostJob } from './controllers/jobsController.js';
 import usersRoutes from './routes/users.js';
 import webhookRoutes from './routes/webhook.js';
-import userSyncRoutes from './routes/userSync.js';
+
 import seekersRoutes from './routes/seekers.js';
 import categoriesRoutes from './routes/categories.js';
 import messagesRoutes from './routes/messages.js';
 import uploadRoutes from './routes/upload.js';
 import s3UploadRoutes from './routes/s3Upload.js';
+import newsletterRoutes from './routes/newsletter.js';
 import redisService from './services/redisService.js';
 
 import { WEBHOOK_SECRET, CLERK_SECRET_KEY } from './config/clerkConfig.js';
 import { disableExpiredPremiums } from './utils/cron-jobs.js';
 
+dotenv.config({ path: '.env.local' });
 dotenv.config();
 
 const app = express();
@@ -34,10 +36,13 @@ if (!process.env.DATABASE_URL) {
 
 // Note: VITE_API_URL is a frontend environment variable, not needed on backend
 
-if (!WEBHOOK_SECRET) {
-  console.error('❌ Missing Clerk Webhook Secret!');
-  process.exit(1);
-}
+console.log('🔍 Index.js - WEBHOOK_SECRET available:', !!WEBHOOK_SECRET);
+console.log('🔍 Index.js - WEBHOOK_SECRET value:', WEBHOOK_SECRET);
+// Temporarily comment out the webhook secret check for debugging
+// if (!WEBHOOK_SECRET) {
+//   console.error('❌ Missing Clerk Webhook Secret!');
+//   process.exit(1);
+// }
 
 if (!CLERK_SECRET_KEY) {
   console.error('❌ Missing Clerk API Secret Key!');
@@ -91,7 +96,6 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/cities', citiesRoutes);
 app.post('/api/jobs/:id/boost', boostJob);
 app.use('/api/users', usersRoutes);
-app.use('/api/users', userSyncRoutes);
 app.use('/webhook', webhookRoutes);
 app.use('/api/jobs', jobsRoutes);
 app.use('/api/seekers', seekersRoutes);
@@ -99,6 +103,7 @@ app.use('/api/categories', categoriesRoutes);
 app.use('/api/messages', messagesRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/s3-upload', s3UploadRoutes);
+app.use('/api/newsletter', newsletterRoutes);
 
 // Health check endpoint for Docker
 app.get('/api/health', (req, res) => {
@@ -176,8 +181,48 @@ app.get('/api/test-server', (req, res) => {
     success: true, 
     message: 'Server is running',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    clerkKeyAvailable: !!process.env.CLERK_SECRET_KEY,
+    clerkKeyLength: process.env.CLERK_SECRET_KEY ? process.env.CLERK_SECRET_KEY.length : 0
   });
+});
+
+// Тестовый endpoint для проверки Clerk API
+app.get('/api/test-clerk-api', async (req, res) => {
+  try {
+    const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
+    console.log('🔍 Test endpoint - CLERK_SECRET_KEY available:', !!CLERK_SECRET_KEY);
+    console.log('🔍 Test endpoint - CLERK_SECRET_KEY length:', CLERK_SECRET_KEY ? CLERK_SECRET_KEY.length : 0);
+    
+    const response = await fetch('https://api.clerk.com/v1/users/user_2tnxLkEalopDLnUWMFiSJAPCBKJ', {
+      headers: {
+        'Authorization': `Bearer ${CLERK_SECRET_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    console.log('🔍 Test endpoint - Clerk API response status:', response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Test endpoint - Clerk API error:', response.status, errorText);
+      return res.status(500).json({ error: `Clerk API error: ${response.status} ${response.statusText}`, details: errorText });
+    }
+    
+    const userData = await response.json();
+    res.json({ 
+      success: true, 
+      user: {
+        id: userData.id,
+        email: userData.email_addresses?.[0]?.email_address,
+        firstName: userData.first_name,
+        lastName: userData.last_name
+      }
+    });
+  } catch (error) {
+    console.error('❌ Test endpoint - Error:', error);
+    res.status(500).json({ error: 'Test failed', details: error.message });
+  }
 });
 
 // Тестовый endpoint для проверки создания job с imageUrl

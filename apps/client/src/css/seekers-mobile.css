@@ -1,0 +1,238 @@
+/* Mobile-specific styles for Seekers page */
+
+@media (max-width: 768px) {
+  /* Container adjustments */
+  .container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  
+  /* Header improvements */
+  .seekers-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 15px !important;
+  }
+  
+  .seekers-header h2 {
+    text-align: center;
+    margin-bottom: 0 !important;
+  }
+  
+  .seekers-buttons {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  
+  /* Button improvements */
+  .seekers-btn {
+    min-height: 44px !important; /* Better touch target */
+    font-size: 14px !important;
+    padding: 10px 16px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    white-space: nowrap !important;
+    min-width: fit-content !important;
+  }
+  
+  /* Table improvements */
+  .table-responsive {
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  }
+  
+  .table {
+    font-size: 14px !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .table th {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 12px 8px !important;
+    background-color: #f8f9fa !important;
+    border-bottom: 2px solid #dee2e6 !important;
+  }
+  
+  .table td {
+    padding: 12px 8px !important;
+    vertical-align: middle !important;
+  }
+  
+  /* Checkbox improvements */
+  .table input[type="checkbox"] {
+    transform: scale(1.3) !important;
+    margin: 0 !important;
+  }
+  
+  /* Link improvements */
+  .table a {
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    color: #1976d2 !important;
+    transition: color 0.2s ease !important;
+  }
+  
+  .table a:hover {
+    color: #1565c0 !important;
+    text-decoration: underline !important;
+  }
+  
+  /* Badge improvements */
+  .badge {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+  }
+  
+  /* Description text improvements */
+  .description-cell {
+    max-width: 100% !important;
+    word-break: break-word !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    color: #495057 !important;
+  }
+  
+  /* Admin section improvements */
+  .admin-controls {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    justify-content: center !important;
+    width: 100% !important;
+  }
+  
+  .admin-btn {
+    min-height: 44px !important;
+    font-size: 13px !important;
+    padding: 10px 14px !important;
+    white-space: nowrap !important;
+    min-width: fit-content !important;
+  }
+  
+  /* Empty state improvements */
+  .empty-state {
+    padding: 40px 20px !important;
+    text-align: center !important;
+  }
+  
+  .empty-state i {
+    font-size: 4rem !important;
+    color: #adb5bd !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .empty-state h5 {
+    font-size: 18px !important;
+    margin-bottom: 10px !important;
+  }
+  
+  .empty-state p {
+    font-size: 14px !important;
+    color: #6c757d !important;
+  }
+  
+  /* Error state improvements */
+  .alert {
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+  }
+  
+  /* Pagination improvements */
+  .pagination {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+  
+  .page-link {
+    min-width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    border-radius: 6px !important;
+  }
+  
+  /* Hover effects for better touch feedback */
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa !important;
+    transition: background-color 0.2s ease !important;
+  }
+  
+  /* Facebook icon improvements */
+  .bi-facebook {
+    font-size: 18px !important;
+    color: #1877f2 !important;
+  }
+  
+  /* Premium indicator improvements */
+  .table-primary {
+    background-color: #e3f2fd !important;
+    border-left: 4px solid #2196f3 !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 576px) {
+  .container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  
+  .seekers-buttons {
+    gap: 6px !important;
+  }
+  
+  .seekers-btn {
+    min-height: 48px !important;
+    font-size: 13px !important;
+    padding: 12px 14px !important;
+  }
+  
+  .table {
+    font-size: 13px !important;
+  }
+  
+  .table th {
+    font-size: 11px !important;
+    padding: 10px 6px !important;
+  }
+  
+  .table td {
+    padding: 10px 6px !important;
+  }
+  
+  .description-cell {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
+  
+  .badge {
+    font-size: 10px !important;
+    padding: 3px 6px !important;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  .seekers-header {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  
+  .seekers-header h2 {
+    text-align: left !important;
+    margin-bottom: 0 !important;
+  }
+  
+  .seekers-buttons {
+    justify-content: flex-end !important;
+  }
+} 

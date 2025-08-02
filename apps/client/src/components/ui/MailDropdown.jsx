@@ -15,6 +15,59 @@ export default function MailDropdown() {
   const mailRef = useRef();
   const { t } = useTranslation();
 
+  // Determine if mobile
+  const isMobile = window.innerWidth <= 768;
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const minSwipeDistance = 50;
+
+  // Touch handlers for mobile modal
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientY);
+  };
+  
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientY);
+  };
+  
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isUpSwipe = distance > minSwipeDistance;
+    
+    if (isUpSwipe) {
+      closeMailDropdown();
+    }
+  };
+
+  const closeMailDropdown = () => {
+    setShowMailDropdown(false);
+    setOpenedMsgId(null);
+    document.body.style.overflow = '';
+    if (isMobile) {
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+  };
+
+  const openMailDropdown = async () => {
+    if (isMobile) {
+      // Mobile: Always open modal
+      setShowMailDropdown(true);
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      await fetchMailMessages();
+    } else {
+      // Desktop: Toggle dropdown
+      setShowMailDropdown(prev => !prev);
+      if (!showMailDropdown) {
+        await fetchMailMessages();
+      }
+    }
+  };
+
   // Polling на новые письма (без toast)
   useEffect(() => {
     if (!user) return;
@@ -71,18 +124,17 @@ export default function MailDropdown() {
     setMailLoading(false);
   };
 
-  // Закрытие dropdown при клике вне
+  // Закрытие dropdown при клике вне (только для десктопа)
   useEffect(() => {
-    if (!showMailDropdown) return;
+    if (!showMailDropdown || isMobile) return;
     const handler = (e) => {
       if (mailRef.current && !mailRef.current.contains(e.target)) {
-        setShowMailDropdown(false);
-        setOpenedMsgId(null);
+        closeMailDropdown();
       }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [showMailDropdown]);
+  }, [showMailDropdown, isMobile]);
 
   // Открывать первое сообщение при открытии popover и помечать его как прочитанное (только при первом открытии)
   useEffect(() => {
@@ -102,15 +154,51 @@ export default function MailDropdown() {
     }
   }, [showMailDropdown, mailMessages]);
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = '';
+      if (isMobile) {
+        document.body.style.position = '';
+        document.body.style.width = '';
+      }
+    };
+  }, [isMobile]);
+
+  const modalStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh', 
+    background: 'rgba(0,0,0,0.3)', 
+    zIndex: 1000, 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  };
+
+  const contentStyle = {
+    background: '#fff', 
+    borderRadius: 0, 
+    height: '100vh', 
+    width: '100vw',
+    padding: '16px 16px',
+    display: 'flex',
+    flexDirection: 'column',
+    boxShadow: 'none',
+    border: 'none',
+    position: 'absolute',
+    top: 0,
+    left: 0
+  };
+
   return (
     <div ref={mailRef} className="position-relative me-2">
       <button
         className="btn btn-link p-0 position-relative"
         title="Почта"
-        onClick={async () => {
-          setShowMailDropdown(v => !v);
-          if (!showMailDropdown) await fetchMailMessages();
-        }}
+        onClick={openMailDropdown}
         style={{ outline: 'none', boxShadow: 'none' }}
       >
         <i className="bi bi-envelope" style={{ fontSize: 20, color: '#6c757d' }}></i>
@@ -120,7 +208,9 @@ export default function MailDropdown() {
           </span>
         )}
       </button>
-      {showMailDropdown && (
+      
+      {/* Desktop Dropdown */}
+      {showMailDropdown && !isMobile && (
         <div className="shadow rounded bg-white position-absolute end-0 mt-2" style={{ minWidth: 340, zIndex: 9999, maxWidth: 400 }}>
           <div className="p-2 border-bottom fw-bold">Входящие</div>
           {mailLoading ? (
@@ -155,6 +245,77 @@ export default function MailDropdown() {
               ))}
             </ul>
           )}
+        </div>
+      )}
+
+      {/* Mobile Modal */}
+      {showMailDropdown && isMobile && (
+        <div 
+          style={modalStyle}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          <div style={contentStyle}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>Входящие</h5>
+              <button 
+                type="button" 
+                className="btn-close" 
+                aria-label="Close" 
+                onClick={closeMailDropdown} 
+                style={{ fontSize: '24px' }}
+              ></button>
+            </div>
+            
+            <div style={{ flex: 1, overflowY: 'auto' }}>
+              {mailLoading ? (
+                <div className="p-3 text-center text-muted">Загрузка...</div>
+              ) : mailMessages.length === 0 ? (
+                <div className="p-3 text-center text-muted">Нет сообщений</div>
+              ) : (
+                <ul className="list-group list-group-flush">
+                  {mailMessages.map(msg => (
+                    <li
+                      key={msg.id}
+                      className={`list-group-item px-3 py-3 ${openedMsgId === msg.id ? 'bg-primary-subtle' : ''}`}
+                      style={{ 
+                        cursor: 'pointer', 
+                        borderLeft: openedMsgId === msg.id ? '4px solid #1976d2' : '4px solid transparent', 
+                        transition: 'background 0.2s, border 0.2s',
+                        fontSize: '16px'
+                      }}
+                      onClick={async () => {
+                        setOpenedMsgId(msg.id);
+                        if (!msg.isRead) {
+                          await axios.patch(`${API_URL}/api/messages/${msg.id}/read`);
+                          setMailMessages(msgs => msgs.map(m => m.id === msg.id ? { ...m, isRead: true } : m));
+                          setUnreadCount(count => count > 0 ? count - 1 : 0);
+                        }
+                      }}
+                    >
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span style={{
+                          fontWeight: msg.isRead ? 400 : 600, 
+                          color: msg.isRead ? '#333' : '#1976d2',
+                          fontSize: '16px'
+                        }}>
+                          {msg.title}
+                        </span>
+                        {!msg.isRead && <span className="badge bg-primary ms-2">{t('mail_new_badge')}</span>}
+                      </div>
+                      <div className="small text-muted mb-2" style={{fontSize: '14px'}}>
+                        {new Date(msg.createdAt).toLocaleString()}
+                      </div>
+                      {openedMsgId === msg.id && (
+                        <div className="mt-3 text-dark" style={{fontSize: '15px', lineHeight: '1.5'}} dangerouslySetInnerHTML={{ __html: msg.body }} />
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

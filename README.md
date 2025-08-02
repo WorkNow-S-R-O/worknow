@@ -66,7 +66,7 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
    ```
 5. **(Optional) Generate test data:**
    ```sh
-   node server/utils/napcep.js
+   node apps/api/utils/napcep.js
    ```
 6. **Run the project locally:**
    ```sh

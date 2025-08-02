@@ -3,11 +3,14 @@ import { PrismaClient } from '@prisma/client';
 import { sendTelegramNotification } from '../utils/telegram.js';
 import { CLERK_SECRET_KEY } from '../config/clerkConfig.js';
 import fetch from 'node-fetch';
+import process from 'process';
 const prisma = new PrismaClient();
 
-// ✅ URL для продакшена
+// ✅ URL для продакшена и разработки
 // eslint-disable-next-line no-undef
-const FRONTEND_URL = process.env.FRONTEND_URL || "https://worknowjob.com";
+const FRONTEND_URL = process.env.NODE_ENV === 'development' 
+  ? "http://localhost:3000" 
+  : (process.env.FRONTEND_URL || "https://worknowjob.com");
 
 export const createCheckoutSession = async (req, res) => {
   const { clerkUserId, priceId } = req.body;
@@ -36,13 +39,13 @@ export const createCheckoutSession = async (req, res) => {
     const defaultPriceId = 'price_1Qt63NCOLiDbHvw13PRhpenX'; // Test mode recurring subscription price ID
     finalPriceId = priceId || defaultPriceId;
 
-    console.log('🔍 Creating Stripe session with:', {
-      clerkUserId,
-      priceId: finalPriceId,
-      userEmail: user.email,
-      successUrl,
-      cancelUrl
-    });
+    // 🔹 Проверяем существование price ID в Stripe
+    try {
+      await stripe.prices.retrieve(finalPriceId);
+    } catch {
+      // Fallback to default price ID
+      finalPriceId = defaultPriceId;
+    }
 
     // 🔹 Создаем Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -60,49 +63,67 @@ export const createCheckoutSession = async (req, res) => {
       metadata: { clerkUserId, priceId: finalPriceId },
     });
 
-    console.log('✅ Stripe session created successfully:', session.id);
     res.json({ url: session.url });
   } catch (error) {
     console.error('❌ Ошибка при создании Checkout Session:', error);
-    console.error('❌ Error details:', {
-      message: error.message,
-      type: error.type,
-      code: error.code,
-      statusCode: error.statusCode,
-      raw: error.raw
-    });
-    console.error('❌ Request data:', { clerkUserId, priceId, userEmail: user?.email });
-    res.status(500).json({ error: 'Ошибка при создании сессии' });
+    
+    // Provide more specific error messages
+    if (error.type === 'StripeInvalidRequestError' && error.message.includes('price')) {
+      res.status(400).json({ error: `Неверный price ID: ${priceId}. Пожалуйста, обратитесь к администратору.` });
+    } else {
+      res.status(500).json({ error: 'Ошибка при создании сессии' });
+    }
   }
 };
 
 export const activatePremium = async (req, res) => {
   const { sessionId } = req.body;
 
+  console.log('🔍 activatePremium called with sessionId:', sessionId);
+
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     const clerkUserId = session.metadata.clerkUserId; // Получаем ID пользователя
     const subscriptionId = session.subscription; // ID подписки в Stripe
     const priceId = session.metadata.priceId;
+    
+    console.log('🔍 Activating premium with session data:', {
+      sessionId,
+      clerkUserId,
+      subscriptionId,
+      priceId,
+      paymentStatus: session.payment_status
+    });
 
     if (session.payment_status === 'paid') {
-      const user = await prisma.user.update({
-        where: { clerkUserId },
-        data: {
-          isPremium: true,
-          premiumEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 дней подписки
-          isAutoRenewal: !!subscriptionId,
-          stripeSubscriptionId: subscriptionId || null,
-          premiumDeluxe: priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK',
-        },
-        include: { jobs: { include: { city: true } } }, // Подгружаем вакансии
-      });
+              const premiumDeluxe = priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK' || priceId === 'price_1Rfli2COLiDbHvw1xdMaguLf' || priceId === 'price_1RqXuoCOLiDbHvw1LLew4Mo8' || priceId === 'price_1RqXveCOLiDbHvw18RQxj2g6';
+        
+        console.log('🔍 Updating user with premium data:', {
+          clerkUserId,
+          priceId,
+          premiumDeluxe,
+          willSetPremiumDeluxe: premiumDeluxe
+        });
+        
+        const user = await prisma.user.update({
+          where: { clerkUserId },
+          data: {
+            isPremium: true,
+            premiumEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 дней подписки
+            isAutoRenewal: !!subscriptionId,
+            stripeSubscriptionId: subscriptionId || null,
+            premiumDeluxe: premiumDeluxe,
+          },
+          include: { jobs: { include: { city: true } } }, // Подгружаем вакансии
+        });
+        
+        // User updated successfully
 
       // 🔹 Отправляем уведомление в Telegram
       await sendTelegramNotification(user, user.jobs);
 
       // Если deluxe — отправляем автоматическое сообщение
-      if (priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK') {
+              if (priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK' || priceId === 'price_1Qt63NCOLiDbHvw13PRhpenX' || priceId === 'price_1Rfli2COLiDbHvw1xdMaguLf' || priceId === 'price_1RqXuoCOLiDbHvw1LLew4Mo8' || priceId === 'price_1RqXveCOLiDbHvw18RQxj2g6') {
         // Можно кастомизировать текст и контакты менеджера
         await prisma.message.create({
           data: {
@@ -135,7 +156,7 @@ export const activatePremium = async (req, res) => {
       // --- Обновляем publicMetadata в Clerk ---
       const publicMetadata = {
         isPremium: true,
-        premiumDeluxe: priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK',
+        premiumDeluxe: priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK' || priceId === 'price_1Rfli2COLiDbHvw1xdMaguLf' || priceId === 'price_1RqXuoCOLiDbHvw1LLew4Mo8' || priceId === 'price_1RqXveCOLiDbHvw18RQxj2g6',
       };
       await fetch(`https://api.clerk.com/v1/users/${clerkUserId}`, {
         method: 'PATCH',

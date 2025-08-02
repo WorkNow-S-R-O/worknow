@@ -177,16 +177,29 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
+        console.log('🔍 Fetching cities from:', `${API_URL}/api/cities?lang=${language}`);
         const response = await axios.get(`${API_URL}/api/cities?lang=${language}`);
-        setCities(response.data);
-      } catch (error) {
-        if (!(error?.code === 'ECONNABORTED')) {
-          console.error('Ошибка загрузки городов:', error);
+        console.log('🔍 Cities response:', response.data);
+        
+        if (Array.isArray(response.data)) {
+          setCities(response.data);
+        } else if (response.data && Array.isArray(response.data.cities)) {
+          setCities(response.data.cities);
+        } else {
+          console.error('API вернул неожиданный формат:', response.data);
+          setCities([]);
         }
+      } catch (error) {
+        console.error('❌ Ошибка загрузки городов:', error);
+        if (error.response) {
+          console.error('❌ Response status:', error.response.status);
+          console.error('❌ Response data:', error.response.data);
+        }
+        setCities([]);
       }
     };
     fetchCities();
-  }, [language]);
+  }, [language, API_URL]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -204,10 +217,14 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
     ['Юг страны', 'דרום הארץ', 'South'],
     ['Север страны', 'צפון הארץ', 'North'],
   ];
+  
+  // Ensure cities is an array before processing
+  const citiesArray = Array.isArray(cities) ? cities : [];
+  
   const regions = regionOrder
-    .map(labels => cities.find(city => labels.includes(city.label || city.name)))
+    .map(labels => citiesArray.find(city => labels.includes(city.label || city.name)))
     .filter(Boolean);
-  const otherCities = cities.filter(city => !regions.includes(city));
+  const otherCities = citiesArray.filter(city => !regions.includes(city));
 
   return (
     <>

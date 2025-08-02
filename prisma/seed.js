@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 
 const cities = [
-  { ru: "Весь Израиль", he: "כל ישראל", en: "All Israel", ar: "كل إسرائيل" },
   { ru: "Центр страны", he: "מרכז הארץ", en: "Center", ar: "وسط البلاد" },
   { ru: "Юг страны", he: "דרום הארץ", en: "South", ar: "جنوب البلاد" },
   { ru: "Север страны", he: "צפון הארץ", en: "North", ar: "شمال البلاد" },
@@ -120,18 +119,25 @@ async function main() {
   });
   console.log("✅ Все фейковые пользователи удалены!");
 
-  console.log("🗑 Удаляем все города...");
-  await prisma.cityTranslation.deleteMany({});
-  await prisma.city.deleteMany({});
-  console.log("✅ Все города удалены!");
-
   console.log("🗑 Удаляем всех соискателей...");
   await prisma.seeker.deleteMany({});
   console.log("✅ Все соискатели удалены!");
 
+  console.log("🗑 Удаляем переводы категорий...");
+  await prisma.categoryTranslation.deleteMany({});
+  console.log("✅ Все переводы категорий удалены!");
+
   console.log("🗑 Удаляем все категории...");
   await prisma.category.deleteMany({});
   console.log("✅ Все категории удалены!");
+
+  console.log("🗑 Удаляем переводы городов...");
+  await prisma.cityTranslation.deleteMany({});
+  console.log("✅ Все переводы городов удалены!");
+
+  console.log("🗑 Удаляем все города...");
+  await prisma.city.deleteMany({});
+  console.log("✅ Все города удалены!");
   
   console.log("📌 Добавляем города с переводами...");
   for (const city of cities) {
@@ -182,6 +188,8 @@ async function main() {
     { ru: 'Электрик', he: 'חשמלאי', en: 'Electrician' },
     { ru: 'Разное', he: 'שונות', en: 'Other' },
   ];
+  
+  console.log("📌 Добавляем категории с переводами...");
   for (const category of categories) {
     await prisma.category.create({
       data: {
@@ -196,6 +204,7 @@ async function main() {
       }
     });
   }
+  console.log("✅ Все категории с переводами успешно добавлены!");
 
   // Добавляем тестовых соискателей
   const testSeekers = [
@@ -238,6 +247,12 @@ async function main() {
     await prisma.seeker.create({ data: { ...seeker, slug: generateSlug(seeker.name, seeker.description) } });
   }
   console.log("✅ Тестовые соискатели добавлены!");
+  
+  console.log("\n🎉 База данных успешно заполнена!");
+  console.log("📊 Статистика:");
+  console.log(`   - Города: ${cities.length}`);
+  console.log(`   - Категории: ${categories.length}`);
+  console.log(`   - Тестовые соискатели: ${testSeekers.length}`);
 }
 
 main()

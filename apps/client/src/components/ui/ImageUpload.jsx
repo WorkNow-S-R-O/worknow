@@ -44,7 +44,14 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
       clearError();
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error(error.message || t('image_upload_error') || 'Failed to upload image');
+      
+      // Handle moderation errors with better user feedback
+      if (error.message === t('image_moderation_error')) {
+        toast.error(t('image_moderation_error_description') || 'The uploaded image contains inappropriate content and cannot be uploaded. Please choose a different image.');
+      } else {
+        toast.error(error.message || t('image_upload_error') || 'Failed to upload image');
+      }
+      
       setPreviewUrl(currentImageUrl || null);
     }
   };

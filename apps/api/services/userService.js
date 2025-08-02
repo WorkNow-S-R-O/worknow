@@ -4,16 +4,33 @@ import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import { Webhook } from 'svix';
 
+dotenv.config({ path: '.env.local' });
 dotenv.config();
 const prisma = new PrismaClient();
 const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
-const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+
+console.log('🔍 UserService - CLERK_SECRET_KEY available:', !!CLERK_SECRET_KEY);
+console.log('🔍 UserService - CLERK_SECRET_KEY length:', CLERK_SECRET_KEY ? CLERK_SECRET_KEY.length : 0);
 
 export const syncUserService = async (clerkUserId) => {
   if (!clerkUserId) return { error: 'Missing Clerk user ID' };
+  
   try {
+    console.log('🔍 UserService - Starting sync for clerkUserId:', clerkUserId);
+    
+    if (!CLERK_SECRET_KEY) {
+      console.error('❌ UserService - CLERK_SECRET_KEY is missing');
+      return { error: 'Clerk secret key is not configured' };
+    }
+
     let user = await prisma.user.findUnique({ where: { clerkUserId } });
+    
     if (!user) {
+      console.log('🔍 UserService - User not found in DB, fetching from Clerk...');
+      
+      console.log('🔍 UserService - Making API call to Clerk with key:', CLERK_SECRET_KEY.substring(0, 10) + '...');
+      
       const response = await fetch(`https://api.clerk.com/v1/users/${clerkUserId}`, {
         headers: {
           'Authorization': `Bearer ${CLERK_SECRET_KEY}`,
@@ -21,11 +38,22 @@ export const syncUserService = async (clerkUserId) => {
         }
       });
 
+      console.log('🔍 UserService - Clerk API response status:', response.status);
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ UserService - Clerk API error:', response.status, errorText);
         return { error: `Ошибка Clerk API: ${response.status} ${response.statusText}` };
       }
 
       const clerkUser = await response.json();
+      console.log('🔍 UserService - Clerk user data received:', {
+        id: clerkUser.id,
+        email: clerkUser.email_addresses?.[0]?.email_address,
+        firstName: clerkUser.first_name,
+        lastName: clerkUser.last_name
+      });
+
       user = await prisma.user.create({
         data: {
           clerkUserId: clerkUser.id,
@@ -35,9 +63,15 @@ export const syncUserService = async (clerkUserId) => {
           imageUrl: clerkUser.image_url || null
         }
       });
+      
+      console.log('✅ UserService - User created successfully:', user.id);
+    } else {
+      console.log('✅ UserService - User found in DB:', user.id);
     }
+    
     return { success: true, user };
   } catch (error) {
+    console.error('❌ UserService - Error syncing user:', error);
     return { error: 'Failed to sync user', details: error.message };
   }
 };

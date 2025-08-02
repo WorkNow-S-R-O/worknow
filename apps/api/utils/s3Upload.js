@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
+import { moderateImage, validateRekognitionConfig } from '../services/imageModerationService.js';
 
 dotenv.config();
 
@@ -158,9 +159,70 @@ export const validateS3Config = () => {
   };
 };
 
+// Validate configurations on startup
+const s3ConfigStatus = validateS3Config();
+if (!s3ConfigStatus.isValid) {
+  console.warn('⚠️ S3 configuration is incomplete. S3 uploads will not work.');
+  console.warn('📖 See SETUP_GUIDE.md for configuration instructions');
+}
+
+const rekognitionConfigStatus = validateRekognitionConfig();
+if (!rekognitionConfigStatus.isValid) {
+  console.warn('⚠️ Rekognition configuration is incomplete. Image moderation will not work.');
+  console.warn('📖 See SETUP_GUIDE.md for configuration instructions');
+}
+
+/**
+ * Upload image to S3 with moderation
+ * @param {Buffer} fileBuffer - The file buffer
+ * @param {string} originalname - Original filename
+ * @param {string} mimetype - File MIME type
+ * @param {string} folder - Folder path in S3 (optional)
+ * @returns {Promise<Object>} Upload result with moderation status
+ */
+export const uploadToS3WithModeration = async (fileBuffer, originalname, mimetype, folder = 'jobs') => {
+  try {
+    console.log('🔍 S3 Upload with Moderation - Starting process...');
+    
+    // Step 1: Moderate the image
+    console.log('🔍 S3 Upload with Moderation - Running content moderation...');
+    const moderationResult = await moderateImage(fileBuffer);
+    
+    if (!moderationResult.isApproved) {
+      console.log('❌ S3 Upload with Moderation - Content rejected by moderation');
+      return {
+        success: false,
+        error: 'Image content violates community guidelines',
+        code: 'CONTENT_REJECTED',
+        moderationResult
+      };
+    }
+    
+    console.log('✅ S3 Upload with Moderation - Content approved, proceeding with upload');
+    
+    // Step 2: Upload to S3
+    const imageUrl = await uploadToS3(fileBuffer, originalname, mimetype, folder);
+    
+    return {
+      success: true,
+      imageUrl,
+      moderationResult
+    };
+    
+  } catch (error) {
+    console.error('❌ S3 Upload with Moderation - Error:', error);
+    return {
+      success: false,
+      error: error.message,
+      code: 'UPLOAD_FAILED'
+    };
+  }
+};
+
 export default {
   upload,
   uploadToS3,
+  uploadToS3WithModeration,
   deleteFromS3,
   validateS3Config
 }; 

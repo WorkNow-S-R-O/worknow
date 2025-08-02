@@ -7,14 +7,22 @@ const prisma = new PrismaClient();
 // Middleware для проверки аутентификации
 export const requireAuth = async (req, res, next) => {
   try {
+    console.log('🔍 Auth middleware - Request headers:', {
+      authorization: req.headers.authorization ? 'Present' : 'Missing',
+      'content-type': req.headers['content-type'],
+      'user-agent': req.headers['user-agent']
+    });
+    
     // Получаем токен из заголовка Authorization
     const authHeader = req.headers.authorization;
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('❌ Auth middleware - No valid authorization header');
       return res.status(401).json({ error: 'No authorization token provided' });
     }
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+    console.log('🔍 Auth middleware - Token received:', token ? 'Yes' : 'No');
     
     try {
       // For development, we'll use a simpler approach to extract user ID from the token
@@ -52,6 +60,10 @@ export const requireAuth = async (req, res, next) => {
       next();
     } catch (decodeError) {
       console.error('Token decode error:', decodeError);
+      console.error('Token decode error details:', {
+        message: decodeError.message,
+        stack: decodeError.stack
+      });
       return res.status(401).json({ error: 'Token verification failed' });
     }
   } catch (error) {

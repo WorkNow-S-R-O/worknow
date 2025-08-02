@@ -37,6 +37,36 @@ const UserJobs = () => {
   const [selectedImageTitle, setSelectedImageTitle] = useState("");
   const [imageLoadingStates, setImageLoadingStates] = useState({});
 
+  // Helper function to check if a job is already boosted
+  const isJobBoosted = (job) => {
+    if (!job.boostedAt) return false;
+    
+    const now = new Date();
+    const boostedAt = new Date(job.boostedAt);
+    const timeSinceBoost = now - boostedAt;
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    
+    return timeSinceBoost < ONE_DAY;
+  };
+
+  // Helper function to get remaining time until next boost
+  const getTimeUntilNextBoost = (job) => {
+    if (!job.boostedAt) return null;
+    
+    const now = new Date();
+    const boostedAt = new Date(job.boostedAt);
+    const timeSinceBoost = now - boostedAt;
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    
+    if (timeSinceBoost >= ONE_DAY) return null;
+    
+    const timeLeft = ONE_DAY - timeSinceBoost;
+    const hoursLeft = Math.floor(timeLeft / (1000 * 60 * 60));
+    const minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return { hours: hoursLeft, minutes: minutesLeft };
+  };
+
   const fetchUserJobs = async () => {
     if (!user) return;
 
@@ -52,7 +82,8 @@ const UserJobs = () => {
       console.log('🔍 UserJobs - Jobs with images:', response.data.jobs.map(job => ({
         id: job.id,
         title: job.title,
-        imageUrl: job.imageUrl
+        imageUrl: job.imageUrl,
+        boostedAt: job.boostedAt
       })));
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
@@ -194,126 +225,154 @@ const UserJobs = () => {
           <p className="text-center fs-4">{t("you_dont_have_ads")}</p>
         ) : (
           <div className="d-flex flex-column" style={{ minHeight: "700px" }}>
-            {jobs.map((job) => (
-              <div
-                key={job.id}
-                className={`card mb-3 position-relative shadow-sm ${
-                  job.user?.isPremium ? "premium-job" : ""
-                }`}
-                style={{
-                  width: "90%",
-                  maxWidth: "700px",
-                  margin: "0 auto",
-                  background: job.user?.isPremium ? "#D4E6F9" : "white",
-                  borderRadius: "10px",
-                }}
-              >
-                {/* Плашка Премиум */}
-                {job.user?.isPremium && (
-                  <div className="premium-badge">
-                    <i className="bi bi-star-fill"></i> Премиум
-                  </div>
-                )}
-                <div className="card-body">
-                  <h5 className="card-title text-primary">{job.title}</h5>
-                  {job.category?.label && (
-                    <div className="mb-2">
-                      <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{job.category.label}</span>
+            {jobs.map((job) => {
+              const isBoosted = isJobBoosted(job);
+              const timeUntilNextBoost = getTimeUntilNextBoost(job);
+              
+              return (
+                <div
+                  key={job.id}
+                  className={`card mb-3 position-relative shadow-sm ${
+                    job.user?.isPremium ? "premium-job" : ""
+                  }`}
+                  style={{
+                    width: "90%",
+                    maxWidth: "700px",
+                    margin: "0 auto",
+                    background: job.user?.isPremium ? "#D4E6F9" : "white",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {/* Плашка Премиум */}
+                  {job.user?.isPremium && (
+                    <div className="premium-badge">
+                      <i className="bi bi-star-fill"></i> Премиум
                     </div>
                   )}
-                  {!job.category?.label && (
-                    <div className="mb-2">
-                      <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{t('not_specified') || 'Не указано'}</span>
-                    </div>
-                  )}
-                  <p className="card-text">
-                    <strong>{t("salary_per_hour_card")}</strong> {job.salary}
-                    <br />
-                    <strong>{t("location_card")}</strong>{" "}
-                    {job.city?.name || "Не указано"}
-                  </p>
-                  <p className="card-text">{job.description}</p>
-                  <div className="card-text">
-                    {typeof job.shuttle === 'boolean' && (
-                      <p className="card-text mb-1">
-                        <strong>{t("shuttle") || "Подвозка"}:</strong> {job.shuttle ? t("yes") || "да" : t("no") || "нет"}
-                      </p>
+                  <div className="card-body">
+                    <h5 className="card-title text-primary">{job.title}</h5>
+                    {job.category?.label && (
+                      <div className="mb-2">
+                        <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{job.category.label}</span>
+                      </div>
                     )}
-                    {typeof job.meals === 'boolean' && (
-                      <p className="card-text mb-1">
-                        <strong>{t("meals") || "Питание"}:</strong> {job.meals ? t("yes") || "да" : t("no") || "нет"}
-                      </p>
+                    {!job.category?.label && (
+                      <div className="mb-2">
+                        <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{t('not_specified') || 'Не указано'}</span>
+                      </div>
                     )}
-                    <p className="card-text mb-0">
-                      <strong>{t("phone_number_card")}</strong> {job.phone}
+                    <p className="card-text">
+                      <strong>{t("salary_per_hour_card")}</strong> {job.salary}
+                      <br />
+                      <strong>{t("location_card")}</strong>{" "}
+                      {job.city?.name || "Не указано"}
                     </p>
+                    <p className="card-text">{job.description}</p>
+                    <div className="card-text">
+                      {typeof job.shuttle === 'boolean' && (
+                        <p className="card-text mb-1">
+                          <strong>{t("shuttle") || "Подвозка"}:</strong> {job.shuttle ? t("yes") || "да" : t("no") || "нет"}
+                        </p>
+                      )}
+                      {typeof job.meals === 'boolean' && (
+                        <p className="card-text mb-1">
+                          <strong>{t("meals") || "Питание"}:</strong> {job.meals ? t("yes") || "да" : t("no") || "нет"}
+                        </p>
+                      )}
+                      <p className="card-text mb-0">
+                        <strong>{t("phone_number_card")}</strong> {job.phone}
+                      </p>
+                    </div>
+                    
+                    {/* Image displayed under phone number in mini size */}
+                    {job.imageUrl && (
+                      <div className="mt-3 position-relative">
+                        {console.log('🔍 UserJobs - Rendering image for job:', job.id, 'URL:', job.imageUrl)}
+                        {imageLoadingStates[job.id] && (
+                          <Skeleton 
+                            width={120} 
+                            height={80} 
+                            style={{
+                              borderRadius: '6px',
+                              border: '1px solid #e0e0e0'
+                            }}
+                          />
+                        )}
+                        <div className="image-with-glance mini">
+                          <img 
+                            src={job.imageUrl} 
+                            alt={job.title}
+                            className="img-fluid rounded"
+                            style={{
+                              cursor: 'pointer',
+                              display: imageLoadingStates[job.id] ? 'none' : 'block'
+                            }}
+                            onClick={(e) => handleImageClick(e, job.imageUrl, job.title)}
+                            onError={(e) => handleImageError(job.id, e)}
+                            onLoad={() => handleImageLoad(job.id)}
+                          />
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="text-muted">
+                      <small>
+                        <span className="d-none d-sm-inline">
+                          {t("created_at") + ": "}
+                        </span>
+                        {format(new Date(job.createdAt), "dd MMMM yyyy", {
+                          locale: ru,
+                        })}
+                      </small>
+                    </div>
                   </div>
-                  
-                  {/* Image displayed under phone number in mini size */}
-                  {job.imageUrl && (
-                    <div className="mt-3 position-relative">
-                      {console.log('🔍 UserJobs - Rendering image for job:', job.id, 'URL:', job.imageUrl)}
-                      {imageLoadingStates[job.id] && (
-                        <Skeleton 
-                          width={120} 
-                          height={80} 
-                          style={{
-                            borderRadius: '6px',
-                            border: '1px solid #e0e0e0'
-                          }}
+                  <div className="position-absolute bottom-0 end-0 mb-3 me-3 d-flex gap-3">
+                    <div className="position-relative">
+                      {isBoosted ? (
+                        <div className="d-flex align-items-center gap-2">
+                          <small className="text-muted" style={{ fontSize: '11px', whiteSpace: 'nowrap' }}>
+                            {t("next_boost_after")}
+                          </small>
+                          <div 
+                            className="px-2 py-1 rounded"
+                            style={{
+                              fontSize: '11px',
+                              background: 'rgba(0,0,0,0.1)',
+                              color: '#000000',
+                              border: '1px solid rgba(0,0,0,0.2)',
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            {timeUntilNextBoost ? `${timeUntilNextBoost.hours}ч ${timeUntilNextBoost.minutes}м` : 'Ready'}
+                          </div>
+                        </div>
+                      ) : (
+                        <SortUp
+                          role="button"
+                          size={24}
+                          className="text-success"
+                          onClick={() => handleBoost(job.id)}
+                          title="Поднять в топ"
+                          style={{ cursor: 'pointer' }}
                         />
                       )}
-                      <div className="image-with-glance mini">
-                        <img 
-                          src={job.imageUrl} 
-                          alt={job.title}
-                          className="img-fluid rounded"
-                          style={{
-                            cursor: 'pointer',
-                            display: imageLoadingStates[job.id] ? 'none' : 'block'
-                          }}
-                          onClick={(e) => handleImageClick(e, job.imageUrl, job.title)}
-                          onError={(e) => handleImageError(job.id, e)}
-                          onLoad={() => handleImageLoad(job.id)}
-                        />
-                      </div>
                     </div>
-                  )}
-                  
-                  <div className="text-muted">
-                    <small>
-                      <span className="d-none d-sm-inline">
-                        {t("created_at") + ": "}
-                      </span>
-                      {format(new Date(job.createdAt), "dd MMMM yyyy", {
-                        locale: ru,
-                      })}
-                    </small>
+                    <PencilSquare
+                      role="button"
+                      size={24}
+                      className="text-primary"
+                      onClick={() => handleEdit(job.id)}
+                    />
+                    <Trash
+                      role="button"
+                      size={24}
+                      className="text-danger"
+                      onClick={() => openDeleteModal(job.id)}
+                    />
                   </div>
                 </div>
-                <div className="position-absolute bottom-0 end-0 mb-3 me-3 d-flex gap-3">
-                  <SortUp
-                    role="button"
-                    size={24}
-                    className="text-success"
-                    onClick={() => handleBoost(job.id)}
-                    title="Поднять в топ"
-                  />
-                  <PencilSquare
-                    role="button"
-                    size={24}
-                    className="text-primary"
-                    onClick={() => handleEdit(job.id)}
-                  />
-                  <Trash
-                    role="button"
-                    size={24}
-                    className="text-danger"
-                    onClick={() => openDeleteModal(job.id)}
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
             {totalPages > 1 && (
               <PaginationControl
                 currentPage={currentPage}

@@ -12,6 +12,7 @@ import SeekerFilterModal from "../components/ui/SeekerFilterModal";
 import useSeekerFilterStore from "../store/seekerFilterStore";
 import useSeekers from "../hooks/useSeekers";
 import '../css/seekers-table-mobile.css';
+import '../css/seekers-mobile.css';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useLoadingProgress } from '../hooks/useLoadingProgress';
@@ -103,8 +104,9 @@ export default function Seekers() {
   
   const [showAddModal, setShowAddModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [selectedIds, setSelectedIds] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isNewsletterSubscribed, setIsNewsletterSubscribed] = useState(false);
   const navigate = useNavigate();
 
   // Use server-side pagination if available, otherwise fall back to client-side
@@ -194,6 +196,29 @@ export default function Seekers() {
     }
   };
 
+  // Check newsletter subscription status
+  const checkNewsletterSubscription = async () => {
+    if (!user?.primaryEmailAddress?.emailAddress) {
+      setIsNewsletterSubscribed(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${API_URL}/api/newsletter/check-subscription`, {
+        params: { email: user.primaryEmailAddress.emailAddress }
+      });
+      
+      setIsNewsletterSubscribed(response.data.isSubscribed);
+    } catch (error) {
+      console.error('Error checking newsletter subscription:', error);
+      setIsNewsletterSubscribed(false);
+    }
+  };
+
+  useEffect(() => {
+    checkNewsletterSubscription();
+  }, [user]);
+
   return (
     <>
       <Helmet>
@@ -207,48 +232,107 @@ export default function Seekers() {
         onApply={handleFilterApply}
         currentFilters={filters}
       />
+      
       <div className="container" style={{ paddingTop: '100px' }}>
-        <div className="d-flex justify-content-between align-items-center mb-3">
+        {/* Mobile-optimized header */}
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3 seekers-header">
           <h2 className="fs-4 mb-0">{t("seekers") || "Соискатели"}</h2>
-          <div className="d-flex gap-2">
+          <div className="d-flex flex-wrap gap-2 seekers-buttons" style={{ minWidth: 'fit-content' }}>
+                                        <button 
+                className="btn btn-outline-primary d-flex align-items-center gap-2 seekers-btn"
+                onClick={() => setShowFilterModal(true)}
+                style={{
+                  height: 'auto',
+                  fontSize: '14px',
+                  padding: '8px 12px',
+                  minHeight: '40px',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <i className="bi bi-gear" style={{ fontSize: '16px' }}></i>
+                <span>{t('filters') || 'Фильтры'}</span>
+              </button>
             <button 
-              className="btn btn-outline-primary d-flex align-items-center gap-2"
-              onClick={() => setShowFilterModal(true)}
+              className={`btn d-flex align-items-center gap-2 seekers-btn ${isNewsletterSubscribed ? 'btn-outline-success' : 'btn-outline-primary'}`}
+                              onClick={() => navigate('/newsletter')}
               style={{
-                height: 40,
-                fontSize: 14,
-                padding: '8px 16px'
+                height: 'auto',
+                fontSize: '14px',
+                padding: '8px 12px',
+                minHeight: '40px',
+                whiteSpace: 'nowrap'
               }}
             >
-              <i className="bi bi-gear" style={{ fontSize: 16 }}></i>
-              {t('filters') || 'Фильтры'}
+              <i className="bi bi-envelope" style={{ fontSize: '16px' }}></i>
+              <span>{t('newsletter') || 'Рассылка'}</span>
             </button>
             {isAdmin && (
-              <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-                {showAddModal ? 'Скрыть форму' : 'Добавить соискателя'}
+              <button 
+                className="btn btn-primary d-flex align-items-center gap-2 seekers-btn"
+                onClick={() => setShowAddModal(true)}
+                style={{
+                  height: 'auto',
+                  fontSize: '14px',
+                  padding: '8px 12px',
+                  minHeight: '40px',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <i className="bi bi-plus" style={{ fontSize: '16px' }}></i>
+                <span>{showAddModal ? 'Скрыть форму' : 'Добавить соискателя'}</span>
               </button>
             )}
           </div>
         </div>
         
         {isAdmin && (
-          <div className="mb-3 d-flex gap-2">
+          <div className="mb-3 d-flex flex-wrap gap-2 admin-controls">
             {!deleteMode && (
-              <button className="btn btn-danger" onClick={handleStartDeleteMode}>
-                Удалить соискателя
+              <button 
+                className="btn btn-danger d-flex align-items-center gap-2 admin-btn"
+                onClick={handleStartDeleteMode}
+                style={{
+                  height: 'auto',
+                  fontSize: '14px',
+                  padding: '8px 12px',
+                  minHeight: '40px',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <i className="bi bi-trash" style={{ fontSize: '16px' }}></i>
+                <span>Удалить соискателя</span>
               </button>
             )}
             {deleteMode && (
               <>
                 <button
-                  className="btn btn-danger"
+                  className="btn btn-danger d-flex align-items-center gap-2 admin-btn"
                   disabled={selectedIds.length === 0}
                   onClick={handleConfirmDelete}
+                  style={{
+                    height: 'auto',
+                    fontSize: '14px',
+                    padding: '8px 12px',
+                    minHeight: '40px',
+                    whiteSpace: 'nowrap'
+                  }}
                 >
-                  Подтвердить удаление
+                  <i className="bi bi-check-circle" style={{ fontSize: '16px' }}></i>
+                  <span>Подтвердить удаление</span>
                 </button>
-                <button className="btn btn-secondary ms-2" onClick={handleCancelDeleteMode}>
-                  Отмена
+                <button 
+                  className="btn btn-secondary d-flex align-items-center gap-2 admin-btn"
+                  onClick={handleCancelDeleteMode}
+                  style={{
+                    height: 'auto',
+                    fontSize: '14px',
+                    padding: '8px 12px',
+                    minHeight: '40px',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <i className="bi bi-x-circle" style={{ fontSize: '16px' }}></i>
+                  <span>Отмена</span>
                 </button>
               </>
             )}
@@ -256,93 +340,128 @@ export default function Seekers() {
         )}
         
         {loading && (
-          <table className="table table-bordered">
-            <thead>
-              <tr className="table-light">
-                {isAdmin && deleteMode && <th></th>}
-                <th>{t('seekers_table_name')}</th>
-                <th>{t('seekers_table_contact')}</th>
-                <th>{t('seekers_table_city')}</th>
-                <th>{t('seekers_table_description')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...Array(5)].map((_, idx) => (
-                <tr key={idx} className="py-3">
-                  {isAdmin && deleteMode && (
-                    <td className="py-3">
-                      <Skeleton height={20} width={20} />
-                    </td>
-                  )}
-                  <td className="py-3">
-                    <Skeleton height={20} width={75} />
-                  </td>
-                  <td className="py-3">
-                    <Skeleton height={20} width={50} />
-                  </td>
-                  <td className="py-3">
-                    <Skeleton height={20} width={50} />
-                  </td>
-                  <td className="py-3">
-                    <Skeleton height={20} width={480} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        {error && <div className="text-danger">{error}</div>}
-        {!loading && seekers.length === 0 && <div>Нет соискателей</div>}
-        {!loading && seekers.length > 0 && (
-          <>
-            <table className="table table-bordered">
+          <div className="table-responsive">
+            <table className="table table-bordered table-hover">
               <thead>
                 <tr className="table-light">
-                  {isAdmin && deleteMode && (
-                    <th>
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.length === seekers.length && seekers.length > 0}
-                        onChange={handleSelectAll}
-                      />
-                    </th>
-                  )}
-                  <th>{t('seekers_table_name')}</th>
-                  <th>{t('seekers_table_contact')}</th>
-                  <th>{t('seekers_table_city')}</th>
-                  <th>{t('seekers_table_description')}</th>
+                  {isAdmin && deleteMode && <th style={{ width: '40px' }}></th>}
+                  <th style={{ minWidth: '120px' }}>{t('seekers_table_name')}</th>
+                  <th style={{ minWidth: '120px' }}>{t('seekers_table_contact')}</th>
+                  <th style={{ minWidth: '100px' }}>{t('seekers_table_city')}</th>
+                  <th style={{ minWidth: '200px' }}>{t('seekers_table_description')}</th>
                 </tr>
               </thead>
               <tbody>
-                {currentSeekers.map((seeker, index) => (
-                  <tr key={seeker.id} className={seeker.isDemanded ? 'table-primary' : ''}>
+                {[...Array(5)].map((_, idx) => (
+                  <tr key={idx} className="py-3">
                     {isAdmin && deleteMode && (
-                      <td className="py-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(seeker.id)}
-                          onChange={() => handleSelect(seeker.id)}
-                        />
+                      <td className="py-3 text-center">
+                        <Skeleton height={20} width={20} />
                       </td>
                     )}
                     <td className="py-3">
-                      <Link
-                        to={`/seekers/${seeker.id}`}
-                        state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * 10 + index }}
-                        style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
-                      >
-                        {seeker.name}
-                      </Link>
+                      <Skeleton height={20} width={75} />
                     </td>
                     <td className="py-3">
-                      {renderContactCell(seeker.contact, isPremium, seeker.id, seekers.map(s => s.id), (currentPage - 1) * 10 + index, seeker.facebook)}
+                      <Skeleton height={20} width={50} />
                     </td>
-                    <td className="py-3">{seeker.city}</td>
-                    <td className="py-3">{seeker.description}</td>
+                    <td className="py-3">
+                      <Skeleton height={20} width={50} />
+                    </td>
+                    <td className="py-3">
+                      <Skeleton height={20} width={480} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+        {error && (
+          <div className="alert alert-danger d-flex align-items-center gap-2" role="alert">
+            <i className="bi bi-exclamation-triangle"></i>
+            <span>{error}</span>
+          </div>
+        )}
+        {!loading && seekers.length === 0 && (
+          <div className="text-center py-5 empty-state">
+            <div className="mb-3">
+              <i className="bi bi-people" style={{ fontSize: '3rem', color: '#6c757d' }}></i>
+            </div>
+            <h5 className="text-muted">{t('no_seekers_found') || 'Соискатели не найдены'}</h5>
+            <p className="text-muted">{t('no_seekers_description') || 'Попробуйте изменить фильтры или загляните позже'}</p>
+          </div>
+        )}
+        {!loading && seekers.length > 0 && (
+          <>
+            <div className="table-responsive">
+              <table className="table table-bordered table-hover">
+                <thead>
+                  <tr className="table-light">
+                    {isAdmin && deleteMode && (
+                      <th style={{ width: '40px' }} className="text-center">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.length === seekers.length && seekers.length > 0}
+                          onChange={handleSelectAll}
+                          style={{ transform: 'scale(1.2)' }}
+                        />
+                      </th>
+                    )}
+                    <th style={{ minWidth: '120px' }}>{t('seekers_table_name')}</th>
+                    <th style={{ minWidth: '120px' }}>{t('seekers_table_contact')}</th>
+                    <th style={{ minWidth: '100px' }}>{t('seekers_table_city')}</th>
+                    <th style={{ minWidth: '200px' }}>{t('seekers_table_description')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentSeekers.map((seeker, index) => (
+                    <tr key={seeker.id} className={seeker.isDemanded ? 'table-primary' : ''}>
+                      {isAdmin && deleteMode && (
+                        <td className="py-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.includes(seeker.id)}
+                            onChange={() => handleSelect(seeker.id)}
+                            style={{ transform: 'scale(1.2)' }}
+                          />
+                        </td>
+                      )}
+                      <td className="py-3">
+                        <Link
+                          to={`/seekers/${seeker.id}`}
+                          state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * 10 + index }}
+                          style={{ 
+                            color: '#1976d2', 
+                            textDecoration: 'underline', 
+                            cursor: 'pointer',
+                            fontWeight: '500'
+                          }}
+                        >
+                          {seeker.name}
+                        </Link>
+                      </td>
+                      <td className="py-3">
+                        {renderContactCell(seeker.contact, isPremium, seeker.id, seekers.map(s => s.id), (currentPage - 1) * 10 + index, seeker.facebook)}
+                      </td>
+                      <td className="py-3">
+                        <span className="badge bg-light text-dark">{seeker.city}</span>
+                      </td>
+                      <td className="py-3">
+                        <div className="description-cell" style={{ 
+                          maxWidth: '100%', 
+                          wordBreak: 'break-word',
+                          fontSize: '14px',
+                          lineHeight: '1.4'
+                        }}>
+                          {seeker.description}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             {totalPages > 1 && (
               <PaginationControl
                 currentPage={currentPage}

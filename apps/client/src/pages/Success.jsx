@@ -15,16 +15,15 @@ const Success = () => {
   useEffect(() => {
     const activatePremium = async () => {
       try {
-        await axios.post(`${API_URL}/api/payments/activate-premium`, {
+        const response = await axios.post(`${API_URL}/api/payments/activate-premium`, {
           sessionId,
           clerkUserId: user.id,
         });
 
         toast.success('🎉 Premium активирован!');
-        navigate('/');
+        navigate('/premium?fromSuccess=true');
       } catch (error) {
         toast.error('Ошибка активации Premium');
-        console.error(error);
       }
     };
 

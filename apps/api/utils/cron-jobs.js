@@ -4,9 +4,12 @@ import nodemailer from 'nodemailer';
 import pkg from '@prisma/client';
 const { PrismaClient } = pkg;
 import dotenv from 'dotenv';
+import { Resend } from 'resend';
+import { checkAndSendFilteredNewsletter } from '../services/newsletterService.js';
 
 dotenv.config();
 const prisma = new PrismaClient();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Настраиваем транспорт для отправки email
 const transporter = nodemailer.createTransport({
@@ -169,5 +172,167 @@ cron.schedule('0 * * * *', () => {
   timezone: 'Europe/Prague',
 });
 
+// Newsletter automation function
+const checkAndSendNewsletter = async () => {
+  try {
+    console.log("📧 Проверка новых соискателей для рассылки...");
+
+    // Get candidates created in the last 24 hours
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const newCandidates = await prisma.seeker.findMany({
+      where: {
+        createdAt: {
+          gte: yesterday
+        },
+        isActive: true
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    console.log(`📧 Найдено ${newCandidates.length} новых соискателей за последние 24 часа`);
+
+    if (newCandidates.length >= 5) {
+      // Get all active subscribers
+      const subscribers = await prisma.newsletterSubscriber.findMany({
+        where: { isActive: true }
+      });
+
+      if (subscribers.length === 0) {
+        console.log("📧 Нет активных подписчиков для рассылки");
+        return;
+      }
+
+      console.log(`📧 Отправляем рассылку ${subscribers.length} подписчикам`);
+
+      // Generate email content
+      const emailContent = generateNewsletterContent(newCandidates);
+      const emailSubject = `Найдено ${newCandidates.length} новых соискателей`;
+
+      // Send emails to all subscribers
+      const emailPromises = subscribers.map(subscriber => 
+        resend.emails.send({
+          from: 'WorkNow <noreply@worknow.com>',
+          to: subscriber.email,
+          subject: emailSubject,
+          html: emailContent
+        })
+      );
+
+      await Promise.all(emailPromises);
+
+      console.log(`📧 Рассылка успешно отправлена ${subscribers.length} подписчикам`);
+    } else {
+      console.log(`📧 Недостаточно новых соискателей для автоматической рассылки (${newCandidates.length}/5)`);
+    }
+
+  } catch (error) {
+    console.error("❌ Ошибка при автоматической рассылке:", error);
+  }
+};
+
+// Generate newsletter email content
+const generateNewsletterContent = (candidates) => {
+  const candidatesHtml = candidates.map(candidate => `
+    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9;">
+      <h3 style="margin: 0 0 10px 0; color: #333; font-size: 18px;">
+        ${candidate.name} ${candidate.gender ? `(${candidate.gender})` : ''}
+      </h3>
+      <p style="margin: 5px 0; color: #666;">
+        <strong>Телефон:</strong> ${candidate.contact || 'Не указан'}
+      </p>
+      <p style="margin: 5px 0; color: #666;">
+        <strong>Город:</strong> ${candidate.city || 'Не указан'}
+      </p>
+      <p style="margin: 5px 0; color: #666;">
+        <strong>Занятость:</strong> ${candidate.employment || 'Не указана'}
+      </p>
+      <p style="margin: 5px 0; color: #666;">
+        <strong>Категория:</strong> ${candidate.category || 'Не указана'}
+      </p>
+      <p style="margin: 5px 0; color: #666;">
+        <strong>Опыт:</strong> ${candidate.experience || 'Не указан'}
+      </p>
+      <p style="margin: 5px 0; color: #666;">
+        <strong>Языки:</strong> ${candidate.languages ? candidate.languages.join(', ') : 'Не указаны'}
+      </p>
+      <p style="margin: 10px 0 0 0; color: #333; font-style: italic;">
+        "${candidate.description || 'Описание не указано'}"
+      </p>
+    </div>
+  `).join('');
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Новые соискатели</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h1 style="color: #1976d2; text-align: center; margin-bottom: 30px;">
+          WorkNow - Новые соискатели
+        </h1>
+        
+        <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <h2 style="color: #1976d2; margin: 0 0 10px 0;">
+            Для вас найдено ${candidates.length} новых соискателей
+          </h2>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+          <h3 style="color: #333; border-bottom: 2px solid #1976d2; padding-bottom: 10px;">
+            Обратите внимание на соискателей:
+          </h3>
+          ${candidatesHtml}
+        </div>
+
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin-top: 30px;">
+          <h3 style="color: #333; margin: 0 0 10px 0;">Наши новости:</h3>
+          <p style="margin: 5px 0; color: #666;">
+            Открыт вотсапп-чат проекта Авода
+          </p>
+          <p style="margin: 5px 0; color: #666;">
+            Для всех желающих получать максимально оперативно свежую информацию о соискателях, анонсы и новости Системы, открыт вотсапп - чат. Присоединяйтесь !!!
+          </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+          <p style="color: #666; font-size: 12px; margin: 0;">
+            Вы получаете эту рассылку потому, что зарегистрировались на нашем сайте.
+          </p>
+          <p style="color: #666; font-size: 12px; margin: 5px 0;">
+            <a href="https://worknow.com/unsubscribe" style="color: #1976d2; text-decoration: none;">
+              Отписаться от рассылки
+            </a>
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+};
+
+// Запуск cron-задачи для рассылки каждый день в 10:00
+cron.schedule('0 10 * * *', () => {
+  console.log("⏰ Запускаем проверку новых соискателей для рассылки...");
+  checkAndSendNewsletter();
+}, {
+  timezone: "Europe/Moscow",
+});
+
+// Запуск cron-задачи для отфильтрованной рассылки каждый час
+cron.schedule('0 * * * *', () => {
+  console.log("⏰ Запускаем проверку отфильтрованных кандидатов...");
+  checkAndSendFilteredNewsletter();
+}, {
+  timezone: "Europe/Moscow",
+});
+
 export { disableExpiredPremiums };
 export { checkLowRankedJobs };
+export { checkAndSendNewsletter };
+export { checkAndSendFilteredNewsletter };

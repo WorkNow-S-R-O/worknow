@@ -102,8 +102,14 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
         fetch(`${API_URL}/api/cities?lang=${language}`).then(res => res.json()),
         fetch(`${API_URL}/api/categories?lang=${language}`).then(res => res.json())
       ]).then(([citiesData, categoriesData]) => {
+        console.log('🏙️ Cities data:', citiesData);
+        console.log('📂 Categories data:', categoriesData);
         setCities(citiesData);
         setCategories(categoriesData);
+      }).catch(error => {
+        console.error('❌ Error fetching data:', error);
+        setCities([]);
+        setCategories([]);
       });
     } else {
       document.body.style.overflow = '';
@@ -251,8 +257,10 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
         background: '#fff', 
         borderRadius: 18, 
         padding: 40, 
-        width: 550, 
-        height: 600,
+        width: 800, 
+        height: 700,
+        maxWidth: '90vw',
+        maxHeight: '90vh',
         boxShadow: '0 4px 32px rgba(0,0,0,0.15)', 
         position: 'relative',
         display: 'flex',
@@ -279,48 +287,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
     </div>
   );
 
-  const renderLanguageCheckboxes = () => {
-    console.log('🗣️ Rendering language checkboxes, selectedLanguages:', selectedLanguages);
-    return (
-      <div style={{ marginBottom: isMobile ? '20px' : '16px' }}>
-        <label style={{ 
-          fontSize: isMobile ? '16px' : '14px', 
-          fontWeight: '500', 
-          marginBottom: '8px', 
-          display: 'block' 
-        }}>
-          {t('languages') || 'Языки'}
-        </label>
-        <div style={{ marginLeft: '8px' }}>
-          {languageOptions.map((option) => {
-            console.log(`🗣️ Rendering language option:`, option, `checked:`, selectedLanguages.includes(option.value));
-            return (
-              <div className="form-check" key={option.value}>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id={`lang-${option.value}`}
-                  checked={selectedLanguages.includes(option.value)}
-                  onChange={(e) => {
-                    console.log(`🗣️ Language checkbox clicked:`, option.value, e.target.checked);
-                    handleLanguageChange(option.value, e.target.checked);
-                  }}
-                  style={{ 
-                    transform: 'scale(1.2)', 
-                    zIndex: 10,
-                    position: 'relative'
-                  }}
-                />
-                <label className="form-check-label" htmlFor={`lang-${option.value}`} style={{ fontSize: isMobile ? '16px' : '14px' }}>
-                  {option.label}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
+
 
   return (
     <div 
@@ -368,181 +335,410 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
           {console.log('👤 Gender options:', genderOptions)}
           {console.log('🗣️ Language options:', languageOptions)}
           
-          {/* City Select */}
-          <div style={{ marginBottom: isMobile ? '20px' : '16px' }}>
-            <label style={{ 
-              fontSize: isMobile ? '16px' : '14px', 
-              fontWeight: '500', 
-              marginBottom: '8px', 
-              display: 'block' 
-            }}>
-              {t('city') || 'Город'}
-            </label>
-            <select 
-              className="form-select" 
-              value={selectedCity || ''} 
-              onChange={(e) => {
-                console.log('🏙️ City changed:', e.target.value);
-                setSelectedCity(e.target.value);
-              }}
-              style={{ 
-                fontSize: isMobile ? '16px' : '14px', 
-                padding: isMobile ? '12px' : '8px', 
-                margin: '0 8px', 
-                width: isMobile ? '90%' : '90%' 
-              }}
-            >
-              <option value="">{t('choose_city') || 'Выбрать город'}</option>
-              {cities.map(city => (
-                <option key={city.id} value={city.name}>
-                  {city.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          {/* Category Select */}
-          <div style={{ marginBottom: isMobile ? '20px' : '16px' }}>
-            <label style={{ 
-              fontSize: isMobile ? '16px' : '14px', 
-              fontWeight: '500', 
-              marginBottom: '8px', 
-              display: 'block' 
-            }}>
-              {t('category') || 'Категория'}
-            </label>
-            <select 
-              className="form-select" 
-              value={selectedCategory || ''} 
-              onChange={(e) => {
-                console.log('📂 Category changed:', e.target.value);
-                setSelectedCategory(e.target.value);
-              }}
-              style={{ 
-                fontSize: isMobile ? '16px' : '14px', 
-                padding: isMobile ? '12px' : '8px', 
-                margin: '0 8px', 
-                width: isMobile ? '90%' : '90%' 
-              }}
-            >
-              <option value="">{t('choose_category') || 'Выбрать категорию'}</option>
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.name}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          {/* Employment Select */}
-          <div style={{ marginBottom: isMobile ? '20px' : '16px' }}>
-            <label style={{ 
-              fontSize: isMobile ? '16px' : '14px', 
-              fontWeight: '500', 
-              marginBottom: '8px', 
-              display: 'block' 
-            }}>
-              {t('employment') || 'Тип занятости'}
-            </label>
-            <select 
-              className="form-select" 
-              value={selectedEmployment || ''} 
-              onChange={(e) => {
-                console.log('💼 Employment changed:', e.target.value);
-                setSelectedEmployment(e.target.value);
-              }}
-              style={{ 
-                fontSize: isMobile ? '16px' : '14px', 
-                padding: isMobile ? '12px' : '8px', 
-                margin: '0 8px', 
-                width: isMobile ? '90%' : '90%' 
-              }}
-            >
-              <option value="">{t('choose_employment') || 'Выбрать тип занятости'}</option>
-              {employmentOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          {/* Document Type Select */}
-          <div style={{ marginBottom: isMobile ? '20px' : '16px' }}>
-            <label style={{ 
-              fontSize: isMobile ? '16px' : '14px', 
-              fontWeight: '500', 
-              marginBottom: '8px', 
-              display: 'block' 
-            }}>
-              {t('document_type') || 'Тип документа'}
-            </label>
-            <select 
-              className="form-select" 
-              value={selectedDocumentType || ''} 
-              onChange={(e) => {
-                console.log('📄 Document type changed:', e.target.value);
-                setSelectedDocumentType(e.target.value);
-              }}
-              style={{ 
-                fontSize: isMobile ? '16px' : '14px', 
-                padding: isMobile ? '12px' : '8px', 
-                margin: '0 8px', 
-                width: isMobile ? '90%' : '90%' 
-              }}
-            >
-              <option value="">{t('choose_document_type') || 'Выбрать тип документа'}</option>
-              {documentTypeOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          {renderLanguageCheckboxes()}
-          
-          {/* Gender Select */}
-          <div style={{ marginBottom: isMobile ? '20px' : '16px' }}>
-            <label style={{ 
-              fontSize: isMobile ? '16px' : '14px', 
-              fontWeight: '500', 
-              marginBottom: '8px', 
-              display: 'block' 
-            }}>
-              {t('gender') || 'Пол'}
-            </label>
-            <select 
-              className="form-select" 
-              value={selectedGender || ''} 
-              onChange={(e) => {
-                console.log('👤 Gender changed:', e.target.value);
-                setSelectedGender(e.target.value);
-              }}
-              style={{ 
-                fontSize: isMobile ? '16px' : '14px', 
-                padding: isMobile ? '12px' : '8px', 
-                margin: '0 8px', 
-                width: isMobile ? '90%' : '90%' 
-              }}
-            >
-              <option value="">{t('choose_gender') || 'Выбрать пол'}</option>
-              {genderOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          {renderCheckbox(
-            t('demanded') || 'Востребованный кандидат',
-            isDemanded,
-            e => {
-              console.log('⭐ Demanded changed:', e.target.checked);
-              setIsDemanded(e.target.checked);
-            },
-            'demandedSwitch'
+          {isMobile ? (
+            // Mobile layout - single column
+            <>
+              {/* City Select */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ 
+                  fontSize: '16px', 
+                  fontWeight: '500', 
+                  marginBottom: '8px', 
+                  display: 'block' 
+                }}>
+                  {t('city') || 'Город'}
+                </label>
+                <select 
+                  className="form-select" 
+                  value={selectedCity || ''} 
+                  onChange={(e) => {
+                    console.log('🏙️ City changed:', e.target.value);
+                    setSelectedCity(e.target.value);
+                  }}
+                  style={{ 
+                    fontSize: '16px', 
+                    padding: '12px', 
+                    margin: '0 8px', 
+                    width: '90%' 
+                  }}
+                >
+                  <option value="">{t('choose_city') || 'Выбрать город'}</option>
+                  {cities.map(city => (
+                    <option key={city.id} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Category Select */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ 
+                  fontSize: '16px', 
+                  fontWeight: '500', 
+                  marginBottom: '8px', 
+                  display: 'block' 
+                }}>
+                  {t('category') || 'Категория'}
+                </label>
+                <select 
+                  className="form-select" 
+                  value={selectedCategory || ''} 
+                  onChange={(e) => {
+                    console.log('📂 Category changed:', e.target.value);
+                    setSelectedCategory(e.target.value);
+                  }}
+                  style={{ 
+                    fontSize: '16px', 
+                    padding: '12px', 
+                    margin: '0 8px', 
+                    width: '90%' 
+                  }}
+                >
+                  <option value="">{t('choose_category') || 'Выбрать категорию'}</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.label || cat.name}>
+                      {cat.label || cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Employment Select */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ 
+                  fontSize: '16px', 
+                  fontWeight: '500', 
+                  marginBottom: '8px', 
+                  display: 'block' 
+                }}>
+                  {t('employment') || 'Тип занятости'}
+                </label>
+                <select 
+                  className="form-select" 
+                  value={selectedEmployment || ''} 
+                  onChange={(e) => {
+                    console.log('💼 Employment changed:', e.target.value);
+                    setSelectedEmployment(e.target.value);
+                  }}
+                  style={{ 
+                    fontSize: '16px', 
+                    padding: '12px', 
+                    margin: '0 8px', 
+                    width: '90%' 
+                  }}
+                >
+                  <option value="">{t('choose_employment') || 'Выбрать тип занятости'}</option>
+                  {employmentOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Document Type Select */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ 
+                  fontSize: '16px', 
+                  fontWeight: '500', 
+                  marginBottom: '8px', 
+                  display: 'block' 
+                }}>
+                  {t('document_type') || 'Тип документа'}
+                </label>
+                <select 
+                  className="form-select" 
+                  value={selectedDocumentType || ''} 
+                  onChange={(e) => {
+                    console.log('📄 Document type changed:', e.target.value);
+                    setSelectedDocumentType(e.target.value);
+                  }}
+                  style={{ 
+                    fontSize: '16px', 
+                    padding: '12px', 
+                    margin: '0 8px', 
+                    width: '90%' 
+                  }}
+                >
+                  <option value="">{t('choose_document_type') || 'Выбрать тип документа'}</option>
+                  {documentTypeOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+
+              
+              {/* Gender Select */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ 
+                  fontSize: '16px', 
+                  fontWeight: '500', 
+                  marginBottom: '8px', 
+                  display: 'block' 
+                }}>
+                  {t('gender') || 'Пол'}
+                </label>
+                <select 
+                  className="form-select" 
+                  value={selectedGender || ''} 
+                  onChange={(e) => {
+                    console.log('👤 Gender changed:', e.target.value);
+                    setSelectedGender(e.target.value);
+                  }}
+                  style={{ 
+                    fontSize: '16px', 
+                    padding: '12px', 
+                    margin: '0 8px', 
+                    width: '90%' 
+                  }}
+                >
+                  <option value="">{t('choose_gender') || 'Выбрать пол'}</option>
+                  {genderOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {renderCheckbox(
+                t('demanded') || 'Востребованный кандидат',
+                isDemanded,
+                e => {
+                  console.log('⭐ Demanded changed:', e.target.checked);
+                  setIsDemanded(e.target.checked);
+                },
+                'demandedSwitch'
+              )}
+            </>
+          ) : (
+            // Desktop layout - two columns
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+              {/* Left Column */}
+              <div>
+                {/* City Select */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ 
+                    fontSize: '14px', 
+                    fontWeight: '500', 
+                    marginBottom: '8px', 
+                    display: 'block' 
+                  }}>
+                    {t('city') || 'Город'}
+                  </label>
+                  <select 
+                    className="form-select" 
+                    value={selectedCity || ''} 
+                    onChange={(e) => {
+                      console.log('🏙️ City changed:', e.target.value);
+                      setSelectedCity(e.target.value);
+                    }}
+                    style={{ 
+                      fontSize: '14px', 
+                      padding: '8px', 
+                      margin: '0 8px', 
+                      width: '90%' 
+                    }}
+                  >
+                    <option value="">{t('choose_city') || 'Выбрать город'}</option>
+                    {cities.map(city => (
+                      <option key={city.id} value={city.name}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Category Select */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ 
+                    fontSize: '14px', 
+                    fontWeight: '500', 
+                    marginBottom: '8px', 
+                    display: 'block' 
+                  }}>
+                    {t('category') || 'Категория'}
+                  </label>
+                  <select 
+                    className="form-select" 
+                    value={selectedCategory || ''} 
+                    onChange={(e) => {
+                      console.log('📂 Category changed:', e.target.value);
+                      setSelectedCategory(e.target.value);
+                    }}
+                    style={{ 
+                      fontSize: '14px', 
+                      padding: '8px', 
+                      margin: '0 8px', 
+                      width: '90%' 
+                    }}
+                  >
+                    <option value="">{t('choose_category') || 'Выбрать категорию'}</option>
+                                      {categories.map(cat => (
+                    <option key={cat.id} value={cat.label || cat.name}>
+                      {cat.label || cat.name}
+                    </option>
+                  ))}
+                  </select>
+                </div>
+                
+                {/* Employment Select */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ 
+                    fontSize: '14px', 
+                    fontWeight: '500', 
+                    marginBottom: '8px', 
+                    display: 'block' 
+                  }}>
+                    {t('employment') || 'Тип занятости'}
+                  </label>
+                  <select 
+                    className="form-select" 
+                    value={selectedEmployment || ''} 
+                    onChange={(e) => {
+                      console.log('💼 Employment changed:', e.target.value);
+                      setSelectedEmployment(e.target.value);
+                    }}
+                    style={{ 
+                      fontSize: '14px', 
+                      padding: '8px', 
+                      margin: '0 8px', 
+                      width: '90%' 
+                    }}
+                  >
+                    <option value="">{t('choose_employment') || 'Выбрать тип занятости'}</option>
+                    {employmentOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Document Type Select */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ 
+                    fontSize: '14px', 
+                    fontWeight: '500', 
+                    marginBottom: '8px', 
+                    display: 'block' 
+                  }}>
+                    {t('document_type') || 'Тип документа'}
+                  </label>
+                  <select 
+                    className="form-select" 
+                    value={selectedDocumentType || ''} 
+                    onChange={(e) => {
+                      console.log('📄 Document type changed:', e.target.value);
+                      setSelectedDocumentType(e.target.value);
+                    }}
+                    style={{ 
+                      fontSize: '14px', 
+                      padding: '8px', 
+                      margin: '0 8px', 
+                      width: '90%' 
+                    }}
+                  >
+                    <option value="">{t('choose_document_type') || 'Выбрать тип документа'}</option>
+                    {documentTypeOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              
+              {/* Right Column */}
+              <div>
+                {/* Gender Select */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ 
+                    fontSize: '14px', 
+                    fontWeight: '500', 
+                    marginBottom: '8px', 
+                    display: 'block' 
+                  }}>
+                    {t('gender') || 'Пол'}
+                  </label>
+                  <select 
+                    className="form-select" 
+                    value={selectedGender || ''} 
+                    onChange={(e) => {
+                      console.log('👤 Gender changed:', e.target.value);
+                      setSelectedGender(e.target.value);
+                    }}
+                    style={{ 
+                      fontSize: '14px', 
+                      padding: '8px', 
+                      margin: '0 8px', 
+                      width: '90%' 
+                    }}
+                  >
+                    <option value="">{t('choose_gender') || 'Выбрать пол'}</option>
+                    {genderOptions.map(option => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Languages Section */}
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ 
+                    fontSize: '14px', 
+                    fontWeight: '500', 
+                    marginBottom: '8px', 
+                    display: 'block' 
+                  }}>
+                    {t('languages') || 'Языки'}
+                  </label>
+                  <div style={{ marginLeft: '8px' }}>
+                    {languageOptions.map((option) => {
+                      console.log(`🗣️ Rendering language option:`, option, `checked:`, selectedLanguages.includes(option.value));
+                      return (
+                        <div className="form-check" key={option.value}>
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`lang-${option.value}`}
+                            checked={selectedLanguages.includes(option.value)}
+                            onChange={(e) => {
+                              console.log(`🗣️ Language checkbox clicked:`, option.value, e.target.checked);
+                              handleLanguageChange(option.value, e.target.checked);
+                            }}
+                            style={{ 
+                              transform: 'scale(1.2)', 
+                              zIndex: 10,
+                              position: 'relative'
+                            }}
+                          />
+                          <label className="form-check-label" htmlFor={`lang-${option.value}`} style={{ fontSize: '14px' }}>
+                            {option.label}
+                          </label>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                
+                {/* Demanded Checkbox */}
+                {renderCheckbox(
+                  t('demanded') || 'Востребованный кандидат',
+                  isDemanded,
+                  e => {
+                    console.log('⭐ Demanded changed:', e.target.checked);
+                    setIsDemanded(e.target.checked);
+                  },
+                  'demandedSwitch'
+                )}
+              </div>
+            </div>
           )}
         </div>
         

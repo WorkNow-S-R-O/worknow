@@ -36,7 +36,7 @@ AWS_S3_BUCKET_NAME=your_s3_bucket_name
 AWS_REGION=us-east-1
 
 # API Configuration
-VITE_API_URL=http://localhost:3001
+VITE_API_URL=http://localhost:3000
 
 # Email Configuration (if using Nodemailer)
 EMAIL_USER=your_email@gmail.com

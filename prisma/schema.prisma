@@ -121,3 +121,24 @@ model Payment {
   type         Int
   date         DateTime
 }
+
+model NewsletterSubscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  language  String   @default("ru") // 'ru', 'en', 'he', 'ar'
+  preferences Json?  // Store additional preferences like categories, cities, etc.
+  
+  // Filter preferences for candidate notifications
+  preferredCities     String[] @default([])  // Array of preferred cities
+  preferredCategories String[] @default([])  // Array of preferred job categories
+  preferredEmployment String[] @default([])  // Array of preferred employment types
+  preferredLanguages  String[] @default([])  // Array of preferred languages
+  preferredGender     String?                // Preferred gender
+  preferredDocumentTypes String[] @default([]) // Array of preferred document types
+  onlyDemanded        Boolean  @default(false) // Only receive notifications for demanded candidates
+}

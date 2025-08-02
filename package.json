@@ -82,6 +82,7 @@
     "react-select": "^5.10.0",
     "react-toastify": "^11.0.3",
     "redis": "^5.6.1",
+    "resend": "^3.5.0",
     "string-similarity": "^4.0.4",
     "stripe": "^17.6.0",
     "svix": "^1.45.1",

@@ -29,6 +29,7 @@ import "./18n.ts";
 import "./css/ripple.css";
 import CancelSubscription from "./components/CancelSubscription.jsx";
 import BillingPage from "./components/BillingPage.jsx";
+import NewsletterSubscription from "./pages/NewsletterSubscription.jsx";
 
 function Layout() {
   return (
@@ -63,6 +64,7 @@ const router = createBrowserRouter([
       { path: "premium", element: <PremiumPage /> },
       { path: "cancel-subscription", element: <CancelSubscription /> },
       { path: "billing", element: <BillingPage /> },
+      { path: "newsletter", element: <NewsletterSubscription /> },
       { path: "*", element: <NotFoundPage /> },
     ]
   }

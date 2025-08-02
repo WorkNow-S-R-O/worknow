@@ -2,7 +2,7 @@ import { Webhook } from 'svix';
 import { processClerkWebhookService } from '../services/webhookService.js';
 
 // eslint-disable-next-line no-undef
-const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 
 if (!WEBHOOK_SECRET) {
   console.error('❌ Missing Clerk Webhook Secret!');
