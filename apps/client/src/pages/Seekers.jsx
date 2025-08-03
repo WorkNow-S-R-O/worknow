@@ -234,6 +234,21 @@ export default function Seekers() {
       />
       
       <div className="container" style={{ paddingTop: '100px' }}>
+        {/* Database update badge */}
+        <div className="alert alert-info d-flex align-items-center gap-2 mb-4" role="alert" style={{
+          borderRadius: '8px',
+          border: '1px solid #d1ecf1',
+          backgroundColor: '#f8f9fa'
+        }}>
+          <i className="bi bi-info-circle text-info" style={{ fontSize: '1.1rem' }}></i>
+          <div>
+            <strong className="text-info">{t('seekers_database_update') || 'База данных кандидатов обновляется ежедневно'}</strong>
+            <div className="text-muted" style={{ fontSize: '0.9rem', marginTop: '2px' }}>
+              {t('seekers_database_update_description') || 'Новые кандидаты добавляются каждый день'}
+            </div>
+          </div>
+        </div>
+        
         {/* Mobile-optimized header */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3 seekers-header">
           <h2 className="fs-4 mb-0">{t("seekers") || "Соискатели"}</h2>

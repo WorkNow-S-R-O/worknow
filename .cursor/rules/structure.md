@@ -19,17 +19,17 @@
 ### API (Backend)
 - `apps/api/index.js` - Main server entry point (UPDATED with proper environment variable loading and CORS configuration)
 - `apps/api/config/clerkConfig.js` - Clerk authentication configuration (UPDATED with correct environment variable names)
-- `apps/api/controllers/` - Request handlers
-  - `userController.js` - User management (UPDATED with proper error handling)
-  - `usersController.js` - User sync and management (UPDATED with improved error handling)
-  - `jobController.js` - Job management
-  - `seekerController.js` - Job seekers management
-  - `categoryController.js` - Categories management
-  - `cityController.js` - Cities management
-  - `payments.js` - Payment processing
-  - `messages.js` - Messaging system
-  - `webhookController.js` - Webhook handlers
-  - `newsletterController.js` - Newsletter subscription and email sending (UPDATED with improved unsubscribe functionality)
+  - `apps/api/controllers/` - Request handlers
+    - `userController.js` - User management (UPDATED with proper error handling)
+    - `usersController.js` - User sync and management (UPDATED with improved error handling)
+    - `jobController.js` - Job management
+    - `seekerController.js` - Job seekers management
+    - `categoryController.js` - Categories management
+    - `cityController.js` - Cities management
+    - `payments.js` - Payment processing
+    - `messages.js` - Messaging system
+    - `webhookController.js` - Webhook handlers
+    - `newsletterController.js` - Newsletter subscription and email sending (UPDATED with improved unsubscribe functionality and email verification)
 - `apps/api/routes/` - API route definitions
   - `users.js` - User endpoints (UPDATED - removed duplicate userSync routes)
   - `jobs.js` - Job endpoints
@@ -42,25 +42,26 @@
   - `upload.js` - File upload endpoints
   - `s3Upload.js` - S3 upload endpoints
   - `newsletter.js` - Newsletter subscription and email endpoints (UPDATED with improved state management)
-- `apps/api/services/` - Business logic layer
-  - `userService.js` - User business logic (UPDATED with improved error handling and logging)
-  - `jobService.js` - Job business logic
-  - `seekerService.js` - Seeker business logic
-  - `cityService.js` - City business logic
-  - `createJobService.js` - Job creation logic
-  - `editFormService.js` - Form editing logic
-  - `getJobService.js` - Job retrieval logic
-  - `getUserByClerkService.js` - User retrieval logic
-  - `jobBoostService.js` - Job boosting logic
-  - `jobCreateService.js` - Job creation logic
-  - `jobDeleteService.js` - Job deletion logic
-  - `redisService.js` - Redis caching service
-  - `s3UploadService.js` - S3 upload service
-  - `imageModerationService.js` - Image moderation service using AWS Rekognition (NEW)
-  - `updateUserService.js` - User update logic
-  - `webhookService.js` - Webhook processing logic
-  - `aiJobTitleService.js` - AI job title generation service (UPDATED with exponential backoff rate limit handling)
-  - `notificationService.js` - Candidate notification service (NEW)
+  - `apps/api/services/` - Business logic layer
+    - `userService.js` - User business logic (UPDATED with improved error handling and logging)
+    - `jobService.js` - Job business logic
+    - `seekerService.js` - Seeker business logic
+    - `cityService.js` - City business logic
+    - `createJobService.js` - Job creation logic
+    - `editFormService.js` - Form editing logic
+    - `getJobService.js` - Job retrieval logic
+    - `getUserByClerkService.js` - User retrieval logic
+    - `jobBoostService.js` - Job boosting logic
+    - `jobCreateService.js` - Job creation logic
+    - `jobDeleteService.js` - Job deletion logic
+    - `redisService.js` - Redis caching service
+    - `s3UploadService.js` - S3 upload service
+    - `imageModerationService.js` - Image moderation service using AWS Rekognition (NEW)
+    - `updateUserService.js` - User update logic
+    - `webhookService.js` - Webhook processing logic
+    - `aiJobTitleService.js` - AI job title generation service (UPDATED with exponential backoff rate limit handling)
+    - `notificationService.js` - Candidate notification service (NEW)
+    - `snsService.js` - AWS SNS email verification service (NEW)
 - `apps/api/middlewares/` - Express middlewares
   - `auth.js` - Authentication middleware
   - `validation.js` - Input validation
@@ -133,7 +134,8 @@
       - `premium-button.jsx` - Premium button
       - `ProgressBar.jsx` - Progress bar
       - `SeekerFilterModal.jsx` - Seeker filter modal
-      - `NewsletterModal.jsx` - Newsletter subscription modal (UPDATED with improved subscription state management, field disabling, and unsubscribe functionality)
+      - `NewsletterModal.jsx` - Newsletter subscription modal (UPDATED with improved subscription state management, field disabling, unsubscribe functionality, and email verification)
+      - `VerificationModal.jsx` - Email verification modal for newsletter subscription (NEW)
       - `spinner.tsx` - Loading spinner
       - `index.ts` - UI components index
   - `contexts/` - React contexts
@@ -157,6 +159,7 @@
     - `Cancel.jsx` - Cancel page
     - `AccessDenied.jsx` - Access denied page
     - `NotFoundPage.jsx` - 404 page
+    - `NewsletterSubscription.jsx` - Newsletter subscription page (UPDATED with email verification integration)
   - `store/` - State management (Zustand)
     - `languageStore.ts` - Language state management
     - `filterStore.js` - Filter state management
@@ -215,6 +218,7 @@
   - `broadcast-example.js` - Broadcast example
   - `fix-job-categories.js` - Job category fixes
   - `make-admin.js` - Admin user creation
+  - `test-sns-verification.js` - SNS email verification test script (NEW)
 - `tests/` - Test files
   - `user-header.test.js` - User header tests
   - `__snapshots__/` - Test snapshots
@@ -249,6 +253,7 @@
 9. **SeekerFilterModal UI** - Updated modal to be wider and more rectangular with better layout
 10. **Rate Limit Handling** - Fixed AI job title generation with exponential backoff retry logic (NEW)
 11. **NewsletterModal State Management** - Improved subscription state handling with proper field disabling and unsubscribe functionality (NEW)
+12. **Email Verification System** - Implemented AWS SNS-based email verification for newsletter subscription with integration into NewsletterSubscription page (NEW)
 
 ### ✅ Verified Working:
 - ✅ Frontend server: `http://localhost:3000`
@@ -261,7 +266,10 @@
 - ✅ Error handling: Comprehensive error handling implemented
 - ✅ SeekerFilterModal: Wider modal with improved two-column layout for desktop
 - ✅ AI Job Title Generation: Rate limit handling with exponential backoff (NEW)
-- ✅ NewsletterModal: Improved subscription state management with field disabling and unsubscribe functionality (NEW)
+- ✅ NewsletterModal: Improved subscription state management with field disabling, unsubscribe functionality, and email verification (NEW)
+- ✅ NewsletterSubscription Page: Integrated email verification flow with AWS SNS (NEW)
+- ✅ VerificationModal: Email verification modal with timer, resend functionality, and proper error handling (NEW)
+- ✅ SNS Service: AWS SNS integration for email verification with code generation and validation (NEW)
 
 ### 🧪 Tested Endpoints:
 - ✅ `/api/health` - Health check
@@ -273,6 +281,8 @@
 - ✅ `/api/categories` - Categories data
 - ✅ `/api/seekers` - Job seekers data
 - ✅ `/api/newsletter/*` - Newsletter subscription endpoints (NEW)
+- ✅ `/api/newsletter/send-verification` - Send verification code endpoint (NEW)
+- ✅ `/api/newsletter/verify-code` - Verify code endpoint (NEW)
 
 ### 🔧 Key Fixes Applied:
 1. **Environment Variables**: Fixed loading order and corrected API keys
@@ -282,7 +292,8 @@
 5. **API Integration**: Fixed Clerk API integration with proper authentication
 6. **UI Improvements**: Enhanced SeekerFilterModal with wider layout and better organization
 7. **Rate Limit Handling**: Implemented exponential backoff retry logic for AI job title generation (NEW)
-8. **NewsletterModal Improvements**: Enhanced subscription state management with proper field disabling and unsubscribe functionality (NEW)
+8. **NewsletterModal Improvements**: Enhanced subscription state management with proper field disabling, unsubscribe functionality, and email verification (NEW)
+9. **Email Verification System**: Implemented AWS SNS-based email verification with code generation, validation, expiration handling, and integration into NewsletterSubscription page (NEW)
 
 ### 🎨 Recent UI Updates:
 - **SeekerFilterModal**: 

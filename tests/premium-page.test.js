@@ -123,7 +123,7 @@ describe('PremiumPage Component', () => {
       expect(proButton).toBeDisabled();
     });
 
-    test('should show "Активен" and be disabled when user has Enterprise subscription', () => {
+    test('should show "Активен" and be disabled when user has Deluxe subscription', () => {
       render(<MockPremiumPage 
         user={{ id: 'user123' }} 
         dbUser={{ isPremium: true, premiumDeluxe: true }} 
@@ -137,8 +137,8 @@ describe('PremiumPage Component', () => {
     });
   });
 
-  describe('Enterprise Plan Button Behavior', () => {
-    test('should show "Купить Enterprise" with 199₪ when user has no premium', () => {
+  describe('Deluxe Plan Button Behavior', () => {
+    test('should show "Купить Deluxe" with 199₪ when user has no premium', () => {
       render(<MockPremiumPage 
         user={{ id: 'user123' }} 
         dbUser={{ isPremium: false, premiumDeluxe: false }} 
@@ -146,16 +146,16 @@ describe('PremiumPage Component', () => {
         userError={null} 
       />);
       
-      const enterpriseButton = screen.getByText('Купить Enterprise');
-      expect(enterpriseButton).toBeInTheDocument();
-      expect(enterpriseButton).not.toBeDisabled();
+      const deluxeButton = screen.getByText('Купить Deluxe');
+      expect(deluxeButton).toBeInTheDocument();
+      expect(deluxeButton).not.toBeDisabled();
       
       // Check price display
       const priceElement = screen.getByText('199₪');
       expect(priceElement).toBeInTheDocument();
     });
 
-    test('should show "Улучшить до Enterprise" with 100₪ when user has Pro but not Enterprise', () => {
+    test('should show "Улучшить до Deluxe" with 100₪ when user has Pro but not Deluxe', () => {
       render(<MockPremiumPage 
         user={{ id: 'user123' }} 
         dbUser={{ isPremium: true, premiumDeluxe: false }} 
@@ -163,16 +163,16 @@ describe('PremiumPage Component', () => {
         userError={null} 
       />);
       
-      const enterpriseButton = screen.getByText('Улучшить до Enterprise');
-      expect(enterpriseButton).toBeInTheDocument();
-      expect(enterpriseButton).not.toBeDisabled();
+      const deluxeButton = screen.getByText('Улучшить до Deluxe');
+      expect(deluxeButton).toBeInTheDocument();
+      expect(deluxeButton).not.toBeDisabled();
       
       // Check price display
       const priceElement = screen.getByText('100₪');
       expect(priceElement).toBeInTheDocument();
     });
 
-    test('should show "Активен" and be disabled when user has Enterprise subscription', () => {
+    test('should show "Активен" and be disabled when user has Deluxe subscription', () => {
       render(<MockPremiumPage 
         user={{ id: 'user123' }} 
         dbUser={{ isPremium: true, premiumDeluxe: true }} 
@@ -180,9 +180,9 @@ describe('PremiumPage Component', () => {
         userError={null} 
       />);
       
-      const enterpriseButton = screen.getByText('Активен');
-      expect(enterpriseButton).toBeInTheDocument();
-      expect(enterpriseButton).toBeDisabled();
+      const deluxeButton = screen.getByText('Активен');
+      expect(deluxeButton).toBeInTheDocument();
+      expect(deluxeButton).toBeDisabled();
     });
   });
 
@@ -221,10 +221,10 @@ describe('PremiumPage Component', () => {
         userError={null} 
       />);
       
-      // Free should be active, Pro and Enterprise should not be
+      // Free should be active, Pro and Deluxe should not be
       expect(screen.getByText('Активен')).toBeInTheDocument(); // Free plan
       expect(screen.getByText('Купить Premium')).toBeInTheDocument(); // Pro plan
-      expect(screen.getByText('Купить Enterprise')).toBeInTheDocument(); // Enterprise plan
+      expect(screen.getByText('Купить Deluxe')).toBeInTheDocument(); // Deluxe plan
 
       // Test with Pro subscription
       rerender(<MockPremiumPage 
@@ -235,9 +235,9 @@ describe('PremiumPage Component', () => {
       />);
       
       expect(screen.getAllByText('Активен')).toHaveLength(2); // Free and Pro
-      expect(screen.getByText('Улучшить до Enterprise')).toBeInTheDocument(); // Enterprise upgrade
+      expect(screen.getByText('Улучшить до Deluxe')).toBeInTheDocument(); // Deluxe upgrade
 
-      // Test with Enterprise subscription
+      // Test with Deluxe subscription
       rerender(<MockPremiumPage 
         user={{ id: 'user123' }} 
         dbUser={{ isPremium: true, premiumDeluxe: true }} 

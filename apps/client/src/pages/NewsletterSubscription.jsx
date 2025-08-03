@@ -5,6 +5,7 @@ import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUserSync } from '../hooks/useUserSync.js';
+import VerificationModal from '../components/ui/VerificationModal.jsx';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,6 +17,10 @@ const NewsletterSubscription = () => {
   const [isUnsubscribing, setIsUnsubscribing] = useState(false);
   const [isAlreadySubscribed, setIsAlreadySubscribed] = useState(false);
   const [subscriberData, setSubscriberData] = useState(null);
+  
+  // Verification state
+  const [showVerification, setShowVerification] = useState(false);
+  const [subscriptionData, setSubscriptionData] = useState(null);
   
   // Filter preferences state
   const [cities, setCities] = useState([]);
@@ -165,7 +170,7 @@ const NewsletterSubscription = () => {
     setIsSubscribing(true);
     
     try {
-      const response = await axios.post(`${API_URL}/api/newsletter/subscribe`, {
+      const response = await axios.post(`${API_URL}/api/newsletter/send-verification`, {
         email: email.trim(),
         firstName: firstName.trim() || null,
         lastName: lastName.trim() || null,
@@ -182,22 +187,21 @@ const NewsletterSubscription = () => {
       });
 
       if (response.data.success) {
-        toast.success(t('newsletter_success') || 'Вы успешно подписались на рассылку!');
-        // Set as subscribed after successful subscription
-        setIsAlreadySubscribed(true);
-        setSubscriberData(response.data.subscriber);
-        navigate('/seekers');
+        toast.success(t('verification_code_sent') || 'Код подтверждения отправлен на ваш email!');
+        // Store subscription data and show verification modal
+        setSubscriptionData(response.data.subscriptionData);
+        setShowVerification(true);
       } else {
-        toast.error(response.data.message || t('newsletter_error') || 'Ошибка при подписке на рассылку');
+        toast.error(response.data.message || t('newsletter_error') || 'Ошибка при отправке кода подтверждения');
       }
     } catch (error) {
-      console.error('Newsletter subscription error:', error);
+      console.error('Newsletter verification error:', error);
       if (error.response?.status === 409) {
         toast.error('Этот email уже подписан на рассылку');
       } else if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error(t('newsletter_error') || 'Ошибка при подписке на рассылку');
+        toast.error(t('newsletter_error') || 'Ошибка при отправке кода подтверждения');
       }
     } finally {
       setIsSubscribing(false);
@@ -253,6 +257,20 @@ const NewsletterSubscription = () => {
         checkSubscriptionStatus(newEmail);
       }, 500);
     }
+  };
+
+  // Handle verification success
+  const handleVerificationSuccess = (subscriber) => {
+    setIsAlreadySubscribed(true);
+    setSubscriberData(subscriber);
+    setShowVerification(false);
+    navigate('/seekers');
+  };
+
+  // Handle verification modal close
+  const handleVerificationClose = () => {
+    setShowVerification(false);
+    setSubscriptionData(null);
   };
 
   return (
@@ -792,7 +810,7 @@ const NewsletterSubscription = () => {
                     <i className="bi bi-info-circle me-2" style={{ color: '#007bff' }}></i>
                     <div>
                                           <small className="text-muted">
-                      Для доступа к фильтру "Только востребованные кандидаты" необходимо приобрести подписку.{' '}
+                      Для доступа к фильтру &quot;Только востребованные кандидаты&quot; необходимо приобрести подписку.{' '}
                       <a href="/premium" className="text-decoration-none fw-bold">Перейти к тарифам</a>
                     </small>
                     </div>
@@ -889,6 +907,15 @@ const NewsletterSubscription = () => {
         </div>
       </div>
     </div>
+
+    {/* Verification Modal */}
+    <VerificationModal
+      open={showVerification}
+      onClose={handleVerificationClose}
+      email={email}
+      subscriptionData={subscriptionData}
+      onVerificationSuccess={handleVerificationSuccess}
+    />
     </>
   );
 };

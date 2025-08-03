@@ -142,3 +142,12 @@ model NewsletterSubscriber {
   preferredDocumentTypes String[] @default([]) // Array of preferred document types
   onlyDemanded        Boolean  @default(false) // Only receive notifications for demanded candidates
 }
+
+model NewsletterVerification {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  code      String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+}

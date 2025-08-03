@@ -187,6 +187,41 @@ app.get('/api/test-server', (req, res) => {
   });
 });
 
+// Тестовый endpoint для проверки базы данных
+app.get('/api/test-database', async (req, res) => {
+  try {
+    const { PrismaClient } = await import('@prisma/client');
+    const prisma = new PrismaClient();
+    
+    // Test basic database connection
+    const result = await prisma.$queryRaw`SELECT 1 as test`;
+    console.log('✅ Database connection test result:', result);
+    
+    // Test NewsletterVerification table
+    try {
+      const verificationCount = await prisma.newsletterVerification.count();
+      console.log('✅ NewsletterVerification table accessible, count:', verificationCount);
+    } catch (error) {
+      console.error('❌ NewsletterVerification table error:', error);
+    }
+    
+    await prisma.$disconnect();
+    
+    res.json({
+      success: true,
+      message: 'Database connection test successful',
+      result: result
+    });
+  } catch (error) {
+    console.error('❌ Database test error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Database connection test failed',
+      error: error.message
+    });
+  }
+});
+
 // Тестовый endpoint для проверки Clerk API
 app.get('/api/test-clerk-api', async (req, res) => {
   try {

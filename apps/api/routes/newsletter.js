@@ -4,7 +4,9 @@ import {
   unsubscribeFromNewsletter,
   getNewsletterSubscribers,
   checkSubscriptionStatus,
-  updateNewsletterPreferences
+  updateNewsletterPreferences,
+  sendNewsletterVerificationCode,
+  verifyNewsletterCode
 } from '../controllers/newsletterController.js';
 import { sendCandidatesToSubscribers, sendFilteredCandidatesToSubscribers } from '../services/newsletterService.js';
 
@@ -12,6 +14,12 @@ const router = express.Router();
 
 // Subscribe to newsletter
 router.post('/subscribe', subscribeToNewsletter);
+
+// Send verification code for newsletter subscription
+router.post('/send-verification', sendNewsletterVerificationCode);
+
+// Verify code and complete newsletter subscription
+router.post('/verify-code', verifyNewsletterCode);
 
 // Unsubscribe from newsletter
 router.post('/unsubscribe', unsubscribeFromNewsletter);

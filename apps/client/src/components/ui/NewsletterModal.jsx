@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
+import VerificationModal from './VerificationModal.jsx';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -17,6 +18,10 @@ const NewsletterModal = ({ open, onClose }) => {
   const [subscriberData, setSubscriberData] = useState(null);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+  
+  // Verification state
+  const [showVerification, setShowVerification] = useState(false);
+  const [subscriptionData, setSubscriptionData] = useState(null);
   
   // Filter preferences state
   const [cities, setCities] = useState([]);
@@ -178,7 +183,7 @@ const NewsletterModal = ({ open, onClose }) => {
     setIsSubscribing(true);
     
     try {
-      const response = await axios.post(`${API_URL}/api/newsletter/subscribe`, {
+      const response = await axios.post(`${API_URL}/api/newsletter/send-verification`, {
         email: email.trim(),
         firstName: firstName.trim() || null,
         lastName: lastName.trim() || null,
@@ -195,22 +200,21 @@ const NewsletterModal = ({ open, onClose }) => {
       });
 
       if (response.data.success) {
-        toast.success(t('newsletter_success') || 'Вы успешно подписались на рассылку!');
-        // Set as subscribed after successful subscription
-        setIsAlreadySubscribed(true);
-        setSubscriberData(response.data.subscriber);
-        onClose();
+        toast.success(t('verification_code_sent') || 'Код подтверждения отправлен на ваш email!');
+        // Store subscription data and show verification modal
+        setSubscriptionData(response.data.subscriptionData);
+        setShowVerification(true);
       } else {
-        toast.error(response.data.message || t('newsletter_error') || 'Ошибка при подписке на рассылку');
+        toast.error(response.data.message || t('newsletter_error') || 'Ошибка при отправке кода подтверждения');
       }
     } catch (error) {
-      console.error('Newsletter subscription error:', error);
+      console.error('Newsletter verification error:', error);
       if (error.response?.status === 409) {
         toast.error('Этот email уже подписан на рассылку');
       } else if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error(t('newsletter_error') || 'Ошибка при подписке на рассылку');
+        toast.error(t('newsletter_error') || 'Ошибка при отправке кода подтверждения');
       }
     } finally {
       setIsSubscribing(false);
@@ -252,6 +256,20 @@ const NewsletterModal = ({ open, onClose }) => {
     } finally {
       setIsUnsubscribing(false);
     }
+  };
+
+  // Handle verification success
+  const handleVerificationSuccess = (subscriber) => {
+    setIsAlreadySubscribed(true);
+    setSubscriberData(subscriber);
+    setShowVerification(false);
+    onClose();
+  };
+
+  // Handle verification modal close
+  const handleVerificationClose = () => {
+    setShowVerification(false);
+    setSubscriptionData(null);
   };
 
   // Handle email change (only for new subscriptions or when user is not logged in)
@@ -328,14 +346,15 @@ const NewsletterModal = ({ open, onClose }) => {
   if (!open) return null;
 
   return (
-    <div 
-      style={modalStyle}
-      onTouchStart={isMobile ? onTouchStart : undefined}
-      onTouchMove={isMobile ? onTouchMove : undefined}
-      onTouchEnd={isMobile ? onTouchEnd : undefined}
-      onMouseDown={!isMobile ? handleOutsideClick : undefined}
-    >
-      <div ref={modalRef} style={contentStyle}>
+    <>
+      <div 
+        style={modalStyle}
+        onTouchStart={isMobile ? onTouchStart : undefined}
+        onTouchMove={isMobile ? onTouchMove : undefined}
+        onTouchEnd={isMobile ? onTouchEnd : undefined}
+        onMouseDown={!isMobile ? handleOutsideClick : undefined}
+      >
+        <div ref={modalRef} style={contentStyle}>
         {isMobile ? (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>
@@ -1100,6 +1119,16 @@ const NewsletterModal = ({ open, onClose }) => {
             </div>
       </div>
     </div>
+
+    {/* Verification Modal */}
+    <VerificationModal
+      open={showVerification}
+      onClose={handleVerificationClose}
+      email={email}
+      subscriptionData={subscriptionData}
+      onVerificationSuccess={handleVerificationSuccess}
+    />
+  </>
   );
 };
 

@@ -96,6 +96,7 @@ export const activatePremium = async (req, res) => {
     });
 
     if (session.payment_status === 'paid') {
+              // Set premiumDeluxe flag for Deluxe subscriptions only (not Pro)
               const premiumDeluxe = priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK' || priceId === 'price_1Rfli2COLiDbHvw1xdMaguLf' || priceId === 'price_1RqXuoCOLiDbHvw1LLew4Mo8' || priceId === 'price_1RqXveCOLiDbHvw18RQxj2g6';
         
         console.log('🔍 Updating user with premium data:', {
@@ -123,7 +124,9 @@ export const activatePremium = async (req, res) => {
       await sendTelegramNotification(user, user.jobs);
 
       // Если deluxe — отправляем автоматическое сообщение
-              if (priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK' || priceId === 'price_1Qt63NCOLiDbHvw13PRhpenX' || priceId === 'price_1Rfli2COLiDbHvw1xdMaguLf' || priceId === 'price_1RqXuoCOLiDbHvw1LLew4Mo8' || priceId === 'price_1RqXveCOLiDbHvw18RQxj2g6') {
+      // Deluxe price IDs: price_1RfHjiCOLiDbHvw1repgIbnK, price_1Rfli2COLiDbHvw1xdMaguLf, price_1RqXuoCOLiDbHvw1LLew4Mo8, price_1RqXveCOLiDbHvw18RQxj2g6
+      // Pro price ID: price_1Qt63NCOLiDbHvw13PRhpenX (excluded from deluxe condition)
+              if (priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK' || priceId === 'price_1Rfli2COLiDbHvw1xdMaguLf' || priceId === 'price_1RqXuoCOLiDbHvw1LLew4Mo8' || priceId === 'price_1RqXveCOLiDbHvw18RQxj2g6') {
         // Можно кастомизировать текст и контакты менеджера
         await prisma.message.create({
           data: {
