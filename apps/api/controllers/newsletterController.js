@@ -360,9 +360,12 @@ export async function sendNewsletterVerificationCode(req, res) {
       });
     }
 
-    // Check if already subscribed
-    const existingSubscriber = await prisma.newsletterSubscriber.findUnique({
-      where: { email: email.trim().toLowerCase() }
+    // Check if already subscribed (only active subscribers)
+    const existingSubscriber = await prisma.newsletterSubscriber.findFirst({
+      where: { 
+        email: email.trim().toLowerCase(),
+        isActive: true
+      }
     });
 
     if (existingSubscriber) {

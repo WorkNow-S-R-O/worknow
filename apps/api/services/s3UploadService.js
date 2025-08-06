@@ -3,6 +3,10 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// Job posting limits
+const MAX_JOBS_FREE_USER = 5;
+const MAX_JOBS_PREMIUM_USER = 10;
+
 /**
  * Service class for handling S3 upload operations
  */
@@ -93,6 +97,28 @@ class S3UploadService {
         const uploadResult = await this.uploadJobImage(file, userId);
         imageUrl = uploadResult.imageUrl;
         uploadedImageUrl = imageUrl;
+      }
+
+      // Check user's job limit before creating job
+      const user = await prisma.user.findUnique({
+        where: { id: userId }
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Check job count limit
+      const jobCount = await prisma.job.count({ where: { userId: userId } });
+      const isPremium = user.isPremium || user.premiumDeluxe;
+      const maxJobs = isPremium ? MAX_JOBS_PREMIUM_USER : MAX_JOBS_FREE_USER;
+
+      if (jobCount >= maxJobs) {
+        if (isPremium) {
+          throw new Error(`Вы уже разместили ${MAX_JOBS_PREMIUM_USER} объявлений.`);
+        } else {
+          throw new Error(`Вы уже разместили ${MAX_JOBS_FREE_USER} объявлений. Для размещения большего количества объявлений перейдите на Premium тариф.`);
+        }
       }
 
       // Create job in database

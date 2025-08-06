@@ -63,7 +63,7 @@ const JobCard = ({ job }) => {
         {/* Плашка Премиум */}
         {job.user?.isPremium && (
           <div className="premium-badge">
-            <i className="bi bi-star-fill"></i> Премиум
+            <i className="bi bi-star-fill"></i> {t('premium_badge')}
           </div>
         )}
         <div className="card-body">

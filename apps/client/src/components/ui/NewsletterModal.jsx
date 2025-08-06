@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 import VerificationModal from './VerificationModal.jsx';
+import useLanguageStore from '../../store/languageStore';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -37,6 +38,7 @@ const NewsletterModal = ({ open, onClose }) => {
   const modalRef = useRef();
   const { t } = useTranslation();
   const { user, isLoaded } = useUser();
+  const language = useLanguageStore((state) => state.language) || 'ru';
 
   // Determine if mobile
   const isMobile = window.innerWidth <= 768;
@@ -44,30 +46,30 @@ const NewsletterModal = ({ open, onClose }) => {
   // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
   
-  // Filter options
+  // Filter options with translations
   const languageOptions = [
-    { value: 'русский', label: 'Русский' },
-    { value: 'украинский', label: 'Украинский' },
-    { value: 'английский', label: 'Английский' },
-    { value: 'иврит', label: 'Иврит' },
+    { value: 'русский', label: t('language_russian') || 'Русский' },
+    { value: 'украинский', label: t('language_ukrainian') || 'Украинский' },
+    { value: 'английский', label: t('language_english') || 'Английский' },
+    { value: 'иврит', label: t('language_hebrew') || 'Иврит' },
   ];
 
   const employmentOptions = [
-    { value: 'полная', label: 'Полная' },
-    { value: 'частичная', label: 'Частичная' },
+    { value: 'полная', label: t('employment_full') || 'Полная' },
+    { value: 'частичная', label: t('employment_partial') || 'Частичная' },
   ];
 
   const documentTypeOptions = [
-    { value: 'Виза Б1', label: 'Виза Б1' },
-    { value: 'Виза Б2', label: 'Виза Б2' },
-    { value: 'Теудат Зеут', label: 'Теудат Зеут' },
-    { value: 'Рабочая виза', label: 'Рабочая виза' },
-    { value: 'Другое', label: 'Другое' },
+    { value: 'Виза Б1', label: t('document_visa_b1') || 'Виза Б1' },
+    { value: 'Виза Б2', label: t('document_visa_b2') || 'Виза Б2' },
+    { value: 'Теудат Зеут', label: t('document_teudat_zehut') || 'Теудат Зеут' },
+    { value: 'Рабочая виза', label: t('document_work_visa') || 'Рабочая виза' },
+    { value: 'Другое', label: t('document_other') || 'Другое' },
   ];
 
   const genderOptions = [
-    { value: 'мужчина', label: 'Мужчина' },
-    { value: 'женщина', label: 'Женщина' },
+    { value: 'мужчина', label: t('gender_male') || 'Мужчина' },
+    { value: 'женщина', label: t('gender_female') || 'Женщина' },
   ];
   
   const onTouchStart = (e) => {
@@ -154,8 +156,8 @@ const NewsletterModal = ({ open, onClose }) => {
       
       // Fetch cities and categories for filter options
       Promise.all([
-        fetch(`${API_URL}/api/cities?lang=ru`).then(res => res.json()),
-        fetch(`${API_URL}/api/categories?lang=ru`).then(res => res.json())
+        fetch(`${API_URL}/api/cities?lang=${language}`).then(res => res.json()),
+        fetch(`${API_URL}/api/categories?lang=${language}`).then(res => res.json())
       ]).then(([citiesData, categoriesData]) => {
         setCities(citiesData);
         setCategories(categoriesData);
@@ -165,7 +167,7 @@ const NewsletterModal = ({ open, onClose }) => {
         setCategories([]);
       });
     }
-  }, [open, isLoaded, user]);
+  }, [open, isLoaded, user, language]);
 
   const handleSubscribe = async () => {
     if (!email || !email.trim()) {

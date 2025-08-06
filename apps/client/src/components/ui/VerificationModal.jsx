@@ -10,7 +10,7 @@ const VerificationModal = ({
   open, 
   onClose, 
   email, 
-  subscriptionData, 
+  subscriptionData = null, 
   onVerificationSuccess 
 }) => {
   const [verificationCode, setVerificationCode] = useState('');
@@ -78,7 +78,7 @@ const VerificationModal = ({
       const response = await axios.post(`${API_URL}/api/newsletter/verify-code`, {
         email: email.trim(),
         code: verificationCode.trim(),
-        subscriptionData
+        subscriptionData: subscriptionData || {}
       });
 
       if (response.data.success) {
@@ -106,7 +106,7 @@ const VerificationModal = ({
     try {
       const response = await axios.post(`${API_URL}/api/newsletter/send-verification`, {
         email: email.trim(),
-        ...subscriptionData
+        ...(subscriptionData || {})
       });
 
       if (response.data.success) {
@@ -390,7 +390,7 @@ VerificationModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   email: PropTypes.string.isRequired,
-  subscriptionData: PropTypes.object.isRequired,
+  subscriptionData: PropTypes.object,
   onVerificationSuccess: PropTypes.func.isRequired,
 };
 

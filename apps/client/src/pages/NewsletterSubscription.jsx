@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUserSync } from '../hooks/useUserSync.js';
 import VerificationModal from '../components/ui/VerificationModal.jsx';
+import useLanguageStore from '../store/languageStore';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -41,6 +42,7 @@ const NewsletterSubscription = () => {
   const { user, isLoaded } = useUser();
   const navigate = useNavigate();
   const { dbUser } = useUserSync();
+  const language = useLanguageStore((state) => state.language) || 'ru';
 
   // Check if user has premium access
   const hasPremiumAccess = dbUser?.isPremium || dbUser?.premiumDeluxe;
@@ -53,30 +55,30 @@ const NewsletterSubscription = () => {
   // Show messages only for non-premium users (not for premium users who are already subscribed)
   const shouldShowPremiumMessages = !hasPremiumAccess;
 
-  // Filter options
+  // Filter options with translations
   const languageOptions = [
-    { value: 'русский', label: 'Русский' },
-    { value: 'украинский', label: 'Украинский' },
-    { value: 'английский', label: 'Английский' },
-    { value: 'иврит', label: 'Иврит' },
+    { value: 'русский', label: t('language_russian') || 'Русский' },
+    { value: 'украинский', label: t('language_ukrainian') || 'Украинский' },
+    { value: 'английский', label: t('language_english') || 'Английский' },
+    { value: 'иврит', label: t('language_hebrew') || 'Иврит' },
   ];
 
   const employmentOptions = [
-    { value: 'полная', label: 'Полная' },
-    { value: 'частичная', label: 'Частичная' },
+    { value: 'полная', label: t('employment_full') || 'Полная' },
+    { value: 'частичная', label: t('employment_partial') || 'Частичная' },
   ];
 
   const documentTypeOptions = [
-    { value: 'Виза Б1', label: 'Виза Б1' },
-    { value: 'Виза Б2', label: 'Виза Б2' },
-    { value: 'Теудат Зеут', label: 'Теудат Зеут' },
-    { value: 'Рабочая виза', label: 'Рабочая виза' },
-    { value: 'Другое', label: 'Другое' },
+    { value: 'Виза Б1', label: t('document_visa_b1') || 'Виза Б1' },
+    { value: 'Виза Б2', label: t('document_visa_b2') || 'Виза Б2' },
+    { value: 'Теудат Зеут', label: t('document_teudat_zehut') || 'Теудат Зеут' },
+    { value: 'Рабочая виза', label: t('document_work_visa') || 'Рабочая виза' },
+    { value: 'Другое', label: t('document_other') || 'Другое' },
   ];
 
   const genderOptions = [
-    { value: 'мужчина', label: 'Мужчина' },
-    { value: 'женщина', label: 'Женщина' },
+    { value: 'мужчина', label: t('gender_male') || 'Мужчина' },
+    { value: 'женщина', label: t('gender_female') || 'Женщина' },
   ];
 
   // Check for logged-in user's email when component mounts
@@ -97,8 +99,8 @@ const NewsletterSubscription = () => {
       
       // Fetch cities and categories for filter options
       Promise.all([
-        fetch(`${API_URL}/api/cities?lang=ru`).then(res => res.json()),
-        fetch(`${API_URL}/api/categories?lang=ru`).then(res => res.json())
+        fetch(`${API_URL}/api/cities?lang=${language}`).then(res => res.json()),
+        fetch(`${API_URL}/api/categories?lang=${language}`).then(res => res.json())
       ]).then(([citiesData, categoriesData]) => {
         setCities(citiesData);
         setCategories(categoriesData);
@@ -112,7 +114,7 @@ const NewsletterSubscription = () => {
         setIsLoadingCategories(false);
       });
     }
-  }, [isLoaded, user]);
+  }, [isLoaded, user, language]);
 
   // Check subscription status for an email
   const checkSubscriptionStatus = async (email) => {
@@ -430,7 +432,7 @@ const NewsletterSubscription = () => {
                 <div className="d-flex align-items-center">
                   <i className="bi bi-star-fill me-2" style={{ color: '#ffc107' }}></i>
                   <div>
-                    <strong style={{ color: '#856404' }}>Премиум функции</strong>
+                    <strong style={{ color: '#856404' }}>{t('premium_features')}</strong>
                     <br />
                     <small className="text-muted">
                       Для доступа ко всем фильтрам (языки, пол, тип документа, востребованные кандидаты) необходимо приобрести подписку.{' '}

@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import useFetchCities from '../../hooks/useFetchCities';
 import useFetchCategories from '../../hooks/useFetchCategories';
 import PropTypes from 'prop-types';
 
 export default function AddSeekerModal({ show, onClose, onSubmit }) {
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     name: '',
@@ -25,26 +27,26 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
   const [error, setError] = useState(null);
 
   const languageOptions = [
-    { value: 'русский', label: 'Русский' },
-    { value: 'украинский', label: 'Украинский' },
-    { value: 'английский', label: 'Английский' },
-    { value: 'иврит', label: 'Иврит' },
+    { value: 'русский', label: t('language_russian') || 'Русский' },
+    { value: 'украинский', label: t('language_ukrainian') || 'Украинский' },
+    { value: 'английский', label: t('language_english') || 'Английский' },
+    { value: 'иврит', label: t('language_hebrew') || 'Иврит' },
   ];
 
   const { cities, loading: loadingCities } = useFetchCities();
   const { categories, loading: loadingCategories } = useFetchCategories();
 
   const employmentOptions = [
-    { value: 'полная', label: 'Полная' },
-    { value: 'частичная', label: 'Частичная' },
+    { value: 'полная', label: t('employment_full') || 'Полная' },
+    { value: 'частичная', label: t('employment_partial') || 'Частичная' },
   ];
 
   const documentTypeOptions = [
-    { value: 'Виза Б1', label: 'Виза Б1' },
-    { value: 'Виза Б2', label: 'Виза Б2' },
-    { value: 'Теудат Зеут', label: 'Теудат Зеут' },
-    { value: 'Рабочая виза', label: 'Рабочая виза' },
-    { value: 'Другое', label: 'Другое' },
+    { value: 'Виза Б1', label: t('document_visa_b1') || 'Виза Б1' },
+    { value: 'Виза Б2', label: t('document_visa_b2') || 'Виза Б2' },
+    { value: 'Теудат Зеут', label: t('document_teudat_zehut') || 'Теудат Зеут' },
+    { value: 'Рабочая виза', label: t('document_work_visa') || 'Рабочая виза' },
+    { value: 'Другое', label: t('document_other') || 'Другое' },
   ];
 
   if (!show) return null;
@@ -52,7 +54,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
   const handleNext = (e) => {
     e.preventDefault();
     if (!form.name || !form.contact || !form.city || !form.description || !form.gender) {
-      setError('Заполните все поля');
+      setError(t('fill_all_fields_error'));
       return;
     }
     setError(null);
@@ -91,7 +93,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.nativeLanguage || form.languages.length === 0) {
-      setError('Выберите хотя бы один язык и отметьте родной');
+      setError(t('language_selection_error'));
       return;
     }
     onSubmit(form);
@@ -126,34 +128,34 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                     required
                     disabled={loadingCities}
                   >
-                    <option value="">Выберите город</option>
+                    <option value="">{t("location_placeholder")}</option>
                     {cities.map(city => (
                       <option key={city.value} value={city.label}>{city.label}</option>
                     ))}
                   </select>
                 </div>
                 <div className="mb-3">
-                  <textarea name="description" className="form-control" placeholder="Краткое описание" value={form.description} onChange={handleChange} required />
+                  <textarea name="description" className="form-control" placeholder={t("brief_description_placeholder")} value={form.description} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Пол:</label><br />
                   <div className="form-check form-check-inline">
                     <input className="form-check-input" type="radio" name="gender" id="gender-male" value="мужчина" checked={form.gender === 'мужчина'} onChange={handleChange} required />
-                    <label className="form-check-label" htmlFor="gender-male">Мужчина</label>
+                    <label className="form-check-label" htmlFor="gender-male">{t("gender_male")}</label>
                   </div>
                   <div className="form-check form-check-inline">
                     <input className="form-check-input" type="radio" name="gender" id="gender-female" value="женщина" checked={form.gender === 'женщина'} onChange={handleChange} required />
-                    <label className="form-check-label" htmlFor="gender-female">Женщина</label>
+                    <label className="form-check-label" htmlFor="gender-female">{t("gender_female")}</label>
                   </div>
                 </div>
                 <div className="form-check mb-3">
                   <input className="form-check-input" type="checkbox" name="isDemanded" id="isDemanded" checked={form.isDemanded} onChange={handleChange} />
                   <label className="form-check-label" htmlFor="isDemanded">
-                    Востребованный кандидат
+                    {t("demanded")}
                   </label>
                 </div>
                 {error && <div className="text-danger mb-2">{error}</div>}
-                <button className="btn btn-primary" type="submit">Далее</button>
+                <button className="btn btn-primary" type="submit">{t("next_button")}</button>
               </form>
             )}
             {step === 2 && (
@@ -201,7 +203,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                     required
                     disabled={loadingCategories}
                   >
-                    <option value="">Выберите категорию</option>
+                    <option value="">{t("category_placeholder")}</option>
                     {categories.map(cat => (
                       <option key={cat.value} value={cat.label}>{cat.label}</option>
                     ))}
@@ -215,7 +217,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                     onChange={handleChange}
                     required
                   >
-                    <option value="">Выберите тип занятости</option>
+                    <option value="">{t("employment_type_placeholder")}</option>
                     {employmentOptions.map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
@@ -229,7 +231,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                     onChange={handleChange}
                     required
                   >
-                    <option value="">Выберите тип документа</option>
+                    <option value="">{t("document_type_placeholder")}</option>
                     {documentTypeOptions.map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}

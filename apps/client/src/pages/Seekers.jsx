@@ -235,15 +235,15 @@ export default function Seekers() {
       
       <div className="container" style={{ paddingTop: '100px' }}>
         {/* Database update badge */}
-        <div className="alert alert-info d-flex align-items-center gap-2 mb-4" role="alert" style={{
+        <div className="alert alert-primary d-flex align-items-center gap-2 mb-4" role="alert" style={{
           borderRadius: '8px',
-          border: '1px solid #d1ecf1',
-          backgroundColor: '#f8f9fa'
+          border: '1px solid #0d6efd',
+          backgroundColor: '#e7f1ff'
         }}>
-          <i className="bi bi-info-circle text-info" style={{ fontSize: '1.1rem' }}></i>
+          <i className="bi bi-info-circle text-primary" style={{ fontSize: '1.1rem' }}></i>
           <div>
-            <strong className="text-info">{t('seekers_database_update') || 'База данных кандидатов обновляется ежедневно'}</strong>
-            <div className="text-muted" style={{ fontSize: '0.9rem', marginTop: '2px' }}>
+            <strong className="text-primary">{t('seekers_database_update') || 'База данных кандидатов обновляется ежедневно'}</strong>
+            <div className="text-primary" style={{ fontSize: '0.9rem', marginTop: '2px', opacity: '0.8' }}>
               {t('seekers_database_update_description') || 'Новые кандидаты добавляются каждый день'}
             </div>
           </div>

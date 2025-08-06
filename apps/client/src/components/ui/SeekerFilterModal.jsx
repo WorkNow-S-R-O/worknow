@@ -21,33 +21,33 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
 
   const API_URL = import.meta.env.VITE_API_URL;
 
-  // Language options matching AddSeekerModal
+  // Language options with translations
   const languageOptions = [
-    { value: 'русский', label: 'Русский' },
-    { value: 'украинский', label: 'Украинский' },
-    { value: 'английский', label: 'Английский' },
-    { value: 'иврит', label: 'Иврит' },
+    { value: 'русский', label: t('language_russian') || 'Русский' },
+    { value: 'украинский', label: t('language_ukrainian') || 'Украинский' },
+    { value: 'английский', label: t('language_english') || 'Английский' },
+    { value: 'иврит', label: t('language_hebrew') || 'Иврит' },
   ];
 
-  // Employment options matching AddSeekerModal
+  // Employment options with translations
   const employmentOptions = [
-    { value: 'полная', label: 'Полная' },
-    { value: 'частичная', label: 'Частичная' },
+    { value: 'полная', label: t('employment_full') || 'Полная' },
+    { value: 'частичная', label: t('employment_partial') || 'Частичная' },
   ];
 
-  // Document type options matching AddSeekerModal
+  // Document type options with translations
   const documentTypeOptions = [
-    { value: 'Виза Б1', label: 'Виза Б1' },
-    { value: 'Виза Б2', label: 'Виза Б2' },
-    { value: 'Теудат Зеут', label: 'Теудат Зеут' },
-    { value: 'Рабочая виза', label: 'Рабочая виза' },
-    { value: 'Другое', label: 'Другое' },
+    { value: 'Виза Б1', label: t('document_visa_b1') || 'Виза Б1' },
+    { value: 'Виза Б2', label: t('document_visa_b2') || 'Виза Б2' },
+    { value: 'Теудат Зеут', label: t('document_teudat_zehut') || 'Теудат Зеут' },
+    { value: 'Рабочая виза', label: t('document_work_visa') || 'Рабочая виза' },
+    { value: 'Другое', label: t('document_other') || 'Другое' },
   ];
 
-  // Gender options matching AddSeekerModal
+  // Gender options with translations
   const genderOptions = [
-    { value: 'мужчина', label: 'Мужчина' },
-    { value: 'женщина', label: 'Женщина' },
+    { value: 'мужчина', label: t('gender_male') || 'Мужчина' },
+    { value: 'женщина', label: t('gender_female') || 'Женщина' },
   ];
 
   // Определяем десктоп или мобилка

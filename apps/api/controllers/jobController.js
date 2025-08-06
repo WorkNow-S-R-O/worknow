@@ -27,8 +27,21 @@ export const createJob = async (req, res) => {
   const jobData = req.body;
 
   try {
-    const job = await createJobService(jobData);
-    res.status(201).json(job);
+    const result = await createJobService(jobData);
+    
+    if (result.error) {
+      // Check if upgrade is required
+      if (result.upgradeRequired) {
+        return res.status(403).json({ 
+          error: result.error,
+          upgradeRequired: true,
+          message: "Для размещения большего количества объявлений перейдите на Premium тариф"
+        });
+      }
+      return res.status(400).json({ error: result.error });
+    }
+    
+    res.status(201).json(result);
   } catch (error) {
     console.error("Ошибка создания объявления:", error.message);
     res.status(500).json({ error: "Ошибка создания объявления", details: error.message });

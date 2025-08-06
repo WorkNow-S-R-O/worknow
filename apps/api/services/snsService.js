@@ -1,7 +1,10 @@
 import AWS from 'aws-sdk';
 import { PrismaClient } from '@prisma/client';
+import { sendEmail } from '../utils/mailer.js';
+import { Resend } from 'resend';
 
 const prisma = new PrismaClient();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Configure AWS
 const hasAwsCredentials = process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY;
@@ -26,15 +29,89 @@ export function generateVerificationCode() {
 }
 
 /**
- * Send verification code via email using AWS SNS
+ * Send verification code via email using Resend with Gmail fallback
  */
 export async function sendVerificationCode(email, code) {
   try {
-    // If AWS credentials are not available, simulate the email sending for development
-    if (!hasAwsCredentials) {
+    // Try Resend first (if available)
+    if (process.env.RESEND_API_KEY) {
+      console.log('📧 Attempting to send verification code via Resend...');
+      
+      try {
+        const emailSubject = 'WorkNow - Код подтверждения';
+        const emailContent = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background-color: #1976d2; color: white; text-align: center; padding: 20px; border-radius: 8px 8px 0 0;">
+              <h1 style="margin: 0; font-size: 24px;">WORKNOW</h1>
+            </div>
+            <div style="background-color: #ffffff; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+              <h2 style="color: #333; margin-bottom: 20px;">Код подтверждения для подписки на рассылку</h2>
+              <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+                <h3 style="color: #1976d2; margin: 0; font-size: 32px; letter-spacing: 5px;">${code}</h3>
+              </div>
+              <p style="color: #666; margin-bottom: 20px;">
+                Этот код действителен в течение 10 минут. Если вы не запрашивали этот код, проигнорируйте это письмо.
+              </p>
+              <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                <p style="color: #666; font-size: 12px; margin: 0;">
+                  WorkNow - Платформа для поиска работы в Израиле
+                </p>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        const result = await resend.emails.send({
+          from: 'WorkNow <onboarding@resend.dev>',
+          to: email,
+          subject: emailSubject,
+          html: emailContent
+        });
+        
+        console.log('✅ Verification code sent via Resend:', email);
+        return { success: true, messageId: result.id || 'resend-' + Date.now() };
+      } catch (resendError) {
+        console.error('❌ Resend failed, trying Gmail fallback:', resendError);
+      }
+    }
+    
+    // Try Gmail fallback
+    console.log('📧 Attempting to send verification code via Gmail...');
+    
+    try {
+      const emailSubject = 'WorkNow - Код подтверждения';
+      const emailContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background-color: #1976d2; color: white; text-align: center; padding: 20px; border-radius: 8px 8px 0 0;">
+            <h1 style="margin: 0; font-size: 24px;">WORKNOW</h1>
+          </div>
+          <div style="background-color: #ffffff; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h2 style="color: #333; margin-bottom: 20px;">Код подтверждения для подписки на рассылку</h2>
+            <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+              <h3 style="color: #1976d2; margin: 0; font-size: 32px; letter-spacing: 5px;">${code}</h3>
+            </div>
+            <p style="color: #666; margin-bottom: 20px;">
+              Этот код действителен в течение 10 минут. Если вы не запрашивали этот код, проигнорируйте это письмо.
+            </p>
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+              <p style="color: #666; font-size: 12px; margin: 0;">
+                WorkNow - Платформа для поиска работы в Израиле
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      await sendEmail(email, emailSubject, emailContent);
+      console.log('✅ Verification code sent via Gmail fallback:', email);
+      return { success: true, messageId: 'gmail-fallback-' + Date.now() };
+    } catch (gmailError) {
+      console.error('❌ Gmail fallback failed:', gmailError);
       console.log('📧 [DEV MODE] Verification code would be sent to:', email);
       console.log('📧 [DEV MODE] Verification code:', code);
       console.log('📧 [DEV MODE] In production, this would be sent via AWS SNS');
+      console.log('🔢 FOR TESTING - Your verification code is:', code);
+      console.log('📧 Email address:', email);
       
       // Simulate a delay to mimic real email sending
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -57,14 +134,88 @@ export async function sendVerificationCode(email, code) {
         const topic = listTopicsResult.Topics.find(t => t.TopicArn.includes(topicName));
         topicArn = topic.TopicArn;
       } else if (error.code === 'AuthorizationError') {
-        // Handle authorization error gracefully
-        console.log('⚠️ AWS SNS Authorization Error. Using development mode.');
-        console.log('📧 [DEV MODE] Would create SNS topic:', topicName);
-        console.log('📧 [DEV MODE] Would send email to:', email);
-        console.log('📧 [DEV MODE] Verification code:', code);
+        // Handle authorization error gracefully - try Resend or Gmail fallback
+        console.log('⚠️ AWS SNS Authorization Error. Trying Resend/Gmail fallback...');
         
-        // Simulate successful email sending
-        return { success: true, messageId: 'dev-simulation-' + Date.now() };
+        // Try Resend first
+        if (process.env.RESEND_API_KEY) {
+          try {
+            const emailSubject = 'WorkNow - Код подтверждения';
+            const emailContent = `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <div style="background-color: #1976d2; color: white; text-align: center; padding: 20px; border-radius: 8px 8px 0 0;">
+                  <h1 style="margin: 0; font-size: 24px;">WORKNOW</h1>
+                </div>
+                <div style="background-color: #ffffff; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                  <h2 style="color: #333; margin-bottom: 20px;">Код подтверждения для подписки на рассылку</h2>
+                  <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+                    <h3 style="color: #1976d2; margin: 0; font-size: 32px; letter-spacing: 5px;">${code}</h3>
+                  </div>
+                  <p style="color: #666; margin-bottom: 20px;">
+                    Этот код действителен в течение 10 минут. Если вы не запрашивали этот код, проигнорируйте это письмо.
+                  </p>
+                  <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                    <p style="color: #666; font-size: 12px; margin: 0;">
+                      WorkNow - Платформа для поиска работы в Израиле
+                    </p>
+                  </div>
+                </div>
+              </div>
+            `;
+            
+            const result = await resend.emails.send({
+              from: 'WorkNow <onboarding@resend.dev>',
+              to: email,
+              subject: emailSubject,
+              html: emailContent
+            });
+            
+            console.log('✅ Verification code sent via Resend after SNS error:', email);
+            return { success: true, messageId: result.id || 'resend-' + Date.now() };
+          } catch (resendError) {
+            console.error('❌ Resend also failed, trying Gmail:', resendError);
+          }
+        }
+        
+        // Try Gmail fallback
+        try {
+          const emailSubject = 'WorkNow - Код подтверждения';
+          const emailContent = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="background-color: #1976d2; color: white; text-align: center; padding: 20px; border-radius: 8px 8px 0 0;">
+                <h1 style="margin: 0; font-size: 24px;">WORKNOW</h1>
+              </div>
+              <div style="background-color: #ffffff; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h2 style="color: #333; margin-bottom: 20px;">Код подтверждения для подписки на рассылку</h2>
+                <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
+                  <h3 style="color: #1976d2; margin: 0; font-size: 32px; letter-spacing: 5px;">${code}</h3>
+                </div>
+                <p style="color: #666; margin-bottom: 20px;">
+                  Этот код действителен в течение 10 минут. Если вы не запрашивали этот код, проигнорируйте это письмо.
+                </p>
+                <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                  <p style="color: #666; font-size: 12px; margin: 0;">
+                    WorkNow - Платформа для поиска работы в Израиле
+                  </p>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          await sendEmail(email, emailSubject, emailContent);
+          console.log('✅ Verification code sent via Gmail fallback after SNS error:', email);
+          return { success: true, messageId: 'gmail-fallback-' + Date.now() };
+        } catch (gmailError) {
+          console.error('❌ Gmail fallback also failed:', gmailError);
+          console.log('📧 [DEV MODE] Would create SNS topic:', topicName);
+          console.log('📧 [DEV MODE] Would send email to:', email);
+          console.log('📧 [DEV MODE] Verification code:', code);
+          console.log('🔢 FOR TESTING - Your verification code is:', code);
+          console.log('📧 Email address:', email);
+          
+          // Simulate successful email sending
+          return { success: true, messageId: 'dev-simulation-' + Date.now() };
+        }
       } else {
         throw error;
       }

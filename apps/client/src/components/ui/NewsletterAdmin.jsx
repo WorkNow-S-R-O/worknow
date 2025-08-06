@@ -107,7 +107,7 @@ const NewsletterAdmin = () => {
             </div>
             <div className="card-body">
               {loading ? (
-                <p>Загрузка...</p>
+                <p>{t('loading')}</p>
               ) : (
                 <div className="table-responsive">
                   <table className="table table-sm">
@@ -127,7 +127,7 @@ const NewsletterAdmin = () => {
                           <td>{new Date(subscriber.createdAt).toLocaleDateString()}</td>
                           <td>
                             <span className={`badge ${subscriber.isActive ? 'bg-success' : 'bg-secondary'}`}>
-                              {subscriber.isActive ? 'Активен' : 'Неактивен'}
+                              {subscriber.isActive ? t('active') : t('inactive')}
                             </span>
                           </td>
                         </tr>

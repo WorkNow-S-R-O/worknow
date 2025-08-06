@@ -18,6 +18,9 @@ export async function getSeekers(req, res) {
       }
     }
     
+    // Add language parameter for city translation
+    query.lang = req.query.lang || 'ru';
+    
     console.log('🔧 Processed query for service:', query);
     const data = await getAllSeekers(query);
     console.log('📤 Sending response with', data.seekers?.length || 0, 'seekers');

@@ -36,6 +36,7 @@ const UserJobs = () => {
   const [selectedImageUrl, setSelectedImageUrl] = useState("");
   const [selectedImageTitle, setSelectedImageTitle] = useState("");
   const [imageLoadingStates, setImageLoadingStates] = useState({});
+  const [failedImages, setFailedImages] = useState(new Set());
 
   // Helper function to check if a job is already boosted
   const isJobBoosted = (job) => {
@@ -88,8 +89,16 @@ const UserJobs = () => {
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
       
-      // Don't initialize loading states - let images load naturally
-      setImageLoadingStates({});
+      // Initialize loading states for all images
+      const initialLoadingStates = {};
+      response.data.jobs.forEach(job => {
+        if (job.imageUrl) {
+          initialLoadingStates[job.id] = true;
+        }
+      });
+      console.log('🔄 UserJobs - Initializing loading states:', initialLoadingStates);
+      setImageLoadingStates(initialLoadingStates);
+      setFailedImages(new Set()); // Reset failed images for new jobs
       completeLoading(); // Complete loading when done
     } catch (error) {
       console.error(
@@ -179,20 +188,66 @@ const UserJobs = () => {
   };
 
   const handleImageLoad = (jobId) => {
-    setImageLoadingStates(prev => ({
-      ...prev,
-      [jobId]: false
-    }));
-    console.log('✅ UserJobs - Mini image loaded successfully for job:', jobId);
+    console.log('🔄 UserJobs - Image load event fired for job:', jobId);
+    setImageLoadingStates(prev => {
+      const newState = {
+        ...prev,
+        [jobId]: false
+      };
+      console.log('✅ UserJobs - Updated loading state for job:', jobId, 'New state:', newState);
+      return newState;
+    });
   };
 
   const handleImageError = (jobId, e) => {
-    setImageLoadingStates(prev => ({
-      ...prev,
-      [jobId]: false
-    }));
+    console.log('🔄 UserJobs - Image error event fired for job:', jobId);
+    setImageLoadingStates(prev => {
+      const newState = {
+        ...prev,
+        [jobId]: false
+      };
+      console.log('❌ UserJobs - Updated loading state for job:', jobId, 'New state:', newState);
+      return newState;
+    });
+    
+    // Mark this image as failed
+    setFailedImages(prev => new Set([...prev, jobId]));
+    
+    // Check if it's a CORS error
+    if (e.target.src && e.target.src.includes('s3.eu-north-1.amazonaws.com')) {
+      console.warn('⚠️ UserJobs - CORS error detected for S3 image:', jobId);
+    }
+    
     console.error('❌ UserJobs - Mini image failed to load for job:', jobId, e);
   };
+
+  // Add timeout to prevent infinite loading
+  useEffect(() => {
+    const timeouts = {};
+    
+    // Set up timeouts for all images that are loading
+    Object.keys(imageLoadingStates).forEach(jobId => {
+      if (imageLoadingStates[jobId] === true) {
+        timeouts[jobId] = setTimeout(() => {
+          setImageLoadingStates(prev => {
+            if (prev[jobId] === true) {
+              console.warn('⚠️ UserJobs - Image loading timeout for job:', jobId);
+              return {
+                ...prev,
+                [jobId]: false
+              };
+            }
+            return prev;
+          });
+        }, 3000); // 3 second timeout for CORS issues
+      }
+    });
+
+    // Cleanup timeouts
+    return () => {
+      Object.values(timeouts).forEach(timeout => clearTimeout(timeout));
+    };
+  }, [imageLoadingStates]);
 
   if (!user) {
     return <p className="text-center">{t("sing_in_to_view")}</p>;
@@ -246,7 +301,7 @@ const UserJobs = () => {
                   {/* Плашка Премиум */}
                   {job.user?.isPremium && (
                     <div className="premium-badge">
-                      <i className="bi bi-star-fill"></i> Премиум
+                      <i className="bi bi-star-fill"></i> {t('premium_badge')}
                     </div>
                   )}
                   <div className="card-body">
@@ -284,10 +339,10 @@ const UserJobs = () => {
                       </p>
                     </div>
                     
-                    {/* Image displayed under phone number in mini size */}
+                                        {/* Image displayed under phone number in mini size */}
                     {job.imageUrl && (
-                      <div className="mt-3 position-relative">
-                        {console.log('🔍 UserJobs - Rendering image for job:', job.id, 'URL:', job.imageUrl)}
+                      <div className="mt-3">
+                        {console.log('🔍 UserJobs - Rendering image for job:', job.id, 'URL:', job.imageUrl, 'Loading state:', imageLoadingStates[job.id])}
                         {imageLoadingStates[job.id] && (
                           <Skeleton 
                             width={120} 
@@ -298,20 +353,49 @@ const UserJobs = () => {
                             }}
                           />
                         )}
-                        <div className="image-with-glance mini">
+
+                        {failedImages.has(job.id) ? (
+                          <div 
+                            style={{
+                              width: '120px',
+                              height: '80px',
+                              background: '#f8f9fa',
+                              border: '1px solid #e0e0e0',
+                              borderRadius: '6px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: '#6c757d',
+                              fontSize: '12px',
+                              textAlign: 'center',
+                              whiteSpace: 'pre-line'
+                            }}
+                          >
+                            Image{'\n'}unavailable
+                          </div>
+                        ) : (
                           <img 
                             src={job.imageUrl} 
                             alt={job.title}
                             className="img-fluid rounded"
                             style={{
+                              width: '120px',
+                              height: '80px',
+                              objectFit: 'cover',
+                              borderRadius: '6px',
+                              border: '1px solid #e0e0e0',
                               cursor: 'pointer',
                               display: imageLoadingStates[job.id] ? 'none' : 'block'
                             }}
                             onClick={(e) => handleImageClick(e, job.imageUrl, job.title)}
-                            onError={(e) => handleImageError(job.id, e)}
                             onLoad={() => handleImageLoad(job.id)}
+                            onError={(e) => {
+                              handleImageError(job.id, e);
+                              // Hide the broken image
+                              e.target.style.display = 'none';
+                            }}
                           />
-                        </div>
+                        )}
                       </div>
                     )}
                     
@@ -330,7 +414,7 @@ const UserJobs = () => {
                     <div className="position-relative">
                       {isBoosted ? (
                         <div className="d-flex align-items-center gap-2">
-                          <small className="text-muted" style={{ fontSize: '11px', whiteSpace: 'nowrap' }}>
+                          <small className="text-muted d-none d-sm-inline" style={{ fontSize: '11px', whiteSpace: 'nowrap' }}>
                             {t("next_boost_after")}
                           </small>
                           <div 

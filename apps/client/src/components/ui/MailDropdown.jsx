@@ -12,6 +12,7 @@ export default function MailDropdown() {
   const [mailMessages, setMailMessages] = useState([]);
   const [mailLoading, setMailLoading] = useState(false);
   const [openedMsgId, setOpenedMsgId] = useState(null);
+  const [previousUnreadCount, setPreviousUnreadCount] = useState(0);
   const mailRef = useRef();
   const { t } = useTranslation();
 
@@ -101,12 +102,25 @@ export default function MailDropdown() {
         const count = msgs.filter(m => !m.isRead).length;
         setMailMessages(msgs);
         setUnreadCount(count);
+        
+        // Check if we have new unread messages
+        if (count > previousUnreadCount) {
+          // Play notification sound (optional)
+          try {
+            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+            audio.volume = 0.3;
+            audio.play().catch(() => {}); // Ignore errors if audio fails
+          } catch {
+            // Ignore audio errors
+          }
+        }
+        setPreviousUnreadCount(count);
       } catch {
         // Ошибка загрузки писем
       }
     };
     fetchUnread();
-    timer = setInterval(fetchUnread, 30000); // Changed from 12000 to 30000 (30 seconds)
+    timer = setInterval(fetchUnread, 15000); // Poll every 15 seconds for faster response
     return () => clearInterval(timer);
   }, [user]);
 
@@ -194,17 +208,70 @@ export default function MailDropdown() {
   };
 
   return (
-    <div ref={mailRef} className="position-relative me-2">
+    <>
+      <style>
+        {`
+          @keyframes pulse {
+            0% {
+              transform: scale(1);
+              opacity: 1;
+            }
+            50% {
+              transform: scale(1.1);
+              opacity: 0.8;
+            }
+            100% {
+              transform: scale(1);
+              opacity: 1;
+            }
+          }
+          
+          .mail-badge-pulse {
+            animation: pulse 2s infinite;
+          }
+          
+          .envelope-icon {
+            transition: color 0.3s ease, transform 0.2s ease;
+          }
+          
+          .envelope-icon:hover {
+            transform: scale(1.1);
+          }
+          
+          .envelope-icon.has-unread {
+            color: #1976d2 !important;
+          }
+        `}
+      </style>
+      <div ref={mailRef} className="position-relative me-2">
       <button
         className="btn btn-link p-0 position-relative"
         title="Почта"
         onClick={openMailDropdown}
         style={{ outline: 'none', boxShadow: 'none' }}
       >
-        <i className="bi bi-envelope" style={{ fontSize: 20, color: '#6c757d' }}></i>
+        <i 
+          className={`bi bi-envelope envelope-icon ${unreadCount > 0 ? 'has-unread' : ''}`} 
+          style={{ 
+            fontSize: 20, 
+            color: unreadCount > 0 ? '#1976d2' : '#6c757d'
+          }}
+        />
         {unreadCount > 0 && (
-          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style={{ fontSize: 12 }}>
-            {unreadCount}
+          <span 
+            className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger mail-badge-pulse" 
+            style={{ 
+              fontSize: 11,
+              fontWeight: 'bold',
+              minWidth: '18px',
+              height: '18px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)'
+            }}
+          >
+            {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
       </button>
@@ -212,9 +279,16 @@ export default function MailDropdown() {
       {/* Desktop Dropdown */}
       {showMailDropdown && !isMobile && (
         <div className="shadow rounded bg-white position-absolute end-0 mt-2" style={{ minWidth: 340, zIndex: 9999, maxWidth: 400 }}>
-          <div className="p-2 border-bottom fw-bold">Входящие</div>
+          <div className="p-2 border-bottom fw-bold d-flex justify-content-between align-items-center">
+            <span>Входящие</span>
+            {unreadCount > 0 && (
+              <span className="badge bg-danger" style={{ fontSize: '10px' }}>
+                {unreadCount} {unreadCount === 1 ? 'новое' : unreadCount < 5 ? 'новых' : 'новых'}
+              </span>
+            )}
+          </div>
           {mailLoading ? (
-            <div className="p-3 text-center text-muted">Загрузка...</div>
+                            <div className="p-3 text-center text-muted">{t('loading')}</div>
           ) : mailMessages.length === 0 ? (
             <div className="p-3 text-center text-muted">Нет сообщений</div>
           ) : (
@@ -234,8 +308,22 @@ export default function MailDropdown() {
                   }}
                 >
                   <div className="d-flex justify-content-between align-items-center">
-                    <span style={{fontWeight: msg.isRead ? 400 : 600, color: msg.isRead ? '#333' : '#1976d2'}}>{msg.title}</span>
-                    {!msg.isRead && <span className="badge bg-primary ms-2">{t('mail_new_badge')}</span>}
+                    <span style={{
+                      fontWeight: msg.isRead ? 400 : 600, 
+                      color: msg.isRead ? '#333' : '#1976d2',
+                      fontSize: msg.title.includes('Premium') || msg.title.includes('Deluxe') ? '14px' : '13px'
+                    }}>
+                      {msg.title}
+                    </span>
+                    {!msg.isRead && (
+                      <span className="badge ms-2" style={{
+                        backgroundColor: msg.title.includes('Premium') || msg.title.includes('Deluxe') ? '#28a745' : '#007bff',
+                        fontSize: '10px',
+                        fontWeight: 'bold'
+                      }}>
+                        {t('mail_new_badge')}
+                      </span>
+                    )}
                   </div>
                   <div className="small text-muted mt-1">{new Date(msg.createdAt).toLocaleString()}</div>
                   {openedMsgId === msg.id && (
@@ -258,7 +346,14 @@ export default function MailDropdown() {
         >
           <div style={contentStyle}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>Входящие</h5>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>Входящие</h5>
+                {unreadCount > 0 && (
+                  <span className="badge bg-danger" style={{ fontSize: '11px' }}>
+                    {unreadCount} {unreadCount === 1 ? 'новое' : unreadCount < 5 ? 'новых' : 'новых'}
+                  </span>
+                )}
+              </div>
               <button 
                 type="button" 
                 className="btn-close" 
@@ -270,7 +365,7 @@ export default function MailDropdown() {
             
             <div style={{ flex: 1, overflowY: 'auto' }}>
               {mailLoading ? (
-                <div className="p-3 text-center text-muted">Загрузка...</div>
+                <div className="p-3 text-center text-muted">{t('loading')}</div>
               ) : mailMessages.length === 0 ? (
                 <div className="p-3 text-center text-muted">Нет сообщений</div>
               ) : (
@@ -298,11 +393,19 @@ export default function MailDropdown() {
                         <span style={{
                           fontWeight: msg.isRead ? 400 : 600, 
                           color: msg.isRead ? '#333' : '#1976d2',
-                          fontSize: '16px'
+                          fontSize: msg.title.includes('Premium') || msg.title.includes('Deluxe') ? '17px' : '16px'
                         }}>
                           {msg.title}
                         </span>
-                        {!msg.isRead && <span className="badge bg-primary ms-2">{t('mail_new_badge')}</span>}
+                        {!msg.isRead && (
+                          <span className="badge ms-2" style={{
+                            backgroundColor: msg.title.includes('Premium') || msg.title.includes('Deluxe') ? '#28a745' : '#007bff',
+                            fontSize: '11px',
+                            fontWeight: 'bold'
+                          }}>
+                            {t('mail_new_badge')}
+                          </span>
+                        )}
                       </div>
                       <div className="small text-muted mb-2" style={{fontSize: '14px'}}>
                         {new Date(msg.createdAt).toLocaleString()}
@@ -318,6 +421,7 @@ export default function MailDropdown() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }

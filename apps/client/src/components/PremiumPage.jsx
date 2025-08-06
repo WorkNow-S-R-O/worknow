@@ -54,7 +54,7 @@ const PremiumPage = () => {
     },
     {
       name: "Deluxe",
-      price: 199,
+      price: 400, // Base price for new users
       period: "/mo",
       features: [
         { textKey: "pricing_deluxe_all_from_pro", icon: "✨", color: "text-warning" },
@@ -69,7 +69,7 @@ const PremiumPage = () => {
       button: {
         textKey: "pricing_deluxe_buy_deluxe",
         variant: "primary",
-        priceId: "price_1RqXuoCOLiDbHvw1LLew4Mo8" // Test mode price ID for 99 ILS
+        priceId: "price_1RqXuoCOLiDbHvw1LLew4Mo8" // Price ID for 400 ILS
       }
     }
   ];
@@ -137,7 +137,7 @@ const PremiumPage = () => {
       {user && userLoading ? (
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 200 }}>
           <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Загрузка...</span>
+                                    <span className="visually-hidden">{t('loading')}</span>
           </div>
         </div>
       ) : userError ? (
@@ -164,11 +164,20 @@ const PremiumPage = () => {
               isActive = dbUser?.premiumDeluxe;
             }
 
-            // Deluxe upgrade logic - only for logged-in users with Pro but not Deluxe
-            if (plan.name === "Deluxe" && user && dbUser?.isPremium && !dbUser?.premiumDeluxe) {
-              displayPrice = 100;
-              buttonText = "Улучшить до Deluxe";
-              priceId = "price_1RqXveCOLiDbHvw18RQxj2g6";
+            // Deluxe pricing logic
+            if (plan.name === "Deluxe") {
+              if (user && dbUser?.isPremium && !dbUser?.premiumDeluxe) {
+                // User has Pro but not Deluxe - show upgrade price
+                displayPrice = 300;
+                buttonText = "Улучшить до Deluxe";
+                priceId = "price_1RqXveCOLiDbHvw18RQxj2g6"; // Price ID for 300 ILS upgrade
+              } else if (!user || !dbUser?.isPremium) {
+                // New user or no Pro subscription - show full price
+                displayPrice = 400;
+                buttonText = t(plan.button.textKey);
+                priceId = plan.button.priceId;
+              }
+              // If user already has Deluxe, isActive will be true and button will show "Active"
             }
             return (
               <div className="col-12 col-md-6 col-lg-4 d-flex" key={plan.name}>
@@ -207,6 +216,12 @@ const PremiumPage = () => {
                     <h5 className="card-title text-center mb-3" style={{fontWeight:600, fontSize:24}}>{plan.name}</h5>
                     <h2 className="card-price text-center mb-4" style={{fontSize:40, fontWeight:700}}>
                       {displayPrice === 0 ? "0" : `${displayPrice}₪`}<small className="text-muted" style={{fontSize: '0.5em'}}>{plan.period}</small>
+                      {plan.name === "Deluxe" && user && dbUser?.isPremium && !dbUser?.premiumDeluxe && (
+                        <div className="mt-2">
+                          <span className="text-decoration-line-through text-muted" style={{fontSize: '0.6em'}}>400₪</span>
+                          <span className="badge bg-success ms-2" style={{fontSize: '0.5em'}}>-25%</span>
+                        </div>
+                      )}
                     </h2>
                     <ul className="list-unstyled mb-4">
                       {plan.features.map((feature, index) => (
@@ -259,7 +274,7 @@ const PremiumPage = () => {
                               transition: 'all 0.3s ease'
                             }}
                           >
-                            {isActive ? 'Активен' : buttonText}
+                            {isActive ? t('active') : buttonText}
                           </button>
                         )
                       ) : (
@@ -274,7 +289,7 @@ const PremiumPage = () => {
                             boxShadow: plan.highlight ? '0 4px 12px rgba(13, 110, 253, 0.3)' : 'none'
                           }}
                         >
-                          {isActive ? 'Активен' : (loading ? 'Загрузка...' : buttonText)}
+                          {isActive ? t('active') : (loading ? t('loading') : buttonText)}
                         </button>
                       )}
                     </div>

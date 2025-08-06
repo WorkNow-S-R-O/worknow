@@ -5,7 +5,8 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient()
 
-const MAX_JOBS_PER_USER = 10;
+const MAX_JOBS_FREE_USER = 5;
+const MAX_JOBS_PREMIUM_USER = 10;
 
 export const createJobService = async ({ title, salary, cityId, categoryId, phone, description, userId, shuttle, meals, imageUrl }) => {
   let errors = [];
@@ -39,11 +40,22 @@ export const createJobService = async ({ title, salary, cityId, categoryId, phon
 
   if (isDuplicate) return { error: "Ваше объявление похоже на уже существующее. Измените заголовок или описание." };
 
-  // Проверка на количество объявлений
+  // Проверка на количество объявлений в зависимости от статуса подписки
   const jobCount = await prisma.job.count({ where: { userId: existingUser.id } });
-
-  if (jobCount >= MAX_JOBS_PER_USER) {
-    return { error: `Вы уже разместили ${MAX_JOBS_PER_USER} объявлений.` };
+  
+  // Определяем лимит в зависимости от статуса подписки
+  const isPremium = existingUser.isPremium || existingUser.premiumDeluxe;
+  const maxJobs = isPremium ? MAX_JOBS_PREMIUM_USER : MAX_JOBS_FREE_USER;
+  
+  if (jobCount >= maxJobs) {
+    if (isPremium) {
+      return { error: `Вы уже разместили ${MAX_JOBS_PREMIUM_USER} объявлений.` };
+    } else {
+      return { 
+        error: `Вы уже разместили ${MAX_JOBS_FREE_USER} объявлений. Для размещения большего количества объявлений перейдите на Premium тариф.`,
+        upgradeRequired: true 
+      };
+    }
   }
 
   console.log('🔍 createJobService - Creating job with imageUrl:', imageUrl);

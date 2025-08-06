@@ -138,7 +138,7 @@ describe('PremiumPage Component', () => {
   });
 
   describe('Deluxe Plan Button Behavior', () => {
-    test('should show "Купить Deluxe" with 199₪ when user has no premium', () => {
+    test('should show "Купить Deluxe" with 400₪ when user has no premium', () => {
       render(<MockPremiumPage 
         user={{ id: 'user123' }} 
         dbUser={{ isPremium: false, premiumDeluxe: false }} 
@@ -151,11 +151,11 @@ describe('PremiumPage Component', () => {
       expect(deluxeButton).not.toBeDisabled();
       
       // Check price display
-      const priceElement = screen.getByText('199₪');
+      const priceElement = screen.getByText('400₪');
       expect(priceElement).toBeInTheDocument();
     });
 
-    test('should show "Улучшить до Deluxe" with 100₪ when user has Pro but not Deluxe', () => {
+    test('should show "Улучшить до Deluxe" with 300₪ when user has Pro but not Deluxe', () => {
       render(<MockPremiumPage 
         user={{ id: 'user123' }} 
         dbUser={{ isPremium: true, premiumDeluxe: false }} 
@@ -168,7 +168,7 @@ describe('PremiumPage Component', () => {
       expect(deluxeButton).not.toBeDisabled();
       
       // Check price display
-      const priceElement = screen.getByText('100₪');
+      const priceElement = screen.getByText('300₪');
       expect(priceElement).toBeInTheDocument();
     });
 

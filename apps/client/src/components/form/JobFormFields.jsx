@@ -85,7 +85,7 @@ export const JobFormFields = ({
             options={sortedCities}
             value={sortedCities.find((city) => city.value === selectedCityId) || null}
             onChange={(option) => setValue("cityId", option?.value)}
-            placeholder="Выберите город"
+            placeholder={t("location_placeholder")}
             classNamePrefix="react-select"
             isClearable
           />
@@ -107,7 +107,7 @@ export const JobFormFields = ({
             options={categories}
             value={categories.find((category) => category.value === selectedCategoryId) || null}
             onChange={(option) => setValue("categoryId", option?.value)}
-            placeholder="Выберите категорию"
+            placeholder={t("category_placeholder")}
             classNamePrefix="react-select"
             isClearable
           />
@@ -190,7 +190,7 @@ export const JobFormFields = ({
         </label>
       </div>
 
-      {/* Чекбокс "Согласие с пользовательским соглашением" */}
+      {/* Terms of use agreement checkbox */}
       <div className="form-check mb-4 flex items-center">
         <input
           className="form-check-input"
@@ -200,14 +200,14 @@ export const JobFormFields = ({
           onChange={() => setIsAgreed(!isAgreed)}
         />
         <label className="form-check-label ms-2" htmlFor="terms">
-          Я согласен с{' '}
+          {t("terms_agreement")}{' '}
           <a
             href="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:underline"
           >
-            пользовательским соглашением
+            {t("terms_agreement_link")}
           </a>
         </label>
       </div>

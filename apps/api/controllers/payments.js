@@ -2,6 +2,7 @@ import stripe from '../utils/stripe.js';
 import { PrismaClient } from '@prisma/client';
 import { sendTelegramNotification } from '../utils/telegram.js';
 import { CLERK_SECRET_KEY } from '../config/clerkConfig.js';
+import { sendPremiumDeluxeWelcomeEmail, sendProWelcomeEmail } from '../services/premiumEmailService.js';
 import fetch from 'node-fetch';
 import process from 'process';
 const prisma = new PrismaClient();
@@ -123,7 +124,7 @@ export const activatePremium = async (req, res) => {
       // 🔹 Отправляем уведомление в Telegram
       await sendTelegramNotification(user, user.jobs);
 
-      // Если deluxe — отправляем автоматическое сообщение
+      // Если deluxe — отправляем автоматическое сообщение и email
       // Deluxe price IDs: price_1RfHjiCOLiDbHvw1repgIbnK, price_1Rfli2COLiDbHvw1xdMaguLf, price_1RqXuoCOLiDbHvw1LLew4Mo8, price_1RqXveCOLiDbHvw18RQxj2g6
       // Pro price ID: price_1Qt63NCOLiDbHvw13PRhpenX (excluded from deluxe condition)
               if (priceId === 'price_1RfHjiCOLiDbHvw1repgIbnK' || priceId === 'price_1Rfli2COLiDbHvw1xdMaguLf' || priceId === 'price_1RqXuoCOLiDbHvw1LLew4Mo8' || priceId === 'price_1RqXveCOLiDbHvw18RQxj2g6') {
@@ -136,12 +137,21 @@ export const activatePremium = async (req, res) => {
             type: 'system',
           }
         });
-        // Email отправится автоматически через триггер в контроллере messages.js
+        
+        // Send Premium Deluxe welcome email
+        try {
+          const userName = user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : '';
+          await sendPremiumDeluxeWelcomeEmail(user.email, userName);
+          console.log('✅ Premium Deluxe welcome email sent successfully to:', user.email);
+        } catch (emailError) {
+          console.error('❌ Failed to send Premium Deluxe welcome email:', emailError);
+          // Don't fail the entire process if email fails
+        }
       } else {
-        // Обычный премиум — поздравительное письмо и сообщение
-        const title = 'Спасибо за покупку премиум-подписки на WorkNow!';
+        // Pro subscription — поздравительное письмо и сообщение
+        const title = 'Спасибо за покупку Pro подписки на WorkNow!';
         const body = `Здравствуйте!<br><br>
-          Спасибо, что приобрели премиум-подписку на WorkNow.<br>
+          Спасибо, что приобрели Pro подписку на WorkNow.<br>
           Ваша подписка активирована.<br>
           <b>Чек об оплате был отправлен на ваш электронный адрес.</b><br><br>
           Если у вас возникнут вопросы — пишите в поддержку!`;
@@ -153,7 +163,16 @@ export const activatePremium = async (req, res) => {
             type: 'system',
           }
         });
-        // Email отправится автоматически через триггер в контроллере messages.js
+        
+        // Send Pro welcome email
+        try {
+          const userName = user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : '';
+          await sendProWelcomeEmail(user.email, userName);
+          console.log('✅ Pro welcome email sent successfully to:', user.email);
+        } catch (emailError) {
+          console.error('❌ Failed to send Pro welcome email:', emailError);
+          // Don't fail the entire process if email fails
+        }
       }
 
       // --- Обновляем publicMetadata в Clerk ---

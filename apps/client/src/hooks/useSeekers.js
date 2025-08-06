@@ -37,7 +37,8 @@ const useSeekers = (page = 1, filters = {}) => {
         // Build query parameters
         const params = new URLSearchParams({
           page: page,
-          limit: 10
+          limit: 10,
+          lang: language
         });
 
         // Add filter parameters if they exist

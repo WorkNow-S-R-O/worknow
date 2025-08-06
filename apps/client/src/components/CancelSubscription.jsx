@@ -3,10 +3,12 @@ import { useUser } from "@clerk/clerk-react";
 import { useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const CancelSubscription = () => {
+  const { t } = useTranslation();
   const { user } = useUser();
   const { redirectToSignIn } = useClerk();
   const [loading, setLoading] = useState(false);
@@ -109,7 +111,7 @@ const CancelSubscription = () => {
             </>
           )}
           {!isPremium && isPremium !== null && (
-            <div className="alert alert-info mt-3 text-center">У вас нет активной премиум-подписки.</div>
+            <div className="alert alert-info mt-3 text-center">{t('no_premium_subscription')}</div>
           )}
         </>
       )}

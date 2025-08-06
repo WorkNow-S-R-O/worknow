@@ -3,11 +3,13 @@ import { useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const PAGE_SIZE = 10;
 
 const BillingPage = () => {
+  const { t } = useTranslation();
   const { user } = useUser();
   const { redirectToSignIn } = useClerk();
   const [history, setHistory] = useState([]);
@@ -84,7 +86,7 @@ const BillingPage = () => {
           </button>
         </div>
       ) : loading ? (
-        <div>Загрузка...</div>
+                        <div>{t('loading')}</div>
       ) : error ? (
         <div className="alert alert-danger">{error}</div>
       ) : history.length === 0 ? (

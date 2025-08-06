@@ -3,6 +3,27 @@ import { sendSingleCandidateNotification } from './notificationService.js';
 
 const prisma = new PrismaClient();
 
+// Helper function to translate city names
+async function translateCityName(cityName, lang = 'ru') {
+  try {
+    // First, find the city by name
+    const city = await prisma.city.findFirst({
+      where: { name: cityName },
+      include: {
+        translations: {
+          where: { lang }
+        }
+      }
+    });
+    
+    // Return translated name if available, otherwise return original name
+    return city?.translations[0]?.name || cityName;
+  } catch (error) {
+    console.error('Error translating city name:', error);
+    return cityName; // Fallback to original name
+  }
+}
+
 function generateSlug(name, description) {
   return (name + '-' + description.split('\\n')[0])
     .toLowerCase()
@@ -20,7 +41,8 @@ export async function getAllSeekers(query = {}) {
     documentType, 
     languages, 
     gender, 
-    isDemanded 
+    isDemanded,
+    lang = 'ru'
   } = query;
 
   console.log('🔍 Service received query:', query);
@@ -106,11 +128,19 @@ export async function getAllSeekers(query = {}) {
     console.log('❌ No seekers found matching the filters');
   }
 
+  // Translate city names for all seekers
+  const seekersWithTranslatedCities = await Promise.all(
+    seekers.map(async (seeker) => ({
+      ...seeker,
+      city: await translateCityName(seeker.city, lang)
+    }))
+  );
+
   // Calculate pagination info
   const totalPages = Math.ceil(totalCount / take);
 
   return {
-    seekers,
+    seekers: seekersWithTranslatedCities,
     pagination: {
       currentPage: parseInt(page),
       totalPages,
