@@ -346,7 +346,7 @@ const NewsletterSubscription = () => {
           <div className="col-12 col-lg-6">
             <h4 className="mb-4" style={{ color: '#333', fontWeight: '600' }}>
               <i className="bi bi-person-circle me-2" style={{ color: '#007bff' }}></i>
-              Основная информация
+              {t('newsletter_basic_info')}
             </h4>
             
             <div className="mb-4">
@@ -418,7 +418,7 @@ const NewsletterSubscription = () => {
           <div className="col-12 col-lg-6">
             <h4 className="mb-4" style={{ color: '#333', fontWeight: '600' }}>
               <i className="bi bi-gear me-2" style={{ color: '#007bff' }}></i>
-              Настройки уведомлений
+              {t('newsletter_notification_settings')}
             </h4>
             
             {/* General Premium Upgrade Banner */}
@@ -435,8 +435,8 @@ const NewsletterSubscription = () => {
                     <strong style={{ color: '#856404' }}>{t('premium_features')}</strong>
                     <br />
                     <small className="text-muted">
-                      Для доступа ко всем фильтрам (языки, пол, тип документа, востребованные кандидаты) необходимо приобрести подписку.{' '}
-                      <a href="/premium" className="text-decoration-none fw-bold" style={{ color: '#007bff' }}>Перейти к тарифам</a>
+                      {t('newsletter_premium_upgrade_message')}{' '}
+                      <a href="/premium" className="text-decoration-none fw-bold" style={{ color: '#007bff' }}>{t('newsletter_go_to_plans')}</a>
                     </small>
                   </div>
                 </div>
@@ -511,7 +511,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-tags me-2" style={{ color: '#6c757d' }}></i>
-                {t('category') || 'Категории'}
+                {t('newsletter_categories')}
               </label>
               
               {isLoadingCategories ? (
@@ -577,7 +577,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-briefcase me-2" style={{ color: '#6c757d' }}></i>
-                {t('employment') || 'Тип занятости'}
+                {t('newsletter_employment_type')}
               </label>
               <div className="row">
                 {employmentOptions.map(option => (
@@ -610,7 +610,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-translate me-2" style={{ color: '#6c757d' }}></i>
-                {t('languages') || 'Языки'}
+                {t('languages')}
               </label>
               
               {/* Premium Upgrade Message for Languages */}
@@ -624,10 +624,10 @@ const NewsletterSubscription = () => {
                   <div className="d-flex align-items-center">
                     <i className="bi bi-info-circle me-2" style={{ color: '#007bff' }}></i>
                     <div>
-                                          <small className="text-muted">
-                      Для доступа к фильтрам по языкам необходимо приобрести подписку.{' '}
-                      <a href="/premium" className="text-decoration-none fw-bold">Перейти к тарифам</a>
-                    </small>
+                      <small className="text-muted">
+                        {t('newsletter_languages_premium_message')}{' '}
+                        <a href="/premium" className="text-decoration-none fw-bold">{t('newsletter_go_to_plans')}</a>
+                      </small>
                     </div>
                   </div>
                 </div>
@@ -674,7 +674,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-gender-ambiguous me-2" style={{ color: '#6c757d' }}></i>
-                {t('gender') || 'Пол'}
+                {t('gender')}
               </label>
               
               {/* Premium Upgrade Message for Gender */}
@@ -688,10 +688,10 @@ const NewsletterSubscription = () => {
                   <div className="d-flex align-items-center">
                     <i className="bi bi-info-circle me-2" style={{ color: '#007bff' }}></i>
                     <div>
-                                          <small className="text-muted">
-                      Для доступа к фильтрам по полу необходимо приобрести подписку.{' '}
-                      <a href="/premium" className="text-decoration-none fw-bold">Перейти к тарифам</a>
-                    </small>
+                      <small className="text-muted">
+                        {t('newsletter_gender_premium_message')}{' '}
+                        <a href="/premium" className="text-decoration-none fw-bold">{t('newsletter_go_to_plans')}</a>
+                      </small>
                     </div>
                   </div>
                 </div>
@@ -738,7 +738,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-file-earmark-text me-2" style={{ color: '#6c757d' }}></i>
-                {t('document_type') || 'Тип документа'}
+                {t('document_type')}
               </label>
               
               {/* Premium Upgrade Message for Document Types */}
@@ -752,10 +752,10 @@ const NewsletterSubscription = () => {
                   <div className="d-flex align-items-center">
                     <i className="bi bi-info-circle me-2" style={{ color: '#007bff' }}></i>
                     <div>
-                                          <small className="text-muted">
-                      Для доступа к фильтрам по типу документа необходимо приобрести подписку.{' '}
-                      <a href="/premium" className="text-decoration-none fw-bold">Перейти к тарифам</a>
-                    </small>
+                      <small className="text-muted">
+                        {t('newsletter_document_type_premium_message')}{' '}
+                        <a href="/premium" className="text-decoration-none fw-bold">{t('newsletter_go_to_plans')}</a>
+                      </small>
                     </div>
                   </div>
                 </div>
@@ -811,10 +811,10 @@ const NewsletterSubscription = () => {
                   <div className="d-flex align-items-center">
                     <i className="bi bi-info-circle me-2" style={{ color: '#007bff' }}></i>
                     <div>
-                                          <small className="text-muted">
-                      Для доступа к фильтру &quot;Только востребованные кандидаты&quot; необходимо приобрести подписку.{' '}
-                      <a href="/premium" className="text-decoration-none fw-bold">Перейти к тарифам</a>
-                    </small>
+                      <small className="text-muted">
+                        {t('newsletter_demanded_premium_message')}{' '}
+                        <a href="/premium" className="text-decoration-none fw-bold">{t('newsletter_go_to_plans')}</a>
+                      </small>
                     </div>
                   </div>
                 </div>
@@ -842,7 +842,7 @@ const NewsletterSubscription = () => {
                   }}
                 >
                   <i className="bi bi-star-fill me-2" style={{ color: '#ffc107' }}></i>
-                  {t('demanded') || 'Только востребованные кандидаты'}
+                  {t('newsletter_demanded_candidates')}
                 </label>
               </div>
             </div>
@@ -860,7 +860,7 @@ const NewsletterSubscription = () => {
             <div className="d-flex justify-content-center align-items-center gap-4">
               <div className="text-muted">
                 <i className="bi bi-check-circle-fill me-2" style={{ color: '#28a745' }}></i>
-                {t('newsletter_already_subscribed') || 'Вы уже подписаны'}
+                {t('newsletter_already_subscribed')}
               </div>
               <button 
                 className="btn btn-danger"
@@ -871,12 +871,12 @@ const NewsletterSubscription = () => {
                 {isUnsubscribing ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    {t('newsletter_unsubscribing') || 'Отписка...'}
+                    {t('newsletter_unsubscribing')}
                   </>
                 ) : (
                   <>
                     <i className="bi bi-envelope-x me-2"></i>
-                    {t('unsubscribe') || 'Отписаться'}
+                    {t('newsletter_unsubscribe')}
                   </>
                 )}
               </button>

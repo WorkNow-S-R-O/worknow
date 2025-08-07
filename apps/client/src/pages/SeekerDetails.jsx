@@ -4,6 +4,7 @@ import { useUser } from "@clerk/clerk-react";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet-async";
 import { useLoadingProgress } from '../hooks/useLoadingProgress';
+import { useTranslationHelpers } from '../utils/translationHelpers';
 import '../css/seeker-details-mobile.css';
 import '../css/ripple.css';
 
@@ -76,6 +77,14 @@ export default function SeekerDetails() {
   const { user } = useUser();
   const [isPremium, setIsPremium] = useState(false);
   const { startLoadingWithProgress, completeLoading, stopLoadingImmediately } = useLoadingProgress();
+  const {
+    getGenderLabel,
+    getEmploymentLabel,
+    getCategoryLabel,
+    getLangLabel,
+    getDocumentTypeLabel,
+    getCityLabel
+  } = useTranslationHelpers();
 
   const { seekerIds, currentIndex } = location.state || {};
   
@@ -84,34 +93,6 @@ export default function SeekerDetails() {
   
   const nextSeekerId = hasNext ? seekerIds[currentIndex + 1] : null;
   const prevSeekerId = hasPrev ? seekerIds[currentIndex - 1] : null;
-
-  const getGenderLabel = (gender) => {
-    if (!gender) return '';
-    if (["мужчина", "male"].includes(gender.toLowerCase())) return t('seeker_profile_male');
-    if (["женщина", "female"].includes(gender.toLowerCase())) return t('seeker_profile_female');
-    return gender;
-  };
-
-  const getEmploymentLabel = (employment) => {
-    if (!employment) return '';
-    const key = `employment_${employment.toLowerCase()}`;
-    const translated = t(key);
-    return translated === key ? employment : translated;
-  };
-
-  const getCategoryLabel = (category) => {
-    if (!category) return '';
-    const key = `category_${category.toLowerCase()}`;
-    const translated = t(key);
-    return translated === key ? category : translated;
-  };
-
-  const getLangLabel = (lang) => {
-    if (!lang) return '';
-    const key = `lang_${lang.toLowerCase()}`;
-    const translated = t(key);
-    return translated === key ? lang : translated;
-  };
 
   useEffect(() => {
     setSeeker(null);
@@ -193,6 +174,14 @@ export default function SeekerDetails() {
             {t('seeker_profile_contacts_premium')}
           </div>
         )}
+        {seeker.city && (
+          <div className="mb-2">
+            <div className="d-flex align-items-center">
+              <i className="bi bi-geo-alt me-2" style={{ color: '#6c757d' }}></i>
+              <span>{getCityLabel(seeker.city)}</span>
+            </div>
+          </div>
+        )}
         <div className="mb-2">
           <strong>{t('seeker_profile_employment')}:</strong> {seeker.employment && <span className="badge bg-secondary">{getEmploymentLabel(seeker.employment)}</span>}
         </div>
@@ -207,7 +196,7 @@ export default function SeekerDetails() {
           ))}
         </div>
         <div className="mb-2">
-          <strong>{t('seeker_profile_documents')}:</strong> {seeker.documentType}
+          <strong>{t('seeker_profile_documents')}:</strong> {seeker.documentType && <span className="badge bg-secondary">{getDocumentTypeLabel(seeker.documentType)}</span>}
         </div>
         <div className="mb-2">
           <strong>{t('seeker_profile_announcement')}:</strong>
