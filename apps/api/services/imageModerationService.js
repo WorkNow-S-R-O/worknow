@@ -24,7 +24,7 @@ export const moderateImage = async (imageBuffer) => {
       Image: {
         Bytes: imageBuffer
       },
-      MinConfidence: 70 // Minimum confidence threshold for detection
+      MinConfidence: 95 // Very high confidence threshold for very strict moderation
     };
 
     console.log('🔍 Image Moderation - Analyzing image content...');
@@ -37,36 +37,27 @@ export const moderateImage = async (imageBuffer) => {
 
     console.log('🔍 Image Moderation - Analysis completed');
 
-    // Check for inappropriate content
+    // Check for inappropriate content - only the most serious violations
     const inappropriateLabels = [
       'Explicit Nudity',
       'Violence',
-      'Hate Symbols',
-      'Drugs',
-      'Gambling',
-      'Tobacco',
-      'Alcohol'
+      'Hate Symbols'
     ];
 
     const detectedInappropriate = moderationResult.ModerationLabels?.filter(label => 
-      inappropriateLabels.includes(label.Name) && label.Confidence >= 70
+      inappropriateLabels.includes(label.Name) && label.Confidence >= 95
     ) || [];
 
     // Additional checks for specific content types
     const detectedLabels = labelResult.Labels?.map(label => label.Name) || [];
     
-    // Check for potentially inappropriate labels
+    // Check for potentially inappropriate labels - only the most serious
     const potentiallyInappropriate = [
       'Weapon',
       'Gun',
       'Knife',
-      'Drug',
-      'Alcohol',
-      'Tobacco',
-      'Gambling',
       'Adult',
-      'Nude',
-      'Violence'
+      'Nude'
     ];
 
     const detectedPotentiallyInappropriate = detectedLabels.filter(label =>
@@ -81,7 +72,7 @@ export const moderateImage = async (imageBuffer) => {
       isApproved: !isInappropriate,
       confidence: Math.max(
         ...detectedInappropriate.map(label => label.Confidence),
-        ...detectedPotentiallyInappropriate.map(() => 80), // Default confidence for potential issues
+        ...detectedPotentiallyInappropriate.map(() => 98), // Very high confidence for potential issues
         0
       ),
       detectedIssues: {

@@ -1,4 +1,4 @@
-import { uploadToS3, deleteFromS3, validateS3Config } from '../utils/s3Upload.js';
+import { uploadToS3WithModeration, deleteFromS3, validateS3Config } from '../utils/s3Upload.js';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -48,13 +48,22 @@ class S3UploadService {
         throw new Error('File size exceeds 5MB limit');
       }
 
-      // Upload to S3
-      const imageUrl = await uploadToS3(
+      // Upload to S3 with moderation
+      const uploadResult = await uploadToS3WithModeration(
         file.buffer,
         file.originalname,
         file.mimetype,
         'jobs'
       );
+
+      if (!uploadResult.success) {
+        if (uploadResult.code === 'CONTENT_REJECTED') {
+          throw new Error(`Image content violates community guidelines: ${uploadResult.error}`);
+        }
+        throw new Error(`Upload failed: ${uploadResult.error}`);
+      }
+
+      const imageUrl = uploadResult.imageUrl;
 
       console.log('✅ S3UploadService: Image uploaded successfully for user:', userId);
 
