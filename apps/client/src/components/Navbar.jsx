@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import PremiumButton from "./ui/premium-button";
 import useLanguageStore from "../store/languageStore"; // Импортируем Zustand хранилище
@@ -22,12 +22,18 @@ if (!PUBLISHABLE_KEY || !googleClientId) {
 
 const Navbar = () => {
   const { t, i18n } = useTranslation();
+  const location = useLocation();
 
   // Используем отдельные селекторы для language и changeLanguage
   const language = useLanguageStore((state) => state.language);
   const changeLanguage = useLanguageStore((state) => state.changeLanguage);
 
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Close mobile navbar when route changes
+  useEffect(() => {
+    setIsExpanded(false);
+  }, [location.pathname]);
 
   // Обработчик смены языка
   const handleLanguageChange = (lang) => {
