@@ -28,7 +28,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
 
   const languageOptions = [
     { value: 'русский', label: t('language_russian') || 'Русский' },
-    { value: 'украинский', label: t('language_ukrainian') || 'Украинский' },
+    { value: 'арабский', label: t('language_arabic') || 'Арабский' },
     { value: 'английский', label: t('language_english') || 'Английский' },
     { value: 'иврит', label: t('language_hebrew') || 'Иврит' },
   ];

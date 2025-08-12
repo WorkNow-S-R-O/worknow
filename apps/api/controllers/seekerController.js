@@ -1,6 +1,6 @@
 import { getAllSeekers, createSeeker, getSeekerBySlug, deleteSeeker, getSeekerById } from '../services/seekerService.js';
 import { getUserByClerkIdService } from '../services/getUserByClerkService.js';
-import { checkAndSendFilteredNewsletter } from '../services/newsletterService.js';
+import { checkAndSendNewCandidatesNotification } from '../services/candidateNotificationService.js';
 
 export async function getSeekers(req, res) {
   try {
@@ -53,13 +53,13 @@ export async function addSeeker(req, res) {
     };
     const seeker = await createSeeker(seekerData);
     
-    // Trigger filtered newsletter check after adding new candidate
+    // Trigger new candidates notification check after adding new candidate
     try {
-      console.log('📧 Triggering filtered newsletter check after adding new candidate...');
-      await checkAndSendFilteredNewsletter();
+      console.log('📧 Triggering new candidates notification check after adding new candidate...');
+      await checkAndSendNewCandidatesNotification();
     } catch (newsletterError) {
-      console.error('❌ Error triggering newsletter after adding candidate:', newsletterError);
-      // Don't fail the candidate creation if newsletter fails
+      console.error('❌ Error triggering notification after adding candidate:', newsletterError);
+      // Don't fail the candidate creation if notification fails
     }
     
     res.status(201).json(seeker);

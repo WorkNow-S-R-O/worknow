@@ -8,10 +8,11 @@ import { Trash, PencilSquare, SortUp } from "react-bootstrap-icons";
 import Skeleton from "react-loading-skeleton";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
-import { ru } from "date-fns/locale";
+import { ru, enUS, he, ar } from "date-fns/locale";
 import "react-loading-skeleton/dist/skeleton.css";
 import useLanguageStore from '../store/languageStore';
 import { useLoadingProgress } from '../hooks/useLoadingProgress';
+import { useTranslationHelpers } from '../utils/translationHelpers';
 import { ImageModal } from './ui';
 import PaginationControl from './PaginationControl';
 
@@ -24,6 +25,7 @@ const UserJobs = () => {
   const navigate = useNavigate();
   const language = useLanguageStore((state) => state.language) || 'ru';
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
+  const { getCityLabel } = useTranslationHelpers();
 
   const [jobs, setJobs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,6 +39,26 @@ const UserJobs = () => {
   const [selectedImageTitle, setSelectedImageTitle] = useState("");
   const [imageLoadingStates, setImageLoadingStates] = useState({});
   const [failedImages, setFailedImages] = useState(new Set());
+
+  // Helper function to get the appropriate date-fns locale
+  const getDateLocale = () => {
+    switch (language) {
+      case 'en':
+        return enUS;
+      case 'he':
+        return he;
+      case 'ar':
+        return ar;
+      default:
+        return ru;
+    }
+  };
+
+  // Helper function to format date based on language
+  const formatDate = (date) => {
+    const locale = getDateLocale();
+    return format(new Date(date), "dd MMMM yyyy", { locale });
+  };
 
   // Helper function to check if a job is already boosted
   const isJobBoosted = (job) => {
@@ -320,7 +342,7 @@ const UserJobs = () => {
                       <strong>{t("salary_per_hour_card")}</strong> {job.salary}
                       <br />
                       <strong>{t("location_card")}</strong>{" "}
-                      {job.city?.name || "Не указано"}
+                      {job.city?.name ? getCityLabel(job.city.name) : t("not_specified")}
                     </p>
                     <p className="card-text">{job.description}</p>
                     <div className="card-text">
@@ -371,7 +393,7 @@ const UserJobs = () => {
                               whiteSpace: 'pre-line'
                             }}
                           >
-                            Image{'\n'}unavailable
+                            {t('image_unavailable')}
                           </div>
                         ) : (
                           <img 
@@ -404,9 +426,7 @@ const UserJobs = () => {
                         <span className="d-none d-sm-inline">
                           {t("created_at") + ": "}
                         </span>
-                        {format(new Date(job.createdAt), "dd MMMM yyyy", {
-                          locale: ru,
-                        })}
+                        {formatDate(job.createdAt)}
                       </small>
                     </div>
                   </div>
@@ -427,7 +447,7 @@ const UserJobs = () => {
                               whiteSpace: 'nowrap'
                             }}
                           >
-                            {timeUntilNextBoost ? `${timeUntilNextBoost.hours}ч ${timeUntilNextBoost.minutes}м` : 'Ready'}
+                            {timeUntilNextBoost ? `${timeUntilNextBoost.hours}${t('hours_short')} ${timeUntilNextBoost.minutes}${t('minutes_short')}` : t('boost_ready')}
                           </div>
                         </div>
                       ) : (
@@ -436,7 +456,7 @@ const UserJobs = () => {
                           size={24}
                           className="text-success"
                           onClick={() => handleBoost(job.id)}
-                          title="Поднять в топ"
+                          title={t('boost_title')}
                           style={{ cursor: 'pointer' }}
                         />
                       )}

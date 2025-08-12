@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Mail, Phone, MessageCircle, Clock, HelpCircle, Users, Shield, Zap, X } from "lucide-react";
+import { Mail, Phone, MessageCircle, Clock, HelpCircle, Users, Shield, Zap } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 const SupportPage = () => {
@@ -17,18 +17,18 @@ const SupportPage = () => {
   const supportMethods = [
     {
       icon: Mail,
-      title: "Email Support",
-      description: "Get help via email",
-      contact: "worknow.notifications@gmail.com",
-      action: "mailto:worknow.notifications@gmail.com",
+      title: t("support_email_title"),
+      description: t("support_email_description"),
+      contact: "peterbaikov12@gmail.com",
+      action: "mailto:peterbaikov12@gmail.com",
       color: "bg-blue-500",
       hoverColor: "hover:bg-blue-600"
     },
     {
       icon: MessageCircle,
-      title: "Live Chat",
-      description: "Coming soon",
-      contact: "Available 24/7",
+      title: t("support_live_chat_title"),
+      description: t("support_live_chat_description"),
+      contact: t("support_available_24_7"),
       action: "#",
       color: "bg-green-500",
       hoverColor: "hover:bg-green-600",
@@ -36,10 +36,10 @@ const SupportPage = () => {
     },
     {
       icon: Phone,
-      title: "Phone Support",
-      description: "Call us directly",
-      contact: "+972-XX-XXX-XXXX",
-      action: "tel:+972-XX-XXX-XXXX",
+      title: t("support_phone_title"),
+      description: t("support_phone_description"),
+      contact: "+972-053-3033332",
+      action: "tel:+972-053-3033332",
       color: "bg-purple-500",
       hoverColor: "hover:bg-purple-600"
     }
@@ -47,38 +47,38 @@ const SupportPage = () => {
 
   const faqItems = [
     {
-      question: "How do I create a job posting?",
-      answer: "Go to 'Create new advertisement' in the main menu, fill out the form with job details, and click 'Publish'."
+      question: t("support_faq_create_job_question"),
+      answer: t("support_faq_create_job_answer")
     },
     {
-      question: "How does premium subscription work?",
-      answer: "Premium subscription gives you priority placement, AI-powered job title generation, and extended features for faster job posting."
+      question: t("support_faq_premium_question"),
+      answer: t("support_faq_premium_answer")
     },
     {
-      question: "Can I edit my job posting?",
-      answer: "Yes, you can edit your job postings from the 'My advertisements' section. Click on the edit button next to your job."
+      question: t("support_faq_edit_job_question"),
+      answer: t("support_faq_edit_job_answer")
     },
     {
-      question: "How do I contact job seekers?",
-      answer: "Premium users can access contact information for job seekers. Upgrade to premium to unlock this feature."
+      question: t("support_faq_contact_seekers_question"),
+      answer: t("support_faq_contact_seekers_answer")
     }
   ];
 
   const features = [
     {
       icon: Shield,
-      title: "Secure Platform",
-      description: "Your data is protected with industry-standard security"
+      title: t("support_secure_platform_title"),
+      description: t("support_secure_platform_description")
     },
     {
       icon: Zap,
-      title: "Fast & Reliable",
-      description: "Quick job posting and instant notifications"
+      title: t("support_fast_reliable_title"),
+      description: t("support_fast_reliable_description")
     },
     {
       icon: Users,
-      title: "Community Driven",
-      description: "Connect with thousands of job seekers and employers"
+      title: t("support_community_driven_title"),
+      description: t("support_community_driven_description")
     }
   ];
 
@@ -184,7 +184,7 @@ const SupportPage = () => {
               {t("technical_support")}
             </h1>
             <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              We're here to help you succeed. Get in touch with our support team for any questions or assistance.
+              {t("support_hero_description")}
             </p>
           </div>
         </div>
@@ -194,10 +194,10 @@ const SupportPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Get in Touch
+            {t("support_get_in_touch")}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Choose the best way to reach our support team
+            {t("support_get_in_touch_description")}
           </p>
         </div>
 
@@ -228,11 +228,11 @@ const SupportPage = () => {
                       onClick={() => handleContactClick(method)}
                       className={`inline-flex items-center px-6 py-3 rounded-lg ${method.color} ${method.hoverColor} text-white font-medium transition-colors duration-200`}
                     >
-                      Contact Now
+                      {t("support_contact_now")}
                     </button>
                   ) : (
                     <span className="inline-flex items-center px-6 py-3 rounded-lg bg-gray-300 text-gray-500 font-medium cursor-not-allowed">
-                      Coming Soon
+                      {t("support_coming_soon")}
                     </span>
                   )}
                 </div>
@@ -245,10 +245,10 @@ const SupportPage = () => {
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-12">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Why Choose WorkNow?
+              {t("support_why_choose_title")}
             </h2>
             <p className="text-lg text-gray-600">
-              We provide the best job search experience in Israel
+              {t("support_why_choose_description")}
             </p>
           </div>
           
@@ -273,10 +273,10 @@ const SupportPage = () => {
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Frequently Asked Questions
+              {t("support_faq_title")}
             </h2>
             <p className="text-lg text-gray-600">
-              Find answers to common questions
+              {t("support_faq_description")}
             </p>
           </div>
           
@@ -299,13 +299,13 @@ const SupportPage = () => {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
             <div className="flex items-center justify-center mb-4">
               <Clock className="h-6 w-6 mr-2" />
-              <span className="text-lg font-semibold">Support Hours</span>
+              <span className="text-lg font-semibold">{t("support_hours_title")}</span>
             </div>
             <p className="text-blue-100 mb-4">
-              Monday - Friday: 9:00 AM - 6:00 PM (Israel Time)
+              {t("support_hours_weekdays")}
             </p>
             <p className="text-blue-100">
-              Weekend: 10:00 AM - 4:00 PM (Israel Time)
+              {t("support_hours_weekend")}
             </p>
           </div>
         </div>
@@ -321,11 +321,11 @@ const SupportPage = () => {
         >
           <div ref={modalRef} style={contentStyle}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>Contact Support</h5>
+              <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>{t("support_modal_title")}</h5>
               <button 
                 type="button" 
                 className="btn-close" 
-                aria-label="Close" 
+                aria-label={t("close")} 
                 onClick={closeModal} 
                 style={{ fontSize: '24px' }}
               ></button>
@@ -345,7 +345,7 @@ const SupportPage = () => {
               </p>
               
               <div className="bg-gray-50 rounded-lg p-4 mb-6 w-full">
-                <p className="text-sm text-gray-500 mb-2">Contact Information:</p>
+                <p className="text-sm text-gray-500 mb-2">{t("support_modal_contact_info")}</p>
                 <p className="text-lg font-medium text-gray-900 break-words">
                   {selectedMethod.contact}
                 </p>
@@ -357,11 +357,11 @@ const SupportPage = () => {
                   className={`inline-flex items-center px-8 py-4 rounded-lg ${selectedMethod.color} ${selectedMethod.hoverColor} text-white text-lg font-medium transition-colors duration-200 w-full justify-center`}
                   onClick={closeModal}
                 >
-                  Contact Now
+                  {t("support_contact_now")}
                 </a>
               ) : (
                 <span className="inline-flex items-center px-8 py-4 rounded-lg bg-gray-300 text-gray-500 text-lg font-medium w-full justify-center">
-                  Coming Soon
+                  {t("support_coming_soon")}
                 </span>
               )}
             </div>
