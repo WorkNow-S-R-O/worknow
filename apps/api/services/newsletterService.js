@@ -12,7 +12,7 @@ console.log('🔍 RESEND_API_KEY value:', process.env.RESEND_API_KEY ? process.e
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
- * Send 3 candidates to a newly subscribed user
+ * Send 3 candidates to a newly subscribed user (only once)
  */
 export async function sendCandidatesToNewSubscriber(subscriber) {
   try {
@@ -389,10 +389,13 @@ function filterCandidatesByPreferences(candidates, subscriber) {
 
 /**
  * Check if we should send emails (triggered every 3rd new candidate)
+ * This function now handles the new notification logic:
+ * 1. Send three latest candidates to new subscribers only once
+ * 2. Send notifications about new candidates every third candidate added
  */
 export async function checkAndSendFilteredNewsletter() {
   try {
-    console.log('📧 Проверяем необходимость отправки отфильтрованных кандидатов...');
+    console.log('📧 Проверяем необходимость отправки уведомлений о новых кандидатах...');
 
     // Get count of active candidates
     const candidateCount = await prisma.seeker.count({
@@ -401,10 +404,21 @@ export async function checkAndSendFilteredNewsletter() {
 
     console.log(`📧 Всего активных кандидатов: ${candidateCount}`);
 
-    // Send emails every 3rd candidate (when count is divisible by 3)
+    // Send notifications every 3rd candidate (when count is divisible by 3)
     if (candidateCount > 0 && candidateCount % 3 === 0) {
       console.log(`📧 Триггер отправки: ${candidateCount} кандидатов (делится на 3)`);
-      await sendFilteredCandidatesToSubscribers();
+      
+      // Get the 3 most recent candidates for this notification
+      const recentCandidates = await prisma.seeker.findMany({
+        where: { isActive: true },
+        orderBy: { createdAt: 'desc' },
+        take: 3
+      });
+
+      if (recentCandidates.length > 0) {
+        console.log(`📧 Отправляем уведомления о ${recentCandidates.length} новых кандидатах`);
+        await sendNewCandidatesNotification(recentCandidates);
+      }
     } else {
       console.log(`📧 Триггер не сработал: ${candidateCount} кандидатов (не делится на 3)`);
     }
@@ -412,4 +426,164 @@ export async function checkAndSendFilteredNewsletter() {
   } catch (error) {
     console.error('❌ Ошибка при проверке триггера рассылки:', error);
   }
+} 
+
+/**
+ * Send notification about new candidates to all active subscribers
+ * This is called every third candidate added to the system
+ */
+async function sendNewCandidatesNotification(newCandidates) {
+  try {
+    console.log('📧 Отправляем уведомления о новых кандидатах всем подписчикам...');
+
+    // Get all active subscribers
+    const subscribers = await prisma.newsletterSubscriber.findMany({
+      where: { isActive: true }
+    });
+
+    if (subscribers.length === 0) {
+      console.log('📧 Нет активных подписчиков для рассылки');
+      return;
+    }
+
+    console.log(`📧 Отправляем уведомления ${subscribers.length} подписчикам о ${newCandidates.length} новых кандидатах`);
+
+    // Send notifications to each subscriber
+    for (const subscriber of subscribers) {
+      try {
+        // Filter candidates based on subscriber preferences
+        const filteredCandidates = filterCandidatesByPreferences(newCandidates, subscriber);
+        
+        if (filteredCandidates.length > 0) {
+          const emailContent = generateNewCandidatesNotificationEmail(filteredCandidates, subscriber);
+          const emailSubject = 'Новые соискатели добавлены на WorkNow';
+
+          console.log(`📧 Отправляем уведомление о ${filteredCandidates.length} новых кандидатах подписчику: ${subscriber.email}`);
+
+          // Send email with fallback
+          try {
+            await resend.emails.send({
+              from: 'WorkNow <onboarding@resend.dev>',
+              to: subscriber.email,
+              subject: emailSubject,
+              html: emailContent
+            });
+
+            console.log(`📧 Уведомление о новых кандидатах отправлено через Resend: ${subscriber.email}`);
+          } catch (resendError) {
+            console.error(`❌ Resend failed for ${subscriber.email}, trying Gmail fallback:`, resendError);
+            
+            // Fallback to Gmail
+            try {
+              await sendEmail(subscriber.email, emailSubject, emailContent);
+              console.log(`📧 Уведомление о новых кандидатах отправлено через Gmail: ${subscriber.email}`);
+            } catch (gmailError) {
+              console.error(`❌ Gmail fallback also failed for ${subscriber.email}:`, gmailError);
+            }
+          }
+        } else {
+          console.log(`📧 Нет подходящих новых кандидатов для подписчика: ${subscriber.email}`);
+        }
+      } catch (error) {
+        console.error(`❌ Ошибка при отправке уведомления подписчику ${subscriber.email}:`, error);
+      }
+    }
+
+    console.log('📧 Рассылка уведомлений о новых кандидатах завершена');
+
+  } catch (error) {
+    console.error('❌ Ошибка при отправке уведомлений о новых кандидатах:', error);
+    throw error;
+  }
+}
+
+/**
+ * Generate email content for new candidates notification
+ * This is different from the initial subscription email
+ */
+function generateNewCandidatesNotificationEmail(candidates, subscriber) {
+  const candidatesHtml = candidates.map(candidate => `
+    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9;">
+      <h3 style="margin: 0 0 10px 0; color: #333; font-size: 18px;">
+        <strong>Новый соискатель:</strong> ${candidate.name} ${candidate.gender ? `${candidate.gender}` : ''}
+      </h3>
+      <p style="margin: 5px 0; color: #666;">
+        <strong>Город:</strong> ${candidate.city || 'Не указан'}
+      </p>
+      <p style="margin: 5px 0; color: #666;">
+        <strong>Занятость:</strong> ${candidate.employment || 'Не указана'}
+      </p>
+      <p style="margin: 5px 0; color: #666;">
+        <strong>Категория:</strong> ${candidate.category || 'Не указана'}
+      </p>
+      ${candidate.experience ? `<p style="margin: 5px 0; color: #666;"><strong>Опыт, лет:</strong> ${candidate.experience}</p>` : ''}
+      <p style="margin: 5px 0; color: #666;">
+        <strong>Языки:</strong> ${candidate.languages ? candidate.languages.join(', ') : 'Не указаны'}
+      </p>
+      <p style="margin: 10px 0 0 0; color: #333; font-style: italic;">
+        <strong>Объявление:</strong> ${candidate.description || 'Описание не указано'}
+      </p>
+    </div>
+  `).join('');
+
+  const subscriberName = subscriber.firstName && subscriber.lastName 
+    ? `${subscriber.firstName} ${subscriber.lastName}`
+    : subscriber.firstName || subscriber.lastName || 'пользователь';
+
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Новые соискатели добавлены</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <!-- Header with Hebrew text -->
+        <div style="background-color: #1976d2; color: white; text-align: center; padding: 20px; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px;">
+          <h1 style="margin: 0; font-size: 24px;">WORKNOW</h1>
+        </div>
+        
+        <div style="background-color: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          <h2 style="color: #1976d2; margin: 0 0 10px 0;">
+            Уважаемый/ая ${subscriberName}! На сайт добавлено ${candidates.length} новых соискателей.
+          </h2>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+          <h3 style="color: #333; border-bottom: 2px solid #1976d2; padding-bottom: 10px;">
+            Новые соискатели:
+          </h3>
+          ${candidatesHtml}
+        </div>
+
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin-top: 30px;">
+          <h3 style="color: #333; margin: 0 0 10px 0;">Наши новости:</h3>
+          <p style="margin: 5px 0; color: #666;">
+            Открыт вотсапп-чат проекта Авода
+          </p>
+          <p style="margin: 5px 0; color: #666;">
+            Для всех желающих получать максимально оперативно свежую информацию о соискателях, анонсы и новости Системы, открыт вотсапп - чат. Присоединяйтесь !!!
+          </p>
+          <p style="margin: 5px 0; color: #666;">
+            <a href="#" style="color: #1976d2; text-decoration: none;">перейти -></a>
+          </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+          <p style="color: #666; font-size: 12px; margin: 0;">
+            Вы получаете эту рассылку потому, что подписаны на уведомления о новых соискателях.
+          </p>
+          <p style="color: #666; font-size: 12px; margin: 5px 0;">
+            For unsubscribe click here: 
+            <a href="https://worknow.co.il/newsletter" style="color: #1976d2; text-decoration: none;">
+              https://worknow.co.il/newsletter
+            </a>
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
 } 

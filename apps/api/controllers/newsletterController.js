@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { sendCandidatesToNewSubscriber } from '../services/newsletterService.js';
+import { sendInitialCandidatesToNewSubscriber } from '../services/candidateNotificationService.js';
 import { sendVerificationCode, storeVerificationCode, verifyCode } from '../services/snsService.js';
 
 const prisma = new PrismaClient();
@@ -78,7 +78,7 @@ export async function subscribeToNewsletter(req, res) {
 
     // Send candidates to new subscriber
     try {
-      await sendCandidatesToNewSubscriber(subscriber);
+      await sendInitialCandidatesToNewSubscriber(subscriber);
     } catch (emailError) {
       console.error('❌ Failed to send candidates email:', emailError);
       // Don't fail the subscription if email fails
@@ -473,7 +473,7 @@ export async function verifyNewsletterCode(req, res) {
 
     // Send candidates to new subscriber
     try {
-      await sendCandidatesToNewSubscriber(subscriber);
+      await sendInitialCandidatesToNewSubscriber(subscriber);
     } catch (emailError) {
       console.error('❌ Failed to send candidates email:', emailError);
       // Don't fail the subscription if email fails
