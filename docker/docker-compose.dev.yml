@@ -1,33 +1,14 @@
 # Docker Compose Development Configuration
 
 services:
-  # PostgreSQL Database for Development
-  postgres-dev:
-    image: postgres:15-alpine
-    container_name: worknow-postgres-dev
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: worknow_dev
-      POSTGRES_USER: worknow_dev
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-worknow_dev_password}
-    volumes:
-      - postgres_dev_data:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"  # Different port to avoid conflicts
-    networks:
-      - worknow-dev-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U worknow_dev -d worknow_dev"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   # Redis for Development
   redis-dev:
     image: redis:7-alpine
     container_name: worknow-redis-dev
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_dev_password}
+    environment:
+      REDIS_PASSWORD: redis_dev_password
+    command: redis-server --appendonly yes --requirepass redis_dev_password
     volumes:
       - redis_dev_data:/data
     ports:
@@ -48,8 +29,8 @@ services:
     container_name: worknow-app-dev
     restart: unless-stopped
     environment:
-      # Database
-      DATABASE_URL: postgresql://worknow_dev:${POSTGRES_PASSWORD:-worknow_dev_password}@postgres-dev:5432/worknow_dev
+      # Database - Using local PostgreSQL
+      DATABASE_URL: postgresql://postgres@host.docker.internal:5432/worknow
       
       # Node environment
       NODE_ENV: development
@@ -96,8 +77,6 @@ services:
       - ./logs:/app/logs
       - ./uploads:/app/uploads
     depends_on:
-      postgres-dev:
-        condition: service_healthy
       redis-dev:
         condition: service_healthy
     networks:
@@ -117,19 +96,15 @@ services:
       sh -c "npm install -g prisma &&
              prisma studio --hostname 0.0.0.0 --port 5555"
     environment:
-      DATABASE_URL: postgresql://worknow_dev:${POSTGRES_PASSWORD:-worknow_dev_password}@postgres-dev:5432/worknow_dev
+      DATABASE_URL: postgresql://postgres@host.docker.internal:5432/worknow
     ports:
       - "5555:5555"
     volumes:
       - ../prisma:/app/prisma
-    depends_on:
-      - postgres-dev
     networks:
       - worknow-dev-network
 
 volumes:
-  postgres_dev_data:
-    driver: local
   redis_dev_data:
     driver: local
 
