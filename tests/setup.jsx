@@ -237,6 +237,14 @@ vi.mock('react-select', () => ({
   default: ({ children, ...props }) => <select {...props}>{children}</select>
 }))
 
+// Mock the zod resolver
+vi.mock('@hookform/resolvers/zod', () => ({
+  zodResolver: vi.fn(() => ({
+    validate: vi.fn(() => ({ success: true, data: {} })),
+    validateAsync: vi.fn(() => Promise.resolve({ success: true, data: {} }))
+  }))
+}))
+
 // Mock ImageUploadContext
 vi.mock('../apps/client/src/contexts/ImageUploadContext.jsx', () => ({
   useImageUpload: () => ({
@@ -244,5 +252,45 @@ vi.mock('../apps/client/src/contexts/ImageUploadContext.jsx', () => ({
     uploading: false,
     uploadError: null,
     clearError: vi.fn()
+  })
+}))
+
+// Mock LoadingContext
+vi.mock('../apps/client/src/contexts/LoadingContext.jsx', () => ({
+  useLoading: () => ({
+    startLoading: vi.fn(),
+    stopLoading: vi.fn(),
+    updateProgress: vi.fn()
+  }),
+  LoadingProvider: ({ children }) => children
+}))
+
+// Mock custom hooks
+vi.mock('../apps/client/src/hooks/useFetchCities.js', () => ({
+  default: () => ({
+    cities: [
+      { value: 1, label: 'Tel Aviv' },
+      { value: 2, label: 'Jerusalem' },
+      { value: 3, label: 'Haifa' }
+    ],
+    loading: false
+  })
+}))
+
+vi.mock('../apps/client/src/hooks/useFetchCategories.js', () => ({
+  default: () => ({
+    categories: [
+      { value: 1, label: 'Construction' },
+      { value: 2, label: 'Cleaning' },
+      { value: 3, label: 'Delivery' }
+    ],
+    loading: false
+  })
+}))
+
+vi.mock('../apps/client/src/hooks/useLoadingProgress.js', () => ({
+  useLoadingProgress: () => ({
+    startLoadingWithProgress: vi.fn(),
+    completeLoading: vi.fn()
   })
 })) 

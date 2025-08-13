@@ -110,7 +110,6 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
 
       {/* Изображение вакансии */}
       <div className="mb-4">
-        {console.log('🔍 EditJobFields - Rendering ImageUpload with:', { currentImageUrl, onImageUpload: !!onImageUpload })}
         <ImageUpload 
           onImageUpload={onImageUpload}
           currentImageUrl={currentImageUrl}

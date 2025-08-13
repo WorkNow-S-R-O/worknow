@@ -32,12 +32,10 @@ const JobCard = ({ job }) => {
 
   const handleImageLoad = () => {
     setImageLoading(false);
-    console.log('✅ JobCard - Mini image loaded successfully:', job.imageUrl);
   };
 
-  const handleImageError = (e) => {
+  const handleImageError = () => {
     setImageLoading(false);
-    console.error('❌ JobCard - Mini image failed to load:', job.imageUrl, e);
   };
 
   return (
@@ -102,7 +100,6 @@ const JobCard = ({ job }) => {
           {/* Image displayed under phone number in mini size */}
           {job.imageUrl && (
             <div className="mt-3">
-              {console.log('🔍 JobCard - Rendering image for job:', job.id, 'URL:', job.imageUrl)}
               {imageLoading && (
                 <Skeleton 
                   width={120} 
@@ -142,7 +139,7 @@ const JobCard = ({ job }) => {
           onHide={handleCloseModal}
           imageUrl={job.imageUrl}
           imageAlt={job.title}
-          onImageError={(e) => console.error('❌ JobCard - Modal image failed to load:', job.imageUrl, e)}
+          onImageError={() => {}}
         />
       )}
     </>

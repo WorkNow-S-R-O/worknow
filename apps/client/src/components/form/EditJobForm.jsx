@@ -46,12 +46,8 @@ const EditJobForm = () => {
 
   // Set initial image URL when job data is loaded
   useEffect(() => {
-    console.log('🔍 EditJobForm - Job data loaded:', job);
     if (job && job.imageUrl) {
-      console.log('🔍 EditJobForm - Setting image URL:', job.imageUrl);
       setImageUrl(job.imageUrl);
-    } else {
-      console.log('🔍 EditJobForm - No image URL found in job data');
     }
   }, [job]);
 

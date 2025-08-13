@@ -17,7 +17,7 @@ const JobForm = ({ onJobCreated }) => {
   const { user } = useUser();
   const { getToken } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation();z 
   const { cities, loading: citiesLoading } = useFetchCities();
   const { categories, loading: categoriesLoading } = useFetchCategories();
   const [imageFile, setImageFile] = useState(null);

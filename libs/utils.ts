@@ -7,7 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const showToastError = (error: any) => {
-  console.error('Ошибка:', error.response?.data || error.message);
   if (error.response?.data?.error) {
     toast.error(error.response.data.error);
   } else {
