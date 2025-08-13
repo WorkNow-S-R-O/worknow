@@ -32,4 +32,7 @@ export default defineConfig({
       "libs": path.resolve(__dirname, "libs"),
     },
   },
+  optimizeDeps: {
+    include: ['zod', '@hookform/resolvers/zod']
+  }
 })
