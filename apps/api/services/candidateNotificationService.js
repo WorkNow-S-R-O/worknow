@@ -49,21 +49,46 @@ export async function sendInitialCandidatesToNewSubscriber(subscriber) {
 
 /**
  * Check if we should send notifications about new candidates
- * Triggers every third candidate added to the system
+ * Only triggers when exactly 3 new candidates are added since last notification
+ * This is the SINGLE source of truth for candidate notifications
  */
 export async function checkAndSendNewCandidatesNotification() {
   try {
     console.log('📧 Проверяем необходимость отправки уведомлений о новых кандидатах...');
 
-    const candidateCount = await prisma.seeker.count({
+    // Get the current total count of active candidates
+    const currentCandidateCount = await prisma.seeker.count({
       where: { isActive: true }
     });
 
-    console.log(`📧 Всего активных кандидатов: ${candidateCount}`);
+    console.log(`📧 Всего активных кандидатов: ${currentCandidateCount}`);
 
-    if (candidateCount > 0 && candidateCount % 3 === 0) {
-      console.log(`📧 Триггер отправки: ${candidateCount} кандидатов (делится на 3)`);
+    // Simple approach: only send notifications if we have exactly 3, 6, 9, etc. candidates
+    // AND the most recent candidate was created recently (within last 5 minutes)
+    const mostRecentCandidate = await prisma.seeker.findFirst({
+      where: { isActive: true },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    if (!mostRecentCandidate) {
+      console.log('📧 Нет кандидатов для уведомлений');
+      return;
+    }
+
+    // Check if the most recent candidate was created recently (within last 5 minutes)
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    const isRecent = mostRecentCandidate.createdAt > fiveMinutesAgo;
+
+    if (!isRecent) {
+      console.log('📧 Последний кандидат был добавлен более 5 минут назад, уведомления уже отправлены');
+      return;
+    }
+
+    // Only send notification if total count is divisible by 3 AND candidate is recent
+    if (currentCandidateCount > 0 && currentCandidateCount % 3 === 0 && isRecent) {
+      console.log(`📧 Триггер отправки: ${currentCandidateCount} кандидатов (делится на 3) и кандидат недавний`);
       
+      // Get the 3 most recent candidates
       const recentCandidates = await prisma.seeker.findMany({
         where: { isActive: true },
         orderBy: { createdAt: 'desc' },
@@ -73,9 +98,10 @@ export async function checkAndSendNewCandidatesNotification() {
       if (recentCandidates.length > 0) {
         console.log(`📧 Отправляем уведомления о ${recentCandidates.length} новых кандидатах`);
         await sendNewCandidatesNotification(recentCandidates);
+        console.log(`📧 Уведомления отправлены для ${currentCandidateCount} кандидатов`);
       }
     } else {
-      console.log(`📧 Триггер не сработал: ${candidateCount} кандидатов (не делится на 3)`);
+      console.log(`📧 Триггер не сработал: ${currentCandidateCount} кандидатов, недавний: ${isRecent}`);
     }
 
   } catch (error) {
