@@ -5,7 +5,7 @@ import { useLoadingProgress } from './useLoadingProgress';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const useSeekers = (page = 1, filters = {}) => {
+const useSeekers = (page = 1, filters = {}, forceRefresh = 0) => {
   const [seekers, setSeekers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,6 +25,8 @@ const useSeekers = (page = 1, filters = {}) => {
   ]);
 
   useEffect(() => {
+    console.log('🔄 useSeekers useEffect triggered - page:', page, 'filters:', memoizedFilters, 'forceRefresh:', forceRefresh, 'timestamp:', Date.now());
+    
     const loadSeekers = async () => {
       setLoading(true);
       
@@ -57,14 +59,17 @@ const useSeekers = (page = 1, filters = {}) => {
         }
         
         console.log('🚀 useSeekers fetching with params:', params.toString());
+        console.log('🌐 Full URL:', `${API_URL}/api/seekers?${params.toString()}`);
         const response = await axios.get(`${API_URL}/api/seekers?${params.toString()}`);
       
+        console.log('📡 API Response:', response.data);
+        
         // Handle API response format with pagination
         if (response.data && response.data.seekers) {
           // New format with pagination
           setSeekers(response.data.seekers);
           setPagination(response.data.pagination);
-          console.log(`✅ useSeekers found ${response.data.seekers.length} seekers, total pages: ${response.data.pagination?.pages || 1}`);
+          console.log(`✅ useSeekers found ${response.data.seekers.length} seekers, total pages: ${response.data.pagination?.totalPages || 1}`);
         } else if (Array.isArray(response.data)) {
           // Old format - just array of seekers
           setSeekers(response.data);
@@ -91,8 +96,9 @@ const useSeekers = (page = 1, filters = {}) => {
     };
 
     loadSeekers();
-  }, [language, page, memoizedFilters]); // Use memoized filters to prevent infinite loops
+  }, [language, page, memoizedFilters, forceRefresh]); // Use memoized filters to prevent infinite loops
 
+  console.log('🔄 useSeekers returning:', { seekers: seekers.length, loading, error, pagination, page });
   return { seekers, loading, error, pagination };
 };
 

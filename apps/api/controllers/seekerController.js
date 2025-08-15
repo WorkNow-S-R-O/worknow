@@ -5,6 +5,7 @@ import { checkAndSendNewCandidatesNotification } from '../services/candidateNoti
 export async function getSeekers(req, res) {
   try {
     console.log('🔍 Backend received query:', req.query);
+    console.log('📄 Page parameter:', req.query.page, 'Type:', typeof req.query.page);
     
     // Handle languages array from query parameters
     const query = { ...req.query };
@@ -23,7 +24,7 @@ export async function getSeekers(req, res) {
     
     console.log('🔧 Processed query for service:', query);
     const data = await getAllSeekers(query);
-    console.log('📤 Sending response with', data.seekers?.length || 0, 'seekers');
+    console.log('📤 Sending response with', data.seekers?.length || 0, 'seekers, page:', data.pagination?.currentPage);
     res.json(data);
   } catch (error) {
     console.error('❌ Error getting seekers:', error);

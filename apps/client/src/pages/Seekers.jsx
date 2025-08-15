@@ -3,7 +3,7 @@ import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Facebook } from "react-bootstrap-icons";
 import { Helmet } from "react-helmet-async";
 import PaginationControl from "../components/PaginationControl";
@@ -47,10 +47,10 @@ const parseContactField = (contact) => {
 };
 
 // Helper function to render contact cell
-const renderContactCell = (contact, isPremium, seekerId, seekerIds, currentIndex, facebook) => {
+const renderContactCell = (contact, isPremium, seekerId, seekerIds, currentIndex, facebook, returnToPage) => {
   const linkProps = {
     to: `/seekers/${seekerId}`,
-    state: { seekerIds, currentIndex },
+    state: { seekerIds, currentIndex, returnToPage },
     style: { color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }
   };
   
@@ -96,8 +96,79 @@ export default function Seekers() {
   const { user } = useUser();
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
   const { filters, setFilters } = useSeekerFilterStore();
-  const [currentPage, setCurrentPage] = useState(1);
-  const { seekers, loading, error, pagination } = useSeekers(currentPage, filters);
+  const location = useLocation();
+  // Initialize currentPage from localStorage or default to 1
+  const [currentPage, setCurrentPage] = useState(() => {
+    const savedPage = localStorage.getItem('seekersCurrentPage');
+    return savedPage ? parseInt(savedPage) : 1;
+  });
+  
+  // Force re-render when currentPage changes to ensure useSeekers hook re-runs
+  const [forceRefresh, setForceRefresh] = useState(0);
+  
+  const { seekers, loading, error, pagination } = useSeekers(currentPage, filters, forceRefresh);
+  
+  // Debug logging for page state
+  console.log('📄 Seekers component - currentPage:', currentPage, 'seekers count:', seekers.length, 'forceRefresh:', forceRefresh);
+
+  // Handle return navigation from seeker details
+  useEffect(() => {
+    console.log('🔍 Location state:', location.state);
+    
+    if (location.state?.returnToPage) {
+      const returnPage = location.state.returnPage;
+      console.log('🔄 Returning to page:', returnPage, 'current page:', currentPage, 'type:', typeof returnPage);
+      
+      // Set the page immediately when returning
+      if (returnPage && typeof returnPage === 'number' && returnPage > 0) {
+        setCurrentPage(returnPage);
+        // Save current page to localStorage
+        localStorage.setItem('seekersCurrentPage', returnPage.toString());
+        
+        // Force a refresh to ensure useSeekers hook re-runs
+        setForceRefresh(prev => prev + 1);
+      } else {
+        console.warn('⚠️ Invalid returnPage value:', returnPage, 'using current page:', currentPage);
+        // Use current page as fallback
+        localStorage.setItem('seekersCurrentPage', currentPage.toString());
+      }
+      
+      // Clear the state to prevent re-applying on subsequent renders
+      window.history.replaceState({}, document.title);
+    } else {
+      // If no returnToPage in state, try to restore from localStorage
+      const savedPage = localStorage.getItem('seekersCurrentPage');
+      if (savedPage && parseInt(savedPage) !== currentPage) {
+        const pageToRestore = parseInt(savedPage);
+        console.log('🔄 Restoring page from localStorage:', pageToRestore);
+        setCurrentPage(pageToRestore);
+        setForceRefresh(prev => prev + 1);
+      }
+    }
+  }, [location.state, currentPage]);
+  
+  // Force refresh when currentPage changes
+  useEffect(() => {
+    console.log('📄 Current page changed to:', currentPage);
+    
+    // Force a re-render of the useSeekers hook when page changes
+    if (currentPage > 1) {
+      setForceRefresh(prev => prev + 1);
+    }
+  }, [currentPage]);
+  
+  // Save page to localStorage whenever currentPage changes
+  useEffect(() => {
+    localStorage.setItem('seekersCurrentPage', currentPage.toString());
+    console.log('💾 Saved page to localStorage:', currentPage);
+  }, [currentPage]);
+  
+  // Clean up localStorage when component unmounts
+  useEffect(() => {
+    return () => {
+      // Don't clear localStorage on unmount - keep the page state for next visit
+    };
+  }, []);
 
   const [isPremium, setIsPremium] = useState(false);
   const isAdmin = user?.emailAddresses?.[0]?.emailAddress === 'worknow.notifications@gmail.com';
@@ -110,7 +181,7 @@ export default function Seekers() {
   const navigate = useNavigate();
 
   // Use server-side pagination if available, otherwise fall back to client-side
-  const totalPages = pagination ? pagination.pages : Math.ceil(seekers.length / 10);
+  const totalPages = pagination ? pagination.totalPages : Math.ceil(seekers.length / 10);
   
   const handleSelect = (id) => {
     setSelectedIds((prev) =>
@@ -147,10 +218,14 @@ export default function Seekers() {
       toast.success('Успешно удалено');
       setSelectedIds([]);
       setDeleteMode(false);
-      // Refresh the seekers list after deletion
-      window.location.reload();
-    } catch {
+      // Reset to first page and refresh data instead of reloading the page
+      setCurrentPage(1);
+      // Save current page to localStorage
+      localStorage.setItem('seekersCurrentPage', '1');
+      // The useSeekers hook will automatically refresh when currentPage changes
+    } catch (error) {
       completeLoading(); // Complete loading even on error
+      console.error('Error deleting seekers:', error);
       toast.error('Ошибка при удалении');
     }
   };
@@ -159,15 +234,26 @@ export default function Seekers() {
   const currentSeekers = seekers;
   
   const handlePageChange = (page) => {
+    console.log('📄 Manually changing page from', currentPage, 'to', page);
     setCurrentPage(page);
+    // Save current page to localStorage
+    localStorage.setItem('seekersCurrentPage', page.toString());
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // The useSeekers hook will automatically show loading state when page changes
   };
 
   const handleFilterApply = (newFilters) => {
     console.log('🎯 Applying filters:', newFilters);
     setFilters(newFilters);
     setCurrentPage(1); // Reset to first page when filters change
+    // Save current page to localStorage
+    localStorage.setItem('seekersCurrentPage', '1');
+    // Show a toast notification about filter application
+    toast.success('Фильтры применены');
+    // The useSeekers hook will automatically refresh when filters change
   };
+
+
 
   useEffect(() => {
     if (!user) return;
@@ -185,13 +271,15 @@ export default function Seekers() {
       setShowAddModal(false);
       if (created && created.id) {
         completeLoading(); // Complete loading when done
+        // Navigate to the new seeker's page
         navigate(`/seekers/${created.id}`);
         return;
       }
-      // Refresh the seekers list after adding
+      // If no ID returned, refresh the data instead of reloading the page
       window.location.reload();
-    } catch {
+    } catch (error) {
       completeLoading(); // Complete loading even on error
+      console.error('Error adding seeker:', error);
       alert('Ошибка при добавлении соискателя');
     }
   };
@@ -222,7 +310,12 @@ export default function Seekers() {
   return (
     <>
       <Helmet>
-        <title>{t("seekers") || "Соискатели"}</title>
+        <title>
+          {currentPage > 1 
+            ? `${t("seekers") || "Соискатели"} - Страница ${currentPage}`
+            : `${t("seekers") || "Соискатели"}`
+          }
+        </title>
         <meta name="description" content={t("seekers_description") || "Список соискателей на вакансии"} />
       </Helmet>
       <AddSeekerModal show={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddSeeker} />
@@ -233,7 +326,7 @@ export default function Seekers() {
         currentFilters={filters}
       />
       
-      <div className="container" style={{ paddingTop: '100px' }}>
+      <div className="container" style={{ paddingTop: '100px' }} key={`seekers-container-${currentPage}`}>
         {/* Database update badge */}
         <div className="alert alert-primary d-flex align-items-center gap-2 mb-4" role="alert" style={{
           borderRadius: '8px',
@@ -251,7 +344,10 @@ export default function Seekers() {
         
         {/* Mobile-optimized header */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3 seekers-header">
-          <h2 className="fs-4 mb-0">{t("seekers") || "Соискатели"}</h2>
+          <div className="d-flex align-items-center gap-3">
+            <h2 className="fs-4 mb-0">{t("seekers") || "Соискатели"}</h2>
+
+          </div>
           <div className="d-flex flex-wrap gap-2 seekers-buttons" style={{ minWidth: 'fit-content' }}>
                                         <button 
                 className="btn btn-outline-primary d-flex align-items-center gap-2 seekers-btn"
@@ -367,7 +463,7 @@ export default function Seekers() {
                 </tr>
               </thead>
               <tbody>
-                {[...Array(5)].map((_, idx) => (
+                {[...Array(10)].map((_, idx) => (
                   <tr key={idx} className="py-3">
                     {isAdmin && deleteMode && (
                       <td className="py-3 text-center">
@@ -398,7 +494,7 @@ export default function Seekers() {
             <span>{error}</span>
           </div>
         )}
-        {!loading && seekers.length === 0 && (
+        {!loading && seekers.length === 0 && (!pagination || pagination.totalCount === 0) && (
           <div className="text-center py-5 empty-state">
             <div className="mb-3">
               <i className="bi bi-people" style={{ fontSize: '3rem', color: '#6c757d' }}></i>
@@ -407,9 +503,69 @@ export default function Seekers() {
             <p className="text-muted">{t('no_seekers_description') || 'Попробуйте изменить фильтры или загляните позже'}</p>
           </div>
         )}
-        {!loading && seekers.length > 0 && (
+        {!loading && seekers.length === 0 && pagination && pagination.totalCount > 0 && (
+          <div className="text-center py-5">
+            <div className="mb-3">
+              <i className="bi bi-people" style={{ fontSize: '3rem', color: '#6c757d' }}></i>
+            </div>
+            <h5 className="text-muted">
+              {Object.keys(filters).length > 0 && Object.values(filters).some(v => v !== '' && v !== undefined && v !== false) 
+                ? 'Нет соискателей, соответствующих фильтрам на текущей странице'
+                : 'Нет соискателей на текущей странице'
+              }
+            </h5>
+            <p className="text-muted">
+              Всего соискателей: {pagination.totalCount}. 
+              {Object.keys(filters).length > 0 && Object.values(filters).some(v => v !== '' && v !== undefined && v !== false)
+                ? ' Попробуйте изменить фильтры или перейти на другую страницу.'
+                : ' Перейдите на другую страницу.'
+              }
+            </p>
+            <PaginationControl
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+            {currentPage > 1 && (
+              <div className="mt-3">
+                <button 
+                  className="btn btn-outline-primary"
+                  onClick={() => handlePageChange(1)}
+                >
+                  <i className="bi bi-arrow-left"></i> Вернуться на первую страницу
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+        {!loading && (seekers.length > 0 || (pagination && pagination.totalCount > 0)) && (
           <>
-            <div className="table-responsive">
+            {pagination && pagination.totalCount > 0 && (
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <div className="d-flex align-items-center gap-3">
+                  <small className="text-muted">
+                    Показано {seekers.length} из {pagination.totalCount} соискателей
+
+                  </small>
+                  {Object.keys(filters).length > 0 && Object.values(filters).some(v => v !== '' && v !== undefined && v !== false) && (
+                    <span className="badge bg-info text-white">
+                      <i className="bi bi-funnel"></i> Фильтры применены
+                    </span>
+                  )}
+                </div>
+                {totalPages > 1 && (
+                  <small className="text-muted">
+                    <i className="bi bi-arrow-left-right"></i> Используйте пагинацию для навигации
+                    {totalPages > 10 && (
+                      <span className="ms-2 text-warning">
+                        <i className="bi bi-exclamation-triangle"></i> Много страниц - используйте фильтры для ускорения поиска
+                      </span>
+                    )}
+                  </small>
+                )}
+              </div>
+            )}
+            <div className="table-responsive" key={`seekers-table-${currentPage}`}>
               <table className="table table-bordered table-hover">
                 <thead>
                   <tr className="table-light">
@@ -429,7 +585,7 @@ export default function Seekers() {
                     <th style={{ minWidth: '200px' }}>{t('seekers_table_description')}</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody key={`seekers-tbody-${currentPage}`}>
                   {currentSeekers.map((seeker, index) => (
                     <tr key={seeker.id} className={seeker.isDemanded ? 'table-primary' : ''}>
                       {isAdmin && deleteMode && (
@@ -445,7 +601,11 @@ export default function Seekers() {
                       <td className="py-3">
                         <Link
                           to={`/seekers/${seeker.id}`}
-                          state={{ seekerIds: seekers.map(s => s.id), currentIndex: (currentPage - 1) * 10 + index }}
+                          state={{ 
+                            seekerIds: seekers.map(s => s.id), 
+                            currentIndex: index,
+                            returnToPage: currentPage
+                          }}
                           style={{ 
                             color: '#1976d2', 
                             textDecoration: 'underline', 
@@ -457,7 +617,7 @@ export default function Seekers() {
                         </Link>
                       </td>
                       <td className="py-3">
-                        {renderContactCell(seeker.contact, isPremium, seeker.id, seekers.map(s => s.id), (currentPage - 1) * 10 + index, seeker.facebook)}
+                        {renderContactCell(seeker.contact, isPremium, seeker.id, seekers.map(s => s.id), index, seeker.facebook, currentPage)}
                       </td>
                       <td className="py-3">
                         <span className="badge bg-light text-dark">{seeker.city}</span>

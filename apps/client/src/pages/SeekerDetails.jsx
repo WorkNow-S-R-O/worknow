@@ -86,10 +86,16 @@ export default function SeekerDetails() {
     getCityLabel
   } = useTranslationHelpers();
 
-  const { seekerIds, currentIndex } = location.state || {};
+  const { seekerIds, currentIndex, returnToPage } = location.state || {};
   
-  const hasNext = seekerIds && currentIndex < seekerIds.length - 1;
-  const hasPrev = seekerIds && currentIndex > 0;
+  // Calculate the global index across all pages
+  const globalIndex = seekerIds ? (returnToPage - 1) * 10 + currentIndex : 0;
+  
+
+  
+  // Navigation logic - only show prev/next if we have the full context
+  const hasNext = seekerIds && currentIndex !== undefined && currentIndex < seekerIds.length - 1;
+  const hasPrev = seekerIds && currentIndex !== undefined && currentIndex > 0;
   
   const nextSeekerId = hasNext ? seekerIds[currentIndex + 1] : null;
   const prevSeekerId = hasPrev ? seekerIds[currentIndex - 1] : null;
@@ -144,14 +150,24 @@ export default function SeekerDetails() {
   return (
     <>
       <Helmet>
-        <title>{seeker.name} - {t('seeker_profile_title')}</title>
+        <title>
+          {`${seeker.name} - ${t('seeker_profile_title')}`}
+        </title>
         <meta name="description" content={seeker.description} />
         <meta name="keywords" content={`${seeker.name}, ${seeker.employment || ''}, ${seeker.category || ''}, ${Array.isArray(seeker.languages) ? seeker.languages.join(', ') : ''}`} />
       </Helmet>
       <div className="container" style={{ maxWidth: 600, paddingTop: '100px' }}>
         <div className="d-flex justify-content-between align-items-center mb-2">
           <h2 className="fs-4 mb-0">{t('seeker_profile_title')}</h2>
-          <Link to="/seekers" style={{ color: '#1976d2', textDecoration: 'underline', whiteSpace: 'nowrap' }}>&larr; {t('seeker_profile_back')}</Link>
+          <Link 
+            to="/seekers" 
+            state={{ 
+              returnToPage: (returnToPage && typeof returnToPage === 'number') ? returnToPage : (parseInt(localStorage.getItem('seekersCurrentPage')) || 1)
+            }}
+            style={{ color: '#1976d2', textDecoration: 'underline', whiteSpace: 'nowrap' }}
+          >
+            &larr; {t('seeker_profile_back')}
+          </Link>
         </div>
         <div className="text-muted mb-2">{t('seeker_profile_published', { days: daysAgo, date: formattedDate })}</div>
         <h3 className="mb-2">
@@ -218,19 +234,36 @@ export default function SeekerDetails() {
         )}
         <button className="btn btn-dark mt-2" onClick={() => window.print()}>{t('seeker_profile_print')}</button>
         
-        {seekerIds && (
+                {seekerIds && returnToPage && (
         <div className="mt-4">
           <div className="text-muted mb-2">
-            {t('seeker_profile_of', { current: currentIndex + 1, total: seekerIds.length })}
+            {t('seeker_profile_of', { current: globalIndex + 1, total: seekerIds.length })}
+
           </div>
           <div className="d-flex gap-2">
             {hasPrev && (
-              <Link to={`/seekers/${prevSeekerId}`} state={{ seekerIds, currentIndex: currentIndex - 1 }} className="btn btn-primary">
+              <Link 
+                to={`/seekers/${prevSeekerId}`} 
+                state={{ 
+                  seekerIds, 
+                  currentIndex: currentIndex - 1, 
+                  returnToPage: (returnToPage && typeof returnToPage === 'number') ? returnToPage : (parseInt(localStorage.getItem('seekersCurrentPage')) || 1)
+                }} 
+                className="btn btn-primary"
+              >
                 &larr; {t('seeker_profile_prev')}
               </Link>
             )}
             {hasNext && (
-              <Link to={`/seekers/${nextSeekerId}`} state={{ seekerIds, currentIndex: currentIndex + 1 }} className="btn btn-primary">
+              <Link 
+                to={`/seekers/${nextSeekerId}`} 
+                state={{ 
+                  seekerIds, 
+                  currentIndex: currentIndex + 1, 
+                  returnToPage: (returnToPage && typeof returnToPage === 'number') ? returnToPage : (parseInt(localStorage.getItem('seekersCurrentPage')) || 1)
+                }} 
+                className="btn btn-primary"
+              >
                 {t('seeker_profile_next')} &rarr;
               </Link>
             )}

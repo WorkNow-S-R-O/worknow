@@ -96,6 +96,8 @@ export async function getAllSeekers(query = {}) {
   // Calculate pagination
   const skip = (parseInt(page) - 1) * parseInt(limit);
   const take = parseInt(limit);
+  
+  console.log('📊 Pagination calculation:', { page, limit, skip, take, pageType: typeof page, parsedPage: parseInt(page) });
 
   // Get total count for pagination
   const totalCount = await prisma.seeker.count({
