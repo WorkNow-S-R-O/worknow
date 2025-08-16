@@ -54,7 +54,7 @@ const PremiumPage = () => {
     },
     {
       name: "Deluxe",
-      price: 400, // Base price for new users
+      price: 200, // Base price for new users
       period: "/mo",
       features: [
         { textKey: "pricing_deluxe_all_from_pro", icon: "✨", color: "text-warning" },
@@ -69,7 +69,7 @@ const PremiumPage = () => {
       button: {
         textKey: "pricing_deluxe_buy_deluxe",
         variant: "primary",
-        priceId: "price_1RqXuoCOLiDbHvw1LLew4Mo8" // Price ID for 400 ILS
+        priceId: "price_1RqXuoCOLiDbHvw1LLew4Mo8" // Price ID for 200 ILS
       }
     }
   ];
@@ -168,12 +168,12 @@ const PremiumPage = () => {
             if (plan.name === "Deluxe") {
               if (user && dbUser?.isPremium && !dbUser?.premiumDeluxe) {
                 // User has Pro but not Deluxe - show upgrade price
-                displayPrice = 300;
-                buttonText = "Улучшить до Deluxe";
-                priceId = "price_1RqXveCOLiDbHvw18RQxj2g6"; // Price ID for 300 ILS upgrade
+                displayPrice = 100;
+                buttonText = t('pricing_deluxe_upgrade_to_deluxe');
+                priceId = "price_1RqXveCOLiDbHvw18RQxj2g6"; // Price ID for 100 ILS upgrade
               } else if (!user || !dbUser?.isPremium) {
                 // New user or no Pro subscription - show full price
-                displayPrice = 400;
+                displayPrice = 200;
                 buttonText = t(plan.button.textKey);
                 priceId = plan.button.priceId;
               }
@@ -218,8 +218,8 @@ const PremiumPage = () => {
                       {displayPrice === 0 ? "0" : `${displayPrice}₪`}<small className="text-muted" style={{fontSize: '0.5em'}}>{plan.period}</small>
                       {plan.name === "Deluxe" && user && dbUser?.isPremium && !dbUser?.premiumDeluxe && (
                         <div className="mt-2">
-                          <span className="text-decoration-line-through text-muted" style={{fontSize: '0.6em'}}>400₪</span>
-                          <span className="badge bg-success ms-2" style={{fontSize: '0.5em'}}>-25%</span>
+                          <span className="text-decoration-line-through text-muted" style={{fontSize: '0.6em'}}>200₪</span>
+                          <span className="badge bg-success ms-2" style={{fontSize: '0.5em'}}>-50%</span>
                         </div>
                       )}
                     </h2>

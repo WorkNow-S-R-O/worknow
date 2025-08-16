@@ -71,7 +71,7 @@
   - CreateNewAd.jsx - Job creation
   - MyAds.jsx - User's job listings
   - UserProfile.jsx - User profile
-  - PremiumPage.jsx - Premium features
+  - PremiumPage.jsx - Premium features with dynamic pricing (200₪ for new users, 100₪ for Pro users)
   - NewsletterSubscription.jsx - Newsletter subscription with full internationalization
 - apps/client/src/components/ - Reusable components
   - JobCard.jsx - Job listing card
@@ -113,11 +113,11 @@
   - jobs/ - Job-related images
   - logo.svg - Application logo
   - premium.png - Premium features image
-- public/locales/ - Translation files (fully internationalized with comprehensive field translations including cities, dates, and timers)
-  - ru/translation.json - Russian translations (includes comprehensive employment, category, language, document, city, date, and timer translations)
-  - en/translation.json - English translations (includes comprehensive employment, category, language, document, city, date, and timer translations)
-  - he/translation.json - Hebrew translations (includes comprehensive employment, category, language, document, city, date, and timer translations)
-  - ar/translation.json - Arabic translations (includes comprehensive employment, category, language, document, city, date, and timer translations)
+- public/locales/ - Translation files (fully internationalized with comprehensive field translations including cities, dates, timers, and dynamic premium pricing)
+  - ru/translation.json - Russian translations (includes comprehensive employment, category, language, document, city, date, timer, and dynamic premium pricing translations)
+  - en/translation.json - English translations (includes comprehensive employment, category, language, document, city, date, timer, and dynamic premium pricing translations)
+  - he/translation.json - Hebrew translations (includes comprehensive employment, category, language, document, city, date, timer, and dynamic premium pricing translations)
+  - ar/translation.json - Arabic translations (includes comprehensive employment, category, language, document, city, date, timer, and dynamic premium pricing translations)
 
 ## Prisma Directory
 - prisma/schema.prisma - Database schema
