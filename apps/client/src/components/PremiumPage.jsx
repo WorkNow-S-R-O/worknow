@@ -42,7 +42,6 @@ const PremiumPage = () => {
         { textKey: "pricing_pro_top_jobs", icon: "⭐", color: "text-warning" },
         { textKey: "pricing_pro_color_highlighting", icon: "🎨", color: "text-info" },
         { textKey: "pricing_pro_advanced_filters", icon: "🔍", color: "text-primary" },
-        { textKey: "pricing_pro_recruiter_community", icon: "🔒", color: "text-success" },
         { textKey: "pricing_pro_priority_support", icon: "🚀", color: "text-danger" },
       ],
       button: {
@@ -59,10 +58,10 @@ const PremiumPage = () => {
       features: [
         { textKey: "pricing_deluxe_all_from_pro", icon: "✨", color: "text-warning" },
         { textKey: "pricing_deluxe_personal_manager", icon: "👨‍💼", color: "text-primary" },
-        { textKey: "pricing_deluxe_facebook_autoposting", icon: "📱", color: "text-info" },
+        { textKey: "pricing_deluxe_facebook_autoposting", icon: "⚡", color: "text-info" },
         { textKey: "pricing_deluxe_facebook_promotion", icon: "📢", color: "text-success" },
         { textKey: "pricing_deluxe_personal_mailing", icon: "📧", color: "text-primary" },
-        { textKey: "pricing_deluxe_telegram_publications", icon: "📺", color: "text-info" },
+        { textKey: "pricing_deluxe_telegram_publications", icon: "🔥", color: "text-info" },
         { textKey: "pricing_deluxe_personal_candidate_selection", icon: "🎯", color: "text-warning" },
         { textKey: "pricing_deluxe_interview_organization", icon: "🤝", color: "text-success" },
       ],
@@ -70,7 +69,8 @@ const PremiumPage = () => {
         textKey: "pricing_deluxe_buy_deluxe",
         variant: "primary",
         priceId: "price_1RqXuoCOLiDbHvw1LLew4Mo8" // Price ID for 200 ILS
-      }
+      },
+      bestResults: true
     }
   ];
 
@@ -210,6 +210,17 @@ const PremiumPage = () => {
                           fontWeight: '600'
                         }}>
                           ⭐ {t('pricing_recommended')}
+                        </span>
+                      </div>
+                    )}
+                    {plan.bestResults && (
+                      <div className="text-center mb-3">
+                        <span className="badge bg-danger px-3 py-2" style={{ 
+                          fontSize: '0.8rem',
+                          borderRadius: '20px',
+                          fontWeight: '600'
+                        }}>
+                          🏆 {t('pricing_best_results')}
                         </span>
                       </div>
                     )}

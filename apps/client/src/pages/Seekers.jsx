@@ -367,8 +367,8 @@ export default function Seekers() {
                 <span>{t('filters') || 'Фильтры'}</span>
               </button>
             <button 
-              className={`btn d-flex align-items-center gap-2 seekers-btn ${isNewsletterSubscribed ? 'btn-outline-success' : 'btn-outline-primary'}`}
-                              onClick={() => navigate('/newsletter')}
+              className={`btn d-flex align-items-center gap-2 seekers-btn ${isNewsletterSubscribed ? 'btn-outline-primary' : 'btn-outline-primary'}`}
+              onClick={() => navigate('/newsletter')}
               style={{
                 height: 'auto',
                 fontSize: '14px',
@@ -377,7 +377,7 @@ export default function Seekers() {
                 whiteSpace: 'nowrap'
               }}
             >
-              <i className="bi bi-envelope" style={{ fontSize: '16px' }}></i>
+              <i className={`bi ${isNewsletterSubscribed ? 'bi-check-circle-fill' : 'bi-envelope'}`} style={{ fontSize: '16px' }}></i>
               <span>{t('newsletter') || 'Рассылка'}</span>
             </button>
             {isAdmin && (

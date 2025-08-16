@@ -67,12 +67,12 @@
 - apps/client/src/pages/ - Page components
   - Home.jsx - Landing page
   - SeekerDetails.jsx - Individual seeker details (clean component using translation helpers)
-  - Seekers.jsx - Seekers listing
+  - Seekers.jsx - Seekers listing with newsletter subscription status indicator (blue button with checkmark when subscribed)
   - CreateNewAd.jsx - Job creation
   - MyAds.jsx - User's job listings
   - UserProfile.jsx - User profile
-  - PremiumPage.jsx - Premium features with dynamic pricing (200₪ for new users, 100₪ for Pro users)
-  - NewsletterSubscription.jsx - Newsletter subscription with full internationalization
+  - PremiumPage.jsx - Premium features with dynamic pricing (200₪ for new users, 100₪ for Pro users) and badges (Recommended for Pro, Best results for Deluxe), recruiter community feature removed, Facebook autoposting icon updated to lightning bolt
+  - NewsletterSubscription.jsx - Newsletter subscription with full internationalization and simplified subscription status banner
 - apps/client/src/components/ - Reusable components
   - JobCard.jsx - Job listing card
   - JobList.jsx - Job listings container

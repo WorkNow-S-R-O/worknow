@@ -319,24 +319,20 @@ const NewsletterSubscription = () => {
 
         {/* Already Subscribed View */}
         {isAlreadySubscribed && (
-          <div className="alert alert-success" style={{ 
-            backgroundColor: '#e8f5e8', 
-            border: '1px solid #d4edda',
-            borderRadius: '12px',
-            padding: '20px'
-          }}>
-            <div className="d-flex align-items-center mb-3">
-              <i className="bi bi-check-circle-fill me-3" style={{ color: '#28a745', fontSize: '24px' }}></i>
-              <h5 className="mb-0" style={{ color: '#155724' }}>
-                {t('newsletter_already_subscribed') || 'Вы уже подписаны на рассылку!'}
-              </h5>
+          <div className="text-center mb-4">
+            <div className="alert alert-success d-inline-block" style={{ 
+              backgroundColor: 'rgba(40, 167, 69, 0.1)', 
+              border: '1px solid rgba(40, 167, 69, 0.2)',
+              borderRadius: '8px',
+              padding: '12px 20px'
+            }}>
+              <div className="d-flex align-items-center">
+                <i className="bi bi-check-circle-fill me-2" style={{ color: '#28a745', fontSize: '18px' }}></i>
+                <span style={{ color: '#155724', fontWeight: '500' }}>
+                  {t('newsletter_already_subscribed') || 'Вы уже подписаны на рассылку!'}
+                </span>
+              </div>
             </div>
-            <p className="mb-0" style={{ color: '#155724' }}>
-              {subscriberData?.firstName && subscriberData?.lastName 
-                ? `${subscriberData.firstName} ${subscriberData.lastName} (${email})`
-                : email
-              }
-            </p>
           </div>
         )}
 

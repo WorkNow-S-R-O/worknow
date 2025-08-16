@@ -398,10 +398,6 @@ export const sendProWelcomeEmail = async (userEmail, userName = '') => {
             </div>
             <div class="feature">
               <span class="feature-icon">✅</span>
-              <span>Доступ к закрытому сообществу рекрутеров</span>
-            </div>
-            <div class="feature">
-              <span class="feature-icon">✅</span>
               <span>Приоритетная поддержка</span>
             </div>
           </div>
@@ -450,7 +446,6 @@ ${greeting}
 ✅ Вакансии в топе
 ✅ Выделение цветом
 ✅ Расширенные фильтры для рассылки
-✅ Доступ к закрытому сообществу рекрутеров
 ✅ Приоритетная поддержка
 
 Теперь вы можете:
