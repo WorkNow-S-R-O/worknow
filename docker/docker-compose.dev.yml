@@ -36,36 +36,30 @@ services:
       NODE_ENV: development
       PORT: 3001
       
-      # Clerk Authentication
-      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
-      CLERK_WEBHOOK_SECRET: ${WEBHOOK_SECRET}
-      
-      # Stripe
-      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
-      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
-      
-      # Email
-      EMAIL_USER: ${EMAIL_USER}
-      EMAIL_PASS: ${EMAIL_PASS}
-      
-      # AWS S3
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_REGION: ${AWS_REGION}
-      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
-      
       # Redis
       REDIS_URL: redis://:${REDIS_PASSWORD:-redis_dev_password}@redis-dev:6379
-      
-      # Application
-      VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY}
-      VITE_API_URL: ${VITE_API_URL:-http://localhost:3001}
-      VITE_STRIPE_PUBLISHABLE_KEY: ${VITE_STRIPE_PUBLISHABLE_KEY}
       
       # Development specific
       CHOKIDAR_USEPOLLING: true
       WATCHPACK_POLLING: true
       DOCKER_BUILD: true
+      
+      # Critical environment variables - these will be loaded from .env via --env-file
+      VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY}
+      VITE_API_URL: ${VITE_API_URL}
+      VITE_STRIPE_PUBLISHABLE_KEY: ${VITE_STRIPE_PUBLISHABLE_KEY}
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      RESEND_API_KEY: ${RESEND_API_KEY}
     ports:
       - "3000:3000"  # Frontend
       - "3001:3001"  # Backend

@@ -10,12 +10,14 @@ WORKDIR /app
 COPY package*.json ./
 COPY apps/client/package*.json ./apps/client/
 COPY vite.config.js ./
+COPY tailwind.config.js ./
+COPY postcss.config.js ./
 
 # Copy Prisma schema for postinstall script
 COPY prisma/ ./prisma/
 
-# Install dependencies
-RUN npm ci --only=production
+# Install all dependencies (including dev dependencies needed for build)
+RUN npm ci
 
 # Copy frontend source
 COPY apps/client/ ./apps/client/
@@ -25,7 +27,7 @@ COPY libs/ ./libs/
 # Set Docker build environment variable
 ENV DOCKER_BUILD=true
 
-# Build frontend
+# Build frontend (Vite config expects to be run from root with apps/client as root)
 RUN npm run build
 
 # Stage 2: Build backend
@@ -40,8 +42,8 @@ COPY apps/api/package*.json ./apps/api/
 # Copy Prisma schema for postinstall script
 COPY prisma/ ./prisma/
 
-# Install dependencies
-RUN npm ci --only=production
+# Install all dependencies (including dev dependencies needed for Prisma)
+RUN npm ci
 
 # Copy backend source
 COPY apps/api/ ./apps/api/
@@ -64,8 +66,8 @@ RUN addgroup -g 1001 -S nodejs && \
 
 WORKDIR /app
 
-# Copy built frontend from frontend-builder
-COPY --from=frontend-builder --chown=worknow:nodejs /app/dist ./dist
+# Copy built frontend from frontend-builder (correct path: apps/client/dist)
+COPY --from=frontend-builder --chown=worknow:nodejs /app/apps/client/dist ./dist
 
 # Copy backend from backend-builder
 COPY --from=backend-builder --chown=worknow:nodejs /app/node_modules ./node_modules

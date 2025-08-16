@@ -124,6 +124,18 @@
 - prisma/migrations/ - Database migrations
 - prisma/seed.js - Database seeding
 
+## Docker Directory
+- docker/Dockerfile.dev - Development Dockerfile with hot reloading
+- docker/Dockerfile.prod - Production Dockerfile
+- docker/docker-compose.dev.yml - Development services configuration
+- docker/docker-compose.prod.yml - Production services configuration
+- docker/docker-compose.override.yml - Local development overrides
+- docker/setup-env.sh - Environment setup script for Docker configuration
+- docker/env.example - Environment variables template
+- docker/README.md - Docker setup and troubleshooting documentation
+- docker/nginx/ - Nginx configuration for production
+- docker/init-db.sql - Database initialization script
+
 ## Tools Directory
 - tools/ - Development and testing tools
   - test-candidate-notifications.js - Test script for candidate notification system

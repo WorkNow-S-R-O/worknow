@@ -339,6 +339,9 @@ export default function Seekers() {
             <div className="text-primary" style={{ fontSize: '0.9rem', marginTop: '2px', opacity: '0.8' }}>
               {t('seekers_database_update_description') || 'Новые кандидаты добавляются каждый день'}
             </div>
+            <div className="text-primary" style={{ fontSize: '0.9rem', marginTop: '8px', opacity: '0.9' }}>
+              {t('seekers_add_yourself') || 'Если хотите добавить себя в этот список, напишите в WhatsApp - 053-3033332'}
+            </div>
           </div>
         </div>
         
