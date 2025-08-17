@@ -312,8 +312,8 @@ export default function Seekers() {
       <Helmet>
         <title>
           {currentPage > 1 
-            ? `${t("seekers") || "Соискатели"} - Страница ${currentPage}`
-            : `${t("seekers") || "Соискатели"}`
+            ? `${t("seekers_helmet") || "Соискатели - WorkNow"} - Страница ${currentPage}`
+            : `${t("seekers_helmet") || "Соискатели - WorkNow"}`
           }
         </title>
         <meta name="description" content={t("seekers_description") || "Список соискателей на вакансии"} />
