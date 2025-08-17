@@ -266,14 +266,15 @@ const PremiumPage = () => {
                     {plan.highlight && (
                       <div className="text-center mb-4">
                         <span className="badge px-4 py-2" style={{ 
-                          fontSize: '0.9rem',
+                          fontSize: window.innerWidth <= 768 ? '1.1rem' : '0.9rem',
                           borderRadius: '25px',
                           fontWeight: '700',
                           background: 'linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%)',
                           color: 'white',
                           boxShadow: '0 4px 15px rgba(13, 110, 253, 0.3)',
                           textTransform: 'uppercase',
-                          letterSpacing: '0.5px'
+                          letterSpacing: '0.5px',
+                          padding: window.innerWidth <= 768 ? '12px 20px' : '8px 16px'
                         }}>
                           ⭐ {t('pricing_recommended')}
                         </span>
@@ -282,14 +283,15 @@ const PremiumPage = () => {
                     {plan.bestResults && (
                       <div className="text-center mb-4">
                         <span className="badge px-4 py-2" style={{ 
-                          fontSize: '0.9rem',
+                          fontSize: window.innerWidth <= 768 ? '1.1rem' : '0.9rem',
                           borderRadius: '25px',
                           fontWeight: '700',
                           background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
                           color: 'white',
                           boxShadow: '0 4px 15px rgba(220, 53, 69, 0.3)',
                           textTransform: 'uppercase',
-                          letterSpacing: '0.5px'
+                          letterSpacing: '0.5px',
+                          padding: window.innerWidth <= 768 ? '12px 20px' : '8px 16px'
                         }}>
                           🏆 {t('pricing_best_results')}
                         </span>
