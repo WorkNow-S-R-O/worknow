@@ -128,16 +128,40 @@ const PremiumPage = () => {
 
   return (
     <div className="container" style={{ paddingTop: 80, paddingBottom: 40 }}>
-      <h1 className="text-center mb-3" style={{fontSize:48, fontWeight:700}}>{t('pricing_title')}</h1>
-      <p className="text-center mb-5 text-muted" style={{maxWidth: 600, margin: '0 auto', fontSize:20}}>
-        {t('pricing_description')}
-      </p>
+      {/* Enhanced Header Section */}
+      <div className="text-center mb-5">
+        <h1 className="display-4 fw-bold text-dark mb-4" style={{
+          fontSize: '3.5rem',
+          fontWeight: 800,
+          background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          letterSpacing: '-0.02em',
+          lineHeight: 1.2
+        }}>
+          {t('pricing_title')}
+        </h1>
+        
+        <div className="mx-auto" style={{ maxWidth: 700 }}>
+          <p className="lead text-secondary" style={{
+            fontSize: '1.25rem',
+            lineHeight: 1.7,
+            fontWeight: 400,
+            color: '#6c757d',
+            margin: '0 auto',
+            padding: '0 20px'
+          }}>
+            {t('pricing_description')}
+          </p>
+        </div>
+      </div>
 
       {/* Показываем спиннер только если user есть, но dbUser ещё не загружен */}
       {user && userLoading ? (
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 200 }}>
           <div className="spinner-border text-primary" role="status">
-                                    <span className="visually-hidden">{t('loading')}</span>
+            <span className="visually-hidden">{t('loading')}</span>
           </div>
         </div>
       ) : userError ? (
@@ -185,82 +209,158 @@ const PremiumPage = () => {
                      style={{
                        minWidth: 0,
                        border: plan.highlight ? '2px solid #0d6efd' : '1px solid #dee2e6',
-                       borderRadius: '12px',
+                       borderRadius: '16px',
                        transition: 'all 0.3s ease',
-                       cursor: 'pointer'
+                       cursor: 'pointer',
+                       overflow: 'hidden'
                      }}
                      onMouseEnter={(e) => {
-                       e.currentTarget.style.transform = 'translateY(-5px)';
-                       e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                       e.currentTarget.style.transform = 'translateY(-8px)';
+                       e.currentTarget.style.boxShadow = '0 12px 35px rgba(0,0,0,0.15)';
                      }}
                      onMouseLeave={(e) => {
                        e.currentTarget.style.transform = 'translateY(0)';
                        e.currentTarget.style.boxShadow = plan.highlight ? '0 0.5rem 1rem rgba(0, 0, 0, 0.15)' : '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
                      }}>
-                  <div className="card-body d-flex flex-column p-4" style={{
+                  <div className="card-body d-flex flex-column p-4 h-100" style={{
                     background: plan.highlight 
                       ? 'linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%)'
                       : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)'
                   }}>
+                    {/* Enhanced Badge Section */}
                     {plan.highlight && (
-                      <div className="text-center mb-3">
-                        <span className="badge bg-primary px-3 py-2" style={{ 
-                          fontSize: '0.8rem',
-                          borderRadius: '20px',
-                          fontWeight: '600'
+                      <div className="text-center mb-4">
+                        <span className="badge px-4 py-2" style={{ 
+                          fontSize: '0.9rem',
+                          borderRadius: '25px',
+                          fontWeight: '700',
+                          background: 'linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%)',
+                          color: 'white',
+                          boxShadow: '0 4px 15px rgba(13, 110, 253, 0.3)',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
                         }}>
                           ⭐ {t('pricing_recommended')}
                         </span>
                       </div>
                     )}
                     {plan.bestResults && (
-                      <div className="text-center mb-3">
-                        <span className="badge bg-danger px-3 py-2" style={{ 
-                          fontSize: '0.8rem',
-                          borderRadius: '20px',
-                          fontWeight: '600'
+                      <div className="text-center mb-4">
+                        <span className="badge px-4 py-2" style={{ 
+                          fontSize: '0.9rem',
+                          borderRadius: '25px',
+                          fontWeight: '700',
+                          background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
+                          color: 'white',
+                          boxShadow: '0 4px 15px rgba(220, 53, 69, 0.3)',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
                         }}>
                           🏆 {t('pricing_best_results')}
                         </span>
                       </div>
                     )}
-                    <h5 className="card-title text-center mb-3" style={{fontWeight:600, fontSize:24}}>{plan.name}</h5>
-                    <h2 className="card-price text-center mb-4" style={{fontSize:40, fontWeight:700}}>
-                      {displayPrice === 0 ? "0" : `${displayPrice}₪`}<small className="text-muted" style={{fontSize: '0.5em'}}>{plan.period}</small>
+                    
+                    {/* Enhanced Plan Title */}
+                    <h5 className="card-title text-center mb-4" style={{
+                      fontWeight: 700,
+                      fontSize: '1.75rem',
+                      color: '#2c3e50',
+                      letterSpacing: '-0.01em',
+                      textTransform: 'uppercase',
+                      marginTop: plan.name === "Free" ? '50px' : '0'
+                    }}>
+                      {plan.name === "Free" ? t('pricing_free_title') : plan.name
+                      }
+                    </h5>
+                    
+                    {/* Enhanced Price Section */}
+                    <div className="text-center mb-5" style={{
+                      marginTop: plan.name === "Free" ? '0px' : '0'
+                    }}>
+                      <h2 className="mb-2" style={{
+                        fontSize: '3.5rem',
+                        fontWeight: 800,
+                        color: '#2c3e50',
+                        lineHeight: 1,
+                        margin: 0
+                      }}>
+                        {displayPrice === 0 ? "0" : `${displayPrice}₪`}
+                        <small className="d-block text-muted" style={{
+                          fontSize: '0.4em',
+                          fontWeight: 500,
+                          marginTop: '5px',
+                          opacity: 0.7
+                        }}>
+                          {plan.period}
+                        </small>
+                      </h2>
+                      
                       {plan.name === "Deluxe" && user && dbUser?.isPremium && !dbUser?.premiumDeluxe && (
-                        <div className="mt-2">
-                          <span className="text-decoration-line-through text-muted" style={{fontSize: '0.6em'}}>200₪</span>
-                          <span className="badge bg-success ms-2" style={{fontSize: '0.5em'}}>-50%</span>
+                        <div className="mt-3">
+                          <span className="text-decoration-line-through text-muted me-3" style={{
+                            fontSize: '1.2rem',
+                            fontWeight: 500,
+                            opacity: 0.6
+                          }}>
+                            200₪
+                          </span>
+                          <span className="badge px-3 py-2" style={{
+                            fontSize: '0.8rem',
+                            fontWeight: 700,
+                            background: 'linear-gradient(135deg, #198754 0%, #157347 100%)',
+                            color: 'white',
+                            borderRadius: '20px'
+                          }}>
+                            -50%
+                          </span>
                         </div>
                       )}
-                    </h2>
-                    <ul className="list-unstyled mb-4">
-                      {plan.features.map((feature, index) => (
-                        <li key={index} className="mb-3 d-flex align-items-start" style={{ padding: '8px 0' }}>
-                          <div className="me-3 d-flex align-items-center justify-content-center" 
-                               style={{ 
-                                 fontSize: '1.3rem', 
-                                 minWidth: '32px',
-                                 height: '32px',
-                                 borderRadius: '50%',
-                                 backgroundColor: feature.color === 'text-primary' ? '#e3f2fd' :
-                                                feature.color === 'text-success' ? '#e8f5e8' :
-                                                feature.color === 'text-warning' ? '#fff3cd' :
-                                                feature.color === 'text-info' ? '#e1f5fe' :
-                                                feature.color === 'text-danger' ? '#ffebee' : '#f5f5f5'
-                               }}>
-                            <span className={feature.color} style={{ fontSize: '1rem' }}>{feature.icon}</span>
-                          </div>
-                          <span className="text-muted" style={{ 
-                            fontSize: '0.9rem', 
-                            lineHeight: '1.5',
-                            flex: 1
+                    </div>
+                    
+                    {/* Enhanced Features List - Flexbox for consistent height */}
+                    <div className="flex-grow-1 d-flex flex-column">
+                      <ul className="list-unstyled mb-5 flex-grow-1" style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-start',
+                        marginTop: plan.name === "Free" ? '0px' : '0'
+                      }}>
+                        {plan.features.map((feature, index) => (
+                          <li key={index} className="mb-4 d-flex align-items-start" style={{ 
+                            padding: '12px 0',
+                            borderBottom: index < plan.features.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none'
                           }}>
-                            {t(feature.textKey)}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                            <div className="me-3 d-flex align-items-center justify-content-center" 
+                                 style={{ 
+                                   fontSize: '1.4rem', 
+                                   minWidth: '40px',
+                                   height: '40px',
+                                   borderRadius: '50%',
+                                   backgroundColor: feature.color === 'text-primary' ? '#e3f2fd' :
+                                                  feature.color === 'text-success' ? '#e8f5e8' :
+                                                  feature.color === 'text-warning' ? '#fff3cd' :
+                                                  feature.color === 'text-info' ? '#e1f5fe' :
+                                                  feature.color === 'text-danger' ? '#ffebee' : '#f5f5f5',
+                                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                                 }}>
+                              <span className={feature.color} style={{ fontSize: '1.1rem' }}>{feature.icon}</span>
+                            </div>
+                            <span className="text-secondary" style={{ 
+                              fontSize: '0.95rem', 
+                              lineHeight: '1.6',
+                              flex: 1,
+                              fontWeight: 500,
+                              color: '#495057'
+                            }}>
+                              {t(feature.textKey)}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    {/* Enhanced Button Section */}
                     <div className="mt-auto">
                       {plan.price === 0 ? (
                         !user ? (
@@ -268,9 +368,13 @@ const PremiumPage = () => {
                             className={`btn btn-lg w-100 btn-${plan.button.variant}`}
                             onClick={() => redirectToSignIn()}
                             style={{
-                              borderRadius: '8px',
-                              fontWeight: '600',
-                              transition: 'all 0.3s ease'
+                              borderRadius: '12px',
+                              fontWeight: '700',
+                              transition: 'all 0.3s ease',
+                              padding: '15px 20px',
+                              fontSize: '1.1rem',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.5px'
                             }}
                           >
                             {t('pricing_free_use_free')}
@@ -280,9 +384,13 @@ const PremiumPage = () => {
                             className={`btn btn-lg w-100 btn-${plan.button.variant}`}
                             disabled={isActive}
                             style={{
-                              borderRadius: '8px',
-                              fontWeight: '600',
-                              transition: 'all 0.3s ease'
+                              borderRadius: '12px',
+                              fontWeight: '700',
+                              transition: 'all 0.3s ease',
+                              padding: '15px 20px',
+                              fontSize: '1.1rem',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.5px'
                             }}
                           >
                             {isActive ? t('active') : buttonText}
@@ -294,10 +402,14 @@ const PremiumPage = () => {
                           onClick={() => handlePay(priceId)}
                           disabled={loading || isActive}
                           style={{
-                            borderRadius: '8px',
-                            fontWeight: '600',
+                            borderRadius: '12px',
+                            fontWeight: '700',
                             transition: 'all 0.3s ease',
-                            boxShadow: plan.highlight ? '0 4px 12px rgba(13, 110, 253, 0.3)' : 'none'
+                            padding: '15px 20px',
+                            fontSize: '1.1rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
+                            boxShadow: plan.highlight ? '0 6px 20px rgba(13, 110, 253, 0.4)' : 'none'
                           }}
                         >
                           {isActive ? t('active') : (loading ? t('loading') : buttonText)}
