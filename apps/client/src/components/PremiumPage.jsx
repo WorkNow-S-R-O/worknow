@@ -14,6 +14,38 @@ const PremiumPage = () => {
   const { dbUser, loading: userLoading, error: userError, refreshUser } = useUserSync();
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
   const { t } = useTranslation();
+  
+  // Text carousel state
+  const [currentTitleIndex, setCurrentTitleIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  // Different variations of the pricing title
+  const titleVariations = [
+    t('pricing_title'),
+    t('pricing_effective'),
+    t('pricing_convenient')
+  ];
+
+  // Text carousel effect - change title every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsTransitioning(true);
+      
+      // Wait for fade out, then change title
+      setTimeout(() => {
+        setCurrentTitleIndex((prevIndex) => 
+          prevIndex === titleVariations.length - 1 ? 0 : prevIndex + 1
+        );
+        
+        // Wait a bit, then fade in
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 100);
+      }, 300);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [titleVariations.length]);
 
   // Create plans with translations
   const getPlans = () => [
@@ -131,16 +163,19 @@ const PremiumPage = () => {
       {/* Enhanced Header Section */}
       <div className="text-center mb-5">
         <h1 className="display-4 fw-bold text-dark mb-4" style={{
-          fontSize: '3.5rem',
-          fontWeight: 800,
+          fontSize: '1.7rem',
           background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
           letterSpacing: '-0.02em',
-          lineHeight: 1.2
+          lineHeight: 1.2,
+          minHeight: '2.5rem',
+          transition: 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out',
+          opacity: isTransitioning ? 0 : 1,
+          transform: isTransitioning ? 'translateY(-10px)' : 'translateY(0)'
         }}>
-          {t('pricing_title')}
+          {titleVariations[currentTitleIndex]}
         </h1>
         
         <div className="mx-auto" style={{ maxWidth: 700 }}>
