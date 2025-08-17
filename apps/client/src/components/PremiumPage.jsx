@@ -23,7 +23,8 @@ const PremiumPage = () => {
   const titleVariations = [
     t('pricing_title'),
     t('pricing_effective'),
-    t('pricing_convenient')
+    t('pricing_convenient'),
+    t('pricing_trust')
   ];
 
   // Text carousel effect - change title every 3 seconds
