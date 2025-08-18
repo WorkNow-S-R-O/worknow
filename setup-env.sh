@@ -3,30 +3,19 @@
 echo "🚀 Setting up WorkNow environment variables..."
 
 # Check if root .env file exists
-if [ -f "../.env" ]; then
+if [ -f ".env" ]; then
     echo "⚠️  Root .env already exists. Backing up to .env.backup"
-    cp ../.env ../.env.backup
-fi
-
-# Check if docker/.env file exists
-if [ -f "docker/.env" ]; then
-    echo "⚠️  docker/.env already exists. Backing up to docker/.env.backup"
-    cp docker/.env docker/.env.backup
+    cp .env .env.backup
 fi
 
 # Copy example file to root directory
-cp docker/env.example ../.env
+cp docker/env.example .env
 
-# Copy example file to docker directory
-cp docker/env.example docker/.env
-
-echo "✅ Environment files created:"
-echo "   - Root: ../.env (for Docker Compose)"
-echo "   - Docker: docker/.env (for reference)"
+echo "✅ Environment file created: .env"
 echo ""
-echo "📝 Please edit ../.env and fill in your actual values:"
+echo "📝 Please edit .env and fill in your actual values:"
 echo "   - Database credentials"
-echo "   - Clerk API keys"
+echo "   - Clerk API keys (REQUIRED for frontend authentication)"
 echo "   - Stripe API keys"
 echo "   - Email credentials (Gmail or Resend)"
 echo "   - AWS S3 credentials (if using file uploads)"
@@ -49,5 +38,5 @@ echo "📧 For Gmail:"
 echo "   - Use app password, not regular password"
 echo "   - Enable 2FA on your Google account first"
 echo ""
-echo "🚀 After editing, restart Docker with:"
+echo "🚀 After editing, start Docker with:"
 echo "   docker-compose -f docker/docker-compose.dev.yml up --build"
