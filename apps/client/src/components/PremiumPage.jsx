@@ -465,4 +465,4 @@ const PremiumPage = () => {
   );
 };
 
-export default PremiumPage; 
+export default PremiumPage;

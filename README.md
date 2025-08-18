@@ -20,6 +20,10 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
 - **Responsive design** (mobile-first, Bootstrap + Tailwind)
 - **Automated tasks** (cron jobs for premium, notifications)
 - **Content moderation** (bad words filter)
+- **AI-powered job title generation**
+- **Newsletter subscription system**
+- **Image upload and moderation**
+- **Candidate notification system**
 
 ---
 
@@ -30,6 +34,7 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
 - Tailwind CSS, Bootstrap 5, Bootstrap Icons, Lucide React
 - Zustand (state), React Hook Form, Zod (validation)
 - i18next (internationalization), React Hot Toast, React Helmet Async
+- TypeScript support
 
 ### Backend
 - Node.js, Express.js
@@ -38,9 +43,12 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
 - Stripe (payments & subscriptions)
 - Nodemailer (email), Telegram Bot API (notifications)
 - Winston (logging), Node-cron (task scheduling)
+- Redis for caching
+- AWS S3 for file storage
+- OpenAI integration for AI features
 
 ### Integrations
-- Clerk, Stripe, Supabase, Telegram, i18next
+- Clerk, Stripe, Supabase, Telegram, i18next, OpenAI, AWS S3
 
 ---
 
@@ -56,7 +64,7 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
    npm install
    ```
 3. **Configure environment variables:**
-   - Copy `.env.example` to `.env` and fill in your database, Clerk, Stripe, and email credentials.
+   - Copy `docker/env.example` to `docker/.env` and fill in your database, Clerk, Stripe, and email credentials.
 4. **Setup the database:**
    ```sh
    npx prisma db push
@@ -70,7 +78,7 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
    ```
 6. **Run the project locally:**
    ```sh
-   npm start
+   npm run dev
    ```
 
 ---
@@ -84,44 +92,44 @@ You can run the entire WorkNow platform locally using Docker and Docker Compose.
 - [Docker Compose](https://docs.docker.com/compose/) (if not included with Docker Desktop)
 
 ### 1. Configure Environment Variables
-- Copy `.env.example` to `.env` and fill in your credentials (database, Clerk, Stripe, email, etc).
+- Copy `docker/env.example` to `docker/.env` and fill in your credentials (database, Clerk, Stripe, email, etc).
 - Make sure all required variables are set for both backend and frontend.
 
 ### 2. Build and Start the Services
 From the project root, run:
 ```sh
-# Build and start all services (frontend, backend, database)
-docker-compose up --build
+# Development environment
+docker-compose -f docker/docker-compose.dev.yml up --build
+
+# Production environment
+docker-compose -f docker/docker-compose.prod.yml up --build
+
+# Production test environment
+docker-compose -f docker/docker-compose.prod.test.yml up --build
 ```
-- This will build the Docker images and start the containers as defined in `docker-compose.yml`.
 
 ### 3. Access the Application
 - **Frontend:** Open [http://localhost:3000](http://localhost:3000)
 - **Backend API:** Accessible at [http://localhost:3001](http://localhost:3001)
-- **Postgres Database:** Exposed on port 5432 (see `docker-compose.yml` for credentials)
+- **Postgres Database:** Exposed on port 5432 (see `docker/docker-compose.yml` for credentials)
 
 ### 4. Stopping the Services
 To stop all running containers:
 ```sh
-docker-compose down
+docker-compose -f docker/docker-compose.dev.yml down
 ```
 
-- `GET /api/jobs` – List job postings (with filters, pagination)
-- `POST /api/jobs` – Create a new job (auth required)
-- `PUT /api/jobs/:id` – Update a job (auth, owner only)
-- `DELETE /api/jobs/:id` – Delete a job (auth, owner only)
-- `POST /api/jobs/:id/boost` – Boost a job (premium only)
-- `GET /api/seekers` – List job seekers (with filters, pagination)
-- `POST /api/seekers` – Create a seeker profile
-- `GET /api/seekers/:id` – Get seeker details
-- `GET /api/users` – Get user profile (auth required)
-- `PUT /api/users` – Update user profile (auth required)
-- `POST /api/payments/create-checkout-session` – Stripe checkout (auth required)
-- `POST /api/payments/cancel-subscription` – Cancel premium (auth required)
-- `POST /api/payments/cancel-auto-renewal` – Disable auto-renewal (auth required)
-- `GET /api/messages` – Get user messages (auth required)
-- `POST /api/messages` – Send message (admin only)
-- `POST /webhook` – Handle external webhooks (Stripe, Clerk)
+### 5. Useful Docker Commands
+```sh
+# View logs
+docker-compose -f docker/docker-compose.dev.yml logs -f
+
+# Rebuild specific service
+docker-compose -f docker/docker-compose.dev.yml up --build api
+
+# Access database
+docker exec -it worknow-db psql -U postgres -d worknow
+```
 
 ---
 
@@ -133,9 +141,10 @@ You can also run WorkNow directly on your machine without Docker. This is useful
 - [Node.js](https://nodejs.org/) (v18+ recommended)
 - [npm](https://www.npmjs.com/) (comes with Node.js)
 - [PostgreSQL](https://www.postgresql.org/) (running locally or accessible remotely)
+- [Redis](https://redis.io/) (optional, for caching)
 
 ### 1. Configure Environment Variables
-- Copy `.env.example` to `.env` and fill in your credentials (database, Clerk, Stripe, email, etc).
+- Copy `docker/env.example` to `.env` and fill in your credentials (database, Clerk, Stripe, email, etc).
 - Make sure your PostgreSQL server is running and the credentials match your `.env`.
 
 ### 2. Install Dependencies
@@ -166,17 +175,18 @@ npm run dev
 **Alternatively, you can run them separately:**
 - **Backend:**
   ```sh
-  node apps/api/index.js
+  npm run build:server && node apps/api/index.js
   ```
 - **Frontend:**
   ```sh
-  vite --config vite.config.js
+  npm run build:server && vite
   ```
 
 ### 6. Useful Tips
 - If you change the Prisma schema, re-run `npx prisma generate`.
 - Logs and errors will appear in your terminal.
 - Make sure your database is running before starting the app.
+- For TypeScript compilation, use `npm run build:server`.
 
 ---
 
@@ -185,25 +195,80 @@ npm run dev
 ```
 worknow/
 ├── apps/
-│   ├── api/         # Backend (Express, controllers, routes, services)
-│   └── client/      # Frontend (React, components, pages, hooks, store)
-├── libs/            # Shared utility libraries
-├── prisma/          # Prisma schema, migrations, seed scripts
-├── public/          # Static files, images, locales
-├── tests/           # Test files
-├── tools/           # Development and utility scripts
-├── Dockerfile       # Docker build instructions
-├── docker-compose.yml # Multi-service orchestration
-├── package.json     # Project metadata and scripts
-└── README.md        # Project documentation
+│   ├── api/                    # Backend (Express, controllers, routes, services)
+│   │   ├── controllers/        # Request handlers
+│   │   ├── routes/            # API route definitions
+│   │   ├── services/          # Business logic layer
+│   │   ├── middlewares/       # Express middlewares
+│   │   ├── utils/             # Utility functions
+│   │   └── index.js           # Main server entry point
+│   └── client/                # Frontend (React, components, pages, hooks, store)
+│       ├── components/        # Reusable UI components
+│       ├── pages/             # Page components
+│       ├── hooks/             # Custom React hooks
+│       ├── store/             # Zustand state stores
+│       ├── contexts/          # React contexts
+│       └── css/               # Stylesheets
+├── libs/                      # Shared utility libraries
+├── prisma/                    # Prisma schema, migrations, seed scripts
+├── public/                    # Static files, images, locales
+│   ├── images/                # Application images
+│   └── locales/               # Translation files (ru, en, he, ar)
+├── tests/                     # Test files
+├── tools/                     # Development and utility scripts
+├── docker/                    # Docker configuration files
+│   ├── Dockerfile.dev         # Development Dockerfile
+│   ├── Dockerfile.prod        # Production Dockerfile
+│   ├── docker-compose.dev.yml # Development compose
+│   ├── docker-compose.prod.yml # Production compose
+│   └── env.example            # Environment variables template
+├── config/                    # Configuration files
+├── package.json               # Project metadata and scripts
+└── README.md                  # Project documentation
 ```
 
+---
+
+## 🔌 API Endpoints
+
+### Job Management
+- `GET /api/jobs` – List job postings (with filters, pagination)
+- `POST /api/jobs` – Create a new job (auth required)
+- `PUT /api/jobs/:id` – Update a job (auth, owner only)
+- `DELETE /api/jobs/:id` – Delete a job (auth, owner only)
+- `POST /api/jobs/:id/boost` – Boost a job (premium only)
+
+### User Management
+- `GET /api/users` – Get user profile (auth required)
+- `PUT /api/users` – Update user profile (auth required)
+- `POST /api/users/sync` – Sync user data with Clerk
+
+### Job Seekers
+- `GET /api/seekers` – List job seekers (with filters, pagination)
+- `POST /api/seekers` – Create a seeker profile
+- `GET /api/seekers/:id` – Get seeker details
+
+### Payments
+- `POST /api/payments/create-checkout-session` – Stripe checkout (auth required)
+- `POST /api/payments/cancel-subscription` – Cancel premium (auth required)
+- `POST /api/payments/cancel-auto-renewal` – Disable auto-renewal (auth required)
+
+### Other Services
+- `GET /api/messages` – Get user messages (auth required)
+- `POST /api/messages` – Send message (admin only)
+- `GET /api/categories` – Get job categories
+- `GET /api/cities` – Get cities
+- `POST /webhook` – Handle external webhooks (Stripe, Clerk)
+
+---
 
 ## ⏰ Automated Tasks (Cron Jobs)
 
 - **Daily job ranking check**: Notifies users if their jobs drop in ranking
 - **Hourly premium expiration check**: Disables expired premium subscriptions
 - **Automated email notifications**: For premium, job status, and system events
+- **Candidate notification system**: Automated job matching and notifications
+- **Newsletter management**: Automated newsletter processing and delivery
 
 ---
 
@@ -216,6 +281,8 @@ worknow/
 - CORS, rate limiting, and content filtering
 - HTTPS-ready, environment-based configuration
 - Code splitting, caching, and lazy loading for frontend performance
+- Image moderation and content filtering
+- Redis caching for improved performance
 
 ---
 
@@ -225,14 +292,59 @@ worknow/
 - Automatic language detection and manual switching
 - RTL support for Hebrew and Arabic
 - Translation files in `public/locales/`
+- Dynamic content localization
 
 ---
-### 5. Useful Tips
-- If you change dependencies or Dockerfile, re-run with `--build`.
-- Database migrations are handled automatically on container startup (see Dockerfile and compose setup).
-- Logs for each service can be viewed with `docker-compose logs -f`.
+
+## 🧪 Testing
+
+- Jest testing framework
+- React Testing Library for component tests
+- Test coverage for components, hooks, and utilities
+- Mock implementations for external services
+
+---
+
+## 🚀 Deployment
+
+### Environment Variables
+Required environment variables for production:
+```env
+DATABASE_URL=postgresql://...
+CLERK_SECRET_KEY=sk_...
+VITE_CLERK_PUBLISHABLE_KEY=pk_...
+STRIPE_SECRET_KEY=sk_...
+WEBHOOK_SECRET=whsec_...
+EMAIL_USER=...
+EMAIL_PASS=...
+OPENAI_API_KEY=...
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_REGION=...
+AWS_S3_BUCKET=...
+```
+
+### Build Commands
+```sh
+# Build for production
+npm run build
+
+# Build server only
+npm run build:server
+
+# Start production server
+npm start
+```
+
+---
 
 ## 📬 Contacts & Support
 
 - Telegram: [@worknowjob](https://t.me/WORKNOW_JOBS)
 - Email: worknow.notifications@gmail.com
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

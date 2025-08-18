@@ -226,26 +226,72 @@ export default function MailDropdown() {
             }
           }
           
+          @keyframes float {
+            0%, 100% {
+              transform: translateY(0px);
+            }
+            50% {
+              transform: translateY(-2px);
+            }
+          }
+          
+          @keyframes glow {
+            0%, 100% {
+              box-shadow: 0 0 5px rgba(25, 118, 210, 0.3);
+            }
+            50% {
+              box-shadow: 0 0 20px rgba(25, 118, 210, 0.6);
+            }
+          }
+          
           .mail-badge-pulse {
             animation: pulse 2s infinite;
           }
           
           .envelope-icon {
-            transition: color 0.3s ease, transform 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
           }
           
           .envelope-icon:hover {
-            transform: scale(1.1);
+            transform: scale(1.15) rotate(-5deg);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
           }
           
           .envelope-icon.has-unread {
             color: #1976d2 !important;
+            animation: float 3s ease-in-out infinite;
+          }
+          
+          .envelope-icon.has-unread:hover {
+            animation: glow 2s ease-in-out infinite;
+          }
+          
+          .mail-button {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 8px 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          }
+          
+          .mail-button:hover {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-color: #1976d2;
+            box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3);
+            transform: translateY(-2px);
+          }
+          
+          .mail-button:active {
+            transform: translateY(0px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
           }
         `}
       </style>
       <div ref={mailRef} className="position-relative me-2">
       <button
-        className="btn btn-link p-0 position-relative"
+        className="btn mail-button position-relative"
         title="Почта"
         onClick={openMailDropdown}
         style={{ outline: 'none', boxShadow: 'none' }}
@@ -253,22 +299,24 @@ export default function MailDropdown() {
         <i 
           className={`bi bi-envelope envelope-icon ${unreadCount > 0 ? 'has-unread' : ''}`} 
           style={{ 
-            fontSize: 20, 
-            color: unreadCount > 0 ? '#1976d2' : '#6c757d'
+            fontSize: 22, 
+            color: unreadCount > 0 ? '#1976d2' : '#495057',
+            textShadow: unreadCount > 0 ? '0 0 8px rgba(25, 118, 210, 0.3)' : 'none'
           }}
         />
         {unreadCount > 0 && (
           <span 
             className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger mail-badge-pulse" 
             style={{ 
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: 'bold',
-              minWidth: '18px',
-              height: '18px',
+              minWidth: '20px',
+              height: '20px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)'
+              boxShadow: '0 4px 12px rgba(220, 53, 69, 0.4)',
+              border: '2px solid #fff'
             }}
           >
             {unreadCount > 99 ? '99+' : unreadCount}
