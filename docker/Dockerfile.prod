@@ -80,8 +80,7 @@ COPY --from=backend-builder --chown=worknow:nodejs /app/package*.json ./
 COPY --chown=worknow:nodejs public/ ./public/
 
 # Create necessary directories
-RUN mkdir -p /app/logs && \
-    chown -R worknow:nodejs /app
+RUN chown -R worknow:nodejs /app
 
 # Switch to non-root user
 USER worknow

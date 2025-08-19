@@ -84,8 +84,10 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./logs:/app/logs
-      - ./uploads:/app/uploads
+      - ../:/app
+      - /app/node_modules
+      - /app/apps/client/node_modules
+      - /app/apps/api/node_modules
     depends_on:
       postgres:
         condition: service_healthy
@@ -110,7 +112,6 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/ssl:/etc/nginx/ssl
-      - ./logs/nginx:/var/log/nginx
     depends_on:
       - worknow
     networks:

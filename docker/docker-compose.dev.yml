@@ -53,8 +53,6 @@ services:
       - /app/node_modules
       - /app/apps/client/node_modules
       - /app/apps/api/node_modules
-      - ./logs:/app/logs
-      - ./uploads:/app/uploads
     depends_on:
       redis-dev:
         condition: service_healthy

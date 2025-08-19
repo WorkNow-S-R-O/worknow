@@ -85,8 +85,10 @@ services:
     ports:
       - "3002:3001"
     volumes:
-      - ./logs:/app/logs
-      - ./uploads:/app/uploads
+      - ../:/app
+      - /app/node_modules
+      - /app/apps/client/node_modules
+      - /app/apps/api/node_modules
     depends_on:
       postgres:
         condition: service_healthy

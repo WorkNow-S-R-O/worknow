@@ -22,8 +22,6 @@ services:
       - /app/node_modules
       - /app/apps/client/node_modules
       - /app/apps/api/node_modules
-      - ./logs:/app/logs
-      - ./uploads:/app/uploads
       # Add your local SSL certificates if needed
       # - ./ssl:/app/ssl:ro
 

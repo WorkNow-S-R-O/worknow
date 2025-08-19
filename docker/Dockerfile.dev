@@ -34,7 +34,7 @@ COPY . .
 RUN npx prisma generate
 
 # Create necessary directories and set permissions
-RUN mkdir -p /app/logs /app/dist && \
+RUN mkdir -p /app/dist && \
     chown -R worknow:nodejs /app
 
 # Switch to non-root user
