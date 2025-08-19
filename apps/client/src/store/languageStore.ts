@@ -1,16 +1,27 @@
 import { create } from "zustand";
-import { ruRU, enUS } from "@clerk/localizations";
+import { ruRU, enUS, ukUA } from "@clerk/localizations";
 
 // Создаём Zustand-хранилище для управления языком
 const useLanguageStore = create((set) => {
   const storedLanguage = localStorage.getItem("language") || "ru"; // Определяем язык из localStorage
 
+  const getLocalization = (lang: string) => {
+    switch (lang) {
+      case "en":
+        return enUS;
+      case "uk":
+        return ukUA;
+      default:
+        return ruRU;
+    }
+  };
+
   return {
     language: storedLanguage,
-    localization: storedLanguage === "en" ? enUS : ruRU, // Устанавливаем локализацию сразу
+    localization: getLocalization(storedLanguage), // Устанавливаем локализацию сразу
 
-    changeLanguage: (lang) => {
-      const newLocalization = lang === "en" ? enUS : ruRU;
+    changeLanguage: (lang: string) => {
+      const newLocalization = getLocalization(lang);
       localStorage.setItem("language", lang);
       set({ language: lang, localization: newLocalization });
 

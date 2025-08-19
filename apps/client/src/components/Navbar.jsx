@@ -122,7 +122,7 @@ const Navbar = () => {
               aria-expanded="false"
             >
               <i className="bi bi-translate me-2"></i>
-              {language === "en" ? "English" : language === "he" ? "עברית" : language === "ar" ? "العربية" : "Русский"}
+              {language === "en" ? "English" : language === "uk" ? "Українська" : language === "he" ? "עברית" : language === "ar" ? "العربية" : "Русский"}
             </button>
             <ul className="dropdown-menu" aria-labelledby="languageDropdown">
               <li>
@@ -133,6 +133,11 @@ const Navbar = () => {
               <li>
                 <button onClick={() => handleLanguageChange("ru")} className="dropdown-item">
                   Русский
+                </button>
+              </li>
+              <li>
+                <button onClick={() => handleLanguageChange("uk")} className="dropdown-item">
+                  Українська
                 </button>
               </li>
               <li>
@@ -241,7 +246,7 @@ const Navbar = () => {
                   aria-expanded="false"
                 >
                   <i className="bi bi-translate me-2"></i>
-                  {language === "en" ? "English" : language === "he" ? "עברית" : language === "ar" ? "العربية" : "Русский"}
+                  {language === "en" ? "English" : language === "uk" ? "Українська" : language === "he" ? "עברית" : language === "ar" ? "العربية" : "Русский"}
                 </button>
                 <ul className="dropdown-menu w-100" aria-labelledby="mobileLanguageDropdown">
                   <li>
@@ -249,6 +254,9 @@ const Navbar = () => {
                   </li>
                   <li>
                     <button onClick={() => handleLanguageChange("ru") } className="dropdown-item">Русский</button>
+                  </li>
+                  <li>
+                    <button onClick={() => handleLanguageChange("uk") } className="dropdown-item">Українська</button>
                   </li>
                   <li>
                     <button onClick={() => handleLanguageChange("he") } className="dropdown-item">עברית</button>

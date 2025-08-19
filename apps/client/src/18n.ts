@@ -10,7 +10,7 @@ i18n
   .init({
     fallbackLng: "ru",
     debug: true,
-    supportedLngs: ["en", "ru", "he", "ar"],
+    supportedLngs: ["en", "ru", "uk", "he", "ar"],
     detection: {
       order: ["queryString", "cookie"],
       caches: ["cookie"],
