@@ -336,3 +336,24 @@ button:focus-visible {
 .premium-badge i {
   margin-right: 6px;
 }
+
+/* Mobile-optimized image styles */
+.mobile-optimized-image {
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .mobile-optimized-image {
+    max-width: 350px !important;
+    width: 85vw !important;
+    border-radius: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-optimized-image {
+    max-width: 300px !important;
+    width: 90vw !important;
+    border-radius: 6px !important;
+  }
+}
