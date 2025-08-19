@@ -19,8 +19,8 @@ const SupportPage = () => {
       icon: Mail,
       title: t("support_email_title"),
       description: t("support_email_description"),
-      contact: "peterbaikov12@gmail.com",
-      action: "mailto:peterbaikov12@gmail.com",
+      contact: "worknow.notifications@gmail.com",
+      action: "mailto:worknow.notifications@gmail.com",
       color: "bg-blue-500",
       hoverColor: "hover:bg-blue-600"
     },
@@ -61,6 +61,22 @@ const SupportPage = () => {
     {
       question: t("support_faq_contact_seekers_question"),
       answer: t("support_faq_contact_seekers_answer")
+    },
+    {
+      question: t("support_faq_job_limits_question"),
+      answer: t("support_faq_job_limits_answer")
+    },
+    {
+      question: t("support_faq_payment_question"),
+      answer: t("support_faq_payment_answer")
+    },
+    {
+      question: t("support_faq_categories_question"),
+      answer: t("support_faq_categories_answer")
+    },
+    {
+      question: t("support_faq_cities_question"),
+      answer: t("support_faq_cities_answer")
     }
   ];
 
