@@ -170,7 +170,12 @@ You can also run WorkNow directly on your machine without Docker. This is useful
 npm install
 ```
 
-### 3. Set Up the Database
+### 3. Install the missing Puppeteer dependencies
+```sh
+npx puppeteer browsers install chrome
+```
+
+### 4. Set Up the Database
 ```sh
 npx prisma db push
 npx prisma generate
@@ -178,12 +183,12 @@ npx prisma generate
 npx prisma migrate dev
 ```
 
-### 4. (Optional) Seed Test Data
+### 5. (Optional) Seed Test Data
 ```sh
 node prisma/seed.js
 ```
 
-### 5. Run the Application
+### 6. Run the Application
 In one terminal, start the backend and frontend together:
 ```sh
 npm run dev
