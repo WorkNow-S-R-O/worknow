@@ -1,4 +1,4 @@
-# WorkNow – Job Search Platform for Israel 🚀
+# WorkNow – Job Search Platform for Israel 💼
 
 WorkNow is a modern, full-featured job search platform designed for the Israeli market. It connects employers and job seekers, supporting multilingualism (Russian, English, Hebrew, Arabic), premium features, and seamless integration with external services like Stripe, Clerk, and Telegram.
 
@@ -20,7 +20,6 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
 - **Responsive design** (mobile-first, Bootstrap + Tailwind)
 - **Automated tasks** (cron jobs for premium, notifications)
 - **Content moderation** (bad words filter)
-- **AI-powered job title generation**
 - **Newsletter subscription system**
 - **Image upload and moderation**
 - **Candidate notification system**
