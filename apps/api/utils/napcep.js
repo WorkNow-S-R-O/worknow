@@ -92,10 +92,14 @@ async function fetchJobDescriptions() {
     let consecutiveTimeouts = 0;
     let totalTimeouts = 0;
     let skippedPages = [];
+    let stuckCounter = 0;
+    let lastPageChangeTime = Date.now();
     const MAX_CONSECUTIVE_EMPTY_PAGES = 5; // Максимум 5 пустых страниц подряд
     const MAX_CONSECUTIVE_TIMEOUTS = 2; // Уменьшаем до 2 таймаутов подряд
     const MAX_TOTAL_TIMEOUTS = 10; // Максимум 10 таймаутов всего
     const MAX_PAGE_RETRIES = 2; // Максимум 2 попытки загрузить страницу
+    const STUCK_TIMEOUT = 30000; // 30 секунд на страницу максимум
+    const MAX_STUCK_COUNT = 3; // Максимум 3 застревания подряд
 
     while (jobs.length < MAX_JOBS) {
         console.log(`📄 Парсим страницу ${currentPage}...`);
@@ -105,6 +109,26 @@ async function fetchJobDescriptions() {
             console.log(`🛑 Достигнут лимит общих таймаутов (${MAX_TOTAL_TIMEOUTS}). Останавливаем парсинг.`);
             console.log(`💡 Используем ${jobs.length} собранных вакансий без генерации дополнительных.`);
             break;
+        }
+
+        // Проверяем, не застряли ли мы на одной странице
+        const timeOnCurrentPage = Date.now() - lastPageChangeTime;
+        if (timeOnCurrentPage > STUCK_TIMEOUT) {
+            stuckCounter++;
+            console.log(`⚠️ Застряли на странице ${currentPage} на ${(timeOnCurrentPage / 1000).toFixed(0)} секунд!`);
+            
+            if (stuckCounter >= MAX_STUCK_COUNT) {
+                console.log(`🚨 КРИТИЧЕСКОЕ ЗАСТРЕВАНИЕ! Пропускаем ${Math.min(10, MAX_JOBS - jobs.length)} страниц вперед!`);
+                const pagesToSkip = Math.min(10, MAX_JOBS - jobs.length);
+                currentPage += pagesToSkip;
+                skippedPages.push(...Array.from({length: pagesToSkip}, (_, i) => currentPage - pagesToSkip + i));
+                stuckCounter = 0;
+                lastPageChangeTime = Date.now();
+                console.log(`   ⏭️ Переходим к странице ${currentPage}`);
+                continue;
+            } else {
+                console.log(`   🔄 Попытка ${stuckCounter}/${MAX_STUCK_COUNT} преодоления застревания...`);
+            }
         }
 
         let pageRetries = 0;
@@ -204,6 +228,7 @@ async function fetchJobDescriptions() {
                             currentPage = 1;
                             consecutiveEmptyPages = 0;
                             consecutiveTimeouts = 0;
+                            lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
                             break;
                         } catch {
                             console.log(`   ❌ Не удалось загрузить ${altUrl}`);
@@ -219,6 +244,7 @@ async function fetchJobDescriptions() {
                     try {
                         await page.goto(nextPageUrl, { waitUntil: 'networkidle2' });
                         currentPage++;
+                        lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
                     } catch (error) {
                         if (error.message.includes('Navigation timeout')) {
                             consecutiveTimeouts++;
@@ -226,19 +252,22 @@ async function fetchJobDescriptions() {
                             console.log(`   ⏰ Таймаут навигации на странице ${currentPage}: ${error.message}`);
                             
                             if (consecutiveTimeouts >= MAX_CONSECUTIVE_TIMEOUTS) {
-                                console.log(`   🛑 Слишком много таймаутов подряд (${consecutiveTimeouts}). Пропускаем страницу ${currentPage}.`);
-                                skippedPages.push(currentPage);
-                                currentPage++; // Принудительно переходим к следующей странице
-                                consecutiveTimeouts = 0; // Сбрасываем счетчик
-                                continue; // Продолжаем с новой страницы
+                        console.log(`   🛑 Слишком много таймаутов подряд (${consecutiveTimeouts}). Пропускаем страницу ${currentPage}.`);
+                        skippedPages.push(currentPage);
+                        currentPage++; // Принудительно переходим к следующей странице
+                        lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
+                        consecutiveTimeouts = 0; // Сбрасываем счетчик
+                        continue; // Продолжаем с новой страницы
                             }
                             
                             console.log(`   🔄 Пропускаем страницу ${currentPage} и продолжаем...`);
                             skippedPages.push(currentPage);
                             currentPage++; // Принудительно переходим к следующей странице
+                            lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
                         } else {
                             console.log(`   ❌ Ошибка при переходе на страницу ${currentPage}: ${error.message}`);
                             currentPage++; // Переходим к следующей странице
+                            lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
                         }
                     }
                 }
@@ -255,6 +284,7 @@ async function fetchJobDescriptions() {
                         console.log(`   🛑 Слишком много таймаутов подряд (${consecutiveTimeouts}). Пропускаем страницу ${currentPage}.`);
                         skippedPages.push(currentPage);
                         currentPage++; // Принудительно переходим к следующей странице
+                        lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
                         consecutiveTimeouts = 0; // Сбрасываем счетчик
                         break; // Выходим из цикла попыток
                     }
@@ -280,6 +310,7 @@ async function fetchJobDescriptions() {
                         console.log(`   ⏭️ Исчерпаны попытки загрузки страницы ${currentPage}. Пропускаем.`);
                         skippedPages.push(currentPage);
                         currentPage++; // Принудительно переходим к следующей странице
+                        lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
                         break; // Выходим из цикла попыток
                     }
                     
@@ -298,6 +329,7 @@ async function fetchJobDescriptions() {
             console.log(`   ⏭️ Страница ${currentPage} не загрузилась. Пропускаем и продолжаем.`);
             skippedPages.push(currentPage);
             currentPage++;
+            lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
         }
     }
 
