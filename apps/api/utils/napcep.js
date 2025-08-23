@@ -73,7 +73,8 @@ async function clearOldData() {
 async function fetchJobDescriptions() {
     console.log("🔍 Запускаем Puppeteer для парсинга Orbita...");
     console.log("💰 Валидируем цены в описаниях для консистентности...");
-    console.log(`🎯 Цель: собрать ровно ${MAX_JOBS} валидных вакансий!`);
+    console.log(`🎯 Цель: собрать минимум 100 валидных вакансий (максимум ${MAX_JOBS})`);
+    console.log(`💡 Начнем обработку как только соберем 100 вакансий!`);
 
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     const page = await browser.newPage();
@@ -94,12 +95,14 @@ async function fetchJobDescriptions() {
     let skippedPages = [];
     let stuckCounter = 0;
     let lastPageChangeTime = Date.now();
+    let earlyProcessingStarted = false;
     const MAX_CONSECUTIVE_EMPTY_PAGES = 5; // Максимум 5 пустых страниц подряд
     const MAX_CONSECUTIVE_TIMEOUTS = 2; // Уменьшаем до 2 таймаутов подряд
     const MAX_TOTAL_TIMEOUTS = 10; // Максимум 10 таймаутов всего
     const MAX_PAGE_RETRIES = 2; // Максимум 2 попытки загрузить страницу
     const STUCK_TIMEOUT = 30000; // 30 секунд на страницу максимум
     const MAX_STUCK_COUNT = 3; // Максимум 3 застревания подряд
+    const EARLY_PROCESSING_THRESHOLD = 100; // Начинаем обработку при 100 вакансиях
 
     while (jobs.length < MAX_JOBS) {
         console.log(`📄 Парсим страницу ${currentPage}...`);
@@ -129,6 +132,18 @@ async function fetchJobDescriptions() {
             } else {
                 console.log(`   🔄 Попытка ${stuckCounter}/${MAX_STUCK_COUNT} преодоления застревания...`);
             }
+        }
+
+        // Проверяем, достигли ли мы порога для ранней обработки
+        if (!earlyProcessingStarted && jobs.length >= EARLY_PROCESSING_THRESHOLD) {
+            console.log(`🎉 Достигли порога в ${EARLY_PROCESSING_THRESHOLD} вакансий!`);
+            console.log(`🚀 Запускаем раннюю обработку в фоновом режиме...`);
+            earlyProcessingStarted = true;
+            
+            // Запускаем раннюю обработку асинхронно
+            processJobsEarly(jobs).catch(error => {
+                console.error(`❌ Ошибка при ранней обработке:`, error);
+            });
         }
 
         let pageRetries = 0;
@@ -196,7 +211,12 @@ async function fetchJobDescriptions() {
                 jobs = [...jobs, ...validatedJobs];
                 console.log(`   ✅ Валидировано: ${validatedJobs.length}/${newJobs.length} вакансий`);
                 console.log(`   📈 Всего собрано: ${jobs.length}/${MAX_JOBS} валидных вакансий`);
-                console.log(`   🎯 Осталось собрать: ${MAX_JOBS - jobs.length} вакансий`);
+                
+                if (jobs.length < EARLY_PROCESSING_THRESHOLD) {
+                    console.log(`   🎯 Осталось до ранней обработки: ${EARLY_PROCESSING_THRESHOLD - jobs.length} вакансий`);
+                } else if (jobs.length < MAX_JOBS) {
+                    console.log(`   🎯 Осталось до полного лимита: ${MAX_JOBS - jobs.length} вакансий`);
+                }
 
                 if (jobs.length >= MAX_JOBS) {
                     console.log("✅ Достигли лимита валидных вакансий!");
@@ -252,12 +272,12 @@ async function fetchJobDescriptions() {
                             console.log(`   ⏰ Таймаут навигации на странице ${currentPage}: ${error.message}`);
                             
                             if (consecutiveTimeouts >= MAX_CONSECUTIVE_TIMEOUTS) {
-                        console.log(`   🛑 Слишком много таймаутов подряд (${consecutiveTimeouts}). Пропускаем страницу ${currentPage}.`);
-                        skippedPages.push(currentPage);
-                        currentPage++; // Принудительно переходим к следующей странице
-                        lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
-                        consecutiveTimeouts = 0; // Сбрасываем счетчик
-                        continue; // Продолжаем с новой страницы
+                                console.log(`   🛑 Слишком много таймаутов подряд (${consecutiveTimeouts}). Пропускаем страницу ${currentPage}.`);
+                                skippedPages.push(currentPage);
+                                currentPage++; // Принудительно переходим к следующей странице
+                                lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
+                                consecutiveTimeouts = 0; // Сбрасываем счетчик
+                                continue; // Продолжаем с новой страницы
                             }
                             
                             console.log(`   🔄 Пропускаем страницу ${currentPage} и продолжаем...`);
@@ -293,6 +313,7 @@ async function fetchJobDescriptions() {
                         console.log(`   ⏭️ Исчерпаны попытки загрузки страницы ${currentPage}. Пропускаем.`);
                         skippedPages.push(currentPage);
                         currentPage++; // Принудительно переходим к следующей странице
+                        lastPageChangeTime = Date.now(); // Обновляем время последнего изменения страницы
                         break; // Выходим из цикла попыток
                     }
                     
@@ -776,6 +797,25 @@ async function createFakeUsersWithJobs(jobs) {
     console.log("🎉 Все фейковые пользователи и вакансии успешно созданы!");
 }
 
+// Функция для ранней обработки вакансий
+async function processJobsEarly(jobs) {
+    console.log(`🚀 Начинаем раннюю обработку ${jobs.length} вакансий...`);
+    
+    try {
+        // Генерируем заголовки и категории
+        const jobsWithTitles = await generateJobTitles(jobs);
+        
+        // Создаем пользователей и вакансии
+        await createFakeUsersWithJobs(jobsWithTitles);
+        
+        console.log(`✅ Ранняя обработка завершена успешно! Обработано ${jobs.length} вакансий.`);
+        
+    } catch (error) {
+        console.error(`❌ Ошибка при ранней обработке:`, error);
+        throw error;
+    }
+}
+
 // Основная функция
 async function main() {
     try {
@@ -783,15 +823,23 @@ async function main() {
         console.log("💡 Используем rule-based генерацию заголовков");
         console.log("💰 Валидируем цены в описаниях для консистентности");
         console.log("✅ Нет зависимости от OpenAI API");
-        console.log("⚡ Быстрая и надежная обработка\n");
+        console.log("⚡ Быстрая и надежная обработка");
+        console.log("🎯 Начинаем обработку при 100 вакансиях для эффективности\n");
         
         await clearOldData();
         const jobs = await fetchJobDescriptions();
         
-        // Генерируем заголовки с надежной fallback системой
-        const jobsWithTitles = await generateJobTitles(jobs);
-        
-        await createFakeUsersWithJobs(jobsWithTitles);
+        // Проверяем, была ли уже выполнена ранняя обработка
+        if (jobs.length >= 100) {
+            console.log("✅ Ранняя обработка уже выполнена! Пропускаем повторную обработку.");
+        } else {
+            console.log("🔄 Ранняя обработка не была выполнена. Обрабатываем все вакансии...");
+            
+            // Генерируем заголовки с надежной fallback системой
+            const jobsWithTitles = await generateJobTitles(jobs);
+            
+            await createFakeUsersWithJobs(jobsWithTitles);
+        }
         
         console.log("\n✅ Скрипт успешно завершен!");
         console.log("📊 Статистика:");
@@ -807,6 +855,7 @@ async function main() {
         console.log("   - 100% надежность");
         console.log("   - Подходящие заголовки для израильского рынка");
         console.log("   - Консистентные цены между описанием и полем зарплаты");
+        console.log("   - Ранняя обработка при 100 вакансиях для эффективности");
         console.log("   - Умная обработка таймаутов - используем реальные вакансии при ошибках");
         
     } catch (error) {
