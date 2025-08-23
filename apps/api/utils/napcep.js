@@ -77,14 +77,30 @@ async function fetchJobDescriptions() {
 
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     const page = await browser.newPage();
-    await page.goto('https://doska.orbita.co.il/jobs/required/', { waitUntil: 'networkidle2' });
+
+    page.setDefaultTimeout(45000); // 45 seconds instead of 30
+    page.setDefaultNavigationTimeout(45000);
+
+    try {
+        await page.goto('https://doska.orbita.co.il/jobs/required/', { 
+            waitUntil: 'networkidle2',
+            timeout: 45000 
+        });
+    } catch (error) {
+        console.log(`❌ Не удалось загрузить начальную страницу: ${error.message}`);
+        await browser.close();
+        return [];
+    }
 
     let jobs = [];
     let currentPage = 1;
     let totalProcessed = 0;
     let totalValidated = 0;
     let consecutiveEmptyPages = 0;
-    const MAX_CONSECUTIVE_EMPTY_PAGES = 5; // Максимум 5 пустых страниц подряд
+    let consecutiveErrors = 0;
+    const MAX_CONSECUTIVE_EMPTY_PAGES = 5;
+    const MAX_CONSECUTIVE_ERRORS = 3;
+    
 
     while (jobs.length < MAX_JOBS) {
         console.log(`📄 Парсим страницу ${currentPage}...`);
@@ -115,7 +131,7 @@ async function fetchJobDescriptions() {
 
                 return jobData;
             });
-
+            
             console.log(`   📊 Найдено ${newJobs.length} вакансий на странице ${currentPage}`);
             
             if (newJobs.length === 0) {
@@ -128,6 +144,7 @@ async function fetchJobDescriptions() {
                 }
             } else {
                 consecutiveEmptyPages = 0; // Сбрасываем счетчик пустых страниц
+                consecutiveErrors = 0;
             }
             
             // 🔍 Валидируем цены для каждой вакансии
@@ -174,9 +191,10 @@ async function fetchJobDescriptions() {
                         foundAlternative = true;
                         currentPage = 1;
                         consecutiveEmptyPages = 0;
+                        consecutiveErrors = 0;
                         break;
                     } catch (error) {
-                        console.log(`   ❌ Не удалось загрузить ${altUrl}`);
+                        console.log(`   ❌ Не удалось загрузить ${altUrl}: ${error.message}`);
                     }
                 }
                 
@@ -184,23 +202,45 @@ async function fetchJobDescriptions() {
                     console.log("❌ Не удалось найти больше вакансий. Останавливаем парсинг.");
                     break;
                 }
-            } else {
-                // Переход на следующую страницу
-                await page.goto(nextPageUrl, { waitUntil: 'networkidle2' });
-                currentPage++;
+            }  else {
+                // Navigate to next page
+                try {
+                    await page.goto(nextPageUrl, { 
+                        waitUntil: 'networkidle2',
+                        timeout: 45000 
+                    });
+                    currentPage++;
+                } catch (error) {
+                    console.log(`   ❌ Не удалось загрузить следующую страницу: ${error.message}`);
+                    console.log(`   🔄 Продолжаем с текущей страницы...`);
+                    // Don't increment currentPage, try to continue
+                }
             }
 
         } catch (error) {
-            console.log(`   ❌ Ошибка при парсинге страницы ${currentPage}:`, error.message);
-            console.log(`   🔄 Продолжаем парсинг...`);
+            consecutiveErrors++;
+            console.log(`   ❌ Ошибка при парсинге страницы ${currentPage}: ${error.message}`);
             
-            // Попробуем перезагрузить страницу
+            if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+                console.log(`   �� Слишком много ошибок подряд (${consecutiveErrors}). Останавливаем парсинг.`);
+                break;
+            }
+            
+            console.log(`   �� Продолжаем парсинг... (ошибка ${consecutiveErrors}/${MAX_CONSECUTIVE_ERRORS})`);
+            
+            // Try to reload page once, then move on
             try {
-                await page.reload({ waitUntil: 'networkidle2' });
+                await page.reload({ 
+                    waitUntil: 'networkidle2',
+                    timeout: 45000 
+                });
             } catch (reloadError) {
-                console.log(`   ❌ Не удалось перезагрузить страницу:`, reloadError.message);
+                console.log(`   ❌ Не удалось перезагрузить страницу: ${reloadError.message}`);
+                console.log(`   ⏭️ Переходим к следующей странице...`);
+                currentPage++; // Move to next page instead of staying stuck
             }
         }
+        
     }
 
     await browser.close();
