@@ -90,172 +90,214 @@ async function fetchJobDescriptions() {
     let totalValidated = 0;
     let consecutiveEmptyPages = 0;
     let consecutiveTimeouts = 0;
+    let totalTimeouts = 0;
+    let skippedPages = [];
     const MAX_CONSECUTIVE_EMPTY_PAGES = 5; // Максимум 5 пустых страниц подряд
-    const MAX_CONSECUTIVE_TIMEOUTS = 3; // Максимум 3 таймаута подряд
+    const MAX_CONSECUTIVE_TIMEOUTS = 2; // Уменьшаем до 2 таймаутов подряд
+    const MAX_TOTAL_TIMEOUTS = 10; // Максимум 10 таймаутов всего
+    const MAX_PAGE_RETRIES = 2; // Максимум 2 попытки загрузить страницу
 
     while (jobs.length < MAX_JOBS) {
         console.log(`📄 Парсим страницу ${currentPage}...`);
 
-        try {
-            const newJobs = await page.evaluate(() => {
-                const jobElements = document.querySelectorAll('.message');
-                const jobData = [];
+        // Проверяем общее количество таймаутов
+        if (totalTimeouts >= MAX_TOTAL_TIMEOUTS) {
+            console.log(`🛑 Достигнут лимит общих таймаутов (${MAX_TOTAL_TIMEOUTS}). Останавливаем парсинг.`);
+            console.log(`💡 Используем ${jobs.length} собранных вакансий без генерации дополнительных.`);
+            break;
+        }
 
-                jobElements.forEach((job) => {
-                    let description = job.querySelector('.information')?.innerText.trim() || 'Описание отсутствует';
-                    let title = job.querySelector('.caption .cap')?.innerText.trim() || null;
-                    let city = job.querySelector('.hidden-xs a')?.innerText.trim() || 'Не указан';
+        let pageRetries = 0;
+        let pageLoaded = false;
 
-                    // 🔍 Проверяем наличие номера телефона в описании
-                    let phoneMatch = description.match(/\+972[-\s]?\d{1,2}[-\s]?\d{3}[-\s]?\d{4,6}/);
-                    let phone = phoneMatch ? phoneMatch[0].replace(/\s+/g, '') : null;
+        // Попытки загрузить страницу
+        while (pageRetries < MAX_PAGE_RETRIES && !pageLoaded) {
+            try {
+                if (pageRetries > 0) {
+                    console.log(`   🔄 Попытка ${pageRetries + 1} загрузки страницы ${currentPage}...`);
+                }
 
-                    if (!title) {
-                        title = "Без названия";
-                    }
+                const newJobs = await page.evaluate(() => {
+                    const jobElements = document.querySelectorAll('.message');
+                    const jobData = [];
 
-                    // ✅ Только добавляем вакансии с телефонными номерами
-                    if (phone) {
-                        jobData.push({ title, description, city, phone });
-                    }
+                    jobElements.forEach((job) => {
+                        let description = job.querySelector('.information')?.innerText.trim() || 'Описание отсутствует';
+                        let title = job.querySelector('.caption .cap')?.innerText.trim() || null;
+                        let city = job.querySelector('.hidden-xs a')?.innerText.trim() || 'Не указан';
+
+                        // 🔍 Проверяем наличие номера телефона в описании
+                        let phoneMatch = description.match(/\+972[-\s]?\d{1,2}[-\s]?\d{3}[-\s]?\d{4,6}/);
+                        let phone = phoneMatch ? phoneMatch[0].replace(/\s+/g, '') : null;
+
+                        if (!title) {
+                            title = "Без названия";
+                        }
+
+                        // ✅ Только добавляем вакансии с телефонными номерами
+                        if (phone) {
+                            jobData.push({ title, description, city, phone });
+                        }
+                    });
+
+                    return jobData;
                 });
 
-                return jobData;
-            });
-
-            console.log(`   📊 Найдено ${newJobs.length} вакансий на странице ${currentPage}`);
-            
-            if (newJobs.length === 0) {
-                consecutiveEmptyPages++;
-                console.log(`   ⚠️ Пустая страница ${currentPage} (${consecutiveEmptyPages}/${MAX_CONSECUTIVE_EMPTY_PAGES})`);
+                pageLoaded = true;
+                console.log(`   📊 Найдено ${newJobs.length} вакансий на странице ${currentPage}`);
                 
-                if (consecutiveEmptyPages >= MAX_CONSECUTIVE_EMPTY_PAGES) {
-                    console.log(`   🛑 Слишком много пустых страниц подряд (${consecutiveEmptyPages}). Останавливаем парсинг.`);
-                    break;
-                }
-            } else {
-                consecutiveEmptyPages = 0; // Сбрасываем счетчик пустых страниц
-                consecutiveTimeouts = 0; // Сбрасываем счетчик таймаутов
-            }
-            
-            // 🔍 Валидируем цены для каждой вакансии
-            const validatedJobs = [];
-            for (const job of newJobs) {
-                totalProcessed++;
-                if (validateJobData(job)) {
-                    validatedJobs.push(job);
-                    totalValidated++;
-                }
-            }
-
-            jobs = [...jobs, ...validatedJobs];
-            console.log(`   ✅ Валидировано: ${validatedJobs.length}/${newJobs.length} вакансий`);
-            console.log(`   📈 Всего собрано: ${jobs.length}/${MAX_JOBS} валидных вакансий`);
-            console.log(`   🎯 Осталось собрать: ${MAX_JOBS - jobs.length} вакансий`);
-
-            if (jobs.length >= MAX_JOBS) {
-                console.log("✅ Достигли лимита валидных вакансий!");
-                break;
-            }
-
-            // Поиск ссылки "Следующая страница"
-            const nextPageUrl = await page.evaluate(() => {
-                const nextLink = Array.from(document.querySelectorAll('a')).find(a => a.title === "Следующая");
-                return nextLink ? nextLink.href : null;
-            });
-
-            if (!nextPageUrl) {
-                console.log("✅ Больше страниц нет. Пытаемся найти альтернативные источники...");
-                
-                // Попробуем другие URL или категории
-                const alternativeUrls = [
-                    'https://doska.orbita.co.il/jobs/',
-                    'https://doska.orbita.co.il/jobs/offered/',
-                    'https://doska.orbita.co.il/jobs/required/'
-                ];
-                
-                let foundAlternative = false;
-                for (const altUrl of alternativeUrls) {
-                    try {
-                        console.log(`   🔄 Пробуем альтернативный URL: ${altUrl}`);
-                        await page.goto(altUrl, { waitUntil: 'networkidle2' });
-                        foundAlternative = true;
-                        currentPage = 1;
-                        consecutiveEmptyPages = 0;
-                        consecutiveTimeouts = 0;
+                if (newJobs.length === 0) {
+                    consecutiveEmptyPages++;
+                    console.log(`   ⚠️ Пустая страница ${currentPage} (${consecutiveEmptyPages}/${MAX_CONSECUTIVE_EMPTY_PAGES})`);
+                    
+                    if (consecutiveEmptyPages >= MAX_CONSECUTIVE_EMPTY_PAGES) {
+                        console.log(`   🛑 Слишком много пустых страниц подряд (${consecutiveEmptyPages}). Останавливаем парсинг.`);
                         break;
-                    } catch {
-                        console.log(`   ❌ Не удалось загрузить ${altUrl}`);
+                    }
+                } else {
+                    consecutiveEmptyPages = 0; // Сбрасываем счетчик пустых страниц
+                    consecutiveTimeouts = 0; // Сбрасываем счетчик таймаутов
+                }
+                
+                // 🔍 Валидируем цены для каждой вакансии
+                const validatedJobs = [];
+                for (const job of newJobs) {
+                    totalProcessed++;
+                    if (validateJobData(job)) {
+                        validatedJobs.push(job);
+                        totalValidated++;
                     }
                 }
-                
-                if (!foundAlternative) {
-                    console.log("❌ Не удалось найти больше вакансий. Останавливаем парсинг.");
+
+                jobs = [...jobs, ...validatedJobs];
+                console.log(`   ✅ Валидировано: ${validatedJobs.length}/${newJobs.length} вакансий`);
+                console.log(`   📈 Всего собрано: ${jobs.length}/${MAX_JOBS} валидных вакансий`);
+                console.log(`   🎯 Осталось собрать: ${MAX_JOBS - jobs.length} вакансий`);
+
+                if (jobs.length >= MAX_JOBS) {
+                    console.log("✅ Достигли лимита валидных вакансий!");
                     break;
                 }
-            } else {
-                // Переход на следующую страницу
-                try {
-                    await page.goto(nextPageUrl, { waitUntil: 'networkidle2' });
-                    currentPage++;
-                } catch (error) {
-                    if (error.message.includes('Navigation timeout')) {
-                        consecutiveTimeouts++;
-                        console.log(`   ⏰ Таймаут навигации на странице ${currentPage}: ${error.message}`);
-                        console.log(`   🔄 Пропускаем страницу ${currentPage} и продолжаем...`);
-                        
-                        if (consecutiveTimeouts >= MAX_CONSECUTIVE_TIMEOUTS) {
-                            console.log(`   🛑 Слишком много таймаутов подряд (${consecutiveTimeouts}). Останавливаем парсинг.`);
-                            console.log(`   💡 Продолжаем с уже собранными ${jobs.length} вакансиями`);
-                            break;
-                        }
-                        
-                        // Пытаемся продолжить с текущей страницы
+
+                // Поиск ссылки "Следующая страница"
+                const nextPageUrl = await page.evaluate(() => {
+                    const nextLink = Array.from(document.querySelectorAll('a')).find(a => a.title === "Следующая");
+                    return nextLink ? nextLink.href : null;
+                });
+
+                if (!nextPageUrl) {
+                    console.log("✅ Больше страниц нет. Пытаемся найти альтернативные источники...");
+                    
+                    // Попробуем другие URL или категории
+                    const alternativeUrls = [
+                        'https://doska.orbita.co.il/jobs/',
+                        'https://doska.orbita.co.il/jobs/offered/',
+                        'https://doska.orbita.co.il/jobs/required/'
+                    ];
+                    
+                    let foundAlternative = false;
+                    for (const altUrl of alternativeUrls) {
                         try {
-                            await page.reload({ waitUntil: 'networkidle2' });
-                        } catch (reloadError) {
-                            console.log(`   ❌ Не удалось перезагрузить страницу: ${reloadError.message}`);
+                            console.log(`   🔄 Пробуем альтернативный URL: ${altUrl}`);
+                            await page.goto(altUrl, { waitUntil: 'networkidle2' });
+                            foundAlternative = true;
+                            currentPage = 1;
+                            consecutiveEmptyPages = 0;
+                            consecutiveTimeouts = 0;
+                            break;
+                        } catch {
+                            console.log(`   ❌ Не удалось загрузить ${altUrl}`);
+                        }
+                    }
+                    
+                    if (!foundAlternative) {
+                        console.log("❌ Не удалось найти больше вакансий. Останавливаем парсинг.");
+                        break;
+                    }
+                } else {
+                    // Переход на следующую страницу
+                    try {
+                        await page.goto(nextPageUrl, { waitUntil: 'networkidle2' });
+                        currentPage++;
+                    } catch (error) {
+                        if (error.message.includes('Navigation timeout')) {
+                            consecutiveTimeouts++;
+                            totalTimeouts++;
+                            console.log(`   ⏰ Таймаут навигации на странице ${currentPage}: ${error.message}`);
+                            
+                            if (consecutiveTimeouts >= MAX_CONSECUTIVE_TIMEOUTS) {
+                                console.log(`   🛑 Слишком много таймаутов подряд (${consecutiveTimeouts}). Пропускаем страницу ${currentPage}.`);
+                                skippedPages.push(currentPage);
+                                currentPage++; // Принудительно переходим к следующей странице
+                                consecutiveTimeouts = 0; // Сбрасываем счетчик
+                                continue; // Продолжаем с новой страницы
+                            }
+                            
+                            console.log(`   🔄 Пропускаем страницу ${currentPage} и продолжаем...`);
+                            skippedPages.push(currentPage);
+                            currentPage++; // Принудительно переходим к следующей странице
+                        } else {
+                            console.log(`   ❌ Ошибка при переходе на страницу ${currentPage}: ${error.message}`);
                             currentPage++; // Переходим к следующей странице
                         }
-                    } else {
-                        console.log(`   ❌ Ошибка при переходе на страницу ${currentPage}: ${error.message}`);
-                        currentPage++; // Переходим к следующей странице
+                    }
+                }
+
+            } catch (error) {
+                pageRetries++;
+                
+                if (error.message.includes('Navigation timeout')) {
+                    consecutiveTimeouts++;
+                    totalTimeouts++;
+                    console.log(`   ⏰ Таймаут при парсинге страницы ${currentPage} (попытка ${pageRetries}): ${error.message}`);
+                    
+                    if (consecutiveTimeouts >= MAX_CONSECUTIVE_TIMEOUTS) {
+                        console.log(`   🛑 Слишком много таймаутов подряд (${consecutiveTimeouts}). Пропускаем страницу ${currentPage}.`);
+                        skippedPages.push(currentPage);
+                        currentPage++; // Принудительно переходим к следующей странице
+                        consecutiveTimeouts = 0; // Сбрасываем счетчик
+                        break; // Выходим из цикла попыток
+                    }
+                    
+                    if (pageRetries >= MAX_PAGE_RETRIES) {
+                        console.log(`   ⏭️ Исчерпаны попытки загрузки страницы ${currentPage}. Пропускаем.`);
+                        skippedPages.push(currentPage);
+                        currentPage++; // Принудительно переходим к следующей странице
+                        break; // Выходим из цикла попыток
+                    }
+                    
+                    // Попробуем перезагрузить страницу
+                    try {
+                        await page.reload({ waitUntil: 'networkidle2' });
+                    } catch (reloadError) {
+                        console.log(`   ❌ Не удалось перезагрузить страницу: ${reloadError.message}`);
+                    }
+                } else {
+                    console.log(`   ❌ Ошибка при парсинге страницы ${currentPage}:`, error.message);
+                    console.log(`   🔄 Продолжаем парсинг...`);
+                    
+                    if (pageRetries >= MAX_PAGE_RETRIES) {
+                        console.log(`   ⏭️ Исчерпаны попытки загрузки страницы ${currentPage}. Пропускаем.`);
+                        skippedPages.push(currentPage);
+                        currentPage++; // Принудительно переходим к следующей странице
+                        break; // Выходим из цикла попыток
+                    }
+                    
+                    // Попробуем перезагрузить страницу
+                    try {
+                        await page.reload({ waitUntil: 'networkidle2' });
+                    } catch (reloadError) {
+                        console.log(`   ❌ Не удалось перезагрузить страницу:`, reloadError.message);
                     }
                 }
             }
+        }
 
-        } catch (error) {
-            if (error.message.includes('Navigation timeout')) {
-                consecutiveTimeouts++;
-                console.log(`   ⏰ Таймаут при парсинге страницы ${currentPage}: ${error.message}`);
-                
-                if (consecutiveTimeouts >= MAX_CONSECUTIVE_TIMEOUTS) {
-                    console.log(`   🛑 Слишком много таймаутов подряд (${consecutiveTimeouts}). Останавливаем парсинг.`);
-                    console.log(`   💡 Продолжаем с уже собранными ${jobs.length} вакансиями`);
-                    break;
-                }
-                
-                console.log(`   🔄 Продолжаем парсинг... (таймаут ${consecutiveTimeouts}/${MAX_CONSECUTIVE_TIMEOUTS})`);
-                
-                // Попробуем перезагрузить страницу
-                try {
-                    await page.reload({ waitUntil: 'networkidle2' });
-                } catch (reloadError) {
-                    console.log(`   ❌ Не удалось перезагрузить страницу: ${reloadError.message}`);
-                    console.log(`   ⏭️ Переходим к следующей странице...`);
-                    currentPage++;
-                }
-            } else {
-                console.log(`   ❌ Ошибка при парсинге страницы ${currentPage}:`, error.message);
-                console.log(`   🔄 Продолжаем парсинг...`);
-                
-                // Попробуем перезагрузить страницу
-                try {
-                    await page.reload({ waitUntil: 'networkidle2' });
-                } catch (reloadError) {
-                    console.log(`   ❌ Не удалось перезагрузить страницу:`, reloadError.message);
-                }
-            }
+        // Если страница не загрузилась после всех попыток, пропускаем её
+        if (!pageLoaded) {
+            console.log(`   ⏭️ Страница ${currentPage} не загрузилась. Пропускаем и продолжаем.`);
+            skippedPages.push(currentPage);
+            currentPage++;
         }
     }
 
@@ -265,13 +307,17 @@ async function fetchJobDescriptions() {
     console.log(`   Валидных вакансий: ${totalValidated}`);
     console.log(`   Процент валидных: ${((totalValidated / totalProcessed) * 100).toFixed(1)}%`);
     console.log(`   Собрано вакансий: ${jobs.length}/${MAX_JOBS}`);
+    console.log(`   Пропущено страниц из-за таймаутов: ${skippedPages.length}`);
+    if (skippedPages.length > 0) {
+        console.log(`   Пропущенные страницы: ${skippedPages.join(', ')}`);
+    }
     
     if (jobs.length < MAX_JOBS) {
         console.log(`⚠️ Предупреждение: Собрано только ${jobs.length} вакансий из ${MAX_JOBS} запланированных`);
         
         // Проверяем, была ли остановка из-за таймаутов
-        if (consecutiveTimeouts >= MAX_CONSECUTIVE_TIMEOUTS) {
-            console.log(`💡 Остановка из-за таймаутов. Используем ${jobs.length} собранных вакансий без генерации дополнительных.`);
+        if (totalTimeouts >= MAX_TOTAL_TIMEOUTS || skippedPages.length > 0) {
+            console.log(`💡 Остановка из-за таймаутов или проблем с загрузкой. Используем ${jobs.length} собранных вакансий без генерации дополнительных.`);
             return jobs; // Возвращаем только реальные вакансии
         } else {
             console.log(`🔄 Генерируем дополнительные вакансии для достижения ${MAX_JOBS}...`);
