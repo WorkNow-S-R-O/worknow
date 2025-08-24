@@ -43,13 +43,7 @@ export const ImageUploadProvider = ({ children }) => {
       formData.append('image', file);
 
       let API_URL = import.meta.env.VITE_API_URL;
-      
-      // Fallback for development if VITE_API_URL is not set or points to production
-      if (!API_URL || API_URL.includes('worknowjob.com')) {
-        API_URL = 'http://localhost:3000';
-        console.log('🔍 ImageUploadContext - Using fallback API_URL for development:', API_URL);
-      }
-      
+  
       console.log('🔍 ImageUploadContext - API_URL:', API_URL);
       console.log('🔍 ImageUploadContext - Full URL:', `${API_URL}/api/s3-upload/job-image`);
       
