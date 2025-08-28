@@ -38,7 +38,7 @@ const Button = () => {
           </div>
           <div className="mt-4">
             <img 
-              src="/images/3d-illustration-hand-cursor-green-password-bar.jpg" 
+              src="/images/man-login.jpg" 
               alt="Worker illustration" 
               className="img-fluid mobile-optimized-image"
               style={{

@@ -166,6 +166,24 @@ function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t 
                 onChange={e => setSearch(e.target.value)}
                 style={{ fontSize: isMobile ? '16px' : '14px' }}
               />
+              {search && (
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => setSearch('')}
+                  style={{
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#6c757d',
+                    padding: '8px 12px',
+                    fontSize: '16px',
+                    cursor: 'pointer'
+                  }}
+                  title="Очистить"
+                >
+                  <i className="bi bi-x-lg"></i>
+                </button>
+              )}
             </div>
             <ul className="list-group list-group-flush">
               <li className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2', fontWeight: 500, fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '16px 0' : '12px 0' }} onClick={() => { onCitySelect({ value: null, label: t('city_all') }); setSearch(""); onClose(); }}>
