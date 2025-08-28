@@ -352,20 +352,20 @@ export default function Seekers() {
 
           </div>
           <div className="d-flex flex-wrap gap-2 seekers-buttons" style={{ minWidth: 'fit-content' }}>
-                                        <button 
-                className="btn btn-outline-primary d-flex align-items-center gap-2 seekers-btn"
-                onClick={() => setShowFilterModal(true)}
-                style={{
-                  height: 'auto',
-                  fontSize: '14px',
-                  padding: '8px 12px',
-                  minHeight: '40px',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                <i className="bi bi-gear" style={{ fontSize: '16px' }}></i>
-                <span>{t('filters') || 'Фильтры'}</span>
-              </button>
+            <button 
+              className="btn btn-outline-primary d-flex align-items-center gap-2 seekers-btn"
+              onClick={() => setShowFilterModal(true)}
+              style={{
+                height: 'auto',
+                fontSize: '14px',
+                padding: '8px 12px',
+                minHeight: '40px',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              <i className="bi bi-gear" style={{ fontSize: '16px' }}></i>
+              <span>{t('filters') || 'Фильтры'}</span>
+            </button>
             <button 
               className={`btn d-flex align-items-center gap-2 seekers-btn ${isNewsletterSubscribed ? 'btn-outline-primary' : 'btn-outline-primary'}`}
               onClick={() => navigate('/newsletter')}
@@ -392,66 +392,64 @@ export default function Seekers() {
                   whiteSpace: 'nowrap'
                 }}
               >
-                <i className="bi bi-plus" style={{ fontSize: '16px' }}></i>
-                <span>{showAddModal ? 'Скрыть форму' : 'Добавить соискателя'}</span>
+                <span>+ {t('add_seeker') || 'Добавить соискателя'}</span>
               </button>
             )}
-          </div>
-        </div>
-        
-        {isAdmin && (
-          <div className="mb-3 d-flex flex-wrap gap-2 admin-controls">
-            {!deleteMode && (
-              <button 
-                className="btn btn-danger d-flex align-items-center gap-2 admin-btn"
-                onClick={handleStartDeleteMode}
-                style={{
-                  height: 'auto',
-                  fontSize: '14px',
-                  padding: '8px 12px',
-                  minHeight: '40px',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                <i className="bi bi-trash" style={{ fontSize: '16px' }}></i>
-                <span>Удалить соискателя</span>
-              </button>
-            )}
-            {deleteMode && (
+            {isAdmin && (
               <>
-                <button
-                  className="btn btn-danger d-flex align-items-center gap-2 admin-btn"
-                  disabled={selectedIds.length === 0}
-                  onClick={handleConfirmDelete}
-                  style={{
-                    height: 'auto',
-                    fontSize: '14px',
-                    padding: '8px 12px',
-                    minHeight: '40px',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  <i className="bi bi-check-circle" style={{ fontSize: '16px' }}></i>
-                  <span>Подтвердить удаление</span>
-                </button>
-                <button 
-                  className="btn btn-secondary d-flex align-items-center gap-2 admin-btn"
-                  onClick={handleCancelDeleteMode}
-                  style={{
-                    height: 'auto',
-                    fontSize: '14px',
-                    padding: '8px 12px',
-                    minHeight: '40px',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  <i className="bi bi-x-circle" style={{ fontSize: '16px' }}></i>
-                  <span>Отмена</span>
-                </button>
+                {!deleteMode && (
+                  <button 
+                    className="btn btn-danger d-flex align-items-center gap-2 seekers-btn"
+                    onClick={handleStartDeleteMode}
+                    style={{
+                      height: 'auto',
+                      fontSize: '14px',
+                      padding: '8px 12px',
+                      minHeight: '40px',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    <i className="bi bi-trash" style={{ fontSize: '16px' }}></i>
+                    <span>{t('delete_seeker') || 'Удалить соискателя'}</span>
+                  </button>
+                )}
+                {deleteMode && (
+                  <>
+                    <button
+                      className="btn btn-danger d-flex align-items-center gap-2 seekers-btn"
+                      disabled={selectedIds.length === 0}
+                      onClick={handleConfirmDelete}
+                      style={{
+                        height: 'auto',
+                        fontSize: '14px',
+                        padding: '8px 12px',
+                        minHeight: '40px',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      <i className="bi bi-check-circle" style={{ fontSize: '16px' }}></i>
+                      <span>{t('confirm_delete') || 'Подтвердить удаление'}</span>
+                    </button>
+                    <button 
+                      className="btn btn-secondary d-flex align-items-center gap-2 seekers-btn"
+                      onClick={handleCancelDeleteMode}
+                      style={{
+                        height: 'auto',
+                        fontSize: '14px',
+                        padding: '8px 12px',
+                        minHeight: '40px',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      <i className="bi bi-x-circle" style={{ fontSize: '16px' }}></i>
+                      <span>{t('cancel') || 'Отмена'}</span>
+                    </button>
+                  </>
+                )}
               </>
             )}
           </div>
-        )}
+        </div>
         
         {loading && (
           <div className="table-responsive">
