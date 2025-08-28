@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import express from 'express';
 import dotenv from 'dotenv';
-import cors from 'cors';
 import path from "path";
 import { fileURLToPath } from "url"
 import paymentRoutes from './routes/payments.js';
@@ -49,15 +48,7 @@ if (!CLERK_SECRET_KEY) {
   process.exit(1);
 }
 
-// CORS configuration to support credentials
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://worknowjob.com', 'https://www.worknowjob.com']
-    : ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:3001'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept']
-}));
+
 app.use(express.json({
   verify: (req, res, buf) => { req.rawBody = buf.toString(); }
 }));

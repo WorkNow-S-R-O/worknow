@@ -80,7 +80,7 @@ const PremiumPage = () => {
       button: {
         textKey: "pricing_pro_buy_premium",
         variant: "primary",
-        priceId: undefined
+        priceId: "price_1Qt5J0COLiDbHvw1IQNI90uU"
       },
       highlight: true
     },
@@ -101,7 +101,7 @@ const PremiumPage = () => {
       button: {
         textKey: "pricing_deluxe_buy_deluxe",
         variant: "primary",
-        priceId: "price_1RqXuoCOLiDbHvw1LLew4Mo8" // Price ID for 200 ILS
+        priceId: "price_1RfHJiCOLiDbHvw1repglbnk"  // Price ID for 200 ILS
       },
       bestResults: true
     }
@@ -230,13 +230,16 @@ const PremiumPage = () => {
                 // User has Pro but not Deluxe - show upgrade price
                 displayPrice = 100;
                 buttonText = t('pricing_deluxe_upgrade_to_deluxe');
-                priceId = "price_1RqXveCOLiDbHvw18RQxj2g6"; // Price ID for 100 ILS upgrade
+                priceId = "price_1Rfli2COLiDbHvw1xdMaguLf"; // Price ID for 100 ILS upgrade
               } else if (!user || !dbUser?.isPremium) {
                 // New user or no Pro subscription - show full price
                 displayPrice = 200;
                 buttonText = t(plan.button.textKey);
                 priceId = plan.button.priceId;
-              }
+              } else {
+	    // User already has Deluxe or other cases - use default
+		    priceId = plan.button.priceId;
+		  }
               // If user already has Deluxe, isActive will be true and button will show "Active"
             }
             return (

@@ -7,8 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// @seed="node prisma/seed.js"
-
 model User {
   id                   String    @id @default(uuid())
   email                String    @unique
@@ -22,40 +20,42 @@ model User {
   lastName             String?
   premiumEndsAt        DateTime?
   stripeSubscriptionId String?
-  premiumDeluxe         Boolean   @default(false)
-  isAdmin               Boolean   @default(false)
+  premiumDeluxe        Boolean   @default(false)
+  isAdmin              Boolean   @default(false)
   jobs                 Job[]
 }
 
 model City {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  jobs Job[]
+  id           Int               @id @default(autoincrement())
+  name         String            @unique
   translations CityTranslation[]
+  jobs         Job[]
 }
 
 model CityTranslation {
-  id      Int    @id @default(autoincrement())
-  city    City   @relation(fields: [cityId], references: [id])
-  cityId  Int
-  lang    String // 'ru', 'he', 'en'
-  name    String
+  id     Int    @id @default(autoincrement())
+  cityId Int
+  lang   String
+  name   String
+  city   City   @relation(fields: [cityId], references: [id])
+
   @@unique([cityId, lang])
 }
 
 model Category {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  jobs Job[]
+  id           Int                   @id @default(autoincrement())
+  name         String                @unique
   translations CategoryTranslation[]
+  jobs         Job[]
 }
 
 model CategoryTranslation {
   id         Int      @id @default(autoincrement())
-  category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
-  lang       String   // 'ru', 'he', 'en'
+  lang       String
   name       String
+  category   Category @relation(fields: [categoryId], references: [id])
+
   @@unique([categoryId, lang])
 }
 
@@ -68,38 +68,38 @@ model Job {
   cityId      Int
   userId      String
   categoryId  Int
-  imageUrl    String?   // URL to the job image
   createdAt   DateTime  @default(now())
   boostedAt   DateTime?
+  meals       Boolean?
+  shuttle     Boolean?
+  imageUrl    String?
+  category    Category  @relation(fields: [categoryId], references: [id])
   city        City      @relation(fields: [cityId], references: [id])
   user        User      @relation(fields: [userId], references: [id])
-  category    Category  @relation(fields: [categoryId], references: [id])
-  shuttle     Boolean?  // Подвозка
-  meals       Boolean?  // Питание
 
   @@index([boostedAt])
 }
 
 model Seeker {
-  id          Int      @id @default(autoincrement())
-  name        String
-  contact     String   // скрытый контакт (телефон/email/social)
-  city        String
-  description String
-  slug        String?  @unique
-  isActive    Boolean  @default(true)
-  isDemanded  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  gender      String?
-  facebook    String?
-  languages   String[]
+  id             Int      @id @default(autoincrement())
+  name           String
+  contact        String
+  city           String
+  description    String
+  slug           String?  @unique
+  isActive       Boolean  @default(true)
+  isDemanded     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  gender         String?
+  facebook       String?
+  languages      String[]
   nativeLanguage String?
-  employment  String?
-  category    String?
-  documents   String?
-  note        String?
-  announcement String?
-  documentType String?
+  employment     String?
+  category       String?
+  documents      String?
+  note           String?
+  announcement   String?
+  documentType   String?
 }
 
 model Message {
@@ -108,39 +108,37 @@ model Message {
   title       String
   body        String
   isRead      Boolean  @default(false)
-  type        String   // 'system' | 'admin'
+  type        String
   fromAdminId String?
   createdAt   DateTime @default(now())
 }
 
 model Payment {
-  id           Int      @id @default(autoincrement())
-  clerkUserId  String
-  month        String?
-  amount       Int
-  type         Int
-  date         DateTime
+  id          Int      @id @default(autoincrement())
+  clerkUserId String
+  month       String?
+  amount      Int
+  type        Int
+  date        DateTime
 }
 
 model NewsletterSubscriber {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  firstName String?
-  lastName  String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  language  String   @default("ru") // 'ru', 'en', 'he', 'ar'
-  preferences Json?  // Store additional preferences like categories, cities, etc.
-  
-  // Filter preferences for candidate notifications
-  preferredCities     String[] @default([])  // Array of preferred cities
-  preferredCategories String[] @default([])  // Array of preferred job categories
-  preferredEmployment String[] @default([])  // Array of preferred employment types
-  preferredLanguages  String[] @default([])  // Array of preferred languages
-  preferredGender     String?                // Preferred gender
-  preferredDocumentTypes String[] @default([]) // Array of preferred document types
-  onlyDemanded        Boolean  @default(false) // Only receive notifications for demanded candidates
+  id                     Int      @id @default(autoincrement())
+  email                  String   @unique
+  firstName              String?
+  lastName               String?
+  isActive               Boolean  @default(true)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  language               String   @default("ru")
+  preferences            Json?
+  onlyDemanded           Boolean  @default(false)
+  preferredCategories    String[] @default([])
+  preferredCities        String[] @default([])
+  preferredDocumentTypes String[] @default([])
+  preferredEmployment    String[] @default([])
+  preferredGender        String?
+  preferredLanguages     String[] @default([])
 }
 
 model NewsletterVerification {
