@@ -80,7 +80,7 @@ const PremiumPage = () => {
       button: {
         textKey: "pricing_pro_buy_premium",
         variant: "primary",
-        priceId: "price_1Qt5J0COLiDbHvw1IQNI90uU"
+        priceId: "price_1Qt63NCOLiDbHvw13PRhpenX"
       },
       highlight: true
     },
@@ -101,7 +101,7 @@ const PremiumPage = () => {
       button: {
         textKey: "pricing_deluxe_buy_deluxe",
         variant: "primary",
-        priceId: "price_1RfHJiCOLiDbHvw1repglbnk"  // Price ID for 200 ILS
+        priceId: "price_1RfHjiCOLiDbHvw1repgIbnK"  // Price ID for 200 ILS
       },
       bestResults: true
     }

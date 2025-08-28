@@ -37,7 +37,7 @@ export const createCheckoutSession = async (req, res) => {
     const cancelUrl = `${FRONTEND_URL}/cancel`;
 
     // 🔹 Выбираем нужный priceId
-    const defaultPriceId = 'price_1Qt5J0COLiDbHvw1IQNI90uU'; // Test mode recurring subscription price ID
+    const defaultPriceId = 'price_1Qt63NCOLiDbHvw13PRhpenX'; // Pro plan recurring subscription price ID
     finalPriceId = priceId || defaultPriceId;
 
     // 🔹 Проверяем существование price ID в Stripe
