@@ -299,7 +299,26 @@ const UserJobs = () => {
             ))}
           </div>
         ) : jobs.length === 0 ? (
-          <p className="text-center fs-4">{t("you_dont_have_ads")}</p>
+          <div className="text-center">
+            <p className="fs-4 mb-4">{t("you_dont_have_ads")}</p>
+            <div className="mt-4">
+              <img 
+                src="/images/item-not-found.webp" 
+                alt="No ads illustration" 
+                className="img-fluid mobile-optimized-image"
+                style={{
+                  width: '90vw',
+                  maxWidth: '400px',
+                  height: 'auto',
+                  borderRadius: '12px',
+                  margin: '0 auto',
+                  display: 'block',
+                  objectFit: 'contain',
+                  opacity: '0.7'
+                }}
+              />
+            </div>
+          </div>
         ) : (
           <div className="d-flex flex-column" style={{ minHeight: "700px" }}>
             {jobs.map((job) => {
