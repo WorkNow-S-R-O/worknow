@@ -407,6 +407,10 @@
   "pricing_free_title": "مجاناً",
   "pricing_effective": "فعال",
   "pricing_convenient": "مرن",
-  "pricing_trust": "ثقة"
+  "pricing_trust": "ثقة",
+  "add_seeker": "أضف باحث عن عمل",
+  "delete_seeker": "احذف باحث عن عمل",
+  "confirm_delete": "تأكيد الحذف",
+  "cancel": "إلغاء"
 }
   

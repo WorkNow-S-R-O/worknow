@@ -411,5 +411,9 @@
   "pricing_free_title": "Free",
   "pricing_effective": "EFFECTIVE",
   "pricing_convenient": "CONVENIENT",
-  "pricing_trust": "TRUST"
+  "pricing_trust": "TRUST",
+  "add_seeker": "Add Seeker",
+  "delete_seeker": "Delete Seeker",
+  "confirm_delete": "Confirm Deletion",
+  "cancel": "Cancel"
 }

@@ -413,5 +413,9 @@
   "pricing_free_title": "Безкоштовно",
   "pricing_effective": "ЕФЕКТИВНО",
   "pricing_convenient": "ЗДОБРЕ",
-  "pricing_trust": "НАДІЙНО"
+  "pricing_trust": "НАДІЙНО",
+  "add_seeker": "Додати шукача",
+  "delete_seeker": "Видалити шукача",
+  "confirm_delete": "Підтвердити видалення",
+  "cancel": "Скасувати"
 }

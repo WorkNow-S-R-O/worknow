@@ -410,5 +410,9 @@
   "pricing_free_title": "Бесплатно",
   "pricing_effective": "ЭФФЕКТИВНО",
   "pricing_convenient": "УДОБНО",
-  "pricing_trust": "НАДЕЖНО"
+  "pricing_trust": "НАДЕЖНО",
+  "add_seeker": "Добавить соискателя",
+  "delete_seeker": "Удалить соискателя",
+  "confirm_delete": "Подтвердить удаление",
+  "cancel": "Отмена"
 }
