@@ -100,14 +100,56 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
   };
 
   return (
-    <div className="modal show fade" style={{ display: 'block', background: 'rgba(0,0,0,0.5)' }}>
-      <div className="modal-dialog modal-lg modal-dialog-centered">
-        <div className="modal-content p-4" style={{ borderRadius: 16, minWidth: 500, maxWidth: 700 }}>
-          <div className="modal-header border-0">
-            <h4 className="modal-title">Добавить соискателя</h4>
-            <button type="button" className="btn-close" onClick={onClose}></button>
+    <div className="modal show fade" style={{ 
+      display: 'block', 
+      background: 'rgba(0,0,0,0.5)',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      zIndex: 1050
+    }}>
+      <div className="modal-dialog modal-lg modal-dialog-centered" style={{
+        margin: window.innerWidth <= 768 ? '10px' : '1.75rem auto',
+        maxWidth: window.innerWidth <= 768 ? 'calc(100% - 20px)' : '700px'
+      }}>
+        <div className="modal-content" style={{ 
+          borderRadius: 10, 
+          minWidth: window.innerWidth <= 768 ? 'auto' : 500, 
+          maxWidth: window.innerWidth <= 768 ? '100%' : 700,
+          border: '1px solid #e9ecef',
+          boxShadow: '0 8px 32px rgba(25, 118, 210, 0.13)',
+          overflow: 'hidden'
+        }}>
+          <div className="modal-header" style={{
+            borderBottom: '1px solid #eee',
+            padding: window.innerWidth <= 768 ? '16px 20px' : '20px 24px',
+            background: 'white'
+          }}>
+            <h4 className="modal-title" style={{
+              fontSize: window.innerWidth <= 768 ? '18px' : '20px',
+              fontWeight: '600',
+              color: '#495057',
+              margin: 0
+            }}>
+              {t('add_seeker') || 'Добавить соискателя'}
+            </h4>
+            <button 
+              type="button" 
+              className="btn-close" 
+              onClick={onClose}
+              style={{
+                fontSize: window.innerWidth <= 768 ? '20px' : '18px',
+                color: '#6c757d'
+              }}
+            ></button>
           </div>
-          <div className="modal-body">
+          <div className="modal-body" style={{
+            padding: window.innerWidth <= 768 ? '16px 20px' : '20px 24px',
+            maxHeight: window.innerWidth <= 768 ? '70vh' : '60vh',
+            overflowY: 'auto'
+          }}>
             {step === 1 && (
               <form onSubmit={handleNext}>
                 <div className="mb-3">

@@ -407,7 +407,7 @@ export default function MailDropdown() {
                 className="btn-close" 
                 aria-label="Close" 
                 onClick={closeMailDropdown} 
-                style={{ fontSize: '24px' }}
+                style={{ fontSize: '15px' }}
               ></button>
             </div>
             

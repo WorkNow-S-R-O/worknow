@@ -256,7 +256,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
     : { 
         background: '#fff', 
         borderRadius: 18, 
-        padding: 40, 
+        padding: 20, 
         width: 800, 
         height: 700,
         maxWidth: '90vw',

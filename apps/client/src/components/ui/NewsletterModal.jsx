@@ -367,7 +367,7 @@ const NewsletterModal = ({ open, onClose }) => {
               className="btn-close" 
               aria-label="Close" 
               onClick={onClose} 
-              style={{ fontSize: '24px' }}
+              style={{ fontSize: '15px' }}
             ></button>
           </div>
         ) : (

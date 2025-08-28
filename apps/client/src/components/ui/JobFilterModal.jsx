@@ -172,8 +172,8 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
       }
     : { 
         background: '#fff', 
-        borderRadius: 18, 
-        padding: 40, 
+        borderRadius: 10, 
+        padding: 20, 
         width: 550, 
         height: 550,
         boxShadow: '0 4px 32px rgba(0,0,0,0.15)', 
@@ -198,7 +198,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
               className="btn-close" 
               aria-label="Close" 
               onClick={onClose} 
-              style={{ fontSize: isMobile ? '24px' : '16px' }}
+              style={{ fontSize: isMobile ? '15px' : '16px' }}
             ></button>
           </div>
         ) : (
@@ -337,18 +337,33 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
           )}
         </div>
         
-        <div className="d-flex justify-content-between mt-4" style={{ marginTop: isMobile ? 'auto' : '16px', paddingTop: isMobile ? '20px' : '0' }}>
+        <div className="d-flex justify-content-between mt-4" style={{ 
+          marginTop: isMobile ? 'auto' : '16px', 
+          paddingTop: isMobile ? '20px' : '0',
+          padding: isMobile ? '0 16px 20px' : '0'
+        }}>
           <button 
             className="btn btn-outline-secondary" 
             onClick={handleReset}
-            style={{ fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '12px 20px' : '8px 16px' }}
+            style={{ 
+              fontSize: isMobile ? '16px' : '14px', 
+              padding: isMobile ? '12px 20px' : '8px 16px',
+              border: '1px solid #6c757d',
+              borderRadius: '6px',
+              fontWeight: '500'
+            }}
           >
             {t('reset')}
           </button>
           <button 
             className="btn btn-primary px-4" 
             onClick={handleApply}
-            style={{ fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '12px 24px' : '8px 16px' }}
+            style={{ 
+              fontSize: isMobile ? '16px' : '14px', 
+              padding: isMobile ? '12px 24px' : '8px 16px',
+              borderRadius: '6px',
+              fontWeight: '500'
+            }}
           >
             {t('save')}
           </button>

@@ -16,19 +16,34 @@ function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t 
   // Определяем десктоп или мобилка - moved to top
   const isMobile = window.innerWidth <= 768;
   
-  // Minimum swipe distance (in px)
-  const minSwipeDistance = 50;
+  // Minimum swipe distance (in px) - increased to prevent accidental closing
+  const minSwipeDistance = 100;
   
   const onTouchStart = (e) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientY);
+    // Only handle touch events if we're directly touching the header text or close button
+    const target = e.target;
+    const isHeaderText = target.tagName === 'H5' || target.closest('h5');
+    const isCloseButton = target.classList.contains('btn-close') || target.closest('.btn-close');
+    
+    if (isHeaderText || isCloseButton) {
+      setTouchEnd(null);
+      setTouchStart(e.targetTouches[0].clientY);
+    }
   };
   
   const onTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientY);
+    // Only handle touch events if we're directly touching the header text or close button
+    const target = e.target;
+    const isHeaderText = target.tagName === 'H5' || target.closest('h5');
+    const isCloseButton = target.classList.contains('btn-close') || target.closest('.btn-close');
+    
+    if (isHeaderText || isCloseButton) {
+      setTouchEnd(e.targetTouches[0].clientY);
+    }
   };
   
   const onTouchEnd = () => {
+    // Only handle touch events if we were touching the header
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
     const isUpSwipe = distance > minSwipeDistance;
@@ -43,13 +58,16 @@ function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t 
       document.body.style.overflow = 'hidden';
       // Prevent iOS Safari from bouncing when modal is open
       if (isMobile) {
-        document.body.style.position = 'fixed';
+        // Don't set position fixed as it can interfere with scrolling
+        document.body.style.position = 'relative';
+        document.body.style.height = '100vh';
         document.body.style.width = '100%';
       }
       return () => { 
         document.body.style.overflow = '';
         if (isMobile) {
           document.body.style.position = '';
+          document.body.style.height = '';
           document.body.style.width = '';
         }
       };
@@ -99,7 +117,7 @@ function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t 
         boxShadow: 'none'
       }
     : { 
-        borderRadius: 18, 
+        borderRadius: 10, 
         width: 500, 
         height: 600, 
         display: 'flex', 
@@ -113,15 +131,29 @@ function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t 
       tabIndex="-1" 
       style={{ display: 'block', background: isMobile ? '#fff' : 'rgba(0,0,0,0.35)', zIndex: 4000 }} 
       onClick={isMobile ? undefined : onClose}
-      onTouchStart={isMobile ? onTouchStart : undefined}
-      onTouchMove={isMobile ? onTouchMove : undefined}
-      onTouchEnd={isMobile ? onTouchEnd : undefined}
     >
       <div className="modal-dialog modal-dialog-centered" style={modalStyle} onClick={e => e.stopPropagation()}>
         <div className="modal-content" style={contentStyle}>
           <div className="modal-header" style={{ borderBottom: '1px solid #eee', padding: isMobile ? '20px 16px' : '16px' }}>
-            <h5 className="modal-title" style={{ fontSize: isMobile ? '20px' : '16px', fontWeight: '600' }}>{t('choose_city')}</h5>
-            <button type="button" className="btn-close" aria-label="Close" onClick={onClose} style={{ fontSize: isMobile ? '24px' : '16px' }}></button>
+            <h5 
+              className="modal-title" 
+              style={{ fontSize: isMobile ? '20px' : '16px', fontWeight: '600', color: '#495057' }}
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
+              {t('choose_city')}
+            </h5>
+            <button 
+              type="button" 
+              className="btn-close" 
+              aria-label="Close" 
+              onClick={onClose} 
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+              style={{ fontSize: isMobile ? '15px' : '16px' }}
+            ></button>
           </div>
           <div className="modal-body" style={{ padding: isMobile ? '0 16px 20px' : '16px', flex: 1, overflowY: 'auto' }}>
             <div className="input-group mb-3" style={{ marginTop: isMobile ? '12px' : '0' }}>
