@@ -54,8 +54,15 @@ export const syncUserService = async (clerkUserId) => {
         lastName: clerkUser.last_name
       });
 
-      user = await prisma.user.create({
-        data: {
+      user = await prisma.user.upsert({
+        where: { clerkUserId: clerkUser.id },  // ✅ Add this
+        update: {  // ✅ Add this section
+          email: clerkUser.email_addresses[0]?.email_address || null,
+          firstName: clerkUser.first_name || null,
+          lastName: clerkUser.last_name || null,
+          imageUrl: clerkUser.image_url || null
+        },
+        create: {  // ✅ Add this section
           clerkUserId: clerkUser.id,
           email: clerkUser.email_addresses[0]?.email_address || null,
           firstName: clerkUser.first_name || null,
