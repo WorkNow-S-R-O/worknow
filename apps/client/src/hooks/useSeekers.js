@@ -25,7 +25,7 @@ const useSeekers = (page = 1, filters = {}, forceRefresh = 0) => {
   ]);
 
   useEffect(() => {
-    console.log('🔄 useSeekers useEffect triggered - page:', page, 'filters:', memoizedFilters, 'forceRefresh:', forceRefresh, 'timestamp:', Date.now());
+    // useSeekers useEffect triggered
     
     const loadSeekers = async () => {
       setLoading(true);
@@ -58,23 +58,22 @@ const useSeekers = (page = 1, filters = {}, forceRefresh = 0) => {
           });
         }
         
-        console.log('🚀 useSeekers fetching with params:', params.toString());
-        console.log('🌐 Full URL:', `${API_URL}/api/seekers?${params.toString()}`);
+              // Fetching seekers from API
         const response = await axios.get(`${API_URL}/api/seekers?${params.toString()}`);
       
-        console.log('📡 API Response:', response.data);
+        // API Response received
         
         // Handle API response format with pagination
         if (response.data && response.data.seekers) {
           // New format with pagination
           setSeekers(response.data.seekers);
           setPagination(response.data.pagination);
-          console.log(`✅ useSeekers found ${response.data.seekers.length} seekers, total pages: ${response.data.pagination?.totalPages || 1}`);
+          // Seekers data processed successfully
         } else if (Array.isArray(response.data)) {
           // Old format - just array of seekers
           setSeekers(response.data);
           setPagination(null);
-          console.log(`✅ useSeekers found ${response.data.length} seekers (old format)`);
+          // Seekers data processed (old format)
         } else {
           console.error("❌ API вернул неожиданный формат:", response.data);
           setSeekers([]);
@@ -98,7 +97,7 @@ const useSeekers = (page = 1, filters = {}, forceRefresh = 0) => {
     loadSeekers();
   }, [language, page, memoizedFilters, forceRefresh]); // Use memoized filters to prevent infinite loops
 
-  console.log('🔄 useSeekers returning:', { seekers: seekers.length, loading, error, pagination, page });
+        // useSeekers hook state updated
   return { seekers, loading, error, pagination };
 };
 

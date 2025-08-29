@@ -109,15 +109,15 @@ export default function Seekers() {
   const { seekers, loading, error, pagination } = useSeekers(currentPage, filters, forceRefresh);
   
   // Debug logging for page state
-  console.log('📄 Seekers component - currentPage:', currentPage, 'seekers count:', seekers.length, 'forceRefresh:', forceRefresh);
+      // Seekers component state updated
 
   // Handle return navigation from seeker details
   useEffect(() => {
-    console.log('🔍 Location state:', location.state);
+          // Location state checked
     
     if (location.state?.returnToPage) {
       const returnPage = location.state.returnPage;
-      console.log('🔄 Returning to page:', returnPage, 'current page:', currentPage, 'type:', typeof returnPage);
+              // Returning to previous page
       
       // Set the page immediately when returning
       if (returnPage && typeof returnPage === 'number' && returnPage > 0) {
@@ -140,7 +140,7 @@ export default function Seekers() {
       const savedPage = localStorage.getItem('seekersCurrentPage');
       if (savedPage && parseInt(savedPage) !== currentPage) {
         const pageToRestore = parseInt(savedPage);
-        console.log('🔄 Restoring page from localStorage:', pageToRestore);
+        // Restoring page from localStorage
         setCurrentPage(pageToRestore);
         setForceRefresh(prev => prev + 1);
       }
@@ -149,7 +149,7 @@ export default function Seekers() {
   
   // Force refresh when currentPage changes
   useEffect(() => {
-    console.log('📄 Current page changed to:', currentPage);
+          // Current page updated
     
     // Force a re-render of the useSeekers hook when page changes
     if (currentPage > 1) {
@@ -160,7 +160,7 @@ export default function Seekers() {
   // Save page to localStorage whenever currentPage changes
   useEffect(() => {
     localStorage.setItem('seekersCurrentPage', currentPage.toString());
-    console.log('💾 Saved page to localStorage:', currentPage);
+          // Page saved to localStorage
   }, [currentPage]);
   
   // Clean up localStorage when component unmounts
@@ -234,7 +234,7 @@ export default function Seekers() {
   const currentSeekers = seekers;
   
   const handlePageChange = (page) => {
-    console.log('📄 Manually changing page from', currentPage, 'to', page);
+    // Manually changing page
     setCurrentPage(page);
     // Save current page to localStorage
     localStorage.setItem('seekersCurrentPage', page.toString());
@@ -243,7 +243,7 @@ export default function Seekers() {
   };
 
   const handleFilterApply = (newFilters) => {
-    console.log('🎯 Applying filters:', newFilters);
+    // Applying filters
     setFilters(newFilters);
     setCurrentPage(1); // Reset to first page when filters change
     // Save current page to localStorage

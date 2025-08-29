@@ -24,8 +24,6 @@ const transporter = nodemailer.createTransport({
 
 // Функция для проверки объявлений и отправки уведомлений
 const checkLowRankedJobs = async () => {
-  console.log("🔍 Проверка объявлений, которые опустились низко...");
-
   try {
     const jobsPerPage = 10; // Количество объявлений на страницу
     const minPage = 3; // Если объявление на 3-й странице или ниже — отправляем уведомление
@@ -43,7 +41,6 @@ const checkLowRankedJobs = async () => {
 
     // Проверяем, есть ли вообще объявления
     if (jobs.length === 0) {
-      console.log("📩 Нет объявлений для проверки");
       return;
     }
 
@@ -58,11 +55,8 @@ const checkLowRankedJobs = async () => {
 
     // Проверяем, есть ли объявления на 3-й странице или ниже
     if (pagedJobs.length === 0) {
-      console.log("📩 Нет объявлений на 3-й странице или ниже");
       return;
     }
-
-    console.log(`📩 Готовим к отправке ${pagedJobs.length} уведомлений для объявлений на страницах ${minPage}+...`);
 
     // Собираем пользователей, которым надо отправить уведомления
     const usersToNotify = new Map();
@@ -78,11 +72,8 @@ const checkLowRankedJobs = async () => {
 
     // Проверяем, есть ли пользователи для уведомления
     if (usersToNotify.size === 0) {
-      console.log("📩 Нет пользователей для отправки уведомлений");
       return;
     }
-
-    console.log(`📩 Отправляем уведомления ${usersToNotify.size} пользователям...`);
 
     // Отправка email
     for (const [email, jobs] of usersToNotify.entries()) {
@@ -97,13 +88,10 @@ const checkLowRankedJobs = async () => {
 
       try {
         await transporter.sendMail(mailOptions);
-        console.log(`📩 Уведомление отправлено пользователю ${email} (${jobs.length} объявлений)`);
       } catch (emailError) {
         console.error(`❌ Ошибка отправки email пользователю ${email}:`, emailError);
       }
     }
-
-    console.log(`✅ Проверка завершена. Уведомления отправлены ${usersToNotify.size} пользователям`);
 
   } catch (error) {
     console.error("❌ Ошибка при проверке объявлений:", error);
@@ -139,11 +127,7 @@ export const cancelAutoRenewal = async (req, res) => {
 
     // 🔹 Отправляем email пользователю
 
-    console.log(`📩 [DEBUG] Готовимся отправить письмо на ${user.email}`);
-
-
     const mailOptions = {
-      // eslint-disable-next-line no-undef
       from: `"Worknow" <${process.env.EMAIL_USER}>`,
       to: user.email,
       subject: "Автопродление подписки отключено",
@@ -151,7 +135,6 @@ export const cancelAutoRenewal = async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`📩 Письмо об отключении автопродления отправлено на ${user.email}`);
 
     res.json({ success: true, message: 'Автопродление подписки отключено.' });
   } catch (error) {
@@ -162,7 +145,6 @@ export const cancelAutoRenewal = async (req, res) => {
 
 // Запуск cron-задачи каждые 5 дней в 08:00
 cron.schedule('0 8 */5 * *', () => {
-  console.log("⏰ Запускаем проверку объявлений (каждые 5 дней)...");
   checkLowRankedJobs();
 }, {
   timezone: "Europe/Moscow",
@@ -180,7 +162,7 @@ const disableExpiredPremiums = async () => {
       data: { isPremium: false }
     });
     if (result.count > 0) {
-      console.log(`⏰ Отключено премиумов: ${result.count}`);
+      // Premium subscriptions disabled silently
     }
   } catch (error) {
     console.error('❌ Ошибка при отключении просроченного премиума:', error);
@@ -189,7 +171,6 @@ const disableExpiredPremiums = async () => {
 
 // Запуск каждый час
 cron.schedule('0 * * * *', () => {
-  console.log('⏰ Проверка просроченных премиумов...');
   disableExpiredPremiums();
 }, {
   timezone: 'Europe/Prague',

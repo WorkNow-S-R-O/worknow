@@ -44,11 +44,10 @@ export const ImageUploadProvider = ({ children }) => {
 
       let API_URL = import.meta.env.VITE_API_URL;
   
-      console.log('🔍 ImageUploadContext - API_URL:', API_URL);
-      console.log('🔍 ImageUploadContext - Full URL:', `${API_URL}/api/s3-upload/job-image`);
+      // ImageUploadContext initialized
       
       const token = await getToken();
-      console.log('🔍 ImageUploadContext - Token received:', token ? 'Yes' : 'No');
+      // Token received for image upload
       
       const response = await axios.post(`${API_URL}/api/s3-upload/job-image`, formData, {
         headers: {
@@ -58,7 +57,7 @@ export const ImageUploadProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      console.log('✅ ImageUploadContext - Upload successful:', response.data);
+      // Upload successful
       return response.data.imageUrl;
     } catch (error) {
       console.error('❌ ImageUploadContext - Upload error:', error);

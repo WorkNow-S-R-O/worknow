@@ -12,11 +12,11 @@ export const getJobsService = async (filters = {}) => {
     // const cachedJobs = await redisService.get(cacheKey);
     
     // if (cachedJobs) {
-    //   console.log('🚀 Jobs served from Redis cache!');
+    // Jobs served from Redis cache
     //   return cachedJobs;
     // }
     
-    console.log('💾 Fetching jobs from database...');
+    // Fetching jobs from database
     
     // Build query with filters
     const where = {};
@@ -77,7 +77,7 @@ export const getJobsService = async (filters = {}) => {
     
     // Cache the result for 5 minutes
     // await redisService.set(cacheKey, result, 300);
-    // console.log('💾 Jobs cached in Redis for 5 minutes');
+    // Jobs cached in Redis for 5 minutes
     
     return result;
   } catch (error) {
@@ -93,11 +93,11 @@ export const getJobByIdService = async (id) => {
     const cachedJob = await redisService.get(cacheKey);
     
     if (cachedJob) {
-      console.log('🚀 Job served from Redis cache!');
+      // Job served from Redis cache
       return cachedJob;
     }
     
-    console.log('💾 Fetching job from database...');
+    // Fetching job from database
     
     const job = await prisma.job.findUnique({
       where: { id: parseInt(id) },
@@ -114,7 +114,7 @@ export const getJobByIdService = async (id) => {
     
     // Cache the job for 10 minutes
     await redisService.set(cacheKey, { job }, 600);
-    console.log('💾 Job cached in Redis for 10 minutes');
+    // Job cached in Redis for 10 minutes
     
     return { job };
   } catch (error) {
@@ -136,7 +136,7 @@ export const createJobService = async (jobData) => {
     
     // Invalidate related caches when new job is created
     await redisService.invalidateJobsCache();
-    console.log('🗑️ Job caches invalidated after new job creation');
+    // Job caches invalidated after new job creation
     
     return job;
   } catch (error) {

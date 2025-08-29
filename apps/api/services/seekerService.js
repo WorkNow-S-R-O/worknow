@@ -45,8 +45,7 @@ export async function getAllSeekers(query = {}) {
     lang = 'ru'
   } = query;
 
-  console.log('🔍 Service received query:', query);
-  console.log('🌍 Languages from query:', languages);
+  // Service processing query
 
   // Build where clause for filtering
   const whereClause = {
@@ -55,22 +54,22 @@ export async function getAllSeekers(query = {}) {
 
   if (city) {
     whereClause.city = city;
-    console.log('🏙️ Added city filter:', city);
+    // City filter applied
   }
 
   if (category) {
     whereClause.category = category;
-    console.log('📂 Added category filter:', category);
+    // Category filter applied
   }
 
   if (employment) {
     whereClause.employment = employment;
-    console.log('💼 Added employment filter:', employment);
+    // Employment filter applied
   }
 
   if (documentType) {
     whereClause.documentType = documentType;
-    console.log('📄 Added documentType filter:', documentType);
+    // Document type filter applied
   }
 
   if (languages && Array.isArray(languages) && languages.length > 0) {
@@ -78,26 +77,22 @@ export async function getAllSeekers(query = {}) {
     whereClause.languages = {
       hasSome: languages
     };
-    console.log('🗣️ Added languages filter:', languages);
+    // Languages filter applied
   }
 
   if (gender) {
     whereClause.gender = gender;
-    console.log('👤 Added gender filter:', gender);
+    // Gender filter applied
   }
 
   if (isDemanded !== undefined) {
     whereClause.isDemanded = isDemanded === 'true' || isDemanded === true;
-    console.log('⭐ Added isDemanded filter:', whereClause.isDemanded);
+    // IsDemanded filter applied
   }
-
-  console.log('🔧 Final where clause:', whereClause);
 
   // Calculate pagination
   const skip = (parseInt(page) - 1) * parseInt(limit);
   const take = parseInt(limit);
-  
-  console.log('📊 Pagination calculation:', { page, limit, skip, take, pageType: typeof page, parsedPage: parseInt(page) });
 
   // Get total count for pagination
   const totalCount = await prisma.seeker.count({
@@ -112,23 +107,7 @@ export async function getAllSeekers(query = {}) {
     take,
   });
 
-  console.log(`📊 Found ${seekers.length} seekers out of ${totalCount} total`);
-  
-  // Log the first few seekers to see what was returned
-  if (seekers.length > 0) {
-    console.log('📋 First few seekers returned:', seekers.slice(0, 3).map(s => ({
-      id: s.id,
-      name: s.name,
-      city: s.city,
-      category: s.category,
-      employment: s.employment,
-      languages: s.languages,
-      gender: s.gender,
-      isDemanded: s.isDemanded
-    })));
-  } else {
-    console.log('❌ No seekers found matching the filters');
-  }
+  // Seekers retrieved successfully
 
   // Translate city names for all seekers
   const seekersWithTranslatedCities = await Promise.all(
@@ -180,9 +159,7 @@ export async function createSeeker(data) {
 
   // Send notification to all users about the new candidate
   try {
-    console.log('📧 Sending notification for new candidate:', seeker.name);
     await sendSingleCandidateNotification(seeker);
-    console.log('✅ Notification sent successfully for:', seeker.name);
   } catch (error) {
     console.error('❌ Failed to send notification for new candidate:', error);
     // Don't fail the seeker creation if notification fails

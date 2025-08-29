@@ -17,7 +17,7 @@ const rekognition = new AWS.Rekognition({
  */
 export const moderateImage = async (imageBuffer) => {
   try {
-    console.log('🔍 Image Moderation - Starting content moderation...');
+    // Starting content moderation
     
     // Prepare parameters for Rekognition
     const params = {
@@ -27,7 +27,7 @@ export const moderateImage = async (imageBuffer) => {
       MinConfidence: 95 // Very high confidence threshold for very strict moderation
     };
 
-    console.log('🔍 Image Moderation - Analyzing image content...');
+    // Analyzing image content
 
     // Detect inappropriate content
     const [moderationResult, labelResult] = await Promise.all([
@@ -35,7 +35,7 @@ export const moderateImage = async (imageBuffer) => {
       rekognition.detectLabels(params).promise()
     ]);
 
-    console.log('🔍 Image Moderation - Analysis completed');
+    // Analysis completed
 
     // Check for inappropriate content - only the most serious violations
     const inappropriateLabels = [
@@ -89,15 +89,9 @@ export const moderateImage = async (imageBuffer) => {
     };
 
     if (isInappropriate) {
-      console.log('❌ Image Moderation - Content rejected:', {
-        moderationLabels: detectedInappropriate.map(label => ({
-          name: label.Name,
-          confidence: label.Confidence
-        })),
-        potentiallyInappropriateLabels: detectedPotentiallyInappropriate
-      });
+      // Content rejected due to inappropriate content
     } else {
-      console.log('✅ Image Moderation - Content approved');
+      // Content approved
     }
 
     return result;

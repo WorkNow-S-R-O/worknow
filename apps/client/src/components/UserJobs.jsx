@@ -101,13 +101,7 @@ const UserJobs = () => {
         `${API_URL}/api/users/user-jobs/${user.id}?page=${currentPage}&limit=5&lang=${language}`
       );
 
-      console.log('Ответ от сервера:', response.data.jobs);
-      console.log('🔍 UserJobs - Jobs with images:', response.data.jobs.map(job => ({
-        id: job.id,
-        title: job.title,
-        imageUrl: job.imageUrl,
-        boostedAt: job.boostedAt
-      })));
+      // Jobs data received from server
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
       
@@ -118,7 +112,7 @@ const UserJobs = () => {
           initialLoadingStates[job.id] = true;
         }
       });
-      console.log('🔄 UserJobs - Initializing loading states:', initialLoadingStates);
+      // Initializing loading states
       setImageLoadingStates(initialLoadingStates);
       setFailedImages(new Set()); // Reset failed images for new jobs
       completeLoading(); // Complete loading when done
@@ -210,25 +204,25 @@ const UserJobs = () => {
   };
 
   const handleImageLoad = (jobId) => {
-    console.log('🔄 UserJobs - Image load event fired for job:', jobId);
+          // Image load event fired
     setImageLoadingStates(prev => {
       const newState = {
         ...prev,
         [jobId]: false
       };
-      console.log('✅ UserJobs - Updated loading state for job:', jobId, 'New state:', newState);
+              // Loading state updated
       return newState;
     });
   };
 
   const handleImageError = (jobId, e) => {
-    console.log('🔄 UserJobs - Image error event fired for job:', jobId);
+          // Image error event fired
     setImageLoadingStates(prev => {
       const newState = {
         ...prev,
         [jobId]: false
       };
-      console.log('❌ UserJobs - Updated loading state for job:', jobId, 'New state:', newState);
+              // Error state updated
       return newState;
     });
     
@@ -383,7 +377,7 @@ const UserJobs = () => {
                                         {/* Image displayed under phone number in mini size */}
                     {job.imageUrl && (
                       <div className="mt-3">
-                        {console.log('🔍 UserJobs - Rendering image for job:', job.id, 'URL:', job.imageUrl, 'Loading state:', imageLoadingStates[job.id])}
+                        {/* Image rendering for job */}
                         {imageLoadingStates[job.id] && (
                           <Skeleton 
                             width={120} 

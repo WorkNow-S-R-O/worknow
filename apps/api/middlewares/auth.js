@@ -7,11 +7,7 @@ const prisma = new PrismaClient();
 // Middleware для проверки аутентификации
 export const requireAuth = async (req, res, next) => {
   try {
-    console.log('🔍 Auth middleware - Request headers:', {
-      authorization: req.headers.authorization ? 'Present' : 'Missing',
-      'content-type': req.headers['content-type'],
-      'user-agent': req.headers['user-agent']
-    });
+      // Auth middleware processing request
     
     // Получаем токен из заголовка Authorization
     const authHeader = req.headers.authorization;
@@ -22,7 +18,7 @@ export const requireAuth = async (req, res, next) => {
     }
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-    console.log('🔍 Auth middleware - Token received:', token ? 'Yes' : 'No');
+    // Token received from headers
     
     try {
       // For development, we'll use a simpler approach to extract user ID from the token
@@ -36,7 +32,7 @@ export const requireAuth = async (req, res, next) => {
       // Decode the payload (second part) - this is safe for development
       const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
       
-      console.log('🔍 Auth middleware - Token payload:', payload);
+      // Token payload verified
       
       // Extract user ID from the token payload
       const clerkUserId = payload.sub;
@@ -55,7 +51,7 @@ export const requireAuth = async (req, res, next) => {
         imageUrl: payload.image_url
       };
 
-      console.log('Auth middleware: User authenticated:', req.user.clerkUserId);
+      // User authenticated successfully
       
       next();
     } catch (decodeError) {

@@ -31,7 +31,7 @@ const UserProfile = () => {
       const response = await axios.get(
         `${API_URL}/api/users/user-jobs/${clerkUserId}?page=${page}&limit=${jobsPerPage}`
       );
-      console.log('Вакансии, полученные от сервера в UserProfile:', response.data.jobs);
+      // Jobs data received from server
       setJobs(response.data.jobs);
       setTotalPages(response.data.totalPages);
     } catch (error) {

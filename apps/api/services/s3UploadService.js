@@ -65,7 +65,7 @@ class S3UploadService {
 
       const imageUrl = uploadResult.imageUrl;
 
-      console.log('✅ S3UploadService: Image uploaded successfully for user:', userId);
+      // Image uploaded successfully
 
       return {
         success: true,
@@ -158,7 +158,7 @@ class S3UploadService {
         }
       });
 
-      console.log('✅ S3UploadService: Job created successfully with image:', job.id);
+      // Job created successfully with image
 
       return {
         success: true,
@@ -173,7 +173,7 @@ class S3UploadService {
       if (uploadedImageUrl) {
         try {
           await this.deleteImage(uploadedImageUrl);
-          console.log('✅ S3UploadService: Cleaned up uploaded image after job creation failure');
+          // Cleaned up uploaded image after job creation failure
         } catch (cleanupError) {
           console.error('❌ S3UploadService: Failed to cleanup image:', cleanupError);
         }
@@ -239,7 +239,7 @@ class S3UploadService {
         }
       });
 
-      console.log('✅ S3UploadService: Job image updated successfully:', jobId);
+      // Job image updated successfully
 
       return {
         success: true,
@@ -254,7 +254,7 @@ class S3UploadService {
       if (newImageUrl) {
         try {
           await this.deleteImage(newImageUrl);
-          console.log('✅ S3UploadService: Cleaned up new image after update failure');
+          // Cleaned up new image after update failure
         } catch (cleanupError) {
           console.error('❌ S3UploadService: Failed to cleanup new image:', cleanupError);
         }
@@ -278,7 +278,7 @@ class S3UploadService {
       const deleted = await deleteFromS3(imageUrl);
       
       if (deleted) {
-        console.log('✅ S3UploadService: Image deleted successfully');
+        // Image deleted successfully
       } else {
         console.warn('⚠️ S3UploadService: Image deletion failed or image not found');
       }
@@ -327,7 +327,7 @@ class S3UploadService {
         }
       });
 
-      console.log('✅ S3UploadService: Job and image deleted successfully:', jobId);
+      // Job and image deleted successfully
 
       return true;
 

@@ -12,9 +12,9 @@ export const useUserSync = () => {
 
   const syncUser = async (clerkUserId) => {
     try {
-      console.log('🔄 Syncing user with clerkUserId:', clerkUserId);
+      // Syncing user with Clerk
       const response = await axios.post(`${API_URL}/api/users/sync-user`, { clerkUserId });
-      console.log('✅ User sync response:', response.data);
+              // User sync response received
       return response.data.user;
     } catch (error) {
       console.error('❌ Error syncing user:', error);
@@ -29,20 +29,20 @@ export const useUserSync = () => {
 
   const fetchUserData = async () => {
     if (!clerkUser) {
-      console.log('🔍 No clerkUser, setting dbUser to null');
+              // No clerkUser, setting dbUser to null
       setDbUser(null);
       setLoading(false);
       return;
     }
 
     try {
-      console.log('🔍 Fetching user data for clerkUserId:', clerkUser.id);
+              // Fetching user data from API
       setLoading(true);
       setError(null);
 
       // Try to get user from database
       const response = await axios.get(`${API_URL}/api/users/${clerkUser.id}`);
-      console.log('✅ User data fetched successfully:', response.data);
+              // User data fetched successfully
       setDbUser(response.data);
     } catch (error) {
       console.error('❌ Error fetching user data:', error);
@@ -53,11 +53,11 @@ export const useUserSync = () => {
       });
       
       if (error.response?.status === 404) {
-        console.log('🔄 User not found in database, attempting to sync...');
+        // User not found in database, attempting to sync
         // User doesn't exist in database, try to sync them
         try {
           const syncedUser = await syncUser(clerkUser.id);
-          console.log('✅ User synced successfully:', syncedUser);
+          // User synced successfully
           setDbUser(syncedUser);
         } catch (syncError) {
           console.error('❌ Error syncing user:', syncError);

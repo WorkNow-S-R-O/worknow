@@ -9,7 +9,7 @@ class RedisService {
     });
 
     this.redis.on('connect', () => {
-      console.log('✅ Redis connected successfully');
+      // Redis connected successfully
     });
 
     this.redis.on('error', (err) => {
@@ -17,7 +17,7 @@ class RedisService {
     });
 
     this.redis.on('ready', () => {
-      console.log('🚀 Redis is ready for operations');
+      // Redis is ready for operations
     });
   }
 
@@ -26,7 +26,7 @@ class RedisService {
     try {
       const serializedValue = typeof value === 'object' ? JSON.stringify(value) : value;
       await this.redis.setex(key, ttl, serializedValue);
-      console.log(`💾 Cached: ${key} (TTL: ${ttl}s)`);
+      // Data cached successfully
       return true;
     } catch (error) {
       console.error('❌ Redis set error:', error);
@@ -38,14 +38,14 @@ class RedisService {
     try {
       const value = await this.redis.get(key);
       if (value) {
-        console.log(`📖 Cache hit: ${key}`);
+        // Cache hit - data retrieved
         try {
           return JSON.parse(value);
         } catch {
           return value;
         }
       }
-      console.log(`❌ Cache miss: ${key}`);
+      // Cache miss - data not found
       return null;
     } catch (error) {
       console.error('❌ Redis get error:', error);
@@ -56,7 +56,7 @@ class RedisService {
   async del(key) {
     try {
       await this.redis.del(key);
-      console.log(`🗑️ Deleted cache: ${key}`);
+      // Cache entry deleted
       return true;
     } catch (error) {
       console.error('❌ Redis del error:', error);
@@ -117,7 +117,7 @@ class RedisService {
       const keys = await this.redis.keys('jobs:*');
       if (keys.length > 0) {
         await this.redis.del(...keys);
-        console.log(`🗑️ Invalidated ${keys.length} job cache entries`);
+        // Job cache entries invalidated
       }
       return true;
     } catch (error) {
@@ -151,7 +151,7 @@ class RedisService {
   async publishNotification(channel, message) {
     try {
       await this.redis.publish(channel, JSON.stringify(message));
-      console.log(`📢 Published to ${channel}:`, message);
+      // Message published to channel
       return true;
     } catch (error) {
       console.error('❌ Notification publish error:', error);
@@ -185,7 +185,7 @@ class RedisService {
   async close() {
     try {
       await this.redis.quit();
-      console.log('🔌 Redis connection closed');
+      // Redis connection closed
     } catch (error) {
       console.error('❌ Redis close error:', error);
     }

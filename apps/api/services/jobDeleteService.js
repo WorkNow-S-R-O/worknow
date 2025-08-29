@@ -20,10 +20,10 @@ export const deleteJobService = async (id, userId) => {
     // Delete image from S3 if it exists
     if (job.imageUrl) {
       try {
-        console.log('🔍 deleteJobService - Deleting image from S3:', job.imageUrl);
+        // Deleting image from S3
         const imageDeleted = await deleteFromS3(job.imageUrl);
         if (imageDeleted) {
-          console.log('✅ deleteJobService - Image deleted from S3 successfully');
+          // Image deleted from S3 successfully
         } else {
           console.warn('⚠️ deleteJobService - Failed to delete image from S3, but continuing with job deletion');
         }

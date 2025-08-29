@@ -30,7 +30,7 @@ const useFetchJob = (id, setValue) => {
         const response = await axios.get(`${API_URL}/api/jobs/${id}`);
         const job = response.data;
 
-        console.log('🔍 useFetchJob - Received job data:', job);
+        // Job data received
 
         if (!job || typeof job !== "object") {
           console.error("❌ API вернул некорректные данные:", job);

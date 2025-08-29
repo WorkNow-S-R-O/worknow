@@ -16,7 +16,7 @@ export const cacheMiddleware = (ttl = 300) => {
       const cachedResponse = await redisService.get(cacheKey);
       
       if (cachedResponse) {
-        console.log(`🚀 Cache hit for: ${req.originalUrl}`);
+        // Cache hit - serving from cache
         return res.json(cachedResponse);
       }
       
@@ -25,7 +25,7 @@ export const cacheMiddleware = (ttl = 300) => {
       res.json = function(data) {
         // Cache the response
         redisService.set(cacheKey, data, ttl);
-        console.log(`💾 Cached response for: ${req.originalUrl} (TTL: ${ttl}s)`);
+        // Response cached successfully
         
         // Send the original response
         return originalSend.call(this, data);
@@ -80,7 +80,7 @@ export const sessionMiddleware = () => {
         const session = await redisService.getSession(sessionId);
         if (session) {
           req.session = session;
-          console.log(`👤 Session loaded for: ${sessionId}`);
+          // Session loaded from cache
         }
       } catch (error) {
         console.error('❌ Session middleware error:', error);
