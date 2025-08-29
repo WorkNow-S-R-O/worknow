@@ -80,7 +80,7 @@ const PremiumPage = () => {
       button: {
         textKey: "pricing_pro_buy_premium",
         variant: "primary",
-        priceId: "price_1Qt63NCOLiDbHvw13PRhpenX"
+        priceId: "price_1Qt5J0COLiDbHvw1IQNl90uU"
       },
       highlight: true
     },

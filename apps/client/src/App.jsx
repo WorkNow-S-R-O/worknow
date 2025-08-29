@@ -115,8 +115,8 @@ const App = () => {
               <meta name="keywords" content="работа в Израиле, вакансии в Израиле, поиск работы Израиль, работа Тель-Авив, работа Хайфа" />
               <meta property="og:title" content="WorkNow – Поиск работы в Израиле" />
               <meta property="og:description" content="Лучшие вакансии в Израиле. Найдите работу мечты в Тель-Авиве, Иерусалиме, Хайфе и других городах!" />
-              <meta property="og:url" content="https://worknowjob.com/" />
-              <meta property="og:image" content="https://worknowjob.com/images/logo.svg" />
+                          <meta property="og:url" content="https://worknow.co.il/" />
+            <meta property="og:image" content="https://worknow.co.il/images/logo.svg" />
               <meta name="robots" content="index, follow" />
 
               {/* 🔹 Schema.org (WebSite + Organization) */}
@@ -125,10 +125,10 @@ const App = () => {
                   "@context": "https://schema.org",
                   "@type": "WebSite",
                   "name": "WorkNow",
-                  "url": "https://worknowjob.com",
+                  "url": "https://worknow.co.il",
                   "potentialAction": {
                     "@type": "SearchAction",
-                    "target": "https://worknowjob.com/search?q={search_term_string}",
+                    "target": "https://worknow.co.il/search?q={search_term_string}",
                     "query-input": "required name=search_term_string"
                   }
                 })}
@@ -138,8 +138,8 @@ const App = () => {
                   "@context": "https://schema.org",
                   "@type": "Organization",
                   "name": "WorkNow",
-                  "url": "https://worknowjob.com",
-                  "logo": "https://worknowjob.com/images/logo.svg",
+                  "url": "https://worknow.co.il",
+                  "logo": "https://worknow.co.il/images/logo.svg",
                   "sameAs": [
                     "https://www.facebook.com/worknow",
                     "https://twitter.com/worknow",

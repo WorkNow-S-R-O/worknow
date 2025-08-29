@@ -4,7 +4,7 @@ const { PrismaClient } = pkg;
 import path from 'path';
 
 const prisma = new PrismaClient();
-const baseUrl = 'https://worknowjob.com';
+const baseUrl = 'https://worknow.co.il';
 const maxUrlsPerSitemap = 10000; // Максимальное количество URL в одном файле
 
 const generateSitemap = async () => {

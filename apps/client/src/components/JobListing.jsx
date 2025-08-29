@@ -51,8 +51,8 @@ const JobListing = () => {
 
   // Формирование динамического URL для SEO
   const pageUrl = selectedCity.value
-    ? `https://worknowjob.com/jobs/${selectedCity.label.toLowerCase()}`
-    : `https://worknowjob.com/jobs`;
+    ? `https://worknow.co.il/jobs/${selectedCity.label.toLowerCase()}`
+    : `https://worknow.co.il/jobs`;
 
   return (
     <div className="d-flex flex-column align-items-center mt-40 min-h-screen">
@@ -64,7 +64,7 @@ const JobListing = () => {
         <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://worknowjob.com/images/logo.svg" />
+        <meta property="og:image" content="https://worknow.co.il/images/logo.svg" />
         <meta name="robots" content="index, follow" />
         
         {/* Schema.org разметка (JobPosting) */}
@@ -79,7 +79,7 @@ const JobListing = () => {
             "hiringOrganization": {
               "@type": "Organization",
               "name": "Worknow",
-              "sameAs": "https://worknowjob.com"
+              "sameAs": "https://worknow.co.il"
             },
             "jobLocation": {
               "@type": "Place",

@@ -29,7 +29,7 @@ router.post('/job-image', requireAuth, upload.single('image'), (req, res) => {
     // For development, use localhost:3001, for production use the actual domain
     const baseUrl = req.get('host')?.includes('localhost') 
       ? 'http://localhost:3001' 
-      : 'https://worknowjob.com';
+      : 'https://worknow.co.il';
     const imageUrl = `${baseUrl}/images/jobs/${req.file.filename}`;
     
     console.log('🔍 Upload route - Generated imageUrl:', imageUrl);

@@ -58,7 +58,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use((req, res, next) => {
     res.setHeader(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://clerk.worknowjob.com https://*.clerk.accounts.dev https://cdn.jsdelivr.net https://widget.survicate.com blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://clerk.worknowjob.com https://*.clerk.accounts.dev; frame-src https://js.stripe.com https://clerk.worknowjob.com https://*.clerk.accounts.dev; worker-src 'self' blob:;"
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://clerk.worknow.co.il https://*.clerk.accounts.dev https://cdn.jsdelivr.net https://widget.survicate.com blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://clerk.worknow.co.il https://*.clerk.accounts.dev; frame-src https://js.stripe.com https://clerk.worknow.co.il https://*.clerk.accounts.dev; worker-src 'self' blob:;"
     );
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'DENY');

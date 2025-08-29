@@ -115,7 +115,7 @@ const UserProfile = () => {
     : t("user_profile_not_found_description");
 
   const profileImage = profileData?.imageUrl || "/images/default-avatar.png";
-  const profileUrl = `https://worknowjob.com/user/${clerkUserId}`;
+  const profileUrl = `https://worknow.co.il/user/${clerkUserId}`;
 
   // Создаем SEO-разметку отдельно, чтобы избежать мутации данных
   const jobPostingSchema = jobs.map((job) => ({
@@ -125,7 +125,7 @@ const UserProfile = () => {
     hiringOrganization: {
       "@type": "Organization",
       name: "WorkNow",
-      sameAs: "https://worknowjob.com",
+      sameAs: "https://worknow.co.il",
     },
     jobLocation: {
       "@type": "Place",
@@ -166,7 +166,7 @@ const UserProfile = () => {
             worksFor: {
               "@type": "Organization",
               name: "WorkNow",
-              sameAs: "https://worknowjob.com",
+              sameAs: "https://worknow.co.il",
             },
             hasOfferCatalog: jobPostingSchema
           })}

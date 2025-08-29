@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 // eslint-disable-next-line no-undef
 const FRONTEND_URL = process.env.NODE_ENV === 'development' 
   ? "http://localhost:3000" 
-  : (process.env.FRONTEND_URL || "https://worknowjob.com");
+  : (process.env.FRONTEND_URL || "https://worknow.co.il");
 
 export const createCheckoutSession = async (req, res) => {
   const { clerkUserId, priceId } = req.body;
@@ -37,7 +37,7 @@ export const createCheckoutSession = async (req, res) => {
     const cancelUrl = `${FRONTEND_URL}/cancel`;
 
     // 🔹 Выбираем нужный priceId
-    const defaultPriceId = 'price_1Qt63NCOLiDbHvw13PRhpenX'; // Pro plan recurring subscription price ID
+    const defaultPriceId = 'price_1Qt5J0COLiDbHvw1IQNl90uU'; // Pro plan recurring subscription price ID
     finalPriceId = priceId || defaultPriceId;
 
     // 🔹 Проверяем существование price ID в Stripe
