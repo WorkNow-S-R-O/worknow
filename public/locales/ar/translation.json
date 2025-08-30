@@ -52,6 +52,15 @@
     "payment_cancelled": "تم إلغاء الدفع",
     "payment_cancelled_description": "ربما ألغيت الدفع عن طريق الخطأ، حاول مرة أخرى.",
     "try_again": "حاول مرة أخرى",
+    "payment": {
+      "success": {
+        "title": "تم الدفع بنجاح!",
+        "subtitle": "تفعيل حالة البريميوم الخاصة بك...",
+        "processing": "معالجة الدفع الخاص بك...",
+        "wait_message": "يرجى الانتظار بينما نقوم بتفعيل حالة البريميوم الخاصة بك",
+        "redirecting": "إعادة توجيه إلى صفحة البريميوم..."
+      }
+    },
     "cancel_subscription": "إلغاء الاشتراك",
       "choose_city": "اختر المدينة",
   "location_placeholder": "اختر المدينة",
@@ -411,6 +420,7 @@
   "add_seeker": "أضف باحث عن عمل",
   "delete_seeker": "احذف باحث عن عمل",
   "confirm_delete": "تأكيد الحذف",
-  "cancel": "إلغاء"
+  "cancel": "إلغاء",
+  "redirecting_soon": "سيتم تحويلك إلى الصفحة الرئيسية في ثانية"
 }
   

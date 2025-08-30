@@ -52,6 +52,15 @@
   "payment_cancelled": "התשלום בוטל",
   "payment_cancelled_description": "אולי ביטלת בטעות את התשלום, נסה שוב.",
   "try_again": "נסה שוב",
+  "payment": {
+    "success": {
+      "title": "התשלום הצליח!",
+      "subtitle": "מפעילים את סטטוס הפרימיום שלך...",
+      "processing": "מעבדים את התשלום שלך...",
+      "wait_message": "אנא המתן בזמן שאנו מפעילים את סטטוס הפרימיום שלך",
+      "redirecting": "מפנים לדף הפרימיום..."
+    }
+  },
   "cancel_subscription": "בטל מנוי",
   "choose_city": "בחר עיר",
   "location_placeholder": "בחר עיר",
@@ -406,5 +415,6 @@
   "add_seeker": "הוסף מחפש עבודה",
   "delete_seeker": "מחק מחפש עבודה",
   "confirm_delete": "אשר מחיקה",
-  "cancel": "ביטול"
+  "cancel": "ביטול",
+  "redirecting_soon": "יש להזין שוב בעוד מספר שניות..."
 } 

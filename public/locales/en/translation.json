@@ -52,6 +52,15 @@
   "payment_cancelled": "Payment cancelled",
   "payment_cancelled_description": "Maybe you accidentally cancelled the payment, try again.",
   "try_again": "Try again",
+  "payment": {
+    "success": {
+      "title": "Payment successful!",
+      "subtitle": "Activating your Premium status...",
+      "processing": "Processing your payment...",
+      "wait_message": "Please wait while we activate your Premium status",
+      "redirecting": "Redirecting to Premium page..."
+    }
+  },
   "cancel_subscription": "Cancel subscription",
   "choose_city": "Choose city",
   "location_placeholder": "Select city",
@@ -415,5 +424,6 @@
   "add_seeker": "Add Seeker",
   "delete_seeker": "Delete Seeker",
   "confirm_delete": "Confirm Deletion",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "redirecting_soon": "Redirecting to home page in a few seconds..."
 }
