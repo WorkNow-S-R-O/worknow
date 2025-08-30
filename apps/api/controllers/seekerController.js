@@ -4,9 +4,6 @@ import { checkAndSendNewCandidatesNotification } from '../services/candidateNoti
 
 export async function getSeekers(req, res) {
   try {
-    console.log('🔍 Backend received query:', req.query);
-    console.log('📄 Page parameter:', req.query.page, 'Type:', typeof req.query.page);
-    
     // Handle languages array from query parameters
     const query = { ...req.query };
     if (req.query.languages) {
@@ -22,9 +19,7 @@ export async function getSeekers(req, res) {
     // Add language parameter for city translation
     query.lang = req.query.lang || 'ru';
     
-    console.log('🔧 Processed query for service:', query);
     const data = await getAllSeekers(query);
-    console.log('📤 Sending response with', data.seekers?.length || 0, 'seekers, page:', data.pagination?.currentPage);
     res.json(data);
   } catch (error) {
     console.error('❌ Error getting seekers:', error);
@@ -56,7 +51,6 @@ export async function addSeeker(req, res) {
     
     // Trigger new candidates notification check after adding new candidate
     try {
-      console.log('📧 Triggering new candidates notification check after adding new candidate...');
       await checkAndSendNewCandidatesNotification();
     } catch (newsletterError) {
       console.error('❌ Error triggering notification after adding candidate:', newsletterError);
@@ -92,10 +86,8 @@ export async function deleteSeekerController(req, res) {
 export async function getSeekerByIdController(req, res) {
   try {
     const id = Number(req.params.id);
-    console.log('Получен запрос на соискателя с id:', id);
     if (isNaN(id)) return res.status(400).json({ error: 'Invalid id' });
     const seeker = await getSeekerById(id);
-    console.log('Результат поиска:', seeker);
     if (!seeker) return res.status(404).json({ error: 'not found' });
     let isPremium = false;
     const clerkUserId = req.query.clerkUserId;
