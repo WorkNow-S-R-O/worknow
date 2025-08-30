@@ -1,4 +1,4 @@
-import AIJobTitleService from '../services/aiJobTitleService.js';
+import AIJobTitleService from '../apps/api/services/aiJobTitleService.js';
 
 // Test cases with real job descriptions
 const testCases = [

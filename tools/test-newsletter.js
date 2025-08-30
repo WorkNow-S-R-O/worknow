@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { sendCandidatesToNewSubscriber, sendCandidatesToSubscribers } from '../services/newsletterService.js';
+import { sendCandidatesToNewSubscriber, sendCandidatesToSubscribers } from '../apps/api/services/newsletterService.js';
 
 const prisma = new PrismaClient();
 

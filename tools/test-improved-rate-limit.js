@@ -1,4 +1,4 @@
-import AIJobTitleService from '../services/aiJobTitleService.js';
+import AIJobTitleService from '../apps/api/services/aiJobTitleService.js';
 
 /**
  * Test script to verify improved rate limit handling
