@@ -41,8 +41,8 @@ This directory contains Docker configurations for running the WorkNow applicatio
    ```bash
    mkdir -p nginx/ssl
    # Copy your SSL certificates to nginx/ssl/
-   # - worknowjob.com.crt
-   # - worknowjob.com.key
+   # - worknow.co.il.crt
+   # - worknow.co.il.key
    ```
 
 4. **Start production environment:**
@@ -51,8 +51,8 @@ This directory contains Docker configurations for running the WorkNow applicatio
    ```
 
 5. **Access the application:**
-   - Application: https://worknowjob.com (or your domain)
-   - Health check: https://worknowjob.com/health
+   - Application: https://worknow.co.il (or your domain)
+   - Health check: https://worknow.co.il/health
 
 ## File Structure
 
@@ -90,7 +90,7 @@ docker/
 | `AWS_REGION` | AWS region | `us-east-1` |
 | `AWS_S3_BUCKET` | S3 bucket name | `your-bucket-name` |
 | `VITE_CLERK_PUBLISHABLE_KEY` | Clerk publishable key | `pk_test_...` |
-| `VITE_API_URL` | API URL | `https://worknowjob.com` |
+| `VITE_API_URL` | API URL | `https://worknow.co.il` |
 | `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key | `pk_test_...` |
 
 ## Commands
@@ -174,8 +174,8 @@ For production, you need to:
 
 1. **Obtain SSL certificates** for your domain
 2. **Place certificates** in `nginx/ssl/`:
-   - `worknowjob.com.crt` (certificate)
-   - `worknowjob.com.key` (private key)
+   - `worknow.co.il.crt` (certificate)
+   - `worknow.co.il.key` (private key)
 3. **Update nginx.conf** with your domain name
 4. **Configure DNS** to point to your server
 

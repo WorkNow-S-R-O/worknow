@@ -4,14 +4,8 @@ import { sendTelegramNotification } from '../utils/telegram.js';
 import { CLERK_SECRET_KEY } from '../config/clerkConfig.js';
 import { sendPremiumDeluxeWelcomeEmail, sendProWelcomeEmail } from '../services/premiumEmailService.js';
 import fetch from 'node-fetch';
-import process from 'process';
 const prisma = new PrismaClient();
 
-// ✅ URL для продакшена и разработки
-// eslint-disable-next-line no-undef
-const FRONTEND_URL = process.env.NODE_ENV === 'development' 
-  ? "http://localhost:3000" 
-  : (process.env.FRONTEND_URL || "https://worknow.co.il");
 
 export const createCheckoutSession = async (req, res) => {
   const { clerkUserId, priceId } = req.body;
@@ -32,9 +26,9 @@ export const createCheckoutSession = async (req, res) => {
       return res.status(404).json({ error: 'Пользователь не найден или отсутствует email' });
     }
 
-    // ✅ Формируем ссылки для продакшена
-    const successUrl = `${FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${FRONTEND_URL}/cancel`;
+    // ✅ Формируем ссылки для продакшена - FORCE NEW DOMAIN
+    const successUrl = "https://worknow.co.il/success?session_id={CHECKOUT_SESSION_ID}";
+    const cancelUrl = "https://worknow.co.il/cancel";
 
     // 🔹 Выбираем нужный priceId
     const defaultPriceId = 'price_1Qt5J0COLiDbHvw1IQNl90uU'; // Pro plan recurring subscription price ID
