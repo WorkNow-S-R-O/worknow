@@ -1,4 +1,4 @@
-import { useMemo, Suspense } from "react";
+import { useMemo, Suspense, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { baseTheme } from "@clerk/themes";
@@ -31,7 +31,39 @@ import CancelSubscription from "./components/CancelSubscription.jsx";
 import BillingPage from "./components/BillingPage.jsx";
 import NewsletterSubscription from "./pages/NewsletterSubscription.jsx";
 
+// Google Analytics Configuration
+const GA_TRACKING_ID = import.meta.env.VITE_GA_TRACKING_ID || 'G-XXXXXXXXXX';
+
+// Initialize Google Analytics
+const initGA = () => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('config', GA_TRACKING_ID, {
+      page_title: document.title,
+      page_location: window.location.href,
+      custom_map: {
+        dimension1: 'user_type',
+        dimension2: 'subscription_status'
+      }
+    });
+  }
+};
+
+// Track page views
+const trackPageView = (url) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('config', GA_TRACKING_ID, {
+      page_path: url,
+      page_title: document.title
+    });
+  }
+};
+
 function Layout() {
+  // Track page views when route changes
+  useEffect(() => {
+    trackPageView(window.location.pathname);
+  }, []);
+
   return (
     <div className="d-flex flex-column min-vh-100">
       <Navbar />
@@ -84,6 +116,32 @@ const App = () => {
 
   const memoizedLocalization = useMemo(() => localization ?? {}, [localization]);
 
+  // Initialize Google Analytics on app load
+  useEffect(() => {
+    // Load Google Analytics script
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
+    document.head.appendChild(script);
+
+    // Initialize gtag
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){window.dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', GA_TRACKING_ID);
+
+    // Track initial page view
+    initGA();
+
+    return () => {
+      // Cleanup if needed
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
+
   if (!PUBLISHABLE_KEY || !PUBLISHABLE_KEY.startsWith('pk_')) {
     return <div style={{color: 'red', fontWeight: 'bold', padding: 24}}>❌ Ошибка: Некорректный или отсутствует VITE_CLERK_PUBLISHABLE_KEY!<br/>Проверьте .env и перезапустите dev-сервер.<br/>Текущий ключ: <code>{String(PUBLISHABLE_KEY)}</code></div>;
   }
@@ -115,9 +173,27 @@ const App = () => {
               <meta name="keywords" content="работа в Израиле, вакансии в Израиле, поиск работы Израиль, работа Тель-Авив, работа Хайфа" />
               <meta property="og:title" content="WorkNow – Поиск работы в Израиле" />
               <meta property="og:description" content="Лучшие вакансии в Израиле. Найдите работу мечты в Тель-Авиве, Иерусалиме, Хайфе и других городах!" />
-                          <meta property="og:url" content="https://worknow.co.il/" />
-            <meta property="og:image" content="https://worknow.co.il/images/logo.svg" />
+              <meta property="og:url" content="https://worknow.co.il/" />
+              <meta property="og:image" content="https://worknow.co.il/images/logo.svg" />
               <meta name="robots" content="index, follow" />
+
+              {/* Google Analytics */}
+              <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}></script>
+              <script>
+                {`
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_TRACKING_ID}', {
+                    page_title: document.title,
+                    page_location: window.location.href,
+                    custom_map: {
+                      dimension1: 'user_type',
+                      dimension2: 'subscription_status'
+                    }
+                  });
+                `}
+              </script>
 
               {/* 🔹 Schema.org (WebSite + Organization) */}
               <script type="application/ld+json">

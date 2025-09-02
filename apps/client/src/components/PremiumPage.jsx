@@ -4,6 +4,7 @@ import axios from "axios";
 import { useUserSync } from "../hooks/useUserSync.js";
 import { useTranslation } from "react-i18next";
 import { useLoadingProgress } from '../hooks/useLoadingProgress';
+import { useGoogleAnalytics } from '../hooks/useGoogleAnalytics.js';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -14,6 +15,7 @@ const PremiumPage = () => {
   const { dbUser, loading: userLoading, error: userError, refreshUser } = useUserSync();
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
   const { t } = useTranslation();
+  const { trackPremiumSubscription, trackButtonClick, trackError } = useGoogleAnalytics();
   
   // Text carousel state
   const [currentTitleIndex, setCurrentTitleIndex] = useState(0);
@@ -132,6 +134,23 @@ const PremiumPage = () => {
       redirectToSignIn();
       return;
     }
+    
+    // Track premium subscription attempt
+    const planData = getPlans().find(plan => plan.button.priceId === priceId);
+    if (planData) {
+      trackPremiumSubscription({
+        name: planData.name,
+        price: planData.price
+      });
+    }
+    
+    // Track button click
+    trackButtonClick({
+      button_name: 'premium_subscription',
+      button_location: 'premium_page',
+      button_action: 'initiate_payment'
+    });
+    
     setLoading(true);
     startLoadingWithProgress(2000); // Start progress bar for payment process
     
@@ -147,6 +166,14 @@ const PremiumPage = () => {
       window.location.href = response.data.url;
     } catch (error) {
       completeLoading(); // Complete progress even on error
+      
+      // Track error
+      trackError({
+        error_type: 'payment_error',
+        error_message: error.response?.data?.error || error.message,
+        error_location: 'premium_page_payment'
+      });
+      
       if (error.response?.status === 404) {
         alert("Пользователь не найден. Попробуйте войти заново.");
       } else if (error.response?.data?.error) {
