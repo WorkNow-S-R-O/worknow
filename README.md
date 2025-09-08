@@ -13,7 +13,7 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
 - **Job seeker profiles** and search
 - **Premium access** (job boosting, hidden contacts, extra features)
 - **Admin panel** (manage users, jobs, seekers)
-- **Internationalization** (Russian, English, Hebrew, Arabic; RTL support)
+- **Internationalization with Intlayer** (Russian, English, Ukranian, Hebrew, Arabic; RTL support)
 - **Telegram bot notifications**
 - **Stripe payments & subscriptions**
 - **SEO optimization** (OpenGraph, Schema.org, meta tags)
@@ -32,7 +32,7 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
 - React 18, Vite, React Router DOM 7
 - Tailwind CSS, Bootstrap 5, Bootstrap Icons, Lucide React
 - Zustand (state), React Hook Form, Zod (validation)
-- i18next (internationalization), React Hot Toast, React Helmet Async
+- Intlayer (internationalization), React Hot Toast, React Helmet Async
 - TypeScript support
 
 ### Backend
@@ -47,7 +47,7 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
 - OpenAI integration for AI features
 
 ### Integrations
-- Clerk, Stripe, Supabase, Telegram, i18next, OpenAI, AWS S3
+- Clerk, Stripe, Supabase, Telegram, Intlayer, OpenAI, AWS S3
 
 ---
 
@@ -235,7 +235,7 @@ worknow/
 ├── prisma/                    # Prisma schema, migrations, seed scripts
 ├── public/                    # Static files, images, locales
 │   ├── images/                # Application images
-│   └── locales/               # Translation files (ru, en, he, ar)
+│   └── locales/               # Intlayer translations
 ├── tests/                     # Test files
 ├── tools/                     # Development and utility scripts
 ├── docker/                    # Docker configuration files
