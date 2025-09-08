@@ -38,6 +38,13 @@ const addSeekerModalContent = {
       ar: "العبرية",
       uk: "Іврит",
     }),
+    languageUkrainian: t({
+      ru: "Украинский",
+      en: "Ukrainian",
+      he: "אוקראינית",
+      ar: "الأوكرانية",
+      uk: "Українська",
+    }),
     employmentFull: t({
       ru: "Полная занятость",
       en: "Full-time",

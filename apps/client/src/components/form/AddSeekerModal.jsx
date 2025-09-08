@@ -31,6 +31,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
     { value: 'арабский', label: content.languageArabic.value },
     { value: 'английский', label: content.languageEnglish.value },
     { value: 'иврит', label: content.languageHebrew.value },
+    { value: 'украинский', label: content.languageUkrainian.value },
   ];
 
   const { cities, loading: loadingCities } = useFetchCities();

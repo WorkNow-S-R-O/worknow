@@ -26,6 +26,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
     { value: 'арабский', label: content.languageArabic.value },
     { value: 'английский', label: content.languageEnglish.value },
     { value: 'иврит', label: content.languageHebrew.value },
+    { value: 'украинский', label: content.languageUkrainian.value },
   ];
 
   // Employment options with translations

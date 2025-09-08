@@ -212,6 +212,13 @@ const seekerFilterModalContent = {
       ar: "הרוסית",
       uk: "Російська",
     }),
+    languageUkrainian: t({
+      ru: "Украинский",
+      en: "Ukrainian",
+      he: "אוקראינית",
+      ar: "الأوكرانية",
+      uk: "Українська",
+    }),
   },
 } satisfies Dictionary;
 
