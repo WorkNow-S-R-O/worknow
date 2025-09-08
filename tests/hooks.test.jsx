@@ -10,10 +10,21 @@ vi.mock('axios', () => ({
   }
 }))
 
-// Mock react-i18next
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key) => key
+// Mock react-intlayer
+vi.mock('react-intlayer', () => ({
+  useLocale: () => ({
+    locale: 'en'
+  }),
+  useIntlayer: () => ({
+    value: 'test'
+  })
+}))
+
+// Mock useLoadingProgress hook
+vi.mock('../apps/client/src/hooks/useLoadingProgress', () => ({
+  useLoadingProgress: () => ({
+    startLoadingWithProgress: vi.fn(),
+    completeLoading: vi.fn()
   })
 }))
 

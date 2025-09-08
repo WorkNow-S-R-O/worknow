@@ -1,15 +1,15 @@
 import { JobForm } from "../components/index";
 import { Helmet } from "react-helmet-async";
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 
 function CreateNewAd() {
-  const { t } = useTranslation();
+  const content = useIntlayer("createNewAd");
 
   return (
     <>
       <Helmet>
-        <title>{t("create_new_advertisement_tab")}</title>
-        <meta name="description" content="Create new advertisement | Worknow" />
+        <title>{content.createNewAdvertisementTab.value}</title>
+        <meta name="description" content={content.createNewAdvertisementDescription.value} />
       </Helmet>
       <JobForm />
     </>

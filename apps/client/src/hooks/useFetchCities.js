@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import useLanguageStore from '../store/languageStore';
+import { useLocale } from 'react-intlayer';
 
 const API_URL = import.meta.env.VITE_API_URL; // ✅ Используем переменную окружения
 
 const useFetchCities = () => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
-  const language = useLanguageStore((state) => state.language) || 'ru';
+  const { locale } = useLocale();
 
   useEffect(() => {
     const loadCities = async () => {
       try {
-        const url = `${API_URL}/api/cities?lang=${language}`;
+        const url = `${API_URL}/api/cities?lang=${locale}`;
         const response = await axios.get(url);
 
         if (!Array.isArray(response.data)) {
@@ -36,7 +36,7 @@ const useFetchCities = () => {
     };
 
     loadCities();
-  }, [language]);
+  }, [locale]);
 
   return { cities, loading };
 };

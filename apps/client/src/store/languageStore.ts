@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ruRU, enUS, ukUA } from "@clerk/localizations";
+import { ruRU, enUS } from "@clerk/localizations";
 
 // Создаём Zustand-хранилище для управления языком
 const useLanguageStore = create((set) => {
@@ -9,8 +9,11 @@ const useLanguageStore = create((set) => {
     switch (lang) {
       case "en":
         return enUS;
-      case "uk":
-        return ukUA;
+      case "he":
+      case "ar":
+        // For Hebrew and Arabic, we'll use English localization as fallback
+        // since Clerk doesn't have specific localizations for these languages
+        return enUS;
       default:
         return ruRU;
     }

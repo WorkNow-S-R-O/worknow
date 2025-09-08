@@ -10,14 +10,14 @@ import useFetchJob from '../../hooks/useUpdateJobs';
 import { updateJob } from 'libs/jobs';
 import { showToastError, showToastSuccess } from 'libs/utils';
 import { EditJobFields } from './EditJobFields';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 import { Helmet } from 'react-helmet-async'; // 🔹 SEO
 import { useLoadingProgress } from '../../hooks/useLoadingProgress';
 
 const EditJobForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const content = useIntlayer("editJobForm");
   const { user } = useUser();
   const { getToken } = useAuth();
   const { cities, loading: loadingCities } = useFetchCities();
@@ -83,8 +83,8 @@ const EditJobForm = () => {
   };
 
   // 🔹 Динамический `title` и `description`
-  const pageTitle = job ? `${t('edit_advertisement')}: ${job.title} | WorkNow` : t('edit_advertisement');
-  const pageDescription = job ? `${t('edit_page_description')} ${job.title}` : t('edit_page_default_description');
+  const pageTitle = job ? `${content.editAdvertisement.value}: ${job.title} | WorkNow` : content.editAdvertisement.value;
+  const pageDescription = job ? `${content.editPageDescription.value} ${job.title}` : content.editPageDefaultDescription.value;
 
   return (
     <div className="d-flex flex-column min-vh-100">
@@ -97,7 +97,7 @@ const EditJobForm = () => {
 
       <div className="flex-grow-1 d-flex justify-content-center align-items-center px-4">
         <div className="job-form my-5 w-full max-w-xl p-6 bg-white rounded-lg">
-          <h1 className="text-2xl font-bold mb-4 mt-5 text-center">{t('edit_advertisement')}</h1>
+          <h1 className="text-2xl font-bold mb-4 mt-5 text-center">{content.editAdvertisement.value}</h1>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <EditJobFields
@@ -123,10 +123,10 @@ const EditJobForm = () => {
               {isSubmitting ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  {t('saving')}...
+                  {content.saving.value}...
                 </>
               ) : (
-                t('save')
+                content.save.value
               )}
             </button>
           </form>

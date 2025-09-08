@@ -3,6 +3,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import path from "path";
 import { fileURLToPath } from "url"
+import cors from 'cors';
 import paymentRoutes from './routes/payments.js';
 import jobsRoutes from './routes/jobs.js';
 import citiesRoutes from './routes/cities.js';
@@ -26,6 +27,19 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// CORS configuration
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://worknow.co.il',
+    'https://www.worknow.co.il'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-intlayer-locale']
+}));
 
 // Проверяем важные переменные окружения
 if (!process.env.DATABASE_URL) {

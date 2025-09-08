@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Skeleton from "react-loading-skeleton";
 import { Helmet } from "react-helmet-async";
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useUser } from '@clerk/clerk-react';
@@ -15,7 +15,7 @@ import PaginationControl from "./PaginationControl";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const UserProfile = () => {
-  const { t } = useTranslation();
+  const content = useIntlayer("userProfile");
   const { user: clerkUser, isLoaded } = useUser();
   const [user, setUser] = useState(null);
   const [jobs, setJobs] = useState([]);
@@ -107,12 +107,12 @@ const UserProfile = () => {
     : user;
 
   const pageTitle = profileData
-    ? `${profileData.name || ''} | ${t("user_profile_title")} - WorkNow`
-    : `${t("user_not_found") } | WorkNow`;
+    ? `${profileData.name || ''} | ${content.user_profile_title} - WorkNow`
+    : `${content.user_not_found} | WorkNow`;
 
   const pageDescription = profileData
-    ? `${t("profile_description", { name: profileData.name })}. ${t("user_jobs")}: ${jobs.length}.`
-    : t("user_profile_not_found_description");
+    ? `${content.profile_description}: ${profileData.name}. ${content.user_jobs}: ${jobs.length}.`
+    : content.user_profile_not_found_description;
 
   const profileImage = profileData?.imageUrl || "/images/default-avatar.png";
   const profileUrl = `https://worknow.co.il/user/${clerkUserId}`;
@@ -177,12 +177,12 @@ const UserProfile = () => {
         {loading ? (
           <SkeletonLoader jobsPerPage={jobsPerPage} />
         ) : !profileData ? (
-          <p>{t("user_not_found")}</p>
+          <p>{content.user_not_found}</p>
         ) : (
           <>
-            <h4 className="text-primary">{t("user_jobs")}</h4>
+            <h4 className="text-primary">{content.user_jobs}</h4>
             {jobs.length === 0 ? (
-              <p>{t("user_no_jobs")}</p>
+              <p>{content.user_no_jobs}</p>
             ) : (
               <>
                 {jobs.map((job) => (

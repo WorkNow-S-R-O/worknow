@@ -2,6 +2,7 @@ import path from "path"
 import react from '@vitejs/plugin-react'
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite'
+import { intlayerPlugin } from "vite-intlayer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,7 +12,7 @@ export default defineConfig({
   root: "apps/client",
   publicDir: "../../public",
   envDir: "../..", // Load environment variables from root directory
-  plugins: [react()],
+  plugins: [react(), intlayerPlugin()],
   server: {
     cors: true,
     port: 3000,

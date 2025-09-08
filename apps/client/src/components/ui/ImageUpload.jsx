@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { useImageUpload } from '../../contexts/ImageUploadContext.jsx';
 import { deleteJobImage } from 'libs/jobs';
 import { toast } from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 import { useAuth } from '@clerk/clerk-react';
 
 const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
-  const { t } = useTranslation();
+  const content = useIntlayer("imageUploadComponent");
   const { getToken } = useAuth();
   const { uploadImage, uploading, uploadError, clearError } = useImageUpload();
   const [previewUrl, setPreviewUrl] = useState(currentImageUrl || null);
@@ -40,16 +40,16 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
         onImageUpload(imageUrl, file);
       }
       
-      toast.success(t('image_upload_success') || 'Image uploaded successfully!');
+      toast.success(content.imageUploadSuccess.value);
       clearError();
     } catch (error) {
       console.error('Upload error:', error);
       
       // Handle moderation errors with better user feedback
-      if (error.message === t('image_moderation_error')) {
-        toast.error(t('image_moderation_error_description') || 'The uploaded image contains inappropriate content and cannot be uploaded. Please choose a different image.');
+      if (error.message === content.imageModerationError.value) {
+        toast.error(content.imageModerationErrorDescription.value);
       } else {
-        toast.error(error.message || t('image_upload_error') || 'Failed to upload image');
+        toast.error(error.message || content.imageUploadError.value);
       }
       
       setPreviewUrl(currentImageUrl || null);
@@ -63,7 +63,7 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
         const token = await getToken();
         await deleteJobImage(currentImageUrl, token);
         console.log('✅ ImageUpload - Image deleted from S3:', currentImageUrl);
-        toast.success(t('image_deleted_success') || 'Image deleted successfully!');
+        toast.success(content.imageDeletedSuccess.value);
       }
       
       // Clear local state
@@ -76,7 +76,7 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
       }
     } catch (error) {
       console.error('❌ ImageUpload - Error deleting image:', error);
-      toast.error(t('image_delete_error') || 'Failed to delete image');
+      toast.error(content.imageDeleteError.value);
       // Still clear local state even if S3 deletion fails
       setPreviewUrl(null);
       if (fileInputRef.current) {
@@ -95,8 +95,8 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
   return (
     <div className={`image-upload-container ${className}`}>
       <label className="form-label">
-        {t('job_image') || 'Job Image'} 
-        <span className="text-muted ms-1">({t('optional') || 'optional'})</span>
+        {content.jobImage.value} 
+        <span className="text-muted ms-1">({content.optional.value})</span>
       </label>
       
       <div className="image-upload-area">
@@ -119,12 +119,12 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
                 {uploading ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                    {t('uploading') || 'Uploading...'}
+                    {content.uploading.value}
                   </>
                 ) : (
                   <>
                     <i className="bi bi-arrow-clockwise me-1"></i>
-                    {t('change_image') || 'Change Image'}
+                    {content.changeImage.value}
                   </>
                 )}
               </button>
@@ -135,7 +135,7 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
                 disabled={uploading}
               >
                 <i className="bi bi-trash me-1"></i>
-                {t('remove_image') || 'Remove'}
+                {content.removeImage.value}
               </button>
             </div>
           </div>
@@ -166,16 +166,16 @@ const ImageUpload = ({ onImageUpload, currentImageUrl, className = '' }) => {
               {uploading ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                  {t('uploading') || 'Uploading...'}
+                  {content.uploading.value}
                 </>
               ) : (
                 <>
-                  <strong>{t('click_to_upload') || 'Click to upload image'}</strong>
+                  <strong>{content.clickToUpload.value}</strong>
                 </>
               )}
             </p>
             <p className="text-muted small mb-0">
-              {t('image_upload_hint') || 'JPG, PNG, GIF up to 5MB'}
+              {content.imageUploadHint.value}
             </p>
           </div>
         )}

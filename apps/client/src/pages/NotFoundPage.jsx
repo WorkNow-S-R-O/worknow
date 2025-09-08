@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 
 export default function NotFoundPage() {
-  const { t } = useTranslation();
+  const content = useIntlayer("notFoundPage");
 
   return (
     <div className="h-screen flex justify-center items-center flex-col">
@@ -11,9 +11,9 @@ export default function NotFoundPage() {
         src="/images/404.jpg"
         alt="not-found"
       />
-      <p className="md:text-3xl text-sm mt-4">{t("page_not_found")}</p>
+      <p className="md:text-3xl text-sm mt-4">{content.pageNotFound.value}</p>
       <Link to="/" className="btn btn-primary mt-4 md:mt-6 text-white no-underline">
-        <h1 className="md:text-2xl text-sm">{t("backtohome")}</h1>
+        <h1 className="md:text-2xl text-sm">{content.backToHome.value}</h1>
       </Link>
     </div>
   );

@@ -3,13 +3,13 @@ import { useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from "react-intlayer";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const PAGE_SIZE = 10;
 
 const BillingPage = () => {
-  const { t } = useTranslation();
+  const content = useIntlayer("billingPage");
   const { user } = useUser();
   const { redirectToSignIn } = useClerk();
   const [history, setHistory] = useState([]);
@@ -32,7 +32,7 @@ const BillingPage = () => {
       setHasNext((res.data.payments || []).length === PAGE_SIZE);
       setHasPrev(page > 0);
     } catch {
-      setError("Ошибка загрузки истории платежей");
+      setError(content.error_loading_history);
       setHistory([]);
       setHasNext(false);
       setHasPrev(page > 0);
@@ -67,40 +67,40 @@ const BillingPage = () => {
 
   return (
     <div className="container" style={{ maxWidth: 600, margin: '0 auto', paddingTop: 60 }}>
-      <h2 className="text-center mb-4">Выставление счетов</h2>
+      <h2 className="text-center mb-4">{content.billing_title}</h2>
       <div className="mb-4 text-center">
         <Link to="/cancel-subscription" className="text-secondary" style={{ textDecoration: 'underline', cursor: 'pointer' }}>
-          Отмена подписки
+          {content.cancel_subscription}
         </Link>
       </div>
-      <h5 className="mb-3">История платежей</h5>
+      <h5 className="mb-3">{content.payment_history}</h5>
       {!user ? (
         <div className="alert alert-info text-center">
-          Нет истории транзакций. Пожалуйста,{' '}
+          {content.no_transaction_history}{' '}
           <button
             className="btn btn-primary ms-2"
             onClick={() => redirectToSignIn()}
             type="button"
           >
-            Войдите на сайт
+            {content.sign_in}
           </button>
         </div>
       ) : loading ? (
-                        <div>{t('loading')}</div>
+                        <div>{content.loading}</div>
       ) : error ? (
         <div className="alert alert-danger">{error}</div>
       ) : history.length === 0 ? (
-        <div className="alert alert-info">Нет платежей</div>
+        <div className="alert alert-info">{content.no_payments}</div>
       ) : (
         <>
           <div className="table-responsive">
             <table className="table table-striped table-hover table-bordered shadow rounded text-center align-middle">
               <thead className="table-primary">
                 <tr>
-                  <th className="align-middle">Месяц</th>
-                  <th className="align-middle">Сумма</th>
-                  <th className="align-middle">Тип подписки</th>
-                  <th className="align-middle">Дата</th>
+                  <th className="align-middle">{content.month}</th>
+                  <th className="align-middle">{content.amount}</th>
+                  <th className="align-middle">{content.subscription_type}</th>
+                  <th className="align-middle">{content.date}</th>
                 </tr>
               </thead>
               <tbody>
@@ -131,12 +131,12 @@ const BillingPage = () => {
             <ul className="pagination mb-0">
               <li className="page-item">
                 <button className="page-link" onClick={handlePrev} disabled={!hasPrev}>
-                  &laquo; Предыдущая
+                  &laquo; {content.previous}
                 </button>
               </li>
               <li className="page-item">
                 <button className="page-link" onClick={handleNext} disabled={!hasNext}>
-                  Следующая &raquo;
+                  {content.next} &raquo;
                 </button>
               </li>
             </ul>

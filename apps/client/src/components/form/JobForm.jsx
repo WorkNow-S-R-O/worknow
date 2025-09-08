@@ -10,14 +10,14 @@ import useFetchCategories from '../../hooks/useFetchCategories';
 import { createJob, createJobWithImage } from 'libs/jobs';
 import { showToastError, showToastSuccess } from 'libs/utils';
 import JobFormFields from './JobFormFields';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from "react-intlayer";
 import { useLoadingProgress } from '../../hooks/useLoadingProgress';
 
 const JobForm = ({ onJobCreated }) => {
   const { user } = useUser();
   const { getToken } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const content = useIntlayer("jobForm");
   const { cities, loading: citiesLoading } = useFetchCities();
   const { categories, loading: categoriesLoading } = useFetchCategories();
   const [imageFile, setImageFile] = useState(null);
@@ -44,7 +44,7 @@ const JobForm = ({ onJobCreated }) => {
 
   const onSubmit = async (data) => {
     if (!user) {
-      showToastError({ response: { data: { error: 'Вы должны быть авторизованы!' } } });
+      showToastError({ response: { data: { error: content.mustBeAuthorized.value } } });
       return;
     }
 
@@ -81,7 +81,7 @@ const JobForm = ({ onJobCreated }) => {
       }
       
       completeLoading(); // Complete loading when done
-      showToastSuccess('Объявление успешно создано!');
+      showToastSuccess(content.jobCreatedSuccess.value);
       reset();
       setImageFile(null);
       setImageUrl(null);
@@ -98,7 +98,7 @@ const JobForm = ({ onJobCreated }) => {
   return (
     <div className="flex-grow-1 d-flex justify-content-center align-items-center px-4">
       <div className="job-form my-5 w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl p-6 bg-white rounded-lg ">
-        <h1 className="text-2xl font-bold mb-4 mt-5 text-center">{t('create_new_advertisement')}</h1>
+        <h1 className="text-2xl font-bold mb-4 mt-5 text-center">{content.createNewAdvertisement.value}</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <JobFormFields 

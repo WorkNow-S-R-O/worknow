@@ -1,14 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import useLanguageStore from '../../store/languageStore';
+import { useIntlayer, useLocale } from 'react-intlayer';
 import '../../index.css';
 import { createPortal } from 'react-dom';
-import { useTranslation } from 'react-i18next';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t }) {
+function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect }) {
+  const content = useIntlayer("cityDropdown");
   const [search, setSearch] = useState("");
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
@@ -142,7 +142,7 @@ function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t 
               onTouchMove={onTouchMove}
               onTouchEnd={onTouchEnd}
             >
-              {t('choose_city')}
+              {content.chooseCity.value}
             </h5>
             <button 
               type="button" 
@@ -161,7 +161,7 @@ function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t 
               <input 
                 type="text" 
                 className="form-control" 
-                placeholder={t('choose_city')} 
+                placeholder={content.chooseCity.value} 
                 value={search} 
                 onChange={e => setSearch(e.target.value)}
                 style={{ fontSize: isMobile ? '16px' : '14px' }}
@@ -186,8 +186,8 @@ function MobileCityModal({ show, onClose, regions, otherCities, onCitySelect, t 
               )}
             </div>
             <ul className="list-group list-group-flush">
-              <li className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2', fontWeight: 500, fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '16px 0' : '12px 0' }} onClick={() => { onCitySelect({ value: null, label: t('city_all') }); setSearch(""); onClose(); }}>
-                <i className="bi bi-geo-alt me-2"></i> {t('city_all')}
+              <li className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2', fontWeight: 500, fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '16px 0' : '12px 0' }} onClick={() => { onCitySelect({ value: null, label: content.cityAll.value }); setSearch(""); onClose(); }}>
+                <i className="bi bi-geo-alt me-2"></i> {content.cityAll.value}
               </li>
               {regions.map(city => (
                 <li key={city.id} className="list-group-item list-group-item-action" style={{ cursor: 'pointer', color: '#1976d2', fontWeight: '500', fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '16px 0' : '12px 0' }} onClick={() => { onCitySelect({ value: city.id, label: city.label || city.name }); setSearch(""); onClose(); }}>
@@ -214,21 +214,20 @@ MobileCityModal.propTypes = {
   regions: PropTypes.array.isRequired,
   otherCities: PropTypes.array.isRequired,
   onCitySelect: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
 };
 
 const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
   const [cities, setCities] = useState([]);
   const [open, setOpen] = useState(false);
-  const language = useLanguageStore((state) => state.language) || 'ru';
+  const { locale } = useLocale();
   const ref = useRef();
-  const { t } = useTranslation();
+  const content = useIntlayer("cityDropdown");
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        console.log('🔍 Fetching cities from:', `${API_URL}/api/cities?lang=${language}`);
-        const response = await axios.get(`${API_URL}/api/cities?lang=${language}`);
+        console.log('🔍 Fetching cities from:', `${API_URL}/api/cities?lang=${locale}`);
+        const response = await axios.get(`${API_URL}/api/cities?lang=${locale}`);
         console.log('🔍 Cities response:', response.data);
         
         if (Array.isArray(response.data)) {
@@ -249,7 +248,7 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
       }
     };
     fetchCities();
-  }, [language, API_URL]);
+  }, [locale, API_URL]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -291,7 +290,7 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
         onClick={() => setOpen(true)}
       >
         <i className="bi bi-geo-alt me-2" style={{ fontSize: 20 }}></i>
-        {selectedCity?.label || t('city_all')}
+        {selectedCity?.label || content.cityAll.value}
       </button>
       <MobileCityModal
         show={open}
@@ -299,7 +298,6 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
         regions={regions}
         otherCities={otherCities}
         onCitySelect={onCitySelect}
-        t={t}
       />
     </>
   );

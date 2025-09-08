@@ -1,32 +1,25 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import { useIntlayer, useLocale } from "react-intlayer";
+import { useLanguageManager } from "../hooks/useLanguageManager";
 import PremiumButton from "./ui/premium-button";
-import useLanguageStore from "../store/languageStore"; // Импортируем Zustand хранилище
 import {
   SignedIn,
   SignedOut,
   SignInButton,
   UserButton,
 } from "@clerk/clerk-react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import MailDropdown from "./ui/MailDropdown";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-if (!PUBLISHABLE_KEY || !googleClientId) {
-  console.error("❌ Clerk API Key или Google Client ID не найдены!");
-}
-
 const Navbar = () => {
-  const { t, i18n } = useTranslation();
+  const content = useIntlayer("navbar");
+  const { locale } = useLocale();
+  const { changeLanguage, isLoading, clearLanguagePreference } = useLanguageManager();
   const location = useLocation();
-
-  // Используем отдельные селекторы для language и changeLanguage
-  const language = useLanguageStore((state) => state.language);
-  const changeLanguage = useLanguageStore((state) => state.changeLanguage);
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -35,11 +28,18 @@ const Navbar = () => {
     setIsExpanded(false);
   }, [location.pathname]);
 
-  // Обработчик смены языка
-  const handleLanguageChange = (lang) => {
-    changeLanguage(lang); // Обновляем Zustand хранилище
-    i18n.changeLanguage(lang); // Обновляем i18n
-  };
+  // Expose functions to window for testing
+  useEffect(() => {
+    window.resetLanguageDetection = clearLanguagePreference;
+    window.testLanguageLoading = () => {
+      console.log('🧪 Language Loading Test');
+      console.log('Current locale:', locale);
+      console.log('Is loading:', isLoading);
+      console.log('Available languages:', ['ru', 'en', 'he', 'ar', 'uk']);
+      console.log('Cookie value:', document.cookie);
+      console.log('LocalStorage value:', localStorage.getItem('worknow-language'));
+    };
+  }, [clearLanguagePreference, locale, isLoading]);
 
   return (
     <>
@@ -56,19 +56,19 @@ const Navbar = () => {
           <ul className="flex justify-center items-center ml-0 gap-2 mb-2 text-gray-500">
             <li className="mr-3">
               <Link id="vacancies" to="/" className="nav-link text-base font-normal">
-                {t("vacancies")}
+                {content.vacancies.value}
               </Link>
             </li>
             <span className="nav-slash">/</span>
             <li className="mr-3">
               <Link id="seekers" to="/seekers" className="nav-link text-base font-normal">
-                {t("seekers")}
+                {content.seekers.value}
               </Link>
             </li>
             <span className="nav-slash">/</span>
             <li className="mr-3">
               <Link id="jobs" to="/my-advertisements" className="nav-link text-base font-normal">
-                {t("jobs")}
+                {content.jobs.value}
               </Link>
             </li>
             {/* Dropdown Support */}
@@ -81,7 +81,7 @@ const Navbar = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {t("support")}
+                {content.support.value}
               </button>
               <ul id="supportDropdown" className="dropdown-menu mt-3 text-gray-600 " aria-labelledby="supportDropdown">
                 <li>
@@ -91,17 +91,17 @@ const Navbar = () => {
                     target="_blank" 
                     rel="noopener noreferrer"
                   >
-                    {t("rules")}
+                    {content.rules.value}
                   </a>
                 </li>
                 <li>
                   <Link to="/support" className="dropdown-item">
-                    {t("technical_support")}
+                    {content.technicalSupport.value}
                   </Link>
                 </li>
                 <li>
                   <Link to="/billing" className="dropdown-item">
-                    Выставление счетов
+                    {content.billing.value}
                   </Link>
                 </li>
               </ul>
@@ -122,32 +122,52 @@ const Navbar = () => {
               aria-expanded="false"
             >
               <i className="bi bi-translate me-2"></i>
-              {language === "en" ? "English" : language === "uk" ? "Українська" : language === "he" ? "עברית" : language === "ar" ? "العربية" : "Русский"}
+              {locale === "en" ? content.languageNames.en.value : locale === "he" ? content.languageNames.he.value : locale === "ar" ? content.languageNames.ar.value : locale === "uk" ? content.languageNames.uk.value : content.languageNames.ru.value}
             </button>
             <ul className="dropdown-menu" aria-labelledby="languageDropdown">
               <li>
-                <button onClick={() => handleLanguageChange("en")} className="dropdown-item">
-                  English
+                <button 
+                  onClick={() => changeLanguage("en")} 
+                  className="dropdown-item"
+                  disabled={isLoading}
+                >
+                  {isLoading ? '⏳' : ''} {content.languageNames.en.value}
                 </button>
               </li>
               <li>
-                <button onClick={() => handleLanguageChange("ru")} className="dropdown-item">
-                  Русский
+                <button 
+                  onClick={() => changeLanguage("ru")} 
+                  className="dropdown-item"
+                  disabled={isLoading}
+                >
+                  {isLoading ? '⏳' : ''} {content.languageNames.ru.value}
                 </button>
               </li>
               <li>
-                <button onClick={() => handleLanguageChange("uk")} className="dropdown-item">
-                  Українська
+                <button 
+                  onClick={() => changeLanguage("he")} 
+                  className="dropdown-item"
+                  disabled={isLoading}
+                >
+                  {isLoading ? '⏳' : ''} {content.languageNames.he.value}
                 </button>
               </li>
               <li>
-                <button onClick={() => handleLanguageChange("he")} className="dropdown-item">
-                  עברית
+                <button 
+                  onClick={() => changeLanguage("ar")} 
+                  className="dropdown-item"
+                  disabled={isLoading}
+                >
+                  {isLoading ? '⏳' : ''} {content.languageNames.ar.value}
                 </button>
               </li>
               <li>
-                <button onClick={() => handleLanguageChange("ar")} className="dropdown-item">
-                  العربية
+                <button 
+                  onClick={() => changeLanguage("uk")} 
+                  className="dropdown-item"
+                  disabled={isLoading}
+                >
+                  {isLoading ? '⏳' : ''} {content.languageNames.uk.value}
                 </button>
               </li>
             </ul>
@@ -158,7 +178,7 @@ const Navbar = () => {
               <SignInButton>
                 <span className="btn btn-primary d-flex align-items-center">
                   <i className="bi bi-person-circle me-2"></i>
-                  {t("signin")}
+                  {content.signIn.value}
                 </span>
               </SignInButton>
             </SignedOut>
@@ -192,17 +212,17 @@ const Navbar = () => {
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link className="nav-link text-lg font-normal" to="/">
-                  {t("vacancies")}
+                  {content.vacancies.value}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link text-lg font-normal" to="/seekers">
-                  {t("seekers")}
+                  {content.seekers.value}
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link text-lg font-normal" to="/my-advertisements">
-                  {t("jobs")}
+                  {content.jobs.value}
                 </Link>
               </li>
               {/* Dropdown Support */}
@@ -214,7 +234,7 @@ const Navbar = () => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  {t("support")}
+                  {content.support.value}
                 </button>
                 <ul className="dropdown-menu" aria-labelledby="mobileSupportDropdown">
                   <li>
@@ -224,12 +244,12 @@ const Navbar = () => {
                       target="_blank" 
                       rel="noopener noreferrer"
                     >
-                      {t("rules")}
+                      {content.rules.value}
                     </a>
                   </li>
                   <li>
                     <Link to="/support" className="dropdown-item">
-                      {t("technical_support")}
+                      {content.technicalSupport.value}
                     </Link>
                   </li>
                 </ul>
@@ -246,23 +266,53 @@ const Navbar = () => {
                   aria-expanded="false"
                 >
                   <i className="bi bi-translate me-2"></i>
-                  {language === "en" ? "English" : language === "uk" ? "Українська" : language === "he" ? "עברית" : language === "ar" ? "العربية" : "Русский"}
+                  {locale === "en" ? content.languageNames.en.value : locale === "he" ? content.languageNames.he.value : locale === "ar" ? content.languageNames.ar.value : locale === "uk" ? content.languageNames.uk.value : content.languageNames.ru.value}
                 </button>
                 <ul className="dropdown-menu w-100" aria-labelledby="mobileLanguageDropdown">
                   <li>
-                    <button onClick={() => handleLanguageChange("en") } className="dropdown-item">English</button>
+                    <button 
+                      onClick={() => changeLanguage("en")} 
+                      className="dropdown-item"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? '⏳' : ''} {content.languageNames.en.value}
+                    </button>
                   </li>
                   <li>
-                    <button onClick={() => handleLanguageChange("ru") } className="dropdown-item">Русский</button>
+                    <button 
+                      onClick={() => changeLanguage("ru")} 
+                      className="dropdown-item"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? '⏳' : ''} {content.languageNames.ru.value}
+                    </button>
                   </li>
                   <li>
-                    <button onClick={() => handleLanguageChange("uk") } className="dropdown-item">Українська</button>
+                    <button 
+                      onClick={() => changeLanguage("he")} 
+                      className="dropdown-item"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? '⏳' : ''} {content.languageNames.he.value}
+                    </button>
                   </li>
                   <li>
-                    <button onClick={() => handleLanguageChange("he") } className="dropdown-item">עברית</button>
+                    <button 
+                      onClick={() => changeLanguage("ar")} 
+                      className="dropdown-item"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? '⏳' : ''} {content.languageNames.ar.value}
+                    </button>
                   </li>
                   <li>
-                    <button onClick={() => handleLanguageChange("ar") } className="dropdown-item">العربية</button>
+                    <button 
+                      onClick={() => changeLanguage("uk")} 
+                      className="dropdown-item"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? '⏳' : ''} {content.languageNames.uk.value}
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -270,7 +320,7 @@ const Navbar = () => {
                 <SignInButton>
                   <span className="btn btn-primary d-flex align-items-center justify-content-center">
                     <i className="bi bi-person-circle me-2"></i>
-                    {t("signin")}
+                    {content.signIn.value}
                   </span>
                 </SignInButton>
               </SignedOut>

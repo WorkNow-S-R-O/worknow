@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 import useFetchCities from '../../hooks/useFetchCities';
 import useFetchCategories from '../../hooks/useFetchCategories';
 import PropTypes from 'prop-types';
 
 export default function AddSeekerModal({ show, onClose, onSubmit }) {
-  const { t } = useTranslation();
+  const content = useIntlayer("addSeekerModal");
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     name: '',
@@ -27,26 +27,26 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
   const [error, setError] = useState(null);
 
   const languageOptions = [
-    { value: 'русский', label: t('language_russian') || 'Русский' },
-    { value: 'арабский', label: t('language_arabic') || 'Арабский' },
-    { value: 'английский', label: t('language_english') || 'Английский' },
-    { value: 'иврит', label: t('language_hebrew') || 'Иврит' },
+    { value: 'русский', label: content.languageRussian.value },
+    { value: 'арабский', label: content.languageArabic.value },
+    { value: 'английский', label: content.languageEnglish.value },
+    { value: 'иврит', label: content.languageHebrew.value },
   ];
 
   const { cities, loading: loadingCities } = useFetchCities();
   const { categories, loading: loadingCategories } = useFetchCategories();
 
   const employmentOptions = [
-    { value: 'полная', label: t('employment_full') || 'Полная' },
-    { value: 'частичная', label: t('employment_partial') || 'Частичная' },
+    { value: 'полная', label: content.employmentFull.value },
+    { value: 'частичная', label: content.employmentPartial.value },
   ];
 
   const documentTypeOptions = [
-    { value: 'Виза Б1', label: t('document_visa_b1') || 'Виза Б1' },
-    { value: 'Виза Б2', label: t('document_visa_b2') || 'Виза Б2' },
-    { value: 'Теудат Зеут', label: t('document_teudat_zehut') || 'Теудат Зеут' },
-    { value: 'Рабочая виза', label: t('document_work_visa') || 'Рабочая виза' },
-    { value: 'Другое', label: t('document_other') || 'Другое' },
+    { value: 'Виза Б1', label: content.documentVisaB1.value },
+    { value: 'Виза Б2', label: content.documentVisaB2.value },
+    { value: 'Теудат Зеут', label: content.documentTeudatZehut.value },
+    { value: 'Рабочая виза', label: content.documentWorkVisa.value },
+    { value: 'Другое', label: content.documentOther.value },
   ];
 
   if (!show) return null;
@@ -54,7 +54,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
   const handleNext = (e) => {
     e.preventDefault();
     if (!form.name || !form.contact || !form.city || !form.description || !form.gender) {
-      setError(t('fill_all_fields_error'));
+      setError(content.fillAllFieldsError.value);
       return;
     }
     setError(null);
@@ -93,7 +93,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.nativeLanguage || form.languages.length === 0) {
-      setError(t('language_selection_error'));
+      setError(content.languageSelectionError.value);
       return;
     }
     onSubmit(form);
@@ -133,7 +133,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
               color: '#495057',
               margin: 0
             }}>
-              {t('add_seeker') || 'Добавить соискателя'}
+              {content.addSeeker.value}
             </h4>
             <button 
               type="button" 
@@ -153,13 +153,13 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
             {step === 1 && (
               <form onSubmit={handleNext}>
                 <div className="mb-3">
-                  <input name="name" className="form-control" placeholder="Имя" value={form.name} onChange={handleChange} required />
+                  <input name="name" className="form-control" placeholder={content.namePlaceholder.value} value={form.name} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
-                  <input name="contact" className="form-control" placeholder="Телефон" value={form.contact} onChange={handleChange} required />
+                  <input name="contact" className="form-control" placeholder={content.phonePlaceholder.value} value={form.contact} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
-                  <input name="facebook" className="form-control" placeholder="Ссылка на Facebook (опционально)" value={form.facebook} onChange={handleChange} />
+                  <input name="facebook" className="form-control" placeholder={content.facebookPlaceholder.value} value={form.facebook} onChange={handleChange} />
                 </div>
                 <div className="mb-3">
                   <select
@@ -170,40 +170,40 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                     required
                     disabled={loadingCities}
                   >
-                    <option value="">{t("location_placeholder")}</option>
+                    <option value="">{content.locationPlaceholder.value}</option>
                     {cities.map(city => (
                       <option key={city.value} value={city.label}>{city.label}</option>
                     ))}
                   </select>
                 </div>
                 <div className="mb-3">
-                  <textarea name="description" className="form-control" placeholder={t("brief_description_placeholder")} value={form.description} onChange={handleChange} required />
+                  <textarea name="description" className="form-control" placeholder={content.briefDescriptionPlaceholder.value} value={form.description} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Пол:</label><br />
+                  <label className="form-label">{content.genderLabel.value}</label><br />
                   <div className="form-check form-check-inline">
                     <input className="form-check-input" type="radio" name="gender" id="gender-male" value="мужчина" checked={form.gender === 'мужчина'} onChange={handleChange} required />
-                    <label className="form-check-label" htmlFor="gender-male">{t("gender_male")}</label>
+                    <label className="form-check-label" htmlFor="gender-male">{content.genderMale.value}</label>
                   </div>
                   <div className="form-check form-check-inline">
                     <input className="form-check-input" type="radio" name="gender" id="gender-female" value="женщина" checked={form.gender === 'женщина'} onChange={handleChange} required />
-                    <label className="form-check-label" htmlFor="gender-female">{t("gender_female")}</label>
+                    <label className="form-check-label" htmlFor="gender-female">{content.genderFemale.value}</label>
                   </div>
                 </div>
                 <div className="form-check mb-3">
                   <input className="form-check-input" type="checkbox" name="isDemanded" id="isDemanded" checked={form.isDemanded} onChange={handleChange} />
                   <label className="form-check-label" htmlFor="isDemanded">
-                    {t("demanded")}
+                    {content.demanded.value}
                   </label>
                 </div>
                 {error && <div className="text-danger mb-2">{error}</div>}
-                <button className="btn btn-primary" type="submit">{t("next_button")}</button>
+                <button className="btn btn-primary" type="submit">{content.nextButton.value}</button>
               </form>
             )}
             {step === 2 && (
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="form-label">Языки:</label><br />
+                  <label className="form-label">{content.languagesLabel.value}</label><br />
                   {languageOptions.map(opt => (
                     <div className="form-check form-check-inline" key={opt.value}>
                       <input
@@ -220,7 +220,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                   ))}
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Родной язык:</label><br />
+                  <label className="form-label">{content.nativeLanguageLabel.value}</label><br />
                   {form.languages.map(lang => (
                     <div className="form-check form-check-inline" key={lang}>
                       <input
@@ -245,7 +245,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                     required
                     disabled={loadingCategories}
                   >
-                    <option value="">{t("category_placeholder")}</option>
+                    <option value="">{content.categoryPlaceholder.value}</option>
                     {categories.map(cat => (
                       <option key={cat.value} value={cat.label}>{cat.label}</option>
                     ))}
@@ -259,7 +259,7 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                     onChange={handleChange}
                     required
                   >
-                    <option value="">{t("employment_type_placeholder")}</option>
+                    <option value="">{content.employmentTypePlaceholder.value}</option>
                     {employmentOptions.map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
@@ -273,22 +273,22 @@ export default function AddSeekerModal({ show, onClose, onSubmit }) {
                     onChange={handleChange}
                     required
                   >
-                    <option value="">{t("document_type_placeholder")}</option>
+                    <option value="">{content.documentTypePlaceholder.value}</option>
                     {documentTypeOptions.map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
                   </select>
                 </div>
                 <div className="mb-3">
-                  <textarea name="announcement" className="form-control" placeholder="Объявление (детально)" value={form.announcement} onChange={handleChange} />
+                  <textarea name="announcement" className="form-control" placeholder={content.announcementPlaceholder.value} value={form.announcement} onChange={handleChange} />
                 </div>
                 <div className="mb-3">
-                  <textarea name="note" className="form-control" placeholder="Примечание" value={form.note} onChange={handleChange} />
+                  <textarea name="note" className="form-control" placeholder={content.notePlaceholder.value} value={form.note} onChange={handleChange} />
                 </div>
                 {error && <div className="text-danger mb-2">{error}</div>}
                 <div className="d-flex justify-content-between">
-                  <button type="button" className="btn btn-secondary" onClick={handleBack}>Назад</button>
-                  <button className="btn btn-success" type="submit">Сохранить</button>
+                  <button type="button" className="btn btn-secondary" onClick={handleBack}>{content.backButton.value}</button>
+                  <button className="btn btn-success" type="submit">{content.saveButton.value}</button>
                 </div>
               </form>
             )}

@@ -3,10 +3,71 @@ import { renderHook } from '@testing-library/react'
 import { useTranslationHelpers } from '../apps/client/src/utils/translationHelpers'
 import { cn, showToastError, showToastSuccess } from '../libs/utils'
 
-// Mock react-i18next
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key) => key // Just return the key for testing
+// Mock react-intlayer
+vi.mock('react-intlayer', () => ({
+  useIntlayer: () => ({
+    seekerProfileMale: { value: 'Male' },
+    seekerProfileFemale: { value: 'Female' },
+    employmentPolnaya: { value: 'Full-time' },
+    employmentChastichnaya: { value: 'Part-time' },
+    categoryObschepit: { value: 'Public catering' },
+    categoryStroika: { value: 'Construction' },
+    categoryPlotnik: { value: 'Carpenter' },
+    categorySvarshchik: { value: 'Welder' },
+    categoryElektrik: { value: 'Electrician' },
+    categoryRemont: { value: 'Repair' },
+    categoryPerevozka: { value: 'Transportation' },
+    categoryDostavka: { value: 'Delivery' },
+    categoryTransport: { value: 'Transport' },
+    categorySklad: { value: 'Warehouse' },
+    categoryZavod: { value: 'Factory' },
+    categoryProizvodstvo: { value: 'Production' },
+    categoryTorgovlya: { value: 'Trade' },
+    categoryOfis: { value: 'Office' },
+    categoryGostinitsy: { value: 'Hotels' },
+    categoryUborka: { value: 'Cleaning' },
+    categoryMeditsina: { value: 'Medicine' },
+    categoryZdorove: { value: 'Healthcare' },
+    categoryObrazovanie: { value: 'Education' },
+    categoryNyani: { value: 'Babysitting' },
+    categoryOkhrana: { value: 'Security' },
+    categoryByuti: { value: 'Beauty industry' },
+    categoryAvtoservis: { value: 'Auto service' },
+    langRusskiy: { value: 'Russian' },
+    langAngliyskiy: { value: 'English' },
+    langIvrit: { value: 'Hebrew' },
+    langUkrainskiy: { value: 'Ukrainian' },
+    langArabskiy: { value: 'Arabic' },
+    documentVisaB1: { value: 'Visa B1' },
+    documentVisaB2: { value: 'Visa B2' },
+    documentTeudatZehut: { value: 'Teudat zehut' },
+    documentWorkVisa: { value: 'Work visa' },
+    documentOther: { value: 'Other' },
+    cityAshkelon: { value: 'Ashkelon' },
+    cityTelAviv: { value: 'Tel Aviv' },
+    cityJerusalem: { value: 'Jerusalem' },
+    cityHaifa: { value: 'Haifa' },
+    cityAshdod: { value: 'Ashdod' },
+    cityRishonLeTsion: { value: 'Rishon LeZion' },
+    cityPetahTikva: { value: 'Petah Tikva' },
+    cityHolon: { value: 'Holon' },
+    cityRamatGan: { value: 'Ramat Gan' },
+    cityGivatayim: { value: 'Givatayim' },
+    cityKfarSaba: { value: 'Kfar Saba' },
+    cityBeerSheva: { value: 'Beer Sheva' },
+    cityNetanya: { value: 'Netanya' },
+    cityHerzliya: { value: 'Herzliya' },
+    cityRaanana: { value: 'Raanana' },
+    cityModiin: { value: 'Modiin' },
+    cityRoshHaayin: { value: 'Rosh HaAyin' },
+    cityYavne: { value: 'Yavne' },
+    cityRamla: { value: 'Ramla' },
+    cityLod: { value: 'Lod' },
+    cityNazareth: { value: 'Nazareth' },
+    cityAcre: { value: 'Acre' },
+    cityTiberias: { value: 'Tiberias' },
+    citySafed: { value: 'Safed' },
+    cityEilat: { value: 'Eilat' }
   })
 }))
 

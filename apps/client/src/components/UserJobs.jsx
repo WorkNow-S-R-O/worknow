@@ -6,11 +6,10 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Trash, PencilSquare, SortUp } from "react-bootstrap-icons";
 import Skeleton from "react-loading-skeleton";
-import { useTranslation } from "react-i18next";
+import { useIntlayer, useLocale } from "react-intlayer";
 import { format } from "date-fns";
 import { ru, enUS, he, ar } from "date-fns/locale";
 import "react-loading-skeleton/dist/skeleton.css";
-import useLanguageStore from '../store/languageStore';
 import { useLoadingProgress } from '../hooks/useLoadingProgress';
 import { useTranslationHelpers } from '../utils/translationHelpers';
 import { ImageModal } from './ui';
@@ -19,11 +18,11 @@ import PaginationControl from './PaginationControl';
 const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
 
 const UserJobs = () => {
-  const { t } = useTranslation();
+  const content = useIntlayer("userJobs");
+  const { locale } = useLocale();
   const { user } = useUser();
   const { getToken } = useAuth();
   const navigate = useNavigate();
-  const language = useLanguageStore((state) => state.language) || 'ru';
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
   const { getCityLabel } = useTranslationHelpers();
 
@@ -42,7 +41,7 @@ const UserJobs = () => {
 
   // Helper function to get the appropriate date-fns locale
   const getDateLocale = () => {
-    switch (language) {
+    switch (locale) {
       case 'en':
         return enUS;
       case 'he':
@@ -98,7 +97,7 @@ const UserJobs = () => {
     
     try {
       const response = await axios.get(
-        `${API_URL}/api/users/user-jobs/${user.id}?page=${currentPage}&limit=5&lang=${language}`
+        `${API_URL}/api/users/user-jobs/${user.id}?page=${currentPage}&limit=5&lang=${locale}`
       );
 
       // Jobs data received from server
@@ -121,7 +120,7 @@ const UserJobs = () => {
         "❌ Ошибка загрузки объявлений пользователя:",
         error.response?.data || error.message
       );
-      toast.error("Ошибка загрузки ваших объявлений!");
+      toast.error(content.loadJobsError.value);
       completeLoading(); // Complete loading even on error
     } finally {
       setLoading(false);
@@ -130,7 +129,7 @@ const UserJobs = () => {
 
   useEffect(() => {
     fetchUserJobs();
-  }, [user, currentPage, language]); // Loading functions are stable now
+  }, [user, currentPage, locale]); // Loading functions are stable now
 
   const handleDelete = async () => {
     if (!jobToDelete) return;
@@ -145,12 +144,12 @@ const UserJobs = () => {
         }
       });
       completeLoading(); // Complete loading when done
-      toast.success("Объявление удалено!");
+      toast.success(content.jobDeletedSuccess.value);
       setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobToDelete));
     } catch (error) {
       console.error("Ошибка удаления объявления:", error);
       completeLoading(); // Complete loading even on error
-      toast.error("Ошибка удаления объявления!");
+      toast.error(content.jobDeletedError.value);
     } finally {
       setShowModal(false);
       setJobToDelete(null);
@@ -177,11 +176,11 @@ const UserJobs = () => {
         }
       });
       completeLoading(); // Complete loading when done
-      toast.success("Объявление поднято в топ!");
+      toast.success(content.jobBoostedSuccess.value);
       fetchUserJobs();
     } catch (error) {
       completeLoading(); // Complete loading even on error
-      toast.error(error.response?.data?.error || "Ошибка поднятия объявления");
+      toast.error(error.response?.data?.error || content.jobBoostedError.value);
     }
   };
 
@@ -266,14 +265,14 @@ const UserJobs = () => {
   }, [imageLoadingStates]);
 
   if (!user) {
-    return <p className="text-center">{t("sing_in_to_view")}</p>;
+    return <p className="text-center">{content.signInToView.value}</p>;
   }
 
   return (
     <>
       <div className="mt-4">
-        <h2 className="text-lg font-bold mb-3 text-center text-primary">
-          {loading ? <Skeleton width={200} height={24} /> : t("my_ads_title")}
+        <h2 className={`text-lg font-bold mb-3 text-center text-primary ${locale === 'he' || locale === 'ar' ? 'text-end' : 'text-start'}`}>
+          {loading ? <Skeleton width={200} height={24} /> : content.myAdsTitle.value}
         </h2>
 
         {loading ? (
@@ -293,8 +292,8 @@ const UserJobs = () => {
             ))}
           </div>
         ) : jobs.length === 0 ? (
-          <div className="text-center">
-            <p className="fs-4 mb-4">{t("you_dont_have_ads")}</p>
+          <div className={`text-center ${locale === 'he' || locale === 'ar' ? 'text-end' : 'text-start'}`}>
+            <p className="fs-4 mb-4">{content.youDontHaveAds.value}</p>
             <div className="mt-4">
               <img 
                 src="/images/item-not-found.webp" 
@@ -336,10 +335,10 @@ const UserJobs = () => {
                   {/* Плашка Премиум */}
                   {job.user?.isPremium && (
                     <div className="premium-badge">
-                      <i className="bi bi-star-fill"></i> {t('premium_badge')}
+                      <i className="bi bi-star-fill"></i> {content.premiumBadge.value}
                     </div>
                   )}
-                  <div className="card-body">
+                  <div className="card-body" style={{ textAlign: locale === 'he' || locale === 'ar' ? 'right' : 'left' }}>
                     <h5 className="card-title text-primary">{job.title}</h5>
                     {job.category?.label && (
                       <div className="mb-2">
@@ -348,35 +347,35 @@ const UserJobs = () => {
                     )}
                     {!job.category?.label && (
                       <div className="mb-2">
-                        <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{t('not_specified') || 'Не указано'}</span>
+                        <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{content.notSpecified.value}</span>
                       </div>
                     )}
                     <p className="card-text">
-                      <strong>{t("salary_per_hour_card")}</strong> {job.salary}
+                      <strong>{content.salaryPerHourCard.value}</strong> {job.salary}
                       <br />
-                      <strong>{t("location_card")}</strong>{" "}
-                      {job.city?.name ? getCityLabel(job.city.name) : t("not_specified")}
+                      <strong>{content.locationCard.value}</strong>{" "}
+                      {job.city?.name ? getCityLabel(job.city.name) : content.notSpecified.value}
                     </p>
                     <p className="card-text">{job.description}</p>
                     <div className="card-text">
                       {typeof job.shuttle === 'boolean' && (
                         <p className="card-text mb-1">
-                          <strong>{t("shuttle") || "Подвозка"}:</strong> {job.shuttle ? t("yes") || "да" : t("no") || "нет"}
+                          <strong>{content.shuttle.value}:</strong> {job.shuttle ? content.yes.value : content.no.value}
                         </p>
                       )}
                       {typeof job.meals === 'boolean' && (
                         <p className="card-text mb-1">
-                          <strong>{t("meals") || "Питание"}:</strong> {job.meals ? t("yes") || "да" : t("no") || "нет"}
+                          <strong>{content.meals.value}:</strong> {job.meals ? content.yes.value : content.no.value}
                         </p>
                       )}
                       <p className="card-text mb-0">
-                        <strong>{t("phone_number_card")}</strong> {job.phone}
+                        <strong>{content.phoneNumberCard.value}</strong> {job.phone}
                       </p>
                     </div>
                     
                                         {/* Image displayed under phone number in mini size */}
                     {job.imageUrl && (
-                      <div className="mt-3">
+                      <div className={`mt-3 ${locale === 'he' || locale === 'ar' ? 'text-end' : 'text-start'}`}>
                         {/* Image rendering for job */}
                         {imageLoadingStates[job.id] && (
                           <Skeleton 
@@ -384,7 +383,9 @@ const UserJobs = () => {
                             height={80} 
                             style={{
                               borderRadius: '6px',
-                              border: '1px solid #e0e0e0'
+                              border: '1px solid #e0e0e0',
+                              marginLeft: locale === 'he' || locale === 'ar' ? 'auto' : '0',
+                              marginRight: locale === 'he' || locale === 'ar' ? '0' : 'auto'
                             }}
                           />
                         )}
@@ -403,10 +404,12 @@ const UserJobs = () => {
                               color: '#6c757d',
                               fontSize: '12px',
                               textAlign: 'center',
-                              whiteSpace: 'pre-line'
+                              whiteSpace: 'pre-line',
+                              marginLeft: locale === 'he' || locale === 'ar' ? 'auto' : '0',
+                              marginRight: locale === 'he' || locale === 'ar' ? '0' : 'auto'
                             }}
                           >
-                            {t('image_unavailable')}
+                            {content.imageUnavailable.value}
                           </div>
                         ) : (
                           <img 
@@ -420,7 +423,9 @@ const UserJobs = () => {
                               borderRadius: '6px',
                               border: '1px solid #e0e0e0',
                               cursor: 'pointer',
-                              display: imageLoadingStates[job.id] ? 'none' : 'block'
+                              display: imageLoadingStates[job.id] ? 'none' : 'block',
+                              marginLeft: locale === 'he' || locale === 'ar' ? 'auto' : '0',
+                              marginRight: locale === 'he' || locale === 'ar' ? '0' : 'auto'
                             }}
                             onClick={(e) => handleImageClick(e, job.imageUrl, job.title)}
                             onLoad={() => handleImageLoad(job.id)}
@@ -437,18 +442,18 @@ const UserJobs = () => {
                     <div className="text-muted">
                       <small>
                         <span className="d-none d-sm-inline">
-                          {t("created_at") + ": "}
+                          {content.createdAt.value + ": "}
                         </span>
                         {formatDate(job.createdAt)}
                       </small>
                     </div>
                   </div>
-                  <div className="position-absolute bottom-0 end-0 mb-3 me-3 d-flex gap-3">
+                  <div className={`position-absolute bottom-0 mb-3 d-flex gap-3 ${locale === 'he' || locale === 'ar' ? 'start-0 ms-3 flex-row-reverse' : 'end-0 me-3'}`}>
                     <div className="position-relative">
                       {isBoosted ? (
-                        <div className="d-flex align-items-center gap-2">
+                        <div className={`d-flex align-items-center gap-2 ${locale === 'he' || locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                           <small className="text-muted d-none d-sm-inline" style={{ fontSize: '11px', whiteSpace: 'nowrap' }}>
-                            {t("next_boost_after")}
+                            {content.nextBoostAfter.value}
                           </small>
                           <div 
                             className="px-2 py-1 rounded"
@@ -460,7 +465,7 @@ const UserJobs = () => {
                               whiteSpace: 'nowrap'
                             }}
                           >
-                            {timeUntilNextBoost ? `${timeUntilNextBoost.hours}${t('hours_short')} ${timeUntilNextBoost.minutes}${t('minutes_short')}` : t('boost_ready')}
+                            {timeUntilNextBoost ? `${timeUntilNextBoost.hours}${content.hoursShort.value} ${timeUntilNextBoost.minutes}${content.minutesShort.value}` : content.boostReady.value}
                           </div>
                         </div>
                       ) : (
@@ -469,7 +474,7 @@ const UserJobs = () => {
                           size={24}
                           className="text-success"
                           onClick={() => handleBoost(job.id)}
-                          title={t('boost_title')}
+                          title={content.boostTitle.value}
                           style={{ cursor: 'pointer' }}
                         />
                       )}
@@ -503,15 +508,15 @@ const UserJobs = () => {
         {/* Delete Confirmation Modal */}
         <Modal show={showModal} onHide={() => setShowModal(false)} centered>
           <Modal.Header closeButton>
-            <Modal.Title>{t("confirm_delete")}</Modal.Title>
+            <Modal.Title>{content.confirmDelete.value}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{t("confirm_delete_text")}</Modal.Body>
+          <Modal.Body>{content.confirmDeleteText.value}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowModal(false)}>
-              {t("cancel")}
+              {content.cancel.value}
             </Button>
             <Button variant="danger" onClick={handleDelete}>
-              {t("delete")}
+              {content.delete.value}
             </Button>
           </Modal.Footer>
         </Modal>

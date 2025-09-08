@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
@@ -8,7 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const NewsletterAdmin = () => {
   const { user } = useUser();
-  const { t } = useTranslation();
+  const content = useIntlayer("newsletterAdmin");
   const [subscribers, setSubscribers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
@@ -107,7 +107,7 @@ const NewsletterAdmin = () => {
             </div>
             <div className="card-body">
               {loading ? (
-                <p>{t('loading')}</p>
+                <p>{content.loading.value}</p>
               ) : (
                 <div className="table-responsive">
                   <table className="table table-sm">
@@ -127,7 +127,7 @@ const NewsletterAdmin = () => {
                           <td>{new Date(subscriber.createdAt).toLocaleDateString()}</td>
                           <td>
                             <span className={`badge ${subscriber.isActive ? 'bg-success' : 'bg-secondary'}`}>
-                              {subscriber.isActive ? t('active') : t('inactive')}
+                              {subscriber.isActive ? content.active.value : content.inactive.value}
                             </span>
                           </td>
                         </tr>

@@ -1,10 +1,10 @@
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 import UserJobs from '../UserJobs';
 import { useUser, useClerk } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 
 const Button = () => {
-  const { t } = useTranslation();
+  const content = useIntlayer("button");
   const { user } = useUser();
   const { redirectToSignIn } = useClerk();
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const Button = () => {
           className="btn btn-primary btn-l h-16 mt-20 flex items-center justify-center"
         >
           <i className="bi bi-plus-circle-fill me-2"></i>
-          {t('button_create_new_advertisement')}
+          {content.buttonCreateNewAdvertisement.value}
         </button>
       </div>
 
@@ -34,7 +34,7 @@ const Button = () => {
       ) : (
         <div className="text-center mt-6">
           <div className="fs-4 mb-4">
-            {t('message_login_to_view_ads')}
+            {content.messageLoginToViewAds.value}
           </div>
           <div className="mt-4">
             <img 

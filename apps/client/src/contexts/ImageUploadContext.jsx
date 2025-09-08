@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useAuth } from '@clerk/clerk-react';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 
 const ImageUploadContext = createContext();
 
@@ -18,7 +18,7 @@ export const ImageUploadProvider = ({ children }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const { getToken } = useAuth();
-  const { t } = useTranslation();
+  const content = useIntlayer("imageUpload");
 
   const uploadImage = async (file) => {
     if (!file) {
@@ -67,11 +67,11 @@ export const ImageUploadProvider = ({ children }) => {
       // Handle moderation errors specifically
       let errorMessage;
       if (error.response?.data?.code === 'CONTENT_REJECTED') {
-        errorMessage = t('image_moderation_error');
+        errorMessage = content.imageModerationError.value;
       } else if (error.response?.data?.error) {
         errorMessage = error.response.data.error;
       } else {
-        errorMessage = t('image_upload_error') || 'Upload failed';
+        errorMessage = content.imageUploadError.value;
       }
       
       setUploadError(errorMessage);

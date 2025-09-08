@@ -3,12 +3,12 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from '@clerk/clerk-react';
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 
 const API_URL = import.meta.env.VITE_API_URL; // Используем переменную окружения
 
 const Cancel = () => {
-  const { t } = useTranslation();
+  const content = useIntlayer("cancelPage");
   const { user } = useUser();
   const navigate = useNavigate();
 
@@ -29,7 +29,7 @@ const Cancel = () => {
       window.location.href = response.data.url;
     // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      toast.error(t("payment_transaction_error"));
+      toast.error(content.payment_transaction_error);
     }
   };
 
@@ -43,7 +43,7 @@ const Cancel = () => {
             <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl">❌</span>
           </div>
           <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">
-            {t("payment_cancelled")}
+            {content.payment_cancelled}
           </h1>
         </div>
 
@@ -59,7 +59,7 @@ const Cancel = () => {
         {/* Message Section - Ultra-compact for very small screens */}
         <div className="text-center mb-3 sm:mb-4 md:mb-6 lg:mb-8 max-w-[240px] sm:max-w-[280px] md:max-w-sm lg:max-w-md">
           <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-600 leading-relaxed">
-            {t("payment_cancelled_description")}
+            {content.payment_cancelled_description}
           </p>
         </div>
 
@@ -69,14 +69,14 @@ const Cancel = () => {
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 sm:py-3 md:py-3.5 lg:py-4 px-3 sm:px-4 md:px-6 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-xs sm:text-sm md:text-base"
             onClick={handleCheckout}
           >
-            {t("try_again")}
+            {content.try_again}
           </button>
         </div>
 
         {/* Auto-redirect Info - Ultra-compact for very small screens */}
         <div className="text-center">
           <p className="text-xs text-gray-500">
-            {t("redirecting_soon") || "Redirecting to home page in a few seconds..."}
+            {content.redirecting_soon}
           </p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import Select from "react-select";
 import Skeleton from "react-loading-skeleton";
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 import { useState } from "react";
 import ImageUpload from "../ui/ImageUpload";
 
@@ -18,7 +18,7 @@ export const JobFormFields = ({
   currentImageUrl,
   isSubmitting = false,
 }) => {
-  const { t } = useTranslation();
+  const content = useIntlayer("jobFormFields");
   const [isAgreed, setIsAgreed] = useState(false);
 
   // Сортировка: регионы в начале, остальные города после
@@ -38,7 +38,7 @@ export const JobFormFields = ({
       {/* Название вакансии */}
       <div className="mb-4">
         <label htmlFor="title" className="block text-gray-700 mb-2">
-          {t("job_title")}
+          {content.jobTitle.value}
         </label>
         <input
           id="title"
@@ -47,7 +47,7 @@ export const JobFormFields = ({
           className={`bg-white w-full border px-3 py-2 rounded ${
             errors.title ? "border-red-500" : "border-gray-300"
           }`}
-          placeholder={t("write_job_title")}
+          placeholder={content.writeJobTitle.value}
         />
         {errors.title && (
           <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
@@ -57,7 +57,7 @@ export const JobFormFields = ({
       {/* Зарплата */}
       <div className="mb-4">
         <label htmlFor="salary" className="block text-gray-700 mb-2">
-          {t("salary_per_hour")}
+          {content.salaryPerHour.value}
         </label>
         <input
           id="salary"
@@ -66,7 +66,7 @@ export const JobFormFields = ({
           className={`bg-white w-full border px-3 py-2 rounded ${
             errors.salary ? "border-red-500" : "border-gray-300"
           }`}
-          placeholder={t("write_salary")}
+          placeholder={content.writeSalary.value}
         />
         {errors.salary && (
           <p className="text-red-500 text-sm mt-1">{errors.salary.message}</p>
@@ -76,7 +76,7 @@ export const JobFormFields = ({
       {/* Город */}
       <div className="mb-4">
         <label htmlFor="cityId" className="block text-gray-700 mb-2">
-          {t("location")}
+          {content.location.value}
         </label>
         {loading ? (
           <Skeleton height={40} />
@@ -85,7 +85,7 @@ export const JobFormFields = ({
             options={sortedCities}
             value={sortedCities.find((city) => city.value === selectedCityId) || null}
             onChange={(option) => setValue("cityId", option?.value)}
-            placeholder={t("location_placeholder")}
+            placeholder={content.locationPlaceholder.value}
             classNamePrefix="react-select"
             isClearable
           />
@@ -98,7 +98,7 @@ export const JobFormFields = ({
       {/* Категория */}
       <div className="mb-4">
         <label htmlFor="categoryId" className="block text-gray-700 mb-2">
-          {t("category")}
+          {content.category.value}
         </label>
         {loading ? (
           <Skeleton height={40} />
@@ -107,7 +107,7 @@ export const JobFormFields = ({
             options={categories}
             value={categories.find((category) => category.value === selectedCategoryId) || null}
             onChange={(option) => setValue("categoryId", option?.value)}
-            placeholder={t("category_placeholder")}
+            placeholder={content.categoryPlaceholder.value}
             classNamePrefix="react-select"
             isClearable
           />
@@ -120,7 +120,7 @@ export const JobFormFields = ({
       {/* Телефон */}
       <div className="mb-4">
         <label htmlFor="phone" className="block text-gray-700 mb-2">
-          {t("phone_number")}
+          {content.phoneNumber.value}
         </label>
         <input
           id="phone"
@@ -129,7 +129,7 @@ export const JobFormFields = ({
           className={`bg-white w-full border px-3 py-2 rounded ${
             errors.phone ? "border-red-500" : "border-gray-300"
           }`}
-          placeholder={t("write_phone_number")}
+          placeholder={content.writePhoneNumber.value}
         />
         {errors.phone && (
           <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
@@ -147,7 +147,7 @@ export const JobFormFields = ({
       {/* Описание */}
       <div className="mb-4">
         <label htmlFor="description" className="block text-gray-700 mb-2">
-          {t("description")}
+          {content.description.value}
         </label>
         <textarea
           id="description"
@@ -156,7 +156,7 @@ export const JobFormFields = ({
             errors.description ? "border-red-500" : "border-gray-300"
           }`}
           rows="5"
-          placeholder={t("write_job_description")}
+          placeholder={content.writeJobDescription.value}
         />
         {errors.description && (
           <p className="text-red-500 text-sm mt-1">
@@ -174,7 +174,7 @@ export const JobFormFields = ({
           {...register("shuttle")}
         />
         <label className="form-check-label" htmlFor="shuttleCheckbox">
-          {t("shuttle") || "Подвозка"}
+          {content.shuttle.value}
         </label>
       </div>
       {/* Питание */}
@@ -186,7 +186,7 @@ export const JobFormFields = ({
           {...register("meals")}
         />
         <label className="form-check-label" htmlFor="mealsCheckbox">
-          {t("meals") || "Питание"}
+          {content.meals.value}
         </label>
       </div>
 
@@ -200,14 +200,14 @@ export const JobFormFields = ({
           onChange={() => setIsAgreed(!isAgreed)}
         />
         <label className="form-check-label ms-2" htmlFor="terms">
-          {t("terms_agreement")}{' '}
+          {content.termsAgreement.value}{' '}
           <a
             href="https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:underline"
           >
-            {t("terms_agreement_link")}
+            {content.termsAgreementLink.value}
           </a>
         </label>
       </div>
@@ -223,10 +223,10 @@ export const JobFormFields = ({
         {isSubmitting ? (
           <>
             <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-            {t('publishing')}...
+            {content.publishing.value}...
           </>
         ) : (
-          t("create")
+          content.create.value
         )}
       </button>
     </>

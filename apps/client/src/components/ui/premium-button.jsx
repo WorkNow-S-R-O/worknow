@@ -1,8 +1,8 @@
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 import { useNavigate } from "react-router-dom";
 
 const PremiumButton = () => {
-  const { t } = useTranslation();
+  const content = useIntlayer("premiumButton");
   const navigate = useNavigate();
 
   return (
@@ -12,7 +12,7 @@ const PremiumButton = () => {
       onClick={() => navigate("/premium")}
     >
       <i className="bi bi-gem me-2"></i>
-      {t("premium")}
+      {content.premium.value}
     </button>
   );
 };

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import axios from "axios";
 import { useUserSync } from "../hooks/useUserSync.js";
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 import { useLoadingProgress } from '../hooks/useLoadingProgress';
 import { useGoogleAnalytics } from '../hooks/useGoogleAnalytics.js';
 
@@ -14,7 +14,7 @@ const PremiumPage = () => {
   const [loading, setLoading] = useState(false);
   const { dbUser, loading: userLoading, error: userError, refreshUser } = useUserSync();
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
-  const { t } = useTranslation();
+  const content = useIntlayer("premiumPage");
   const { trackPremiumSubscription, trackButtonClick, trackError } = useGoogleAnalytics();
   
   // Text carousel state
@@ -23,10 +23,10 @@ const PremiumPage = () => {
   
   // Different variations of the pricing title
   const titleVariations = [
-    t('pricing_title'),
-    t('pricing_effective'),
-    t('pricing_convenient'),
-    t('pricing_trust')
+    content.pricingTitle.value,
+    content.pricingEffective.value,
+    content.pricingConvenient.value,
+    content.pricingTrust.value
   ];
 
   // Text carousel effect - change title every 3 seconds
@@ -57,12 +57,12 @@ const PremiumPage = () => {
       price: 0,
       period: "/mo",
       features: [
-        { textKey: "pricing_free_up_to_5_ads", icon: "📝", color: "text-primary" },
-        { textKey: "pricing_free_daily_boost", icon: "📈", color: "text-success" },
-        { textKey: "pricing_free_basic_support", icon: "💬", color: "text-info" },
+        { text: content.pricingFreeUpTo5Ads.value, icon: "📝", color: "text-primary" },
+        { text: content.pricingFreeDailyBoost.value, icon: "📈", color: "text-success" },
+        { text: content.pricingFreeBasicSupport.value, icon: "💬", color: "text-info" },
       ],
       button: {
-        textKey: "pricing_free_use_free",
+        text: content.pricingFreeUseFree.value,
         variant: "outline-primary",
         action: (navigate) => navigate("/create-new-advertisement")
       }
@@ -72,15 +72,15 @@ const PremiumPage = () => {
       price: 99,
       period: "/mo",
       features: [
-        { textKey: "pricing_pro_up_to_10_ads", icon: "📝", color: "text-primary" },
-        { textKey: "pricing_pro_unlimited_seeker_data", icon: "👥", color: "text-success" },
-        { textKey: "pricing_pro_top_jobs", icon: "⭐", color: "text-warning" },
-        { textKey: "pricing_pro_color_highlighting", icon: "🎨", color: "text-info" },
-        { textKey: "pricing_pro_advanced_filters", icon: "🔍", color: "text-primary" },
-        { textKey: "pricing_pro_priority_support", icon: "🚀", color: "text-danger" },
+        { text: content.pricingProUpTo10Ads.value, icon: "📝", color: "text-primary" },
+        { text: content.pricingProUnlimitedSeekerData.value, icon: "👥", color: "text-success" },
+        { text: content.pricingProTopJobs.value, icon: "⭐", color: "text-warning" },
+        { text: content.pricingProColorHighlighting.value, icon: "🎨", color: "text-info" },
+        { text: content.pricingProAdvancedFilters.value, icon: "🔍", color: "text-primary" },
+        { text: content.pricingProPrioritySupport.value, icon: "🚀", color: "text-danger" },
       ],
       button: {
-        textKey: "pricing_pro_buy_premium",
+        text: content.pricingProBuyPremium.value,
         variant: "primary",
         priceId: "price_1Qt5J0COLiDbHvw1IQNl90uU"
       },
@@ -91,17 +91,17 @@ const PremiumPage = () => {
       price: 200, // Base price for new users
       period: "/mo",
       features: [
-        { textKey: "pricing_deluxe_all_from_pro", icon: "✨", color: "text-warning" },
-        { textKey: "pricing_deluxe_personal_manager", icon: "👨‍💼", color: "text-primary" },
-        { textKey: "pricing_deluxe_facebook_autoposting", icon: "⚡", color: "text-info" },
-        { textKey: "pricing_deluxe_facebook_promotion", icon: "📢", color: "text-success" },
-        { textKey: "pricing_deluxe_personal_mailing", icon: "📧", color: "text-primary" },
-        { textKey: "pricing_deluxe_telegram_publications", icon: "🔥", color: "text-info" },
-        { textKey: "pricing_deluxe_personal_candidate_selection", icon: "🎯", color: "text-warning" },
-        { textKey: "pricing_deluxe_interview_organization", icon: "🤝", color: "text-success" },
+        { text: content.pricingDeluxeAllFromPro.value, icon: "✨", color: "text-warning" },
+        { text: content.pricingDeluxePersonalManager.value, icon: "👨‍💼", color: "text-primary" },
+        { text: content.pricingDeluxeFacebookAutoposting.value, icon: "⚡", color: "text-info" },
+        { text: content.pricingDeluxeFacebookPromotion.value, icon: "📢", color: "text-success" },
+        { text: content.pricingDeluxePersonalMailing.value, icon: "📧", color: "text-primary" },
+        { text: content.pricingDeluxeTelegramPublications.value, icon: "🔥", color: "text-info" },
+        { text: content.pricingDeluxePersonalCandidateSelection.value, icon: "🎯", color: "text-warning" },
+        { text: content.pricingDeluxeInterviewOrganization.value, icon: "🤝", color: "text-success" },
       ],
       button: {
-        textKey: "pricing_deluxe_buy_deluxe",
+        text: content.pricingDeluxeBuyDeluxe.value,
         variant: "primary",
         priceId: "price_1RfHjiCOLiDbHvw1repgIbnK"  // Price ID for 200 ILS
       },
@@ -175,11 +175,11 @@ const PremiumPage = () => {
       });
       
       if (error.response?.status === 404) {
-        alert("Пользователь не найден. Попробуйте войти заново.");
+        alert(content.userNotFound.value);
       } else if (error.response?.data?.error) {
         alert(`Ошибка оплаты: ${error.response.data.error}`);
       } else {
-        alert("Ошибка оплаты. Попробуйте позже.");
+        alert(content.paymentError.value);
       }
     } finally {
       setLoading(false);
@@ -215,7 +215,7 @@ const PremiumPage = () => {
             margin: '0 auto',
             padding: '0 20px'
           }}>
-            {t('pricing_description')}
+            {content.pricingDescription.value}
           </p>
         </div>
       </div>
@@ -224,7 +224,7 @@ const PremiumPage = () => {
       {user && userLoading ? (
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 200 }}>
           <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">{t('loading')}</span>
+            <span className="visually-hidden">{content.loading.value}</span>
           </div>
         </div>
       ) : userError ? (
@@ -238,7 +238,7 @@ const PremiumPage = () => {
           {getPlans().map((plan) => {
             let isActive = false;
             let displayPrice = plan.price;
-            let buttonText = t(plan.button.textKey);
+            let buttonText = plan.button.text;
             let priceId = plan.button.priceId;
 
             // Determine plan status based on user subscription
@@ -256,12 +256,12 @@ const PremiumPage = () => {
               if (user && dbUser?.isPremium && !dbUser?.premiumDeluxe) {
                 // User has Pro but not Deluxe - show upgrade price
                 displayPrice = 100;
-                buttonText = t('pricing_deluxe_upgrade_to_deluxe');
+                buttonText = content.pricingDeluxeUpgradeToDeluxe.value;
                 priceId = "price_1Rfli2COLiDbHvw1xdMaguLf"; // Price ID for 100 ILS upgrade
               } else if (!user || !dbUser?.isPremium) {
                 // New user or no Pro subscription - show full price
                 displayPrice = 200;
-                buttonText = t(plan.button.textKey);
+                buttonText = plan.button.text;
                 priceId = plan.button.priceId;
               } else {
 	    // User already has Deluxe or other cases - use default
@@ -307,7 +307,7 @@ const PremiumPage = () => {
                           letterSpacing: '0.5px',
                           padding: window.innerWidth <= 768 ? '12px 20px' : '8px 16px'
                         }}>
-                          ⭐ {t('pricing_recommended')}
+                          ⭐ {content.pricingRecommended.value}
                         </span>
                       </div>
                     )}
@@ -324,7 +324,7 @@ const PremiumPage = () => {
                           letterSpacing: '0.5px',
                           padding: window.innerWidth <= 768 ? '12px 20px' : '8px 16px'
                         }}>
-                          🏆 {t('pricing_best_results')}
+                          🏆 {content.pricingBestResults.value}
                         </span>
                       </div>
                     )}
@@ -338,8 +338,7 @@ const PremiumPage = () => {
                       textTransform: 'uppercase',
                       marginTop: plan.name === "Free" ? '50px' : '0'
                     }}>
-                      {plan.name === "Free" ? t('pricing_free_title') : plan.name
-                      }
+                      {plan.name === "Free" ? content.pricingFreeTitle.value : plan.name}
                     </h5>
                     
                     {/* Enhanced Price Section */}
@@ -421,7 +420,7 @@ const PremiumPage = () => {
                               fontWeight: 500,
                               color: '#495057'
                             }}>
-                              {t(feature.textKey)}
+                              {feature.text}
                             </span>
                           </li>
                         ))}
@@ -445,7 +444,7 @@ const PremiumPage = () => {
                               letterSpacing: '0.5px'
                             }}
                           >
-                            {t('pricing_free_use_free')}
+                            {content.pricingFreeUseFree.value}
                           </button>
                         ) : (
                           <button
@@ -461,7 +460,7 @@ const PremiumPage = () => {
                               letterSpacing: '0.5px'
                             }}
                           >
-                            {isActive ? t('active') : buttonText}
+                            {isActive ? content.active.value : buttonText}
                           </button>
                         )
                       ) : (
@@ -480,7 +479,7 @@ const PremiumPage = () => {
                             boxShadow: plan.highlight ? '0 6px 20px rgba(13, 110, 253, 0.4)' : 'none'
                           }}
                         >
-                          {isActive ? t('active') : (loading ? t('loading') : buttonText)}
+                          {isActive ? content.active.value : (loading ? content.loading.value : buttonText)}
                         </button>
                       )}
                     </div>
