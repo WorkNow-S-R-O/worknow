@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Facebook } from "react-bootstrap-icons";
@@ -82,7 +82,7 @@ const renderContactCell = (contact, isPremium, seekerId, seekerIds, currentIndex
           target="_blank"
           rel="noopener noreferrer"
           className="text-decoration-none"
-          title="Facebook Profile"
+          title={content.facebookProfile.value}
         >
           <Facebook className="text-primary fs-5" />
         </a>
@@ -92,7 +92,7 @@ const renderContactCell = (contact, isPremium, seekerId, seekerIds, currentIndex
 };
 
 export default function Seekers() {
-  const { t } = useTranslation();
+  const content = useIntlayer("seekers");
   const { user } = useUser();
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
   const { filters, setFilters } = useSeekerFilterStore();
@@ -208,14 +208,14 @@ export default function Seekers() {
   };
 
   const handleConfirmDelete = async () => {
-    if (!window.confirm('Удалить выбранных соискателей?')) return;
+    if (!window.confirm(content.deleteConfirmation.value)) return;
     
     startLoadingWithProgress(2500); // Start loading progress for deletion
     
     try {
       await Promise.all(selectedIds.map(id => axios.delete(`${API_URL}/api/seekers/${id}`)));
       completeLoading(); // Complete loading when done
-      toast.success('Успешно удалено');
+      toast.success(content.successfullyDeleted.value);
       setSelectedIds([]);
       setDeleteMode(false);
       // Reset to first page and refresh data instead of reloading the page
@@ -226,7 +226,7 @@ export default function Seekers() {
     } catch (error) {
       completeLoading(); // Complete loading even on error
       console.error('Error deleting seekers:', error);
-      toast.error('Ошибка при удалении');
+      toast.error(content.errorDeleting.value);
     }
   };
 
@@ -249,7 +249,7 @@ export default function Seekers() {
     // Save current page to localStorage
     localStorage.setItem('seekersCurrentPage', '1');
     // Show a toast notification about filter application
-    toast.success('Фильтры применены');
+    toast.success(content.filtersApplied.value);
     // The useSeekers hook will automatically refresh when filters change
   };
 
@@ -280,7 +280,7 @@ export default function Seekers() {
     } catch (error) {
       completeLoading(); // Complete loading even on error
       console.error('Error adding seeker:', error);
-      alert('Ошибка при добавлении соискателя');
+      alert(content.errorAddingSeeker.value);
     }
   };
 
@@ -312,11 +312,11 @@ export default function Seekers() {
       <Helmet>
         <title>
           {currentPage > 1 
-            ? `${t("seekers_helmet") || "Соискатели - WorkNow"} - Страница ${currentPage}`
-            : `${t("seekers_helmet") || "Соискатели - WorkNow"}`
+            ? `${content.seekersHelmet.value} - Страница ${currentPage}`
+            : content.seekersHelmet.value
           }
         </title>
-        <meta name="description" content={t("seekers_description") || "Список соискателей на вакансии"} />
+        <meta name="description" content={content.seekersDescription.value} />
       </Helmet>
       <AddSeekerModal show={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddSeeker} />
       <SeekerFilterModal 
@@ -335,12 +335,12 @@ export default function Seekers() {
         }}>
           <i className="bi bi-info-circle text-primary" style={{ fontSize: '1.1rem' }}></i>
           <div>
-            <strong className="text-primary">{t('seekers_database_update') || 'База данных кандидатов обновляется ежедневно'}</strong>
+            <strong className="text-primary">{content.seekersDatabaseUpdate.value}</strong>
             <div className="text-primary" style={{ fontSize: '0.9rem', marginTop: '2px', opacity: '0.8' }}>
-              {t('seekers_database_update_description') || 'Новые кандидаты добавляются каждый день'}
+              {content.seekersDatabaseUpdateDescription.value}
             </div>
             <div className="text-primary" style={{ fontSize: '0.9rem', marginTop: '8px', opacity: '0.9' }}>
-              {t('seekers_add_yourself') || 'Если хотите добавить себя в этот список, напишите в WhatsApp - 053-3033332'}
+              {content.seekersAddYourself.value}
             </div>
           </div>
         </div>
@@ -348,7 +348,7 @@ export default function Seekers() {
         {/* Mobile-optimized header */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3 seekers-header">
           <div className="d-flex align-items-center gap-3">
-            <h2 className="fs-4 mb-0">{t("seekers") || "Соискатели"}</h2>
+            <h2 className="fs-4 mb-0">{content.seekers.value}</h2>
 
           </div>
           <div className="d-flex flex-wrap gap-2 seekers-buttons" style={{ minWidth: 'fit-content' }}>
@@ -364,7 +364,7 @@ export default function Seekers() {
               }}
             >
               <i className="bi bi-gear" style={{ fontSize: '16px' }}></i>
-              <span>{t('filters') || 'Фильтры'}</span>
+              <span>{content.filters.value}</span>
             </button>
             <button 
               className={`btn d-flex align-items-center gap-2 seekers-btn ${isNewsletterSubscribed ? 'btn-outline-primary' : 'btn-outline-primary'}`}
@@ -378,7 +378,7 @@ export default function Seekers() {
               }}
             >
               <i className={`bi ${isNewsletterSubscribed ? 'bi-check-circle-fill' : 'bi-envelope'}`} style={{ fontSize: '16px' }}></i>
-              <span>{t('newsletter') || 'Рассылка'}</span>
+              <span>{content.newsletter.value}</span>
             </button>
             {isAdmin && (
               <button 
@@ -392,7 +392,7 @@ export default function Seekers() {
                   whiteSpace: 'nowrap'
                 }}
               >
-                <span>+ {t('add_seeker') || 'Добавить соискателя'}</span>
+                <span>+ {content.addSeeker.value}</span>
               </button>
             )}
             {isAdmin && (
@@ -410,7 +410,7 @@ export default function Seekers() {
                     }}
                   >
                     <i className="bi bi-trash" style={{ fontSize: '16px' }}></i>
-                    <span>{t('delete_seeker') || 'Удалить соискателя'}</span>
+                    <span>{content.deleteSeeker.value}</span>
                   </button>
                 )}
                 {deleteMode && (
@@ -428,7 +428,7 @@ export default function Seekers() {
                       }}
                     >
                       <i className="bi bi-check-circle" style={{ fontSize: '16px' }}></i>
-                      <span>{t('confirm_delete') || 'Подтвердить удаление'}</span>
+                      <span>{content.confirmDelete.value}</span>
                     </button>
                     <button 
                       className="btn btn-secondary d-flex align-items-center gap-2 seekers-btn"
@@ -442,7 +442,7 @@ export default function Seekers() {
                       }}
                     >
                       <i className="bi bi-x-circle" style={{ fontSize: '16px' }}></i>
-                      <span>{t('cancel') || 'Отмена'}</span>
+                      <span>{content.cancel.value}</span>
                     </button>
                   </>
                 )}
@@ -457,10 +457,10 @@ export default function Seekers() {
               <thead>
                 <tr className="table-light">
                   {isAdmin && deleteMode && <th style={{ width: '40px' }}></th>}
-                  <th style={{ minWidth: '120px' }}>{t('seekers_table_name')}</th>
-                  <th style={{ minWidth: '120px' }}>{t('seekers_table_contact')}</th>
-                  <th style={{ minWidth: '100px' }}>{t('seekers_table_city')}</th>
-                  <th style={{ minWidth: '200px' }}>{t('seekers_table_description')}</th>
+                  <th style={{ minWidth: '120px' }}>{content.seekersTableName.value}</th>
+                  <th style={{ minWidth: '120px' }}>{content.seekersTableContact.value}</th>
+                  <th style={{ minWidth: '100px' }}>{content.seekersTableCity.value}</th>
+                  <th style={{ minWidth: '200px' }}>{content.seekersTableDescription.value}</th>
                 </tr>
               </thead>
               <tbody>
@@ -500,8 +500,8 @@ export default function Seekers() {
             <div className="mb-3">
               <i className="bi bi-people" style={{ fontSize: '3rem', color: '#6c757d' }}></i>
             </div>
-            <h5 className="text-muted">{t('no_seekers_found') || 'Соискатели не найдены'}</h5>
-            <p className="text-muted">{t('no_seekers_description') || 'Попробуйте изменить фильтры или загляните позже'}</p>
+            <h5 className="text-muted">{content.noSeekersFound.value}</h5>
+            <p className="text-muted">{content.noSeekersDescription.value}</p>
           </div>
         )}
         {!loading && seekers.length === 0 && pagination && pagination.totalCount > 0 && (
@@ -511,15 +511,15 @@ export default function Seekers() {
             </div>
             <h5 className="text-muted">
               {Object.keys(filters).length > 0 && Object.values(filters).some(v => v !== '' && v !== undefined && v !== false) 
-                ? 'Нет соискателей, соответствующих фильтрам на текущей странице'
-                : 'Нет соискателей на текущей странице'
+                ? content.noSeekersMatchingFilters.value
+                : content.noSeekersOnPage.value
               }
             </h5>
             <p className="text-muted">
-              Всего соискателей: {pagination.totalCount}. 
+              {content.totalSeekers.value} {pagination.totalCount}. 
               {Object.keys(filters).length > 0 && Object.values(filters).some(v => v !== '' && v !== undefined && v !== false)
-                ? ' Попробуйте изменить фильтры или перейти на другую страницу.'
-                : ' Перейдите на другую страницу.'
+                ? content.tryChangingFilters.value
+                : content.goToAnotherPage.value
               }
             </p>
             <PaginationControl
@@ -533,7 +533,7 @@ export default function Seekers() {
                   className="btn btn-outline-primary"
                   onClick={() => handlePageChange(1)}
                 >
-                  <i className="bi bi-arrow-left"></i> Вернуться на первую страницу
+                  <i className="bi bi-arrow-left"></i> {content.returnToFirstPage.value}
                 </button>
               </div>
             )}
@@ -545,21 +545,20 @@ export default function Seekers() {
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <div className="d-flex align-items-center gap-3">
                   <small className="text-muted">
-                    Показано {seekers.length} из {pagination.totalCount} соискателей
-
+                    {content.showingSeekers.value} {seekers.length} {content.ofSeekers.value} {pagination.totalCount} {content.seekersCount.value}
                   </small>
                   {Object.keys(filters).length > 0 && Object.values(filters).some(v => v !== '' && v !== undefined && v !== false) && (
                     <span className="badge bg-info text-white">
-                      <i className="bi bi-funnel"></i> Фильтры применены
+                      <i className="bi bi-funnel"></i> {content.filtersAppliedBadge.value}
                     </span>
                   )}
                 </div>
                 {totalPages > 1 && (
                   <small className="text-muted">
-                    <i className="bi bi-arrow-left-right"></i> Используйте пагинацию для навигации
+                    <i className="bi bi-arrow-left-right"></i> {content.usePaginationForNavigation.value}
                     {totalPages > 10 && (
                       <span className="ms-2 text-warning">
-                        <i className="bi bi-exclamation-triangle"></i> Много страниц - используйте фильтры для ускорения поиска
+                        <i className="bi bi-exclamation-triangle"></i> {content.manyPagesWarning.value}
                       </span>
                     )}
                   </small>
@@ -580,10 +579,10 @@ export default function Seekers() {
                         />
                       </th>
                     )}
-                    <th style={{ minWidth: '120px' }}>{t('seekers_table_name')}</th>
-                    <th style={{ minWidth: '120px' }}>{t('seekers_table_contact')}</th>
-                    <th style={{ minWidth: '100px' }}>{t('seekers_table_city')}</th>
-                    <th style={{ minWidth: '200px' }}>{t('seekers_table_description')}</th>
+                    <th style={{ minWidth: '120px' }}>{content.seekersTableName.value}</th>
+                    <th style={{ minWidth: '120px' }}>{content.seekersTableContact.value}</th>
+                    <th style={{ minWidth: '100px' }}>{content.seekersTableCity.value}</th>
+                    <th style={{ minWidth: '200px' }}>{content.seekersTableDescription.value}</th>
                   </tr>
                 </thead>
                 <tbody key={`seekers-tbody-${currentPage}`}>

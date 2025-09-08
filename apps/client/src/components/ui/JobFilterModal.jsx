@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import useLanguageStore from '../../store/languageStore';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer, useLocale } from 'react-intlayer';
 
 const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
   const [salary, setSalary] = useState(currentFilters.salary || '');
@@ -12,8 +11,8 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const modalRef = useRef();
-  const language = useLanguageStore((state) => state.language) || 'ru';
-  const { t } = useTranslation();
+  const { locale } = useLocale();
+  const content = useIntlayer("jobFilterModal");
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -61,7 +60,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
         }
       }
       
-      fetch(`${API_URL}/api/categories?lang=${language}`)
+      fetch(`${API_URL}/api/categories?lang=${locale}`)
         .then(res => res.json())
         .then(data => setCategories(data));
     } else {
@@ -88,7 +87,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
         }
       }
     };
-  }, [open, currentFilters, language, API_URL, isMobile]);
+  }, [open, currentFilters, locale, API_URL, isMobile]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -192,7 +191,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
       <div ref={modalRef} style={contentStyle}>
         {isMobile ? (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-            <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>{t('filter_modal_title')}</h5>
+            <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>{content.filterModalTitle.value}</h5>
             <button 
               type="button" 
               className="btn-close" 
@@ -216,7 +215,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                 fontSize: isMobile ? '24px' : '16px' 
               }}
             ></button>
-            <h5 className='mb-4 font-size-10'>{t('filter_modal_title')}</h5>
+            <h5 className='mb-4 font-size-10'>{content.filterModalTitle.value}</h5>
           </>
         )}
         
@@ -224,32 +223,32 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
           {isMobile ? (
             <>
               <div style={{ marginBottom: '20px' }}>
-                <label style={{ fontSize: '16px', fontWeight: '500', marginBottom: '8px', display: 'block' }}>{t('filter_salary_label')}</label>
+                <label style={{ fontSize: '16px', fontWeight: '500', marginBottom: '8px', display: 'block' }}>{content.filterSalaryLabel.value}</label>
                 <input 
                   type="number" 
                   className="form-control" 
                   value={salary} 
                   onChange={e => setSalary(e.target.value)} 
-                  placeholder={t('filter_salary_placeholder')}
+                  placeholder={content.filterSalaryPlaceholder.value}
                   style={{ fontSize: '16px', padding: '12px', margin: '0 8px', width: '90%' }}
                 />
               </div>
               
               <div style={{ marginBottom: '28px' }}>
-                <label style={{ fontSize: '16px', fontWeight: '500', marginBottom: '8px', display: 'block' }}>{t('category')}</label>
+                <label style={{ fontSize: '16px', fontWeight: '500', marginBottom: '8px', display: 'block' }}>{content.category.value}</label>
                 <select 
                   className="form-select" 
                   value={selectedCategory} 
                   onChange={e => setSelectedCategory(e.target.value)}
                   style={{ fontSize: '16px', padding: '12px', margin: '0 8px', width: '90%' }}
                 >
-                  <option value="">{t('choose_category')}</option>
+                  <option value="">{content.chooseCategory.value}</option>
                   {Array.isArray(categories) ? (
                     categories.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.label}</option>
                     ))
                   ) : (
-                    <option value="" disabled>{t('categories_load_error') || 'Ошибка загрузки категорий'}</option>
+                    <option value="" disabled>{content.categoriesLoadError.value || 'Ошибка загрузки категорий'}</option>
                   )}
                 </select>
               </div>
@@ -268,7 +267,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                   }}
                 />
                 <label className="form-check-label" htmlFor="shuttleSwitch" style={{ fontSize: '16px' }}>
-                  {t('shuttle') || 'Подвозка'}
+                  {content.shuttle.value || 'Подвозка'}
                 </label>
               </div>
               
@@ -286,26 +285,26 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                   }}
                 />
                 <label className="form-check-label" htmlFor="mealsSwitch" style={{ fontSize: '16px' }}>
-                  {t('meals') || 'Питание'}
+                  {content.meals.value || 'Питание'}
                 </label>
               </div>
             </>
           ) : (
             <>
               <div style={{ marginBottom: 16 }}>
-                <label>{t('filter_salary_label')}</label>
-                <input type="number" className="form-control" value={salary} onChange={e => setSalary(e.target.value)} placeholder={t('filter_salary_placeholder')} style={{ margin: '0 8px', width: '90%' }} />
+                <label>{content.filterSalaryLabel.value}</label>
+                <input type="number" className="form-control" value={salary} onChange={e => setSalary(e.target.value)} placeholder={content.filterSalaryPlaceholder.value} style={{ margin: '0 8px', width: '90%' }} />
               </div>
               <div style={{ marginBottom: 24 }}>
-                <label>{t('category')}</label>
+                <label>{content.category.value}</label>
                 <select className="form-select" value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)} style={{ margin: '0 8px', width: '90%' }}>
-                  <option value="">{t('choose_category')}</option>
+                  <option value="">{content.chooseCategory.value}</option>
                   {Array.isArray(categories) ? (
                     categories.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.label}</option>
                     ))
                   ) : (
-                    <option value="" disabled>{t('categories_load_error') || 'Ошибка загрузки категорий'}</option>
+                    <option value="" disabled>{content.categoriesLoadError.value || 'Ошибка загрузки категорий'}</option>
                   )}
                 </select>
               </div>
@@ -318,7 +317,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                   onChange={e => setShuttleOnly(e.target.checked)}
                 />
                 <label className="form-check-label" htmlFor="shuttleSwitch">
-                  {t('shuttle') || 'Подвозка'}
+                  {content.shuttle.value || 'Подвозка'}
                 </label>
               </div>
               <div className="form-check mb-4" style={{ marginLeft: '8px' }}>
@@ -330,7 +329,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                   onChange={e => setMealsOnly(e.target.checked)}
                 />
                 <label className="form-check-label" htmlFor="mealsSwitch">
-                  {t('meals') || 'Питание'}
+                  {content.meals.value || 'Питание'}
                 </label>
               </div>
             </>
@@ -353,7 +352,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
               fontWeight: '500'
             }}
           >
-            {t('reset')}
+            {content.reset.value}
           </button>
           <button 
             className="btn btn-primary px-4" 
@@ -365,7 +364,7 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
               fontWeight: '500'
             }}
           >
-            {t('save')}
+            {content.save.value}
           </button>
         </div>
       </div>

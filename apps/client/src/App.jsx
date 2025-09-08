@@ -2,11 +2,13 @@ import { useMemo, Suspense, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { baseTheme } from "@clerk/themes";
+import { ruRU, enUS, heIL, arSA, ukUA } from "@clerk/localizations";
 import { RouterProvider, Outlet, createBrowserRouter } from "react-router-dom";
-import useLanguageStore from "./store/languageStore.ts";
 import { HelmetProvider, Helmet } from "react-helmet-async"; // 🔹 SEO
 import { ImageUploadProvider } from "./contexts/ImageUploadContext.jsx";
 import { LoadingProvider } from "./contexts/LoadingContext.jsx";
+import { IntlayerProvider, useIntlayer, useLocale } from "react-intlayer";
+import { useI18nHTMLAttributes } from "./hooks/useI18nHTMLAttributes";
 import ProgressBar from "./components/ui/ProgressBar.jsx";
 import Home from "./pages/Home.jsx";
 import MyAds from "./pages/MyAds.jsx";
@@ -25,7 +27,6 @@ import SeekerDetails from "./pages/SeekerDetails.jsx";
 import PremiumPage from "./components/PremiumPage.jsx";
 import { Navbar } from "./components/Navbar.jsx";
 import { Footer } from "./components/Footer.jsx";
-import "./18n.ts";
 import "./css/ripple.css";
 import CancelSubscription from "./components/CancelSubscription.jsx";
 import BillingPage from "./components/BillingPage.jsx";
@@ -109,12 +110,23 @@ if (!PUBLISHABLE_KEY || !PUBLISHABLE_KEY.startsWith('pk_')) {
   console.error('❌ Ошибка: Некорректный или отсутствует VITE_CLERK_PUBLISHABLE_KEY! Проверьте .env и перезапустите dev-сервер.');
 }
 
-const App = () => {
-  const localization = useLanguageStore((state) => state.localization);
-  const loading = useLanguageStore((state) => state.loading);
-  const currentLang = useLanguageStore((state) => state.language) || 'ru';
+// Clerk localization mapping
+const clerkLocalizationMap = {
+  'ru': ruRU,
+  'en': enUS,
+  'he': heIL,
+  'ar': arSA,
+  'uk': ukUA,
+};
 
-  const memoizedLocalization = useMemo(() => localization ?? {}, [localization]);
+const AppContent = () => {
+  const { locale } = useLocale();
+  
+  // Apply the hook to update the <html> tag's lang and dir attributes based on the locale.
+  useI18nHTMLAttributes();
+  
+  // Get the appropriate Clerk localization based on current locale
+  const clerkLocalization = clerkLocalizationMap[locale] || ruRU; // Default to Russian
 
   // Initialize Google Analytics on app load
   useEffect(() => {
@@ -146,28 +158,18 @@ const App = () => {
     return <div style={{color: 'red', fontWeight: 'bold', padding: 24}}>❌ Ошибка: Некорректный или отсутствует VITE_CLERK_PUBLISHABLE_KEY!<br/>Проверьте .env и перезапустите dev-сервер.<br/>Текущий ключ: <code>{String(PUBLISHABLE_KEY)}</code></div>;
   }
 
-  if (loading) {
-    return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh'}}>
-      <div className="ripple">
-        <div></div>
-        <div></div>
-      </div>
-    </div>;
-  }
-
   return (
     <ClerkProvider
       appearance={{ baseTheme: baseTheme }}
       publishableKey={PUBLISHABLE_KEY}
       afterSignOutUrl="/"
-      localization={memoizedLocalization}
-      locale={currentLang}
+      localization={clerkLocalization}
     >
       <LoadingProvider>
         <ImageUploadProvider>
           <HelmetProvider>
-            {/* 🔹 Глобальная SEO-оптимизация */}
-            <Helmet>
+          {/* 🔹 Глобальная SEO-оптимизация */}
+          <Helmet>
               <title>WorkNow – Работа в Израиле | Поиск вакансий</title>
               <meta name="description" content="Найти работу в Израиле стало проще! Поиск свежих вакансий в Тель-Авиве, Иерусалиме, Хайфе. Начните карьеру с WorkNow!" />
               <meta name="keywords" content="работа в Израиле, вакансии в Израиле, поиск работы Израиль, работа Тель-Авив, работа Хайфа" />
@@ -238,6 +240,14 @@ const App = () => {
         </ImageUploadProvider>
       </LoadingProvider>
     </ClerkProvider>
+  );
+};
+
+const App = () => {
+  return (
+    <IntlayerProvider>
+      <AppContent />
+    </IntlayerProvider>
   );
 };
 

@@ -1,12 +1,12 @@
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 
 export const useTranslationHelpers = () => {
-  const { t } = useTranslation();
+  const content = useIntlayer("translationHelpers");
 
   const getGenderLabel = (gender) => {
     if (!gender) return '';
-    if (["мужчина", "male"].includes(gender.toLowerCase())) return t('seeker_profile_male');
-    if (["женщина", "female"].includes(gender.toLowerCase())) return t('seeker_profile_female');
+    if (["мужчина", "male"].includes(gender.toLowerCase())) return content.seekerProfileMale.value;
+    if (["женщина", "female"].includes(gender.toLowerCase())) return content.seekerProfileFemale.value;
     return gender;
   };
 
@@ -15,15 +15,13 @@ export const useTranslationHelpers = () => {
     // Handle both Russian and English values
     const employmentLower = employment.toLowerCase();
     if (employmentLower === 'полная' || employmentLower === 'full-time' || employmentLower === 'fulltime') {
-      return t('employment_polnaya');
+      return content.employmentPolnaya.value;
     }
     if (employmentLower === 'частичная' || employmentLower === 'part-time' || employmentLower === 'parttime') {
-      return t('employment_chastichnaya');
+      return content.employmentChastichnaya.value;
     }
-    // Fallback to the existing pattern
-    const key = `employment_${employmentLower}`;
-    const translated = t(key);
-    return translated === key ? employment : translated;
+    // Fallback to the original value if no match found
+    return employment;
   };
 
   const getCategoryLabel = (category) => {
@@ -31,78 +29,76 @@ export const useTranslationHelpers = () => {
     // Handle common category values
     const categoryLower = category.toLowerCase();
     if (categoryLower === 'общепит' || categoryLower === 'public catering') {
-      return t('category_obschepit');
+      return content.categoryObschepit.value;
     }
     if (categoryLower === 'стройка' || categoryLower === 'construction') {
-      return t('category_stroika');
+      return content.categoryStroika.value;
     }
     if (categoryLower === 'плотник' || categoryLower === 'carpenter') {
-      return t('category_plotnik');
+      return content.categoryPlotnik.value;
     }
     if (categoryLower === 'сварщик' || categoryLower === 'welder') {
-      return t('category_svarshchik');
+      return content.categorySvarshchik.value;
     }
     if (categoryLower === 'электрик' || categoryLower === 'electrician') {
-      return t('category_elektrik');
+      return content.categoryElektrik.value;
     }
     if (categoryLower === 'ремонт' || categoryLower === 'repair') {
-      return t('category_remont');
+      return content.categoryRemont.value;
     }
     if (categoryLower === 'перевозка' || categoryLower === 'transportation') {
-      return t('category_perevozka');
+      return content.categoryPerevozka.value;
     }
     if (categoryLower === 'доставка' || categoryLower === 'delivery') {
-      return t('category_dostavka');
+      return content.categoryDostavka.value;
     }
     if (categoryLower === 'транспорт' || categoryLower === 'transport') {
-      return t('category_transport');
+      return content.categoryTransport.value;
     }
     if (categoryLower === 'склад' || categoryLower === 'warehouse') {
-      return t('category_sklad');
+      return content.categorySklad.value;
     }
     if (categoryLower === 'завод' || categoryLower === 'factory') {
-      return t('category_zavod');
+      return content.categoryZavod.value;
     }
     if (categoryLower === 'производство' || categoryLower === 'production') {
-      return t('category_proizvodstvo');
+      return content.categoryProizvodstvo.value;
     }
     if (categoryLower === 'торговля' || categoryLower === 'trade') {
-      return t('category_torgovlya');
+      return content.categoryTorgovlya.value;
     }
     if (categoryLower === 'офис' || categoryLower === 'office') {
-      return t('category_ofis');
+      return content.categoryOfis.value;
     }
     if (categoryLower === 'гостиницы' || categoryLower === 'hotels') {
-      return t('category_gostinitsy');
+      return content.categoryGostinitsy.value;
     }
     if (categoryLower === 'уборка' || categoryLower === 'cleaning') {
-      return t('category_uborka');
+      return content.categoryUborka.value;
     }
     if (categoryLower === 'медицина' || categoryLower === 'medicine') {
-      return t('category_meditsina');
+      return content.categoryMeditsina.value;
     }
     if (categoryLower === 'здоровье' || categoryLower === 'healthcare') {
-      return t('category_zdorove');
+      return content.categoryZdorove.value;
     }
     if (categoryLower === 'образование' || categoryLower === 'education') {
-      return t('category_obrazovanie');
+      return content.categoryObrazovanie.value;
     }
     if (categoryLower === 'няни' || categoryLower === 'babysitting') {
-      return t('category_nyani');
+      return content.categoryNyani.value;
     }
     if (categoryLower === 'охрана' || categoryLower === 'security') {
-      return t('category_okhrana');
+      return content.categoryOkhrana.value;
     }
     if (categoryLower === 'бьюти-индустрия' || categoryLower === 'beauty industry') {
-      return t('category_byuti');
+      return content.categoryByuti.value;
     }
     if (categoryLower === 'автосервис' || categoryLower === 'auto service') {
-      return t('category_avtoservis');
+      return content.categoryAvtoservis.value;
     }
-    // Fallback to the existing pattern
-    const key = `category_${categoryLower}`;
-    const translated = t(key);
-    return translated === key ? category : translated;
+    // Fallback to the original value if no match found
+    return category;
   };
 
   const getLangLabel = (lang) => {
@@ -110,24 +106,22 @@ export const useTranslationHelpers = () => {
     // Handle common language values
     const langLower = lang.toLowerCase();
     if (langLower === 'русский' || langLower === 'russian') {
-      return t('lang_russkiy');
+      return content.langRusskiy.value;
     }
     if (langLower === 'английский' || langLower === 'english') {
-      return t('lang_angliyskiy');
+      return content.langAngliyskiy.value;
     }
     if (langLower === 'иврит' || langLower === 'hebrew') {
-      return t('lang_ivrit');
+      return content.langIvrit.value;
     }
     if (langLower === 'украинский' || langLower === 'ukrainian') {
-      return t('lang_ukrainskiy');
+      return content.langUkrainskiy.value;
     }
     if (langLower === 'арабский' || langLower === 'arabic') {
-      return t('lang_arabskiy');
+      return content.langArabskiy.value;
     }
-    // Fallback to the existing pattern
-    const key = `lang_${langLower}`;
-    const translated = t(key);
-    return translated === key ? lang : translated;
+    // Fallback to the original value if no match found
+    return lang;
   };
 
   const getDocumentTypeLabel = (documentType) => {
@@ -135,24 +129,22 @@ export const useTranslationHelpers = () => {
     // Handle common document type values
     const docLower = documentType.toLowerCase();
     if (docLower === 'виза б1' || docLower === 'visa b1' || docLower === 'виза б1') {
-      return t('document_visa_b1');
+      return content.documentVisaB1.value;
     }
     if (docLower === 'виза б2' || docLower === 'visa b2' || docLower === 'виза б2') {
-      return t('document_visa_b2');
+      return content.documentVisaB2.value;
     }
     if (docLower === 'теудат зеут' || docLower === 'teudat zehut' || docLower === 'תעודת זהות') {
-      return t('document_teudat_zehut');
+      return content.documentTeudatZehut.value;
     }
     if (docLower === 'рабочая виза' || docLower === 'work visa' || docLower === 'ויזת עבודה') {
-      return t('document_work_visa');
+      return content.documentWorkVisa.value;
     }
     if (docLower === 'другое' || docLower === 'other' || docLower === 'אחר' || docLower === 'أخرى') {
-      return t('document_other');
+      return content.documentOther.value;
     }
-    // Fallback to the existing pattern
-    const key = `document_${docLower.replace(/\s+/g, '_')}`;
-    const translated = t(key);
-    return translated === key ? documentType : translated;
+    // Fallback to the original value if no match found
+    return documentType;
   };
 
   const getCityLabel = (city) => {
@@ -160,84 +152,82 @@ export const useTranslationHelpers = () => {
     // Handle common city values
     const cityLower = city.toLowerCase();
     if (cityLower === 'ашкелон' || cityLower === 'ashkelon' || cityLower === 'אשקלון' || cityLower === 'أشكلون') {
-      return t('city_ashkelon');
+      return content.cityAshkelon.value;
     }
     if (cityLower === 'тель-авив' || cityLower === 'tel aviv' || cityLower === 'תל אביב' || cityLower === 'تل أبيب') {
-      return t('city_tel_aviv');
+      return content.cityTelAviv.value;
     }
     if (cityLower === 'иерусалим' || cityLower === 'jerusalem' || cityLower === 'ירושלים' || cityLower === 'القدس') {
-      return t('city_jerusalem');
+      return content.cityJerusalem.value;
     }
     if (cityLower === 'хайфа' || cityLower === 'haifa' || cityLower === 'חיפה' || cityLower === 'حيفا') {
-      return t('city_haifa');
+      return content.cityHaifa.value;
     }
     if (cityLower === 'ашдод' || cityLower === 'ashdod' || cityLower === 'אשדוד' || cityLower === 'أشدود') {
-      return t('city_ashdod');
+      return content.cityAshdod.value;
     }
     if (cityLower === 'ришон-ле-цион' || cityLower === 'rishon lezion' || cityLower === 'ראשון לציון' || cityLower === 'ريشون لتسيون') {
-      return t('city_rishon_le_tsion');
+      return content.cityRishonLeTsion.value;
     }
     if (cityLower === 'петах-тиква' || cityLower === 'petah tikva' || cityLower === 'פתח תקווה' || cityLower === 'بتاح تكفا') {
-      return t('city_petah_tikva');
+      return content.cityPetahTikva.value;
     }
     if (cityLower === 'холон' || cityLower === 'holon' || cityLower === 'חולון' || cityLower === 'حولون') {
-      return t('city_holon');
+      return content.cityHolon.value;
     }
     if (cityLower === 'рамат-ган' || cityLower === 'ramat gan' || cityLower === 'רמת גן' || cityLower === 'رمات غان') {
-      return t('city_ramat_gan');
+      return content.cityRamatGan.value;
     }
     if (cityLower === 'гиватаим' || cityLower === 'givatayim' || cityLower === 'גבעתיים' || cityLower === 'جفعاتايم') {
-      return t('city_givatayim');
+      return content.cityGivatayim.value;
     }
     if (cityLower === 'кфар-саба' || cityLower === 'kfar saba' || cityLower === 'כפר סבא' || cityLower === 'كفار سابا') {
-      return t('city_kfar_saba');
+      return content.cityKfarSaba.value;
     }
     if (cityLower === 'беэр-шева' || cityLower === 'beer sheva' || cityLower === 'באר שבע' || cityLower === 'بئر السبع') {
-      return t('city_beer_sheva');
+      return content.cityBeerSheva.value;
     }
     if (cityLower === 'нетания' || cityLower === 'netanya' || cityLower === 'נתניה' || cityLower === 'نتانيا') {
-      return t('city_netanya');
+      return content.cityNetanya.value;
     }
     if (cityLower === 'герцлия' || cityLower === 'herzliya' || cityLower === 'הרצליה' || cityLower === 'هرتسليا') {
-      return t('city_herzliya');
+      return content.cityHerzliya.value;
     }
     if (cityLower === 'раанана' || cityLower === 'raanana' || cityLower === 'רעננה' || cityLower === 'رعنانا') {
-      return t('city_raanana');
+      return content.cityRaanana.value;
     }
     if (cityLower === 'модиин' || cityLower === 'modiin' || cityLower === 'מודיעין' || cityLower === 'موديعين') {
-      return t('city_modiin');
+      return content.cityModiin.value;
     }
     if (cityLower === 'рош-ха-аин' || cityLower === 'rosh haayin' || cityLower === 'ראש העין' || cityLower === 'رأس العين') {
-      return t('city_rosh_haayin');
+      return content.cityRoshHaayin.value;
     }
     if (cityLower === 'явне' || cityLower === 'yavne' || cityLower === 'יבנה' || cityLower === 'يبنة') {
-      return t('city_yavne');
+      return content.cityYavne.value;
     }
     if (cityLower === 'рамла' || cityLower === 'ramla' || cityLower === 'רמלה' || cityLower === 'الرملة') {
-      return t('city_ramla');
+      return content.cityRamla.value;
     }
     if (cityLower === 'лод' || cityLower === 'lod' || cityLower === 'לוד' || cityLower === 'اللد') {
-      return t('city_lod');
+      return content.cityLod.value;
     }
     if (cityLower === 'назарет' || cityLower === 'nazareth' || cityLower === 'נצרת' || cityLower === 'الناصرة') {
-      return t('city_nazareth');
+      return content.cityNazareth.value;
     }
     if (cityLower === 'акко' || cityLower === 'acre' || cityLower === 'עכו' || cityLower === 'عكا') {
-      return t('city_acre');
+      return content.cityAcre.value;
     }
     if (cityLower === 'тверия' || cityLower === 'tiberias' || cityLower === 'טבריה' || cityLower === 'طبريا') {
-      return t('city_tiberias');
+      return content.cityTiberias.value;
     }
     if (cityLower === 'цфат' || cityLower === 'safed' || cityLower === 'צפת' || cityLower === 'صفد') {
-      return t('city_safed');
+      return content.citySafed.value;
     }
     if (cityLower === 'эйлат' || cityLower === 'eilat' || cityLower === 'אילת' || cityLower === 'إيلات') {
-      return t('city_eilat');
+      return content.cityEilat.value;
     }
-    // Fallback to the existing pattern
-    const key = `city_${cityLower.replace(/[\s-]/g, '_')}`;
-    const translated = t(key);
-    return translated === key ? city : translated;
+    // Fallback to the original value if no match found
+    return city;
   };
 
   return {

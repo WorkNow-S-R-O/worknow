@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import useLanguageStore from '../store/languageStore';
+import { useLocale } from 'react-intlayer';
 import { useLoadingProgress } from './useLoadingProgress';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -10,7 +10,7 @@ const useSeekers = (page = 1, filters = {}, forceRefresh = 0) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState(null);
-  const language = useLanguageStore((state) => state.language) || 'ru';
+  const { locale } = useLocale();
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
 
   // Memoize filters to prevent infinite re-renders
@@ -40,7 +40,7 @@ const useSeekers = (page = 1, filters = {}, forceRefresh = 0) => {
         const params = new URLSearchParams({
           page: page,
           limit: 10,
-          lang: language
+          lang: locale
         });
 
         // Add filter parameters if they exist
@@ -95,7 +95,7 @@ const useSeekers = (page = 1, filters = {}, forceRefresh = 0) => {
     };
 
     loadSeekers();
-  }, [language, page, memoizedFilters, forceRefresh]); // Use memoized filters to prevent infinite loops
+  }, [locale, page, memoizedFilters, forceRefresh]); // Use memoized filters to prevent infinite loops
 
         // useSeekers hook state updated
   return { seekers, loading, error, pagination };

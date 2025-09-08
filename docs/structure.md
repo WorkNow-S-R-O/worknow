@@ -62,31 +62,71 @@
 
 ### Client (Frontend)
 - apps/client/index.html - Main HTML file
-- apps/client/src/App.jsx - Main React application
+- apps/client/src/App.jsx - Main React application (migrated to Intlayer)
 - apps/client/src/main.jsx - React entry point
+- apps/client/src/content/ - Intlayer content files
+  - home.content.tsx - Home page translations
+  - jobListing.content.tsx - Job listing component translations
+  - common.content.tsx - Common UI element translations
+  - navbar.content.tsx - Navigation component translations
+  - jobCard.content.tsx - Job card component translations
+  - jobForm.content.tsx - Job form component translations
+  - jobFormFields.content.tsx - Job form fields translations
+  - premiumPage.content.tsx - Premium page translations
+  - userJobs.content.tsx - User jobs component translations
+  - seekers.content.tsx - Seekers page translations
+  - imageUpload.content.tsx - Image upload context translations
+  - premiumButton.content.tsx - Premium button component translations
+  - button.content.tsx - Button component translations
+  - verificationModal.content.tsx - Verification modal translations
+  - mailDropdown.content.tsx - Mail dropdown component translations
+  - translationHelpers.content.tsx - Translation helper utilities translations
+  - cityDropdown.content.tsx - City dropdown component translations
+  - newsletterModal.content.tsx - Newsletter modal component translations
+  - newsletterAdmin.content.tsx - Newsletter admin component translations
+  - seekerFilterModal.content.tsx - Seeker filter modal component translations
+  - imageUploadComponent.content.tsx - Image upload component translations
+  - addSeekerModal.content.tsx - Add seeker modal component translations
+  - editJobFields.content.tsx - Edit job fields component translations
+  - createNewAd.content.tsx - Create new advertisement page translations
+  - editJobForm.content.tsx - Edit job form component translations
+  - notFoundPage.content.tsx - 404 not found page translations
 - apps/client/src/pages/ - Page components
-  - Home.jsx - Landing page
+  - Home.jsx - Landing page (migrated to Intlayer)
   - SeekerDetails.jsx - Individual seeker details (clean component using translation helpers)
-  - Seekers.jsx - Seekers listing with newsletter subscription status indicator (blue button with checkmark when subscribed)
-  - CreateNewAd.jsx - Job creation
+  - Seekers.jsx - Seekers listing with newsletter subscription status indicator (migrated to Intlayer)
+  - CreateNewAd.jsx - Job creation (migrated to Intlayer)
   - MyAds.jsx - User's job listings
   - UserProfile.jsx - User profile
   - PremiumPage.jsx - Premium features with dynamic pricing (200₪ for new users, 100₪ for Pro users) and badges (Recommended for Pro, Best results for Deluxe), recruiter community feature removed, Facebook autoposting icon updated to lightning bolt
   - NewsletterSubscription.jsx - Newsletter subscription with full internationalization and simplified subscription status banner
+  - NotFoundPage.jsx - 404 not found page (migrated to Intlayer)
 - apps/client/src/components/ - Reusable components
-  - JobCard.jsx - Job listing card
+  - JobCard.jsx - Job listing card (migrated to Intlayer)
   - JobList.jsx - Job listings container
-  - JobForm.jsx - Job creation/editing form
-  - Navbar.jsx - Navigation panel
+  - JobForm.jsx - Job creation/editing form (migrated to Intlayer)
+  - Navbar.jsx - Navigation panel (migrated to Intlayer)
   - UserProfile.jsx - User profile component
-  - UserJobs.jsx - User job listings with comprehensive translations (date, city, timer)
+  - UserJobs.jsx - User job listings with comprehensive translations (migrated to Intlayer)
+  - PremiumPage.jsx - Premium features page (migrated to Intlayer)
   - form/ - Form components
-    - AddSeekerModal.jsx - Seeker addition modal with Arabic instead of Ukrainian language option
-    - EditJobFields.jsx - Pre-populated edit fields
+    - AddSeekerModal.jsx - Seeker addition modal with Arabic instead of Ukrainian language option (migrated to Intlayer)
+    - EditJobFields.jsx - Pre-populated edit fields (migrated to Intlayer)
+    - EditJobForm.jsx - Job editing form (migrated to Intlayer)
     - JobForm.jsx - Job creation/editing form
-    - JobFormFields.jsx - Individual form field components
+    - JobFormFields.jsx - Individual form field components (migrated to Intlayer)
     - JobFormSchema.js - Form validation schema
   - ui/ - UI components
+    - premium-button.jsx - Premium upgrade button (migrated to Intlayer)
+    - button.jsx - Main action button component (migrated to Intlayer)
+    - VerificationModal.jsx - Email verification modal (migrated to Intlayer)
+    - JobFilterModal.jsx - Job filtering modal (migrated to Intlayer)
+    - MailDropdown.jsx - Mail dropdown component (migrated to Intlayer)
+    - city-dropwdown.jsx - City selection dropdown (migrated to Intlayer)
+    - NewsletterModal.jsx - Newsletter subscription modal (migrated to Intlayer)
+    - NewsletterAdmin.jsx - Newsletter administration (migrated to Intlayer)
+    - SeekerFilterModal.jsx - Seeker filtering modal (migrated to Intlayer)
+    - ImageUpload.jsx - Image upload component (migrated to Intlayer)
   - routes/ - Routing components
 - apps/client/src/hooks/ - Custom React hooks
   - useJobs.js - Job data management
@@ -95,12 +135,13 @@
   - useFetchCities.js - City data
   - useSeekers.js - Seeker data
   - useUserSync.js - User synchronization
+  - useI18nHTMLAttributes.tsx - Intlayer HTML attributes hook
 - apps/client/src/store/ - State management (Zustand)
   - filterStore.js - Job filtering state
-  - languageStore.ts - Internationalization state
+  - languageStore.ts - Legacy internationalization state (being migrated to Intlayer)
   - seekerFilterStore.js - Seeker filtering state
 - apps/client/src/utils/ - Utility functions
-  - translationHelpers.js - Translation helper functions for field labels
+  - translationHelpers.js - Translation helper functions for field labels (migrated to Intlayer)
 - apps/client/src/css/ - Stylesheets
   - seeker-details-mobile.css - Mobile styles for seeker details
   - ripple.css - Loading animation styles
@@ -113,7 +154,7 @@
   - jobs/ - Job-related images
   - logo.svg - Application logo
   - premium.png - Premium features image
-- public/locales/ - Translation files (fully internationalized with comprehensive field translations including cities, dates, timers, and dynamic premium pricing)
+- public/locales/ - Translation files (legacy i18next translations - being migrated to Intlayer)
   - ru/translation.json - Russian translations (includes comprehensive employment, category, language, document, city, date, timer, and dynamic premium pricing translations)
   - en/translation.json - English translations (includes comprehensive employment, category, language, document, city, date, timer, and dynamic premium pricing translations)
   - he/translation.json - Hebrew translations (includes comprehensive employment, category, language, document, city, date, timer, and dynamic premium pricing translations)

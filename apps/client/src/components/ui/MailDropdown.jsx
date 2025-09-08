@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -14,7 +14,7 @@ export default function MailDropdown() {
   const [openedMsgId, setOpenedMsgId] = useState(null);
   const [previousUnreadCount, setPreviousUnreadCount] = useState(0);
   const mailRef = useRef();
-  const { t } = useTranslation();
+  const content = useIntlayer("mailDropdown");
 
   // Determine if mobile
   const isMobile = window.innerWidth <= 768;
@@ -336,7 +336,7 @@ export default function MailDropdown() {
             )}
           </div>
           {mailLoading ? (
-                            <div className="p-3 text-center text-muted">{t('loading')}</div>
+                            <div className="p-3 text-center text-muted">{content.loading.value}</div>
           ) : mailMessages.length === 0 ? (
             <div className="p-3 text-center text-muted">Нет сообщений</div>
           ) : (
@@ -369,7 +369,7 @@ export default function MailDropdown() {
                         fontSize: '10px',
                         fontWeight: 'bold'
                       }}>
-                        {t('mail_new_badge')}
+                        {content.mailNewBadge.value}
                       </span>
                     )}
                   </div>
@@ -413,7 +413,7 @@ export default function MailDropdown() {
             
             <div style={{ flex: 1, overflowY: 'auto' }}>
               {mailLoading ? (
-                <div className="p-3 text-center text-muted">{t('loading')}</div>
+                <div className="p-3 text-center text-muted">{content.loading.value}</div>
               ) : mailMessages.length === 0 ? (
                 <div className="p-3 text-center text-muted">Нет сообщений</div>
               ) : (
@@ -451,7 +451,7 @@ export default function MailDropdown() {
                             fontSize: '11px',
                             fontWeight: 'bold'
                           }}>
-                            {t('mail_new_badge')}
+                            {content.mailNewBadge.value}
                           </span>
                         )}
                       </div>

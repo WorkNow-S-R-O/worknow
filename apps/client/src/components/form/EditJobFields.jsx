@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import Skeleton from 'react-loading-skeleton';
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 import ImageUpload from '../ui/ImageUpload';
 
 const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCategoryId, cities, categories, loadingCities, loadingCategories, loadingJob, onImageUpload, currentImageUrl }) => {
-  const { t } = useTranslation();
+  const content = useIntlayer("editJobFields");
 
   // Сортировка: регионы в начале, остальные города после
   const regionOrder = [
@@ -23,7 +23,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
     <>
       {/* Название вакансии */}
       <div className="mb-4">
-        <label className="block text-gray-700 mb-2">{t('job_title')}</label>
+        <label className="block text-gray-700 mb-2">{content.jobTitle.value}</label>
         {loadingJob ? (
           <Skeleton height={45} className="mb-3" />
         ) : (
@@ -40,7 +40,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
 
       {/* Зарплата в час */}
       <div className="mb-4">
-        <label className="block text-gray-700 mb-2">{t('salary_per_hour')}</label>
+        <label className="block text-gray-700 mb-2">{content.salaryPerHour.value}</label>
         {loadingJob ? (
           <Skeleton height={45} className="mb-3" />
         ) : (
@@ -57,7 +57,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
 
       {/* Город */}
       <div className="mb-4">
-        <label className="block text-gray-700 mb-2">{t('location')}</label>
+        <label className="block text-gray-700 mb-2">{content.location.value}</label>
         {loadingCities ? (
           <Skeleton height={40} />
         ) : (
@@ -65,7 +65,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
             options={sortedCities}
             value={sortedCities.find((city) => city.value == selectedCityId) || null}
             onChange={(option) => setValue('cityId', option?.value)}
-            placeholder={t('choose_city')}
+            placeholder={content.chooseCity.value}
             classNamePrefix="react-select"
             isClearable
           />
@@ -75,7 +75,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
 
       {/* Категория */}
       <div className="mb-4">
-        <label className="block text-gray-700 mb-2">{t('category')}</label>
+        <label className="block text-gray-700 mb-2">{content.category.value}</label>
         {loadingCategories ? (
           <Skeleton height={40} />
         ) : (
@@ -83,7 +83,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
             options={categories}
             value={categories.find((cat) => cat.value == selectedCategoryId) || null}
             onChange={(option) => setValue('categoryId', option?.value)}
-            placeholder={t('choose_category')}
+            placeholder={content.chooseCategory.value}
             classNamePrefix="react-select"
             isClearable
           />
@@ -93,7 +93,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
 
       {/* Телефон */}
       <div className="mb-4">
-        <label className="block text-gray-700 mb-2">{t('phone_number')}</label>
+        <label className="block text-gray-700 mb-2">{content.phoneNumber.value}</label>
         {loadingJob ? (
           <Skeleton height={45} className="mb-3" />
         ) : (
@@ -118,7 +118,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
 
       {/* Описание */}
       <div className="mb-4">
-        <label className="block text-gray-700 mb-2">{t('description')}</label>
+        <label className="block text-gray-700 mb-2">{content.description.value}</label>
         {loadingJob ? (
           <Skeleton height={90} className="mb-3" />
         ) : (
@@ -142,7 +142,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
           {...register("shuttle")}
         />
         <label className="form-check-label" htmlFor="shuttleCheckbox">
-          {t("shuttle") || "Подвозка"}
+          {content.shuttle.value}
         </label>
       </div>
       {/* Питание */}
@@ -154,7 +154,7 @@ const EditJobFields = ({ register, errors, setValue, selectedCityId, selectedCat
           {...register("meals")}
         />
         <label className="form-check-label" htmlFor="mealsCheckbox">
-          {t("meals") || "Питание"}
+          {content.meals.value}
         </label>
       </div>
     </>

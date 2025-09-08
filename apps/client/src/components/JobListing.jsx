@@ -3,18 +3,19 @@ import useJobs from '../hooks/useJobs';
 import JobList from './JobList';
 import PaginationControl from './PaginationControl';
 import CityDropdown from './ui/city-dropwdown';
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 import { Helmet } from 'react-helmet-async';
 import JobFilterModal from './ui/JobFilterModal';
 import useFilterStore from '../store/filterStore';
 
 const JobListing = () => {
-  const { t, ready } = useTranslation();
+  const content = useIntlayer("jobListing");
+  const commonContent = useIntlayer("common");
   const { filters, setFilters } = useFilterStore();
   
-  // Ждем загрузки переводов
-  const defaultCity = ready ? t('choose_city_dashboard') : 'Выбрать город';
-  const defaultTitle = ready ? t('latest_jobs') : 'Последние вакансии';
+  // Use Intlayer content instead of i18next
+  const defaultCity = content.chooseCityDashboard.value;
+  const defaultTitle = content.latestJobs.value;
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCity, setSelectedCity] = useState({ value: null, label: defaultCity });
@@ -41,13 +42,13 @@ const JobListing = () => {
 
   // Генерация SEO-friendly заголовка
   const pageTitle = selectedCity.value
-    ? `${t('jobs_in', { city: selectedCity.label })} - WorkNow`
+    ? `${content.jobsIn.value.replace('{{city}}', selectedCity.label)} - WorkNow`
     : `${defaultTitle} | WorkNow`;
 
   // Генерация динамического описания страницы
   const pageDescription = selectedCity.value
-    ? `${t('find_jobs_in', { city: selectedCity.label })}. ${t('new_vacancies_from_employers')}.`
-    : `${t('job_search_platform')} - ${t('find_latest_jobs')}.`;
+    ? `${content.findJobsIn.value.replace('{{city}}', selectedCity.label)}. ${content.newVacanciesFromEmployers.value}.`
+    : `${content.jobSearchPlatform.value} - ${content.findLatestJobs.value}.`;
 
   // Формирование динамического URL для SEO
   const pageUrl = selectedCity.value
@@ -72,7 +73,7 @@ const JobListing = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "JobPosting",
-            "title": selectedCity.value ? `Работа в ${selectedCity.label}` : "Работа в Израиле",
+            "title": selectedCity.value ? content.jobPostingTitle.value.replace('{{city}}', selectedCity.label) : content.jobPostingTitleDefault.value,
             "description": pageDescription,
             "datePosted": new Date().toISOString(),
             "employmentType": "Full-time",
@@ -85,7 +86,7 @@ const JobListing = () => {
               "@type": "Place",
               "address": {
                 "@type": "PostalAddress",
-                "addressLocality": selectedCity.value ? selectedCity.label : "Израиль",
+                "addressLocality": selectedCity.value ? selectedCity.label : content.jobLocationDefault.value,
                 "addressCountry": "IL"
               }
             }
@@ -107,7 +108,7 @@ const JobListing = () => {
             onClick={() => setFilterOpen(true)}
           >
             <i className="bi bi-gear me-2" style={{ fontSize: 20 }}></i>
-            {t('board_settings')}
+            {content.boardSettings.value}
           </button>
           <div style={{ height: 40, display: 'flex', alignItems: 'center' }}>
             <CityDropdown

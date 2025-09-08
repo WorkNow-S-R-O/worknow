@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
@@ -20,7 +20,7 @@ const VerificationModal = ({
   const [resendTimeLeft, setResendTimeLeft] = useState(60); // 1 minute cooldown
   
   const modalRef = useRef();
-  const { t } = useTranslation();
+  const content = useIntlayer("verificationModal");
 
   // Determine if mobile
   const isMobile = window.innerWidth <= 768;
@@ -68,7 +68,7 @@ const VerificationModal = ({
 
   const handleVerifyCode = async () => {
     if (!verificationCode.trim()) {
-      toast.error(t('verification_code_required') || 'Пожалуйста, введите код подтверждения');
+      toast.error(content.verificationCodeRequired.value || 'Пожалуйста, введите код подтверждения');
       return;
     }
 
@@ -82,18 +82,18 @@ const VerificationModal = ({
       });
 
       if (response.data.success) {
-        toast.success(t('verification_success') || 'Email успешно подтвержден! Вы подписаны на рассылку.');
+        toast.success(content.verificationSuccess.value || 'Email успешно подтвержден! Вы подписаны на рассылку.');
         onVerificationSuccess(response.data.subscriber);
         onClose();
       } else {
-        toast.error(response.data.message || t('verification_error') || 'Ошибка при подтверждении кода');
+        toast.error(response.data.message || content.verificationError.value || 'Ошибка при подтверждении кода');
       }
     } catch (error) {
       console.error('Verification error:', error);
       if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error(t('verification_error') || 'Ошибка при подтверждении кода');
+        toast.error(content.verificationError.value || 'Ошибка при подтверждении кода');
       }
     } finally {
       setIsVerifying(false);
@@ -110,19 +110,19 @@ const VerificationModal = ({
       });
 
       if (response.data.success) {
-        toast.success(t('verification_code_resent') || 'Код подтверждения отправлен повторно');
+        toast.success(content.verificationCodeResent.value || 'Код подтверждения отправлен повторно');
         setTimeLeft(600); // Reset timer to 10 minutes
         setCanResend(false);
         setResendTimeLeft(60); // Start 1-minute cooldown
       } else {
-        toast.error(response.data.message || t('resend_error') || 'Ошибка при повторной отправке кода');
+        toast.error(response.data.message || content.resendError.value || 'Ошибка при повторной отправке кода');
       }
     } catch (error) {
       console.error('Resend error:', error);
       if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error(t('resend_error') || 'Ошибка при повторной отправке кода');
+        toast.error(content.resendError.value || 'Ошибка при повторной отправке кода');
       }
     }
   };
@@ -200,7 +200,7 @@ const VerificationModal = ({
         {isMobile ? (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>
-              {t('verification_title') || 'Подтверждение email'}
+              {content.verificationTitle.value || 'Подтверждение email'}
             </h5>
             <button 
               type="button" 
@@ -226,7 +226,7 @@ const VerificationModal = ({
               }}
             ></button>
             <h5 className='mb-4 font-size-10'>
-              {t('verification_title') || 'Подтверждение email'}
+              {content.verificationTitle.value || 'Подтверждение email'}
             </h5>
           </>
         )}
@@ -243,11 +243,11 @@ const VerificationModal = ({
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
                 <i className="bi bi-envelope-check" style={{ color: '#1976d2', fontSize: '24px', marginRight: '10px' }}></i>
                 <h6 style={{ margin: 0, color: '#1565c0' }}>
-                  {t('verification_sent') || 'Код подтверждения отправлен!'}
+                  {content.verificationSent.value || 'Код подтверждения отправлен!'}
                 </h6>
               </div>
               <p style={{ margin: 0, color: '#1565c0', fontSize: '14px' }}>
-                {t('verification_sent_to') || 'Код подтверждения отправлен на email:'} <strong>{email}</strong>
+                {content.verificationSentTo.value || 'Код подтверждения отправлен на email:'} <strong>{email}</strong>
               </p>
             </div>
             
@@ -257,7 +257,7 @@ const VerificationModal = ({
               marginBottom: '20px',
               lineHeight: '1.5'
             }}>
-              {t('verification_description') || 'Введите 6-значный код, который мы отправили на ваш email для подтверждения подписки на рассылку.'}
+              {content.verificationDescription.value || 'Введите 6-значный код, который мы отправили на ваш email для подтверждения подписки на рассылку.'}
             </p>
             
             <div style={{ marginBottom: '20px' }}>
@@ -267,14 +267,14 @@ const VerificationModal = ({
                 marginBottom: '8px', 
                 display: 'block' 
               }}>
-                {t('verification_code_label') || 'Код подтверждения *'}
+                {content.verificationCodeLabel.value || 'Код подтверждения *'}
               </label>
               <input
                 type="text"
                 className="form-control"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                placeholder={t('verification_code_placeholder') || 'Введите 6-значный код'}
+                placeholder={content.verificationCodePlaceholder.value || 'Введите 6-значный код'}
                 style={{ 
                   fontSize: isMobile ? '16px' : '14px', 
                   padding: isMobile ? '12px' : '8px',
@@ -301,11 +301,11 @@ const VerificationModal = ({
               }}>
                 {timeLeft > 0 ? (
                   <>
-                    {t('verification_time_left') || 'Время до истечения кода:'} <strong>{formatTime(timeLeft)}</strong>
+                    {content.verificationTimeLeft.value || 'Время до истечения кода:'} <strong>{formatTime(timeLeft)}</strong>
                   </>
                 ) : (
                   <span style={{ color: '#d32f2f' }}>
-                    {t('verification_code_expired') || 'Код подтверждения истек'}
+                    {content.verificationCodeExpired.value || 'Код подтверждения истек'}
                   </span>
                 )}
               </p>
@@ -329,11 +329,11 @@ const VerificationModal = ({
                 {canResend ? (
                   <>
                     <i className="bi bi-arrow-clockwise me-2"></i>
-                    {t('verification_resend') || 'Отправить код повторно'}
+                    {content.verificationResend.value || 'Отправить код повторно'}
                   </>
                 ) : (
                   <>
-                    {t('verification_resend_wait') || 'Повторная отправка через'} {formatTime(resendTimeLeft)}
+                    {content.verificationResendWait.value || 'Повторная отправка через'} {formatTime(resendTimeLeft)}
                   </>
                 )}
               </button>
@@ -356,7 +356,7 @@ const VerificationModal = ({
               padding: isMobile ? '12px 20px' : '8px 16px' 
             }}
           >
-            {t('cancel') || 'Отмена'}
+            {content.cancel.value || 'Отмена'}
           </button>
           
           <button 
@@ -371,12 +371,12 @@ const VerificationModal = ({
             {isVerifying ? (
               <>
                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                {t('verification_verifying') || 'Проверка...'}
+                {content.verificationVerifying.value || 'Проверка...'}
               </>
             ) : (
               <>
                 <i className="bi bi-check-circle me-2"></i>
-                {t('verification_verify') || 'Подтвердить'}
+                {content.verificationVerify.value || 'Подтвердить'}
               </>
             )}
           </button>

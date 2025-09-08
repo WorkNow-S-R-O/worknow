@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer, useLocale } from 'react-intlayer';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 import VerificationModal from './VerificationModal.jsx';
-import useLanguageStore from '../../store/languageStore';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -36,9 +35,9 @@ const NewsletterModal = ({ open, onClose }) => {
   const [onlyDemanded, setOnlyDemanded] = useState(false);
   
   const modalRef = useRef();
-  const { t } = useTranslation();
+  const content = useIntlayer("newsletterModal");
+  const { locale } = useLocale();
   const { user, isLoaded } = useUser();
-  const language = useLanguageStore((state) => state.language) || 'ru';
 
   // Determine if mobile
   const isMobile = window.innerWidth <= 768;
@@ -48,28 +47,28 @@ const NewsletterModal = ({ open, onClose }) => {
   
   // Filter options with translations
   const languageOptions = [
-    { value: 'русский', label: t('language_russian') || 'Русский' },
-    { value: 'украинский', label: t('language_ukrainian') || 'Украинский' },
-    { value: 'английский', label: t('language_english') || 'Английский' },
-    { value: 'иврит', label: t('language_hebrew') || 'Иврит' },
+    { value: 'русский', label: content.languageRussian.value },
+    { value: 'украинский', label: content.languageUkrainian.value },
+    { value: 'английский', label: content.languageEnglish.value },
+    { value: 'иврит', label: content.languageHebrew.value },
   ];
 
   const employmentOptions = [
-    { value: 'полная', label: t('employment_full') || 'Полная' },
-    { value: 'частичная', label: t('employment_partial') || 'Частичная' },
+    { value: 'полная', label: content.employmentFull.value },
+    { value: 'частичная', label: content.employmentPartial.value },
   ];
 
   const documentTypeOptions = [
-    { value: 'Виза Б1', label: t('document_visa_b1') || 'Виза Б1' },
-    { value: 'Виза Б2', label: t('document_visa_b2') || 'Виза Б2' },
-    { value: 'Теудат Зеут', label: t('document_teudat_zehut') || 'Теудат Зеут' },
-    { value: 'Рабочая виза', label: t('document_work_visa') || 'Рабочая виза' },
-    { value: 'Другое', label: t('document_other') || 'Другое' },
+    { value: 'Виза Б1', label: content.documentVisaB1.value },
+    { value: 'Виза Б2', label: content.documentVisaB2.value },
+    { value: 'Теудат Зеут', label: content.documentTeudatZehut.value },
+    { value: 'Рабочая виза', label: content.documentWorkVisa.value },
+    { value: 'Другое', label: content.documentOther.value },
   ];
 
   const genderOptions = [
-    { value: 'мужчина', label: t('gender_male') || 'Мужчина' },
-    { value: 'женщина', label: t('gender_female') || 'Женщина' },
+    { value: 'мужчина', label: content.genderMale.value },
+    { value: 'женщина', label: content.genderFemale.value },
   ];
   
   const onTouchStart = (e) => {
@@ -171,14 +170,14 @@ const NewsletterModal = ({ open, onClose }) => {
 
   const handleSubscribe = async () => {
     if (!email || !email.trim()) {
-      toast.error(t('newsletter_email_required') || 'Пожалуйста, введите email');
+      toast.error(content.newsletterEmailRequired.value);
       return;
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      toast.error(t('newsletter_invalid_email') || 'Пожалуйста, введите корректный email');
+      toast.error(content.newsletterInvalidEmail.value);
       return;
     }
 
@@ -202,12 +201,12 @@ const NewsletterModal = ({ open, onClose }) => {
       });
 
       if (response.data.success) {
-        toast.success(t('verification_code_sent') || 'Код подтверждения отправлен на ваш email!');
+        toast.success(content.verificationCodeSent.value);
         // Store subscription data and show verification modal
         setSubscriptionData(response.data.subscriptionData);
         setShowVerification(true);
       } else {
-        toast.error(response.data.message || t('newsletter_error') || 'Ошибка при отправке кода подтверждения');
+        toast.error(response.data.message || content.newsletterError.value);
       }
     } catch (error) {
       console.error('Newsletter verification error:', error);
@@ -216,7 +215,7 @@ const NewsletterModal = ({ open, onClose }) => {
       } else if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error(t('newsletter_error') || 'Ошибка при отправке кода подтверждения');
+        toast.error(content.newsletterError.value);
       }
     } finally {
       setIsSubscribing(false);
@@ -226,7 +225,7 @@ const NewsletterModal = ({ open, onClose }) => {
   // Handle unsubscribe
   const handleUnsubscribe = async () => {
     if (!email || !email.trim()) {
-      toast.error(t('newsletter_email_required') || 'Пожалуйста, введите email');
+      toast.error(content.newsletterEmailRequired.value);
       return;
     }
 
@@ -238,7 +237,7 @@ const NewsletterModal = ({ open, onClose }) => {
       });
 
       if (response.data.success) {
-        toast.success(t('newsletter_unsubscribe_success') || 'Вы успешно отписались от рассылки!');
+        toast.success(content.newsletterUnsubscribeSuccess.value);
         setIsAlreadySubscribed(false);
         setSubscriberData(null);
         setEmail('');
@@ -246,14 +245,14 @@ const NewsletterModal = ({ open, onClose }) => {
         setLastName('');
         onClose();
       } else {
-        toast.error(response.data.message || t('newsletter_unsubscribe_error') || 'Ошибка при отписке от рассылки');
+        toast.error(response.data.message || content.newsletterUnsubscribeError.value);
       }
     } catch (error) {
       console.error('Newsletter unsubscribe error:', error);
       if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error(t('newsletter_unsubscribe_error') || 'Ошибка при отписке от рассылки');
+        toast.error(content.newsletterUnsubscribeError.value);
       }
     } finally {
       setIsUnsubscribing(false);
@@ -360,7 +359,7 @@ const NewsletterModal = ({ open, onClose }) => {
         {isMobile ? (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>
-              {t('newsletter_title') || 'Подписка на рассылку'}
+              {content.newsletterTitle.value}
             </h5>
             <button 
               type="button" 
@@ -386,7 +385,7 @@ const NewsletterModal = ({ open, onClose }) => {
               }}
             ></button>
             <h5 className='mb-4 font-size-10'>
-              {t('newsletter_title') || 'Подписка на рассылку'}
+              {content.newsletterTitle.value}
             </h5>
           </>
         )}
@@ -405,7 +404,7 @@ const NewsletterModal = ({ open, onClose }) => {
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
                   <i className="bi bi-check-circle-fill" style={{ color: '#28a745', fontSize: '24px', marginRight: '10px' }}></i>
                   <h6 style={{ margin: 0, color: '#155724' }}>
-                    {t('newsletter_already_subscribed') || 'Вы уже подписаны на рассылку!'}
+                    {content.newsletterAlreadySubscribed.value}
                   </h6>
                 </div>
                 <p style={{ margin: 0, color: '#155724', fontSize: '14px' }}>
@@ -423,7 +422,7 @@ const NewsletterModal = ({ open, onClose }) => {
                 marginBottom: '20px',
                 lineHeight: '1.5'
               }}>
-                {t('newsletter_description') || 'Подпишитесь на нашу рассылку, чтобы получать уведомления о новых соискателях и обновлениях платформы.'}
+                {content.newsletterDescription.value}
               </p>
             )}
             
@@ -434,14 +433,14 @@ const NewsletterModal = ({ open, onClose }) => {
                 marginBottom: '8px', 
                 display: 'block' 
               }}>
-                {t('newsletter_first_name') || 'Имя (необязательно)'}
+                {content.newsletterFirstName.value}
               </label>
               <input
                 type="text"
                 className="form-control"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder={t('newsletter_first_name_placeholder') || 'Введите ваше имя'}
+                placeholder={content.newsletterFirstNamePlaceholder.value}
                 style={{ 
                   fontSize: isMobile ? '16px' : '14px', 
                   padding: isMobile ? '12px' : '8px',
@@ -458,14 +457,14 @@ const NewsletterModal = ({ open, onClose }) => {
                 marginBottom: '8px', 
                 display: 'block' 
               }}>
-                {t('newsletter_last_name') || 'Фамилия (необязательно)'}
+                {content.newsletterLastName.value}
               </label>
               <input
                 type="text"
                 className="form-control"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder={t('newsletter_last_name_placeholder') || 'Введите вашу фамилию'}
+                placeholder={content.newsletterLastNamePlaceholder.value}
                 style={{ 
                   fontSize: isMobile ? '16px' : '14px', 
                   padding: isMobile ? '12px' : '8px',
@@ -482,14 +481,14 @@ const NewsletterModal = ({ open, onClose }) => {
                 marginBottom: '8px', 
                 display: 'block' 
               }}>
-                {t('newsletter_email_label') || 'Email адрес *'}
+                {content.newsletterEmailLabel.value}
               </label>
               <input
                 type="email"
                 className="form-control"
                 value={email}
                 onChange={handleEmailChange}
-                placeholder={t('newsletter_email_placeholder') || 'Введите ваш email'}
+                placeholder={content.newsletterEmailPlaceholder.value}
                 style={{ 
                   fontSize: isMobile ? '16px' : '14px', 
                   padding: isMobile ? '12px' : '8px',
@@ -518,7 +517,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('city') || 'Города'}
+                          {content.city.value}
                         </label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
                           {cities.map(city => (
@@ -558,7 +557,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('category') || 'Категории'}
+                          {content.category.value}
                         </label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
                           {categories.map(cat => (
@@ -599,7 +598,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('employment') || 'Тип занятости'}
+                          {content.employment.value}
                         </label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
                           {employmentOptions.map(option => (
@@ -639,7 +638,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('document_type') || 'Тип документа'}
+                          {content.documentType.value}
                         </label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
                           {documentTypeOptions.map(option => (
@@ -679,7 +678,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('gender') || 'Пол'}
+                          {content.gender.value}
                         </label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
                           {genderOptions.map(option => (
@@ -719,7 +718,7 @@ const NewsletterModal = ({ open, onClose }) => {
                         marginBottom: '8px', 
                         display: 'block' 
                       }}>
-                        {t('languages') || 'Языки'}
+                        {content.languages.value}
                       </label>
                       <div style={{ marginLeft: '8px' }}>
                         {languageOptions.map((option) => (
@@ -768,7 +767,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           }}
                         />
                         <label className="form-check-label" htmlFor="onlyDemanded" style={{ fontSize: '16px' }}>
-                          {t('demanded') || 'Востребованный кандидат'}
+                          {content.demanded.value}
                         </label>
                       </div>
                     </div>
@@ -786,7 +785,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('city') || 'Города'}
+                          {content.city.value}
                         </label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
                           {cities.map(city => (
@@ -826,7 +825,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('category') || 'Категории'}
+                          {content.category.value}
                         </label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
                           {categories.map(cat => (
@@ -867,7 +866,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('employment') || 'Тип занятости'}
+                          {content.employment.value}
                         </label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
                           {employmentOptions.map(option => (
@@ -907,7 +906,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('document_type') || 'Тип документа'}
+                          {content.documentType.value}
                         </label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
                           {documentTypeOptions.map(option => (
@@ -950,7 +949,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('gender') || 'Пол'}
+                          {content.gender.value}
                         </label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px' }}>
                           {genderOptions.map(option => (
@@ -990,7 +989,7 @@ const NewsletterModal = ({ open, onClose }) => {
                           marginBottom: '8px', 
                           display: 'block' 
                         }}>
-                          {t('languages') || 'Языки'}
+                          {content.languages.value}
                         </label>
                         <div style={{ marginLeft: '8px' }}>
                           {languageOptions.map((option) => (
@@ -1039,7 +1038,7 @@ const NewsletterModal = ({ open, onClose }) => {
                             }}
                           />
                           <label className="form-check-label" htmlFor="onlyDemanded" style={{ fontSize: '14px' }}>
-                            {t('demanded') || 'Востребованный кандидат'}
+                            {content.demanded.value}
                           </label>
                         </div>
                       </div>
@@ -1067,7 +1066,7 @@ const NewsletterModal = ({ open, onClose }) => {
                     fontSize: isMobile ? '16px' : '14px'
                   }}>
                     <i className="bi bi-info-circle me-2" style={{ color: '#17a2b8' }}></i>
-                    {t('newsletter_already_subscribed') || 'Вы уже подписаны'}
+                    {content.newsletterAlreadySubscribed.value}
                   </div>
                   <button 
                     className="btn btn-danger"
@@ -1081,12 +1080,12 @@ const NewsletterModal = ({ open, onClose }) => {
                     {isUnsubscribing ? (
                       <>
                         <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        {t('newsletter_unsubscribing') || 'Отписка...'}
+                        {content.newsletterUnsubscribing.value}
                       </>
                     ) : (
                       <>
                         <i className="bi bi-envelope-x me-2"></i>
-                        {t('unsubscribe') || 'Отписаться'}
+                        {content.unsubscribe.value}
                       </>
                     )}
                   </button>
@@ -1107,12 +1106,12 @@ const NewsletterModal = ({ open, onClose }) => {
                     {isSubscribing ? (
                       <>
                         <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        {t('newsletter_subscribing') || 'Подписка...'}
+                        {content.newsletterSubscribing.value}
                       </>
                     ) : (
                       <>
                         <i className="bi bi-envelope-plus me-2"></i>
-                        {t('newsletter_subscribe') || 'Подписаться'}
+                        {content.newsletterSubscribe.value}
                       </>
                     )}
                   </button>

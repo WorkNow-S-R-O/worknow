@@ -1,16 +1,18 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 import { useState } from "react";
 import useFetchCities from '../hooks/useFetchCities';
+import useFetchCategories from '../hooks/useFetchCategories';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { ImageModal } from './ui';
 
 const JobCard = ({ job }) => {
-  const { t } = useTranslation();
+  const content = useIntlayer("jobCard");
   const navigate = useNavigate();
-  const { cities, loading } = useFetchCities();
+  const { cities, loading: citiesLoading } = useFetchCities();
+  const { categories, loading: categoriesLoading } = useFetchCategories();
   const [showImageModal, setShowImageModal] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 
@@ -19,6 +21,13 @@ const JobCard = ({ job }) => {
   if (job.cityId && Array.isArray(cities)) {
     const city = cities.find(c => c.value === job.cityId || c.id === job.cityId);
     cityLabel = city?.label || city?.name || null;
+  }
+
+  // Получаем название категории на нужном языке
+  let categoryLabel = null;
+  if (job.categoryId && Array.isArray(categories)) {
+    const category = categories.find(c => c.value === job.categoryId || c.id === job.categoryId);
+    categoryLabel = category?.label || category?.name || null;
   }
 
   const handleImageClick = (e) => {
@@ -61,40 +70,46 @@ const JobCard = ({ job }) => {
         {/* Плашка Премиум */}
         {job.user?.isPremium && (
           <div className="premium-badge">
-            <i className="bi bi-star-fill"></i> {t('premium_badge')}
+            <i className="bi bi-star-fill"></i> {content.premiumBadge.value}
           </div>
         )}
         <div className="card-body">
           <h5 className="card-title text-primary">{job.title}</h5>
-          {job.category?.label && (
+          {(job.categoryId || job.category?.label) && (
             <div className="mb-2">
-              <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">{job.category.label}</span>
+              {categoriesLoading ? (
+                <Skeleton width={80} height={24} style={{ display: 'inline-block', borderRadius: '4px' }} />
+              ) : (
+                <span className="px-2 py-1 text-sm rounded font-semibold bg-primary text-white">
+                  {categoryLabel || job.category?.label || content.notSpecified.value}
+                </span>
+              )}
             </div>
           )}
           <p className="card-text">
-            <strong>{t("salary_per_hour_card")}</strong>{" "}
-            {job.salary || "Не указано"}
+            <strong>{content.salaryPerHourCard.value}</strong>{" "}
+            {job.salary || content.notSpecified.value}
             <br />
-            <strong>{t("location_card")}</strong>{" "}
-            {loading ? (
+            <strong>{content.locationCard.value}</strong>{" "}
+            {citiesLoading ? (
               <Skeleton width={80} height={18} style={{ display: 'inline-block', verticalAlign: 'middle' }} />
             ) : (
-              cityLabel || "Не указано"
+              cityLabel || content.notSpecified.value
             )}
           </p>
-          <p className="card-text">{job.description || "Описание отсутствует"}</p>
+          <p className="card-text">{job.description || content.descriptionMissing.value}</p>
           <div className="card-text">
             {typeof job.shuttle === 'boolean' && (
               <div className="card-text">
-                <strong>{t("shuttle") || "Подвозка"}:</strong> {job.shuttle ? t("yes") || "да" : t("no") || "нет"}
+                <strong>{content.shuttle.value}:</strong> {job.shuttle ? content.yes.value : content.no.value}
               </div>
             )}
             {typeof job.meals === 'boolean' && (
               <div className="card-text">
-                <strong>{t("meals") || "Питание"}:</strong> {job.meals ? t("yes") || "да" : t("no") || "нет"}
+                <strong>{content.meals.value}:</strong> {job.meals ? content.yes.value : content.no.value}
               </div>
             )}
-            <strong>{t("phone_number_card")}</strong> {job.phone || "Не указан"}
+            <strong>{content.phoneNumberCard.value}</strong> {job.phone || content.phoneNotSpecified.value}
           </div>
           
           {/* Image displayed under phone number in mini size */}

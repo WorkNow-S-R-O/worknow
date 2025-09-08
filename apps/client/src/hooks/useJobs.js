@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 // import { toast } from 'react-hot-toast'; // больше не используется
-import useLanguageStore from '../store/languageStore';
+import { useLocale } from 'react-intlayer';
 import { useLoadingProgress } from './useLoadingProgress';
 
 const API_URL = import.meta.env.VITE_API_URL; // ✅ Используем переменную окружения
@@ -10,7 +10,7 @@ const useJobs = (page = 1, filters = {}) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState(null);
-  const language = useLanguageStore((state) => state.language) || 'ru';
+  const { locale } = useLocale();
   const { startLoadingWithProgress, completeLoading } = useLoadingProgress();
 
   // Memoize filters to prevent infinite re-renders
@@ -34,7 +34,7 @@ const useJobs = (page = 1, filters = {}) => {
       try {
         // Build query parameters
         const params = new URLSearchParams({
-          lang: language,
+          lang: locale,
           page: page,
           limit: 10
         });
@@ -77,7 +77,7 @@ const useJobs = (page = 1, filters = {}) => {
     };
 
     loadJobs();
-  }, [language, page, memoizedFilters]); // Use memoized filters to prevent infinite loops
+  }, [locale, page, memoizedFilters]); // Use memoized filters to prevent infinite loops
 
   return { jobs, loading, pagination };
 };

@@ -30,26 +30,35 @@ vi.mock('../apps/client/src/hooks/useFetchCities', () => ({
   })
 }))
 
-// Mock react-i18next
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key) => {
-      const translations = {
-        'premium_badge': 'Premium',
-        'salary_per_hour_card': 'Salary per hour',
-        'location_card': 'Location',
-        'shuttle': 'Shuttle',
-        'meals': 'Meals',
-        'yes': 'yes',
-        'no': 'no',
-        'phone_number_card': 'Phone number'
-      }
-      return translations[key] || key
-    },
-    i18n: {
-      changeLanguage: vi.fn(),
-      language: 'en'
-    }
+// Mock the useFetchCategories hook
+const mockCategories = [
+  { id: 1, name: 'Construction', value: 1, label: 'Construction' },
+  { id: 2, name: 'Beauty', value: 2, label: 'Beauty' },
+  { id: 3, name: 'Warehouse', value: 3, label: 'Warehouse' }
+]
+
+vi.mock('../apps/client/src/hooks/useFetchCategories', () => ({
+  default: () => ({
+    categories: mockCategories,
+    loading: false,
+    error: null
+  })
+}))
+
+// Mock react-intlayer
+vi.mock('react-intlayer', () => ({
+  useIntlayer: () => ({
+    premiumBadge: { value: 'Premium' },
+    salaryPerHourCard: { value: 'Salary per hour' },
+    locationCard: { value: 'Location' },
+    shuttle: { value: 'Shuttle' },
+    meals: { value: 'Meals' },
+    yes: { value: 'yes' },
+    no: { value: 'no' },
+    phoneNumberCard: { value: 'Phone number' },
+    notSpecified: { value: 'Not specified' },
+    descriptionMissing: { value: 'Description missing' },
+    phoneNotSpecified: { value: 'Phone not specified' }
   })
 }))
 
@@ -66,6 +75,7 @@ const mockJob = {
   phone: '0501234567',
   description: 'This is a test job description',
   cityId: 1,
+  categoryId: 1,
   category: { id: 1, name: 'Construction', label: 'Construction' },
   user: {
     id: 'test-user-id',
@@ -225,7 +235,7 @@ describe('JobCard Component', () => {
     })
 
     it('hides category when not available', () => {
-      renderJobCard({ category: null })
+      renderJobCard({ category: null, categoryId: null })
       
       expect(screen.queryByText('Construction')).not.toBeInTheDocument()
     })
@@ -249,10 +259,10 @@ describe('JobCard Component', () => {
         phone: null
       })
       
-      expect(screen.getByText(/Не указано/)).toBeInTheDocument()
-      expect(screen.getByText(/Описание отсутствует/)).toBeInTheDocument()
+      expect(screen.getByText(/Not specified/)).toBeInTheDocument()
+      expect(screen.getByText(/Description missing/)).toBeInTheDocument()
       // Use getAllByText to get all elements and check if any contain the expected text
-      const phoneElements = screen.getAllByText(/Не указан/)
+      const phoneElements = screen.getAllByText(/Phone not specified/)
       expect(phoneElements.length).toBeGreaterThan(0)
     })
   })
@@ -308,11 +318,11 @@ describe('JobCard Component', () => {
     it('handles job without city information', () => {
       renderJobCard({ cityId: null })
       
-      expect(screen.getByText(/Не указано/)).toBeInTheDocument()
+      expect(screen.getByText(/Not specified/)).toBeInTheDocument()
     })
 
     it('handles job without category information', () => {
-      renderJobCard({ category: null })
+      renderJobCard({ category: null, categoryId: null })
       
       expect(screen.queryByText('Construction')).not.toBeInTheDocument()
     })

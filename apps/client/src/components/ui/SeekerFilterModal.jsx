@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import useLanguageStore from '../../store/languageStore';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer, useLocale } from 'react-intlayer';
 
 const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
   const [cities, setCities] = useState([]);
@@ -16,38 +15,38 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const modalRef = useRef();
-  const language = useLanguageStore((state) => state.language) || 'ru';
-  const { t } = useTranslation();
+  const { locale } = useLocale();
+  const content = useIntlayer("seekerFilterModal");
 
   const API_URL = import.meta.env.VITE_API_URL;
 
   // Language options with translations
   const languageOptions = [
-    { value: 'русский', label: t('language_russian') || 'Русский' },
-    { value: 'арабский', label: t('language_arabic') || 'Арабский' },
-    { value: 'английский', label: t('language_english') || 'Английский' },
-    { value: 'иврит', label: t('language_hebrew') || 'Иврит' },
+    { value: 'русский', label: content.languageRussian.value },
+    { value: 'арабский', label: content.languageArabic.value },
+    { value: 'английский', label: content.languageEnglish.value },
+    { value: 'иврит', label: content.languageHebrew.value },
   ];
 
   // Employment options with translations
   const employmentOptions = [
-    { value: 'полная', label: t('employment_full') || 'Полная' },
-    { value: 'частичная', label: t('employment_partial') || 'Частичная' },
+    { value: 'полная', label: content.employmentFull.value },
+    { value: 'частичная', label: content.employmentPartial.value },
   ];
 
   // Document type options with translations
   const documentTypeOptions = [
-    { value: 'Виза Б1', label: t('document_visa_b1') || 'Виза Б1' },
-    { value: 'Виза Б2', label: t('document_visa_b2') || 'Виза Б2' },
-    { value: 'Теудат Зеут', label: t('document_teudat_zehut') || 'Теудат Зеут' },
-    { value: 'Рабочая виза', label: t('document_work_visa') || 'Рабочая виза' },
-    { value: 'Другое', label: t('document_other') || 'Другое' },
+    { value: 'Виза Б1', label: content.documentVisaB1.value },
+    { value: 'Виза Б2', label: content.documentVisaB2.value },
+    { value: 'Теудат Зеут', label: content.documentTeudatZehut.value },
+    { value: 'Рабочая виза', label: content.documentWorkVisa.value },
+    { value: 'Другое', label: content.documentOther.value },
   ];
 
   // Gender options with translations
   const genderOptions = [
-    { value: 'мужчина', label: t('gender_male') || 'Мужчина' },
-    { value: 'женщина', label: t('gender_female') || 'Женщина' },
+    { value: 'мужчина', label: content.genderMale.value },
+    { value: 'женщина', label: content.genderFemale.value },
   ];
 
   // Определяем десктоп или мобилка
@@ -99,8 +98,8 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
       
       // Fetch cities and categories
       Promise.all([
-        fetch(`${API_URL}/api/cities?lang=${language}`).then(res => res.json()),
-        fetch(`${API_URL}/api/categories?lang=${language}`).then(res => res.json())
+        fetch(`${API_URL}/api/cities?lang=${locale}`).then(res => res.json()),
+        fetch(`${API_URL}/api/categories?lang=${locale}`).then(res => res.json())
       ]).then(([citiesData, categoriesData]) => {
         console.log('🏙️ Cities data:', citiesData);
         console.log('📂 Categories data:', categoriesData);
@@ -135,7 +134,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
         }
       }
     };
-  }, [open, currentFilters, language, API_URL, isMobile]);
+  }, [open, currentFilters, locale, API_URL, isMobile]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -299,7 +298,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
       <div ref={modalRef} style={contentStyle}>
         {isMobile ? (
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-            <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>{t('filter_modal_title') || 'Фильтры'}</h5>
+            <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>{content.filterModalTitle.value}</h5>
             <button 
               type="button" 
               className="btn-close" 
@@ -323,7 +322,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                 fontSize: isMobile ? '24px' : '16px' 
               }}
             ></button>
-            <h5 className='mb-4 font-size-10'>{t('filter_modal_title') || 'Фильтры'}</h5>
+            <h5 className='mb-4 font-size-10'>{content.filterModalTitle.value}</h5>
           </>
         )}
         
@@ -346,7 +345,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                   marginBottom: '8px', 
                   display: 'block' 
                 }}>
-                  {t('city') || 'Город'}
+                  {content.city.value}
                 </label>
                 <select 
                   className="form-select" 
@@ -362,7 +361,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     width: '90%' 
                   }}
                 >
-                  <option value="">{t('choose_city') || 'Выбрать город'}</option>
+                  <option value="">{content.chooseCity.value}</option>
                   {cities.map(city => (
                     <option key={city.id} value={city.name}>
                       {city.name}
@@ -379,7 +378,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                   marginBottom: '8px', 
                   display: 'block' 
                 }}>
-                  {t('category') || 'Категория'}
+                  {content.category.value}
                 </label>
                 <select 
                   className="form-select" 
@@ -395,7 +394,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     width: '90%' 
                   }}
                 >
-                  <option value="">{t('choose_category') || 'Выбрать категорию'}</option>
+                  <option value="">{content.chooseCategory.value}</option>
                   {categories.map(cat => (
                     <option key={cat.id} value={cat.label || cat.name}>
                       {cat.label || cat.name}
@@ -412,7 +411,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                   marginBottom: '8px', 
                   display: 'block' 
                 }}>
-                  {t('employment') || 'Тип занятости'}
+                  {content.employment.value}
                 </label>
                 <select 
                   className="form-select" 
@@ -428,7 +427,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     width: '90%' 
                   }}
                 >
-                  <option value="">{t('choose_employment') || 'Выбрать тип занятости'}</option>
+                  <option value="">{content.chooseEmployment.value}</option>
                   {employmentOptions.map(option => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -445,7 +444,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                   marginBottom: '8px', 
                   display: 'block' 
                 }}>
-                  {t('document_type') || 'Тип документа'}
+                  {content.documentType.value}
                 </label>
                 <select 
                   className="form-select" 
@@ -461,7 +460,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     width: '90%' 
                   }}
                 >
-                  <option value="">{t('choose_document_type') || 'Выбрать тип документа'}</option>
+                  <option value="">{content.chooseDocumentType.value}</option>
                   {documentTypeOptions.map(option => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -480,7 +479,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                   marginBottom: '8px', 
                   display: 'block' 
                 }}>
-                  {t('gender') || 'Пол'}
+                  {content.gender.value}
                 </label>
                 <select 
                   className="form-select" 
@@ -496,7 +495,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     width: '90%' 
                   }}
                 >
-                  <option value="">{t('choose_gender') || 'Выбрать пол'}</option>
+                  <option value="">{content.chooseGender.value}</option>
                   {genderOptions.map(option => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -506,7 +505,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
               </div>
               
               {renderCheckbox(
-                t('demanded') || 'Востребованный кандидат',
+                content.demanded.value,
                 isDemanded,
                 e => {
                   console.log('⭐ Demanded changed:', e.target.checked);
@@ -528,7 +527,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     marginBottom: '8px', 
                     display: 'block' 
                   }}>
-                    {t('city') || 'Город'}
+                    {content.city.value}
                   </label>
                   <select 
                     className="form-select" 
@@ -544,7 +543,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                       width: '90%' 
                     }}
                   >
-                    <option value="">{t('choose_city') || 'Выбрать город'}</option>
+                    <option value="">{content.chooseCity.value}</option>
                     {cities.map(city => (
                       <option key={city.id} value={city.name}>
                         {city.name}
@@ -561,7 +560,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     marginBottom: '8px', 
                     display: 'block' 
                   }}>
-                    {t('category') || 'Категория'}
+                    {content.category.value}
                   </label>
                   <select 
                     className="form-select" 
@@ -577,7 +576,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                       width: '90%' 
                     }}
                   >
-                    <option value="">{t('choose_category') || 'Выбрать категорию'}</option>
+                    <option value="">{content.chooseCategory.value}</option>
                                       {categories.map(cat => (
                     <option key={cat.id} value={cat.label || cat.name}>
                       {cat.label || cat.name}
@@ -594,7 +593,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     marginBottom: '8px', 
                     display: 'block' 
                   }}>
-                    {t('employment') || 'Тип занятости'}
+                    {content.employment.value}
                   </label>
                   <select 
                     className="form-select" 
@@ -610,7 +609,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                       width: '90%' 
                     }}
                   >
-                    <option value="">{t('choose_employment') || 'Выбрать тип занятости'}</option>
+                    <option value="">{content.chooseEmployment.value}</option>
                     {employmentOptions.map(option => (
                       <option key={option.value} value={option.value}>
                         {option.label}
@@ -627,7 +626,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     marginBottom: '8px', 
                     display: 'block' 
                   }}>
-                    {t('document_type') || 'Тип документа'}
+                    {content.documentType.value}
                   </label>
                   <select 
                     className="form-select" 
@@ -643,7 +642,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                       width: '90%' 
                     }}
                   >
-                    <option value="">{t('choose_document_type') || 'Выбрать тип документа'}</option>
+                    <option value="">{content.chooseDocumentType.value}</option>
                     {documentTypeOptions.map(option => (
                       <option key={option.value} value={option.value}>
                         {option.label}
@@ -663,7 +662,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     marginBottom: '8px', 
                     display: 'block' 
                   }}>
-                    {t('gender') || 'Пол'}
+                    {content.gender.value}
                   </label>
                   <select 
                     className="form-select" 
@@ -679,7 +678,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                       width: '90%' 
                     }}
                   >
-                    <option value="">{t('choose_gender') || 'Выбрать пол'}</option>
+                    <option value="">{content.chooseGender.value}</option>
                     {genderOptions.map(option => (
                       <option key={option.value} value={option.value}>
                         {option.label}
@@ -696,7 +695,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                     marginBottom: '8px', 
                     display: 'block' 
                   }}>
-                    {t('languages') || 'Языки'}
+                    {content.languages.value}
                   </label>
                   <div style={{ marginLeft: '8px' }}>
                     {languageOptions.map((option) => {
@@ -729,7 +728,7 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
                 
                 {/* Demanded Checkbox */}
                 {renderCheckbox(
-                  t('demanded') || 'Востребованный кандидат',
+                  content.demanded.value,
                   isDemanded,
                   e => {
                     console.log('⭐ Demanded changed:', e.target.checked);
@@ -748,14 +747,14 @@ const SeekerFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
             onClick={handleReset}
             style={{ fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '12px 20px' : '8px 16px' }}
           >
-            {t('reset') || 'Сбросить'}
+            {content.reset.value}
           </button>
           <button 
             className="btn btn-primary px-4" 
             onClick={handleApply}
             style={{ fontSize: isMobile ? '16px' : '14px', padding: isMobile ? '12px 24px' : '8px 16px' }}
           >
-            {t('save') || 'Сохранить'}
+            {content.save.value}
           </button>
         </div>
       </div>

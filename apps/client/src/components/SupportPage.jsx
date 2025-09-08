@@ -1,9 +1,9 @@
-import { useTranslation } from "react-i18next";
+import { useIntlayer } from "react-intlayer";
 import { Mail, Phone, MessageCircle, Clock, HelpCircle, Users, Shield, Zap } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 const SupportPage = () => {
-  const { t } = useTranslation();
+  const content = useIntlayer("supportPage");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [touchStart, setTouchStart] = useState(null);
@@ -17,8 +17,8 @@ const SupportPage = () => {
   const supportMethods = [
     {
       icon: Mail,
-      title: t("support_email_title"),
-      description: t("support_email_description"),
+      title: content.support_email_title,
+      description: content.support_email_description,
       contact: "worknow.notifications@gmail.com",
       action: "mailto:worknow.notifications@gmail.com",
       color: "bg-blue-500",
@@ -26,9 +26,9 @@ const SupportPage = () => {
     },
     {
       icon: MessageCircle,
-      title: t("support_live_chat_title"),
-      description: t("support_live_chat_description"),
-      contact: t("support_available_24_7"),
+      title: content.support_live_chat_title,
+      description: content.support_live_chat_description,
+      contact: content.support_available_24_7,
       action: "#",
       color: "bg-green-500",
       hoverColor: "hover:bg-green-600",
@@ -36,8 +36,8 @@ const SupportPage = () => {
     },
     {
       icon: Phone,
-      title: t("support_phone_title"),
-      description: t("support_phone_description"),
+      title: content.support_phone_title,
+      description: content.support_phone_description,
       contact: "+972-053-3033332",
       action: "tel:+972-053-3033332",
       color: "bg-purple-500",
@@ -47,54 +47,54 @@ const SupportPage = () => {
 
   const faqItems = [
     {
-      question: t("support_faq_create_job_question"),
-      answer: t("support_faq_create_job_answer")
+      question: content.support_faq_create_job_question,
+      answer: content.support_faq_create_job_answer
     },
     {
-      question: t("support_faq_premium_question"),
-      answer: t("support_faq_premium_answer")
+      question: content.support_faq_premium_question,
+      answer: content.support_faq_premium_answer
     },
     {
-      question: t("support_faq_edit_job_question"),
-      answer: t("support_faq_edit_job_answer")
+      question: content.support_faq_edit_job_question,
+      answer: content.support_faq_edit_job_answer
     },
     {
-      question: t("support_faq_contact_seekers_question"),
-      answer: t("support_faq_contact_seekers_answer")
+      question: content.support_faq_contact_seekers_question,
+      answer: content.support_faq_contact_seekers_answer
     },
     {
-      question: t("support_faq_job_limits_question"),
-      answer: t("support_faq_job_limits_answer")
+      question: content.support_faq_job_limits_question,
+      answer: content.support_faq_job_limits_answer
     },
     {
-      question: t("support_faq_payment_question"),
-      answer: t("support_faq_payment_answer")
+      question: content.support_faq_payment_question,
+      answer: content.support_faq_payment_answer
     },
     {
-      question: t("support_faq_categories_question"),
-      answer: t("support_faq_categories_answer")
+      question: content.support_faq_categories_question,
+      answer: content.support_faq_categories_answer
     },
     {
-      question: t("support_faq_cities_question"),
-      answer: t("support_faq_cities_answer")
+      question: content.support_faq_cities_question,
+      answer: content.support_faq_cities_answer
     }
   ];
 
   const features = [
     {
       icon: Shield,
-      title: t("support_secure_platform_title"),
-      description: t("support_secure_platform_description")
+      title: content.support_secure_platform_title,
+      description: content.support_secure_platform_description
     },
     {
       icon: Zap,
-      title: t("support_fast_reliable_title"),
-      description: t("support_fast_reliable_description")
+      title: content.support_fast_reliable_title,
+      description: content.support_fast_reliable_description
     },
     {
       icon: Users,
-      title: t("support_community_driven_title"),
-      description: t("support_community_driven_description")
+      title: content.support_community_driven_title,
+      description: content.support_community_driven_description
     }
   ];
 
@@ -197,10 +197,10 @@ const SupportPage = () => {
               <HelpCircle className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-4xl font-bold mb-4">
-              {t("technical_support")}
+              {content.technical_support}
             </h1>
             <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              {t("support_hero_description")}
+              {content.support_hero_description}
             </p>
           </div>
         </div>
@@ -210,10 +210,10 @@ const SupportPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            {t("support_get_in_touch")}
+            {content.support_get_in_touch}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t("support_get_in_touch_description")}
+            {content.support_get_in_touch_description}
           </p>
         </div>
 
@@ -244,11 +244,11 @@ const SupportPage = () => {
                       onClick={() => handleContactClick(method)}
                       className={`inline-flex items-center px-6 py-3 rounded-lg ${method.color} ${method.hoverColor} text-white font-medium transition-colors duration-200`}
                     >
-                      {t("support_contact_now")}
+                      {content.support_contact_now}
                     </button>
                   ) : (
                     <span className="inline-flex items-center px-6 py-3 rounded-lg bg-gray-300 text-gray-500 font-medium cursor-not-allowed">
-                      {t("support_coming_soon")}
+                      {content.support_coming_soon}
                     </span>
                   )}
                 </div>
@@ -261,10 +261,10 @@ const SupportPage = () => {
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-12">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              {t("support_why_choose_title")}
+              {content.support_why_choose_title}
             </h2>
             <p className="text-lg text-gray-600">
-              {t("support_why_choose_description")}
+              {content.support_why_choose_description}
             </p>
           </div>
           
@@ -289,10 +289,10 @@ const SupportPage = () => {
         <div className="bg-white rounded-2xl shadow-lg p-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              {t("support_faq_title")}
+              {content.support_faq_title}
             </h2>
             <p className="text-lg text-gray-600">
-              {t("support_faq_description")}
+              {content.support_faq_description}
             </p>
           </div>
           
@@ -315,13 +315,13 @@ const SupportPage = () => {
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
             <div className="flex items-center justify-center mb-4">
               <Clock className="h-6 w-6 mr-2" />
-              <span className="text-lg font-semibold">{t("support_hours_title")}</span>
+              <span className="text-lg font-semibold">{content.support_hours_title}</span>
             </div>
             <p className="text-blue-100 mb-4">
-              {t("support_hours_weekdays")}
+              {content.support_hours_weekdays}
             </p>
             <p className="text-blue-100">
-              {t("support_hours_weekend")}
+              {content.support_hours_weekend}
             </p>
           </div>
         </div>
@@ -337,11 +337,11 @@ const SupportPage = () => {
         >
           <div ref={modalRef} style={contentStyle}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>{t("support_modal_title")}</h5>
+              <h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>{content.support_modal_title}</h5>
               <button 
                 type="button" 
                 className="btn-close" 
-                aria-label={t("close")} 
+                aria-label={content.close} 
                 onClick={closeModal} 
                 style={{ fontSize: '24px' }}
               ></button>
@@ -361,7 +361,7 @@ const SupportPage = () => {
               </p>
               
               <div className="bg-gray-50 rounded-lg p-4 mb-6 w-full">
-                <p className="text-sm text-gray-500 mb-2">{t("support_modal_contact_info")}</p>
+                <p className="text-sm text-gray-500 mb-2">{content.support_modal_contact_info}</p>
                 <p className="text-lg font-medium text-gray-900 break-words">
                   {selectedMethod.contact}
                 </p>
@@ -373,11 +373,11 @@ const SupportPage = () => {
                   className={`inline-flex items-center px-8 py-4 rounded-lg ${selectedMethod.color} ${selectedMethod.hoverColor} text-white text-lg font-medium transition-colors duration-200 w-full justify-center`}
                   onClick={closeModal}
                 >
-                  {t("support_contact_now")}
+                  {content.support_contact_now}
                 </a>
               ) : (
                 <span className="inline-flex items-center px-8 py-4 rounded-lg bg-gray-300 text-gray-500 text-lg font-medium w-full justify-center">
-                  {t("support_coming_soon")}
+                  {content.support_coming_soon}
                 </span>
               )}
             </div>

@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer, useLocale } from 'react-intlayer';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUserSync } from '../hooks/useUserSync.js';
 import VerificationModal from '../components/ui/VerificationModal.jsx';
-import useLanguageStore from '../store/languageStore';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const NewsletterSubscription = () => {
+  const content = useIntlayer("newsletterSubscription");
+  const { locale } = useLocale();
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -38,11 +39,9 @@ const NewsletterSubscription = () => {
   const [isLoadingCities, setIsLoadingCities] = useState(true);
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   
-  const { t } = useTranslation();
   const { user, isLoaded } = useUser();
   const navigate = useNavigate();
   const { dbUser } = useUserSync();
-  const language = useLanguageStore((state) => state.language) || 'ru';
 
   // Check if user has premium access
   const hasPremiumAccess = dbUser?.isPremium || dbUser?.premiumDeluxe;
@@ -57,28 +56,28 @@ const NewsletterSubscription = () => {
 
   // Filter options with translations
   const languageOptions = [
-    { value: 'русский', label: t('language_russian') || 'Русский' },
-    { value: 'украинский', label: t('language_ukrainian') || 'Украинский' },
-    { value: 'английский', label: t('language_english') || 'Английский' },
-    { value: 'иврит', label: t('language_hebrew') || 'Иврит' },
+    { value: 'русский', label: content.languageRussian.value },
+    { value: 'украинский', label: content.languageUkrainian.value },
+    { value: 'английский', label: content.languageEnglish.value },
+    { value: 'иврит', label: content.languageHebrew.value },
   ];
 
   const employmentOptions = [
-    { value: 'полная', label: t('employment_full') || 'Полная' },
-    { value: 'частичная', label: t('employment_partial') || 'Частичная' },
+    { value: 'полная', label: content.employmentFull.value },
+    { value: 'частичная', label: content.employmentPartial.value },
   ];
 
   const documentTypeOptions = [
-    { value: 'Виза Б1', label: t('document_visa_b1') || 'Виза Б1' },
-    { value: 'Виза Б2', label: t('document_visa_b2') || 'Виза Б2' },
-    { value: 'Теудат Зеут', label: t('document_teudat_zehut') || 'Теудат Зеут' },
-    { value: 'Рабочая виза', label: t('document_work_visa') || 'Рабочая виза' },
-    { value: 'Другое', label: t('document_other') || 'Другое' },
+    { value: 'Виза Б1', label: content.documentVisaB1.value },
+    { value: 'Виза Б2', label: content.documentVisaB2.value },
+    { value: 'Теудат Зеут', label: content.documentTeudatZehut.value },
+    { value: 'Рабочая виза', label: content.documentWorkVisa.value },
+    { value: 'Другое', label: content.documentOther.value },
   ];
 
   const genderOptions = [
-    { value: 'мужчина', label: t('gender_male') || 'Мужчина' },
-    { value: 'женщина', label: t('gender_female') || 'Женщина' },
+    { value: 'мужчина', label: content.genderMale.value },
+    { value: 'женщина', label: content.genderFemale.value },
   ];
 
   // Check for logged-in user's email when component mounts
@@ -99,8 +98,8 @@ const NewsletterSubscription = () => {
       
       // Fetch cities and categories for filter options
       Promise.all([
-        fetch(`${API_URL}/api/cities?lang=${language}`).then(res => res.json()),
-        fetch(`${API_URL}/api/categories?lang=${language}`).then(res => res.json())
+        fetch(`${API_URL}/api/cities?lang=${locale}`).then(res => res.json()),
+        fetch(`${API_URL}/api/categories?lang=${locale}`).then(res => res.json())
       ]).then(([citiesData, categoriesData]) => {
         setCities(citiesData);
         setCategories(categoriesData);
@@ -114,7 +113,7 @@ const NewsletterSubscription = () => {
         setIsLoadingCategories(false);
       });
     }
-  }, [isLoaded, user, language]);
+  }, [isLoaded, user, locale]);
 
   // Check subscription status for an email
   const checkSubscriptionStatus = async (email) => {
@@ -158,14 +157,14 @@ const NewsletterSubscription = () => {
 
   const handleSubscribe = async () => {
     if (!email || !email.trim()) {
-      toast.error(t('newsletter_email_required') || 'Пожалуйста, введите email');
+      toast.error(content.newsletterEmailRequired.value);
       return;
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      toast.error(t('newsletter_invalid_email') || 'Пожалуйста, введите корректный email');
+      toast.error(content.newsletterInvalidEmail.value);
       return;
     }
 
@@ -189,12 +188,12 @@ const NewsletterSubscription = () => {
       });
 
       if (response.data.success) {
-        toast.success(t('verification_code_sent') || 'Код подтверждения отправлен на ваш email!');
+        toast.success(content.verificationCodeSent.value);
         // Store subscription data and show verification modal
         setSubscriptionData(response.data.subscriptionData);
         setShowVerification(true);
       } else {
-        toast.error(response.data.message || t('newsletter_error') || 'Ошибка при отправке кода подтверждения');
+        toast.error(response.data.message || content.newsletterError.value);
       }
     } catch (error) {
       console.error('Newsletter verification error:', error);
@@ -203,7 +202,7 @@ const NewsletterSubscription = () => {
       } else if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error(t('newsletter_error') || 'Ошибка при отправке кода подтверждения');
+        toast.error(content.newsletterError.value);
       }
     } finally {
       setIsSubscribing(false);
@@ -213,7 +212,7 @@ const NewsletterSubscription = () => {
   // Handle unsubscribe
   const handleUnsubscribe = async () => {
     if (!email || !email.trim()) {
-      toast.error(t('newsletter_email_required') || 'Пожалуйста, введите email');
+      toast.error(content.newsletterEmailRequired.value);
       return;
     }
 
@@ -225,7 +224,7 @@ const NewsletterSubscription = () => {
       });
 
       if (response.data.success) {
-        toast.success(t('newsletter_unsubscribe_success') || 'Вы успешно отписались от рассылки!');
+        toast.success(content.newsletterUnsubscribeSuccess.value);
         setIsAlreadySubscribed(false);
         setSubscriberData(null);
         setEmail('');
@@ -233,14 +232,14 @@ const NewsletterSubscription = () => {
         setLastName('');
         navigate('/seekers');
       } else {
-        toast.error(response.data.message || t('newsletter_unsubscribe_error') || 'Ошибка при отписке от рассылки');
+        toast.error(response.data.message || content.newsletterUnsubscribeError.value);
       }
     } catch (error) {
       console.error('Newsletter unsubscribe error:', error);
       if (error.response?.data?.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error(t('newsletter_unsubscribe_error') || 'Ошибка при отписке от рассылки');
+        toast.error(content.newsletterUnsubscribeError.value);
       }
     } finally {
       setIsUnsubscribing(false);
@@ -310,10 +309,10 @@ const NewsletterSubscription = () => {
             }}></i>
           </div>
           <h2 className="mb-3" style={{ color: '#333', fontWeight: '600' }}>
-            {t('newsletter_title') || 'Подписка на рассылку'}
+            {content.newsletterTitle.value}
           </h2>
           <p className="text-muted" style={{ fontSize: '18px', lineHeight: '1.6' }}>
-            {t('newsletter_description') || 'Подпишитесь на нашу рассылку, чтобы получать уведомления о новых соискателях и обновлениях платформы.'}
+            {content.newsletterDescription.value}
           </p>
         </div>
 
@@ -329,7 +328,7 @@ const NewsletterSubscription = () => {
               <div className="d-flex align-items-center">
                 <i className="bi bi-check-circle-fill me-2" style={{ color: '#28a745', fontSize: '18px' }}></i>
                 <span style={{ color: '#155724', fontWeight: '500' }}>
-                  {t('newsletter_already_subscribed') || 'Вы уже подписаны на рассылку!'}
+                  {content.newsletterAlreadySubscribed.value}
                 </span>
               </div>
             </div>
@@ -342,13 +341,13 @@ const NewsletterSubscription = () => {
           <div className="col-12 col-lg-6">
             <h4 className="mb-4" style={{ color: '#333', fontWeight: '600' }}>
               <i className="bi bi-person-circle me-2" style={{ color: '#007bff' }}></i>
-              {t('newsletter_basic_info')}
+              {content.newsletterBasicInfo.value}
             </h4>
             
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-person me-2" style={{ color: '#6c757d' }}></i>
-                {t('newsletter_first_name') || 'Имя (необязательно)'}
+                {content.newsletterFirst_name.value}
               </label>
               <div className="input-group">
                 <span className="input-group-text">
@@ -359,7 +358,7 @@ const NewsletterSubscription = () => {
                   className="form-control"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  placeholder={t('newsletter_first_name_placeholder') || 'Введите ваше имя'}
+                  placeholder={content.newsletterFirst_namePlaceholder.value}
                   disabled={isSubscribing || isUnsubscribing || isAlreadySubscribed}
                   style={{ padding: '12px', borderRadius: '0 8px 8px 0' }}
                 />
@@ -369,7 +368,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-person-badge me-2" style={{ color: '#6c757d' }}></i>
-                {t('newsletter_last_name') || 'Фамилия (необязательно)'}
+                {content.newsletterLast_name.value}
               </label>
               <div className="input-group">
                 <span className="input-group-text">
@@ -380,7 +379,7 @@ const NewsletterSubscription = () => {
                   className="form-control"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  placeholder={t('newsletter_last_name_placeholder') || 'Введите вашу фамилию'}
+                  placeholder={content.newsletterLast_namePlaceholder.value}
                   disabled={isSubscribing || isUnsubscribing || isAlreadySubscribed}
                   style={{ padding: '12px', borderRadius: '0 8px 8px 0' }}
                 />
@@ -390,7 +389,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-envelope me-2" style={{ color: '#6c757d' }}></i>
-                {t('newsletter_email_label') || 'Email адрес *'}
+                {content.newsletterEmailLabel.value}
               </label>
               <div className="input-group">
                 <span className="input-group-text">
@@ -401,7 +400,7 @@ const NewsletterSubscription = () => {
                   className="form-control"
                   value={email}
                   onChange={handleEmailChange}
-                  placeholder={t('newsletter_email_placeholder') || 'Введите ваш email'}
+                  placeholder={content.newsletterEmailPlaceholder.value}
                   disabled={isSubscribing || isUnsubscribing || isAlreadySubscribed}
                   required
                   style={{ padding: '12px', borderRadius: '0 8px 8px 0' }}
@@ -414,7 +413,7 @@ const NewsletterSubscription = () => {
           <div className="col-12 col-lg-6">
             <h4 className="mb-4" style={{ color: '#333', fontWeight: '600' }}>
               <i className="bi bi-gear me-2" style={{ color: '#007bff' }}></i>
-              {t('newsletter_notification_settings')}
+              {content.newsletterNotificationSettings.value}
             </h4>
             
             {/* General Premium Upgrade Banner */}
@@ -428,11 +427,11 @@ const NewsletterSubscription = () => {
                 <div className="d-flex align-items-center">
                   <i className="bi bi-star-fill me-2" style={{ color: '#ffc107' }}></i>
                   <div>
-                    <strong style={{ color: '#856404' }}>{t('premium_features')}</strong>
+                    <strong style={{ color: '#856404' }}>{content.premiumFeatures.value}</strong>
                     <br />
                     <small className="text-muted">
-                      {t('newsletter_premium_upgrade_message')}{' '}
-                      <a href="/premium" className="text-decoration-none fw-bold" style={{ color: '#007bff' }}>{t('newsletter_go_to_plans')}</a>
+                      {content.newsletterPremiumUpgradeMessage.value}{' '}
+                      <a href="/premium" className="text-decoration-none fw-bold" style={{ color: '#007bff' }}>{content.newsletterGoToPlans.value}</a>
                     </small>
                   </div>
                 </div>
@@ -442,7 +441,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-geo-alt me-2" style={{ color: '#6c757d' }}></i>
-                {t('city') || 'Города'}
+                {content.city.value}
               </label>
               
               {isLoadingCities ? (
@@ -507,7 +506,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-tags me-2" style={{ color: '#6c757d' }}></i>
-                {t('newsletter_categories')}
+                {content.newsletterCategories.value}
               </label>
               
               {isLoadingCategories ? (
@@ -573,7 +572,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-briefcase me-2" style={{ color: '#6c757d' }}></i>
-                {t('newsletter_employment_type')}
+                {content.newsletterEmploymentType.value}
               </label>
               <div className="row">
                 {employmentOptions.map(option => (
@@ -606,7 +605,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-translate me-2" style={{ color: '#6c757d' }}></i>
-                {t('languages')}
+                {content.languages.value}
               </label>
               
               {/* Premium Upgrade Message for Languages */}
@@ -621,8 +620,8 @@ const NewsletterSubscription = () => {
                     <i className="bi bi-info-circle me-2" style={{ color: '#007bff' }}></i>
                     <div>
                       <small className="text-muted">
-                        {t('newsletter_languages_premium_message')}{' '}
-                        <a href="/premium" className="text-decoration-none fw-bold">{t('newsletter_go_to_plans')}</a>
+                        {content.newsletterLanguagesPremiumMessage.value}{' '}
+                        <a href="/premium" className="text-decoration-none fw-bold">{content.newsletterGoToPlans.value}</a>
                       </small>
                     </div>
                   </div>
@@ -670,7 +669,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-gender-ambiguous me-2" style={{ color: '#6c757d' }}></i>
-                {t('gender')}
+                {content.gender.value}
               </label>
               
               {/* Premium Upgrade Message for Gender */}
@@ -685,8 +684,8 @@ const NewsletterSubscription = () => {
                     <i className="bi bi-info-circle me-2" style={{ color: '#007bff' }}></i>
                     <div>
                       <small className="text-muted">
-                        {t('newsletter_gender_premium_message')}{' '}
-                        <a href="/premium" className="text-decoration-none fw-bold">{t('newsletter_go_to_plans')}</a>
+                        {content.newsletterGenderPremiumMessage.value}{' '}
+                        <a href="/premium" className="text-decoration-none fw-bold">{content.newsletterGoToPlans.value}</a>
                       </small>
                     </div>
                   </div>
@@ -734,7 +733,7 @@ const NewsletterSubscription = () => {
             <div className="mb-4">
               <label className="form-label" style={{ fontWeight: '500', marginBottom: '8px' }}>
                 <i className="bi bi-file-earmark-text me-2" style={{ color: '#6c757d' }}></i>
-                {t('document_type')}
+                {content.documentType.value}
               </label>
               
               {/* Premium Upgrade Message for Document Types */}
@@ -749,8 +748,8 @@ const NewsletterSubscription = () => {
                     <i className="bi bi-info-circle me-2" style={{ color: '#007bff' }}></i>
                     <div>
                       <small className="text-muted">
-                        {t('newsletter_document_type_premium_message')}{' '}
-                        <a href="/premium" className="text-decoration-none fw-bold">{t('newsletter_go_to_plans')}</a>
+                        {content.newsletterDocumentTypePremiumMessage.value}{' '}
+                        <a href="/premium" className="text-decoration-none fw-bold">{content.newsletterGoToPlans.value}</a>
                       </small>
                     </div>
                   </div>
@@ -808,8 +807,8 @@ const NewsletterSubscription = () => {
                     <i className="bi bi-info-circle me-2" style={{ color: '#007bff' }}></i>
                     <div>
                       <small className="text-muted">
-                        {t('newsletter_demanded_premium_message')}{' '}
-                        <a href="/premium" className="text-decoration-none fw-bold">{t('newsletter_go_to_plans')}</a>
+                        {content.newsletterDemandedPremiumMessage.value}{' '}
+                        <a href="/premium" className="text-decoration-none fw-bold">{content.newsletterGoToPlans.value}</a>
                       </small>
                     </div>
                   </div>
@@ -838,7 +837,7 @@ const NewsletterSubscription = () => {
                   }}
                 >
                   <i className="bi bi-star-fill me-2" style={{ color: '#ffc107' }}></i>
-                  {t('newsletter_demanded_candidates')}
+                  {content.newsletterDemandedCandidates.value}
                 </label>
               </div>
             </div>
@@ -856,7 +855,7 @@ const NewsletterSubscription = () => {
             <div className="d-flex justify-content-center align-items-center gap-4">
               <div className="text-muted">
                 <i className="bi bi-check-circle-fill me-2" style={{ color: '#28a745' }}></i>
-                {t('newsletter_already_subscribed')}
+                {content.newsletterAlreadySubscribed.value}
               </div>
               <button 
                 className="btn btn-danger"
@@ -867,12 +866,12 @@ const NewsletterSubscription = () => {
                 {isUnsubscribing ? (
                   <>
                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    {t('newsletter_unsubscribing')}
+                    {content.newsletterUnsubscribing.value}
                   </>
                 ) : (
                   <>
                     <i className="bi bi-envelope-x me-2"></i>
-                    {t('newsletter_unsubscribe')}
+                    {content.newsletterUnsubscribe.value}
                   </>
                 )}
               </button>
@@ -892,12 +891,12 @@ const NewsletterSubscription = () => {
               {isSubscribing ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  {t('newsletter_subscribing') || 'Подписка...'}
+                  {content.newsletterSubscribing.value}
                 </>
               ) : (
                 <>
                   <i className="bi bi-envelope-plus me-2"></i>
-                  {t('newsletter_subscribe') || 'Подписаться'}
+                  {content.newsletterSubscribe.value}
                 </>
               )}
             </button>

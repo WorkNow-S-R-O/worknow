@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
-import useLanguageStore from '../store/languageStore';
+import { useLocale } from 'react-intlayer';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const useFetchCategories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const language = useLanguageStore((state) => state.language) || 'ru';
+  const { locale } = useLocale();
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/categories?lang=${language}`);
+        const response = await fetch(`${API_URL}/api/categories?lang=${locale}`);
         const data = await response.json();
         const formattedCategories = data.map(category => ({
           value: category.id,
@@ -26,7 +26,7 @@ const useFetchCategories = () => {
     };
 
     fetchCategories();
-  }, [language]);
+  }, [locale]);
 
   return { categories, loading };
 };
