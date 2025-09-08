@@ -173,8 +173,8 @@ export default function SeekerDetails() {
         <h3 className="mb-2">
           <span className="d-flex align-items-center flex-wrap gap-2">
             {seeker.name}
-            {seeker.gender && <span className="badge bg-dark">{getGenderLabel(seeker.gender)}</span>}
-            {seeker.isDemanded && <span className="badge bg-primary">{content.seekerProfileDemanded.value}</span>}
+            {seeker.gender && <span className="badge bg-dark" style={{ padding: '5px 6px', fontSize: '20px' }}>{getGenderLabel(seeker.gender)}</span>}
+            {seeker.isDemanded && <span className="badge bg-primary" style={{ padding: '5px 6px', fontSize: '20px' }}>{content.seekerProfileDemanded.value}</span>}
           </span>
         </h3>
         {isPremium && (seeker.contact || seeker.facebook) && (
@@ -199,20 +199,20 @@ export default function SeekerDetails() {
           </div>
         )}
         <div className="mb-2">
-          <strong>{content.seekerProfileEmployment.value}:</strong> {seeker.employment && <span className="badge bg-secondary">{getEmploymentLabel(seeker.employment)}</span>}
+          <strong>{content.seekerProfileEmployment.value}:</strong> {seeker.employment && <span className="badge bg-secondary" style={{ padding: '2px 6px', fontSize: '11px' }}>{getEmploymentLabel(seeker.employment)}</span>}
         </div>
         <div className="mb-2">
-          <strong>{content.seekerProfileCategory.value}:</strong> {seeker.category && <span className="badge bg-secondary">{getCategoryLabel(seeker.category)}</span>}
+          <strong>{content.seekerProfileCategory.value}:</strong> {seeker.category && <span className="badge bg-secondary" style={{ padding: '2px 6px', fontSize: '11px' }}>{getCategoryLabel(seeker.category)}</span>}
         </div>
         <div className="mb-2">
           <strong>{content.seekerProfileLanguages.value}:</strong> {Array.isArray(seeker.languages) && seeker.languages.map(lang => (
-            <span key={lang} className="badge bg-light text-dark border mx-1">
+            <span key={lang} className="badge bg-light text-dark border mx-1" style={{ padding: '2px 6px', fontSize: '11px' }}>
               {getLangLabel(lang)}{seeker.nativeLanguage === lang && ` ${content.seekerProfileNative.value}`}
             </span>
           ))}
         </div>
         <div className="mb-2">
-          <strong>{content.seekerProfileDocuments.value}:</strong> {seeker.documentType && <span className="badge bg-secondary">{getDocumentTypeLabel(seeker.documentType)}</span>}
+          <strong>{content.seekerProfileDocuments.value}:</strong> {seeker.documentType && <span className="badge bg-secondary" style={{ padding: '2px 6px', fontSize: '11px' }}>{getDocumentTypeLabel(seeker.documentType)}</span>}
         </div>
         <div className="mb-2">
           <strong>{content.seekerProfileAnnouncement.value}:</strong>

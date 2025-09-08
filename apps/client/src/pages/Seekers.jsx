@@ -620,7 +620,7 @@ export default function Seekers() {
                         {renderContactCell(seeker.contact, isPremium, seeker.id, seekers.map(s => s.id), index, seeker.facebook, currentPage)}
                       </td>
                       <td className="py-3">
-                        <span className="badge bg-light text-dark">{seeker.city}</span>
+                        <span className="badge bg-light text-dark" style={{ padding: '2px 6px', fontSize: '11px' }}>{seeker.city}</span>
                       </td>
                       <td className="py-3">
                         <div className="description-cell" style={{ 
