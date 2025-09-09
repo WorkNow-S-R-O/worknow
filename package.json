@@ -10,7 +10,7 @@
     "build:server": "npm run build && npm run start",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
+    "test:coverage": "vitest run --coverage",
     "test:run": "vitest run",
     "preview": "vite preview",
     "start": "node apps/api/index.js",
@@ -99,6 +99,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
+    "@biomejs/biome": "2.2.3",
     "@eslint/js": "^9.15.0",
     "@testing-library/jest-dom": "^6.6.4",
     "@testing-library/react": "^16.2.0",
