@@ -1,0 +1,1057 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for apps/client/src/content/supportPage.content.tsx</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">apps/client/src/content</a> supportPage.content.tsx</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/322</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/322</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a>
+<a name='L199'></a><a href='#L199'>199</a>
+<a name='L200'></a><a href='#L200'>200</a>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a>
+<a name='L203'></a><a href='#L203'>203</a>
+<a name='L204'></a><a href='#L204'>204</a>
+<a name='L205'></a><a href='#L205'>205</a>
+<a name='L206'></a><a href='#L206'>206</a>
+<a name='L207'></a><a href='#L207'>207</a>
+<a name='L208'></a><a href='#L208'>208</a>
+<a name='L209'></a><a href='#L209'>209</a>
+<a name='L210'></a><a href='#L210'>210</a>
+<a name='L211'></a><a href='#L211'>211</a>
+<a name='L212'></a><a href='#L212'>212</a>
+<a name='L213'></a><a href='#L213'>213</a>
+<a name='L214'></a><a href='#L214'>214</a>
+<a name='L215'></a><a href='#L215'>215</a>
+<a name='L216'></a><a href='#L216'>216</a>
+<a name='L217'></a><a href='#L217'>217</a>
+<a name='L218'></a><a href='#L218'>218</a>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a>
+<a name='L229'></a><a href='#L229'>229</a>
+<a name='L230'></a><a href='#L230'>230</a>
+<a name='L231'></a><a href='#L231'>231</a>
+<a name='L232'></a><a href='#L232'>232</a>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a>
+<a name='L255'></a><a href='#L255'>255</a>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a>
+<a name='L268'></a><a href='#L268'>268</a>
+<a name='L269'></a><a href='#L269'>269</a>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a>
+<a name='L272'></a><a href='#L272'>272</a>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a>
+<a name='L276'></a><a href='#L276'>276</a>
+<a name='L277'></a><a href='#L277'>277</a>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a>
+<a name='L285'></a><a href='#L285'>285</a>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a>
+<a name='L293'></a><a href='#L293'>293</a>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a>
+<a name='L296'></a><a href='#L296'>296</a>
+<a name='L297'></a><a href='#L297'>297</a>
+<a name='L298'></a><a href='#L298'>298</a>
+<a name='L299'></a><a href='#L299'>299</a>
+<a name='L300'></a><a href='#L300'>300</a>
+<a name='L301'></a><a href='#L301'>301</a>
+<a name='L302'></a><a href='#L302'>302</a>
+<a name='L303'></a><a href='#L303'>303</a>
+<a name='L304'></a><a href='#L304'>304</a>
+<a name='L305'></a><a href='#L305'>305</a>
+<a name='L306'></a><a href='#L306'>306</a>
+<a name='L307'></a><a href='#L307'>307</a>
+<a name='L308'></a><a href='#L308'>308</a>
+<a name='L309'></a><a href='#L309'>309</a>
+<a name='L310'></a><a href='#L310'>310</a>
+<a name='L311'></a><a href='#L311'>311</a>
+<a name='L312'></a><a href='#L312'>312</a>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a>
+<a name='L320'></a><a href='#L320'>320</a>
+<a name='L321'></a><a href='#L321'>321</a>
+<a name='L322'></a><a href='#L322'>322</a>
+<a name='L323'></a><a href='#L323'>323</a>
+<a name='L324'></a><a href='#L324'>324</a>
+<a name='L325'></a><a href='#L325'>325</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import { type Dictionary, t } from 'intlayer';<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >const supportPageContent = {</span>
+<span class="cstat-no" title="statement not covered" >	key: 'supportPage',</span>
+<span class="cstat-no" title="statement not covered" >	content: {</span>
+<span class="cstat-no" title="statement not covered" >		technical_support: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Техническая поддержка',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Technical Support',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'תמיכה טכנית',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'الدعم الفني',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Технічна підтримка',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_hero_description: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Мы здесь, чтобы помочь вам с любыми вопросами или проблемами. Наша команда поддержки готова ответить на ваши вопросы и помочь вам максимально эффективно использовать нашу платформу.',</span>
+<span class="cstat-no" title="statement not covered" >			en: "We're here to help you with any questions or issues. Our support team is ready to answer your questions and help you make the most of our platform.",</span>
+<span class="cstat-no" title="statement not covered" >			he: 'אנחנו כאן כדי לעזור לך עם כל שאלה או בעיה. צוות התמיכה שלנו מוכן לענות על השאלות שלך ולעזור לך להפיק את המרב מהפלטפורמה שלנו.',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'نحن هنا لمساعدتك في أي أسئلة أو مشاكل. فريق الدعم لدينا جاهز للإجابة على أسئلتك ومساعدتك في الاستفادة القصوى من منصتنا.',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Ми тут, щоб допомогти вам з будь-якими питаннями або проблемами. Наша команда підтримки готова відповісти на ваші питання та допомогти вам максимально ефективно використовувати нашу платформу.',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_get_in_touch: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Свяжитесь с нами',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Get in Touch',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'צור קשר',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'تواصل معنا',</span>
+<span class="cstat-no" title="statement not covered" >			uk: "Зв'яжіться з нами",</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_get_in_touch_description: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Выберите удобный для вас способ связи. Мы доступны через различные каналы и готовы помочь вам в любое время.',</span>
+<span class="cstat-no" title="statement not covered" >			en: "Choose the communication method that works best for you. We're available through various channels and ready to help you anytime.",</span>
+<span class="cstat-no" title="statement not covered" >			he: 'בחר את שיטת התקשורת שמתאימה לך ביותר. אנחנו זמינים דרך ערוצים שונים ומוכנים לעזור לך בכל עת.',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'اختر طريقة التواصل التي تناسبك. نحن متاحون من خلال قنوات مختلفة ومستعدون لمساعدتك في أي وقت.',</span>
+<span class="cstat-no" title="statement not covered" >			uk: "Оберіть зручний для вас спосіб зв'язку. Ми доступні через різні канали та готові допомогти вам у будь-який час.",</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_email_title: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Электронная почта',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Email Support',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'תמיכה בדוא"ל',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'دعم البريد الإلكتروني',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Підтримка електронною поштою',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_email_description: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Отправьте нам письмо с подробным описанием вашего вопроса или проблемы. Мы ответим в течение 24 часов.',</span>
+<span class="cstat-no" title="statement not covered" >			en: "Send us an email with a detailed description of your question or issue. We'll respond within 24 hours.",</span>
+<span class="cstat-no" title="statement not covered" >			he: 'שלח לנו אימייל עם תיאור מפורט של השאלה או הבעיה שלך. נענה תוך 24 שעות.',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'أرسل لنا بريدًا إلكترونيًا مع وصف مفصل لسؤالك أو مشكلتك. سنجيب خلال 24 ساعة.',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Надішліть нам листа з детальним описом вашого питання або проблеми. Ми відповімо протягом 24 годин.',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_live_chat_title: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Онлайн чат',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Live Chat',</span>
+<span class="cstat-no" title="statement not covered" >			he: "צ'אט חי",</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'دردشة مباشرة',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Онлайн чат',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_live_chat_description: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Получите мгновенную помощь через наш онлайн чат. Наши специалисты готовы ответить на ваши вопросы в режиме реального времени.',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Get instant help through our live chat. Our specialists are ready to answer your questions in real-time.',</span>
+<span class="cstat-no" title="statement not covered" >			he: "קבל עזרה מיידית דרך הצ'אט החי שלנו. המומחים שלנו מוכנים לענות על השאלות שלך בזמן אמת.",</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'احصل على مساعدة فورية من خلال دردشتنا المباشرة. خبراؤنا مستعدون للإجابة على أسئلتك في الوقت الفعلي.',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Отримайте миттєву допомогу через наш онлайн чат. Наші фахівці готові відповісти на ваші питання в режимі реального часу.',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_phone_title: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Телефонная поддержка',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Phone Support',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'תמיכה טלפונית',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'دعم هاتفي',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Телефонна підтримка',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_phone_description: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Позвоните нам для получения персональной помощи. Наши специалисты готовы помочь вам по телефону.',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Call us for personalized assistance. Our specialists are ready to help you over the phone.',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'התקשר אלינו לקבלת סיוע אישי. המומחים שלנו מוכנים לעזור לך בטלפון.',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'اتصل بنا للحصول على مساعدة شخصية. خبراؤنا مستعدون لمساعدتك عبر الهاتف.',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Подзвоніть нам для отримання персональної допомоги. Наші фахівці готові допомогти вам по телефону.',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_available_24_7: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Доступно 24/7',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Available 24/7',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'זמין 24/7',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'متاح 24/7',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Доступно 24/7',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_contact_now: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Связаться сейчас',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Contact Now',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'צור קשר עכשיו',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'تواصل الآن',</span>
+<span class="cstat-no" title="statement not covered" >			uk: "Зв'язатися зараз",</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_coming_soon: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Скоро будет доступно',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Coming Soon',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'בקרוב',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'قريباً',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Незабаром буде доступно',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_why_choose_title: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Почему выбирают нас',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Why Choose Us',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'למה לבחור בנו',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'لماذا تختارنا',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Чому обирають нас',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_why_choose_description: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Мы стремимся предоставить лучший сервис поддержки для наших пользователей',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'We strive to provide the best support service for our users',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'אנחנו שואפים לספק את שירות התמיכה הטוב ביותר למשתמשים שלנו',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'نسعى لتقديم أفضل خدمة دعم لمستخدمينا',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Ми прагнемо надати найкращий сервіс підтримки для наших користувачів',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_secure_platform_title: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Безопасная платформа',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Secure Platform',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'פלטפורמה מאובטחת',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'منصة آمنة',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Безпечна платформа',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_secure_platform_description: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Ваши данные защищены современными технологиями шифрования и безопасности',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Your data is protected by modern encryption and security technologies',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'הנתונים שלך מוגנים על ידי טכנולוגיות הצפנה ואבטחה מודרניות',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'بياناتك محمية بتقنيات التشفير والأمان الحديثة',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Ваші дані захищені сучасними технологіями шифрування та безпеки',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_fast_reliable_title: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Быстро и надежно',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Fast &amp; Reliable',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'מהיר ואמין',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'سريع وموثوق',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Швидко та надійно',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_fast_reliable_description: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Быстрые ответы и надежная работа платформы 24/7',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Fast responses and reliable platform operation 24/7',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'תגובות מהירות ופעולה אמינה של הפלטפורמה 24/7',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'استجابات سريعة وتشغيل موثوق للمنصة 24/7',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Швидкі відповіді та надійна робота платформи 24/7',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_community_driven_title: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Сообщество',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Community Driven',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'מונע על ידי הקהילה',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'مدفوع بالمجتمع',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Спільнота',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_community_driven_description: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Мы слушаем наших пользователей и постоянно улучшаем платформу на основе их отзывов',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'We listen to our users and constantly improve the platform based on their feedback',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'אנחנו מקשיבים למשתמשים שלנו ומשפרים כל הזמן את הפלטפורמה על בסיס המשוב שלהם',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'نستمع لمستخدمينا ونحسن المنصة باستمرار بناءً على ملاحظاتهم',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Ми слухаємо наших користувачів та постійно покращуємо платформу на основі їхніх відгуків',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_title: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Часто задаваемые вопросы',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Frequently Asked Questions',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'שאלות נפוצות',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'الأسئلة الشائعة',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Часті питання',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_description: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Найдите ответы на самые популярные вопросы о нашей платформе',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Find answers to the most popular questions about our platform',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'מצא תשובות לשאלות הפופולריות ביותר על הפלטפורמה שלנו',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'ابحث عن إجابات للأسئلة الأكثر شيوعًا حول منصتنا',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Знайдіть відповіді на найпопулярніші питання про нашу платформу',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_create_job_question: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Как создать объявление о работе?',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'How to create a job posting?',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'איך ליצור מודעת עבודה?',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'كيفية إنشاء إعلان عمل؟',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Як створити оголошення про роботу?',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_create_job_answer: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: "Нажмите кнопку 'Создать объявление' в верхнем меню, заполните все необходимые поля и нажмите 'Опубликовать'. Ваше объявление будет проверено и опубликовано в течение нескольких часов.",</span>
+<span class="cstat-no" title="statement not covered" >			en: "Click the 'Create Advertisement' button in the top menu, fill in all required fields and click 'Publish'. Your posting will be reviewed and published within a few hours.",</span>
+<span class="cstat-no" title="statement not covered" >			he: "לחץ על כפתור 'צור מודעה' בתפריט העליון, מלא את כל השדות הנדרשים ולחץ על 'פרסם'. המודעה שלך תיבדק ותפורסם תוך כמה שעות.",</span>
+<span class="cstat-no" title="statement not covered" >			ar: "انقر على زر 'إنشاء إعلان' في القائمة العلوية، املأ جميع الحقول المطلوبة وانقر على 'نشر'. سيتم مراجعة إعلانك ونشره في غضون ساعات قليلة.",</span>
+<span class="cstat-no" title="statement not covered" >			uk: "Натисніть кнопку 'Створити оголошення' у верхньому меню, заповніть усі необхідні поля та натисніть 'Опублікувати'. Ваше оголошення буде перевірено та опубліковано протягом кількох годин.",</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_premium_question: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Что дает премиум подписка?',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'What does premium subscription give?',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'מה נותן מנוי פרמיום?',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'ماذا تعطي الاشتراك المميز؟',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Що дає преміум підписка?',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_premium_answer: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Премиум подписка дает вам возможность создавать больше объявлений, получать приоритетное размещение, расширенную статистику и доступ к контактным данным соискателей.',</span>
+<span class="cstat-no" title="statement not covered" >			en: "Premium subscription gives you the ability to create more job postings, get priority placement, extended statistics and access to job seekers' contact information.",</span>
+<span class="cstat-no" title="statement not covered" >			he: 'מנוי פרמיום נותן לך את היכולת ליצור יותר מודעות עבודה, לקבל מיקום עדיפות, סטטיסטיקות מורחבות וגישה למידע יצירת קשר של מחפשי עבודה.',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'الاشتراك المميز يمنحك القدرة على إنشاء المزيد من إعلانات الوظائف، والحصول على وضع أولوية، وإحصائيات موسعة والوصول إلى معلومات الاتصال لطالبي العمل.',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Преміум підписка дає вам можливість створювати більше оголошень, отримувати пріоритетне розміщення, розширену статистику та доступ до контактних даних шукачів роботи.',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_edit_job_question: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Могу ли я редактировать свое объявление?',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Can I edit my job posting?',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'האם אני יכול לערוך את המודעה שלי?',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'هل يمكنني تعديل إعلان العمل الخاص بي؟',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Чи можу я редагувати своє оголошення?',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_edit_job_answer: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: "Да, вы можете редактировать свои объявления в любое время. Перейдите в раздел 'Мои объявления' и нажмите кнопку 'Редактировать' рядом с нужным объявлением.",</span>
+<span class="cstat-no" title="statement not covered" >			en: "Yes, you can edit your job postings at any time. Go to the 'My Advertisements' section and click the 'Edit' button next to the desired posting.",</span>
+<span class="cstat-no" title="statement not covered" >			he: "כן, אתה יכול לערוך את המודעות שלך בכל עת. עבור לסעיף 'המודעות שלי' ולחץ על כפתור 'ערוך' ליד המודעה הרצויה.",</span>
+<span class="cstat-no" title="statement not covered" >			ar: "نعم، يمكنك تعديل إعلانات العمل الخاصة بك في أي وقت. انتقل إلى قسم 'إعلاناتي' وانقر على زر 'تعديل' بجانب الإعلان المطلوب.",</span>
+<span class="cstat-no" title="statement not covered" >			uk: "Так, ви можете редагувати свої оголошення в будь-який час. Перейдіть до розділу 'Мої оголошення' та натисніть кнопку 'Редагувати' поруч з потрібним оголошенням.",</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_contact_seekers_question: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Как связаться с соискателями?',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'How to contact job seekers?',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'איך ליצור קשר עם מחפשי עבודה?',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'كيفية التواصل مع طالبي العمل؟',</span>
+<span class="cstat-no" title="statement not covered" >			uk: "Як зв'язатися з шукачами роботи?",</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_contact_seekers_answer: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: "В разделе 'Соискатели' вы можете просматривать профили соискателей и связываться с ними напрямую. Премиум пользователи имеют доступ к полной контактной информации.",</span>
+<span class="cstat-no" title="statement not covered" >			en: "In the 'Job Seekers' section, you can view job seeker profiles and contact them directly. Premium users have access to full contact information.",</span>
+<span class="cstat-no" title="statement not covered" >			he: "בסעיף 'מחפשי עבודה' אתה יכול לצפות בפרופילים של מחפשי עבודה וליצור איתם קשר ישירות. למשתמשי פרמיום יש גישה למידע יצירת קשר מלא.",</span>
+<span class="cstat-no" title="statement not covered" >			ar: "في قسم 'طالبو العمل'، يمكنك عرض ملفات طالبي العمل والتواصل معهم مباشرة. لدى المستخدمين المميزين إمكانية الوصول إلى معلومات الاتصال الكاملة.",</span>
+<span class="cstat-no" title="statement not covered" >			uk: "У розділі 'Шукачі роботи' ви можете переглядати профілі шукачів роботи та зв'язуватися з ними безпосередньо. Преміум користувачі мають доступ до повної контактної інформації.",</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_job_limits_question: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Сколько объявлений я могу создать?',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'How many job postings can I create?',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'כמה מודעות אני יכול ליצור?',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'كم عدد إعلانات العمل التي يمكنني إنشاؤها؟',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Скільки оголошень я можу створити?',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_job_limits_answer: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Бесплатные пользователи могут создать до 5 объявлений. Премиум пользователи могут создать до 10 объявлений. Премиум Делюкс пользователи могут создавать неограниченное количество объявлений.',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Free users can create up to 5 job postings. Premium users can create up to 10 job postings. Premium Deluxe users can create unlimited job postings.',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'משתמשים חינמיים יכולים ליצור עד 5 מודעות עבודה. משתמשי פרמיום יכולים ליצור עד 10 מודעות עבודה. משתמשי פרמיום דלוקס יכולים ליצור מודעות עבודה ללא הגבלה.',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'يمكن للمستخدمين المجانيين إنشاء ما يصل إلى 5 إعلانات عمل. يمكن للمستخدمين المميزين إنشاء ما يصل إلى 10 إعلانات عمل. يمكن لمستخدمي بريميوم ديلوكس إنشاء إعلانات عمل غير محدودة.',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Безкоштовні користувачі можуть створити до 5 оголошень. Преміум користувачі можуть створити до 10 оголошень. Преміум Делюкс користувачі можуть створювати необмежену кількість оголошень.',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_payment_question: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Как оплатить премиум подписку?',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'How to pay for premium subscription?',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'איך לשלם עבור מנוי פרמיום?',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'كيفية دفع الاشتراك المميز؟',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Як оплатити преміум підписку?',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_payment_answer: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Мы принимаем платежи через Stripe. Вы можете оплатить кредитной картой, дебетовой картой или другими поддерживаемыми способами оплаты. Все платежи обрабатываются безопасно.',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'We accept payments through Stripe. You can pay with credit card, debit card or other supported payment methods. All payments are processed securely.',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'אנחנו מקבלים תשלומים דרך Stripe. אתה יכול לשלם בכרטיס אשראי, כרטיס חיוב או שיטות תשלום נתמכות אחרות. כל התשלומים מעובדים בצורה מאובטחת.',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'نحن نقبل المدفوعات من خلال Stripe. يمكنك الدفع ببطاقة ائتمان أو بطاقة خصم أو طرق دفع مدعومة أخرى. جميع المدفوعات تتم معالجتها بأمان.',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Ми приймаємо платежі через Stripe. Ви можете оплатити кредитною карткою, дебетною карткою або іншими підтримуваними способами оплати. Всі платежі обробляються безпечно.',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_categories_question: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Какие категории работ доступны?',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'What job categories are available?',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'אילו קטגוריות עבודה זמינות?',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'ما هي فئات الوظائف المتاحة؟',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Які категорії робіт доступні?',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_categories_answer: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'У нас есть множество категорий: общепит, строительство, офисная работа, медицина, образование, транспорт, склад, производство и многие другие. Вы можете выбрать наиболее подходящую категорию для вашей вакансии.',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'We have many categories: catering, construction, office work, medicine, education, transport, warehouse, production and many others. You can choose the most suitable category for your vacancy.',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'יש לנו קטגוריות רבות: הסעדה, בנייה, עבודה משרדית, רפואה, חינוך, תחבורה, מחסן, ייצור ועוד רבים אחרים. אתה יכול לבחור את הקטגוריה המתאימה ביותר למשרה שלך.',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'لدينا فئات كثيرة: تقديم الطعام، البناء، العمل المكتبي، الطب، التعليم، النقل، المستودع، الإنتاج والعديد من الفئات الأخرى. يمكنك اختيار الفئة الأنسب لشغلك.',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'У нас є багато категорій: громадське харчування, будівництво, офісна робота, медицина, освіта, транспорт, склад, виробництво та багато інших. Ви можете обрати найбільш підходящу категорію для вашої вакансії.',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_cities_question: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'В каких городах доступна платформа?',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'In which cities is the platform available?',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'באילו ערים הפלטפורמה זמינה?',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'في أي مدن المنصة متاحة؟',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'У яких містах доступна платформа?',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_faq_cities_answer: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Наша платформа доступна во всех крупных городах Израиля: Тель-Авив, Иерусалим, Хайфа, Ашдод, Ришон-ле-Цион, Петах-Тиква, Холон, Рамат-Ган и многих других. Мы постоянно расширяем географию.',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Our platform is available in all major cities of Israel: Tel Aviv, Jerusalem, Haifa, Ashdod, Rishon LeZion, Petah Tikva, Holon, Ramat Gan and many others. We are constantly expanding our geography.',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'הפלטפורמה שלנו זמינה בכל הערים הגדולות בישראל: תל אביב, ירושלים, חיפה, אשדוד, ראשון לציון, פתח תקווה, חולון, רמת גן ועוד רבים אחרים. אנחנו מרחיבים כל הזמן את הגיאוגרפיה שלנו.',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'منصتنا متاحة في جميع المدن الكبرى في إسرائيل: تل أبيب، القدس، حيفا، أشدود، ريشون لتسيون، بتاح تكفا، حولون، رمات جان والعديد من المدن الأخرى. نحن نوسع جغرافيتنا باستمرار.',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Наша платформа доступна у всіх великих містах Ізраїлю: Тель-Авів, Єрусалим, Хайфа, Ашдод, Рішон-ле-Ціон, Петах-Тіква, Холон, Рамат-Ган та багатьох інших. Ми постійно розширюємо географію.',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_hours_title: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Часы работы',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Working Hours',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'שעות עבודה',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'ساعات العمل',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Години роботи',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_hours_weekdays: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Понедельник - Пятница: 9:00 - 18:00',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Monday - Friday: 9:00 - 18:00',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'יום שני - יום שישי: 9:00 - 18:00',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'الاثنين - الجمعة: 9:00 - 18:00',</span>
+<span class="cstat-no" title="statement not covered" >			uk: "Понеділок - П'ятниця: 9:00 - 18:00",</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_hours_weekend: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Суббота - Воскресенье: 10:00 - 16:00',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Saturday - Sunday: 10:00 - 16:00',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'שבת - ראשון: 10:00 - 16:00',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'السبت - الأحد: 10:00 - 16:00',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Субота - Неділя: 10:00 - 16:00',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_modal_title: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Связаться с нами',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Contact Us',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'צור קשר',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'تواصل معنا',</span>
+<span class="cstat-no" title="statement not covered" >			uk: "Зв'яжіться з нами",</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		support_modal_contact_info: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Контактная информация:',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Contact Information:',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'מידע יצירת קשר:',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'معلومات الاتصال:',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Контактна інформація:',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >		close: t({</span>
+<span class="cstat-no" title="statement not covered" >			ru: 'Закрыть',</span>
+<span class="cstat-no" title="statement not covered" >			en: 'Close',</span>
+<span class="cstat-no" title="statement not covered" >			he: 'סגור',</span>
+<span class="cstat-no" title="statement not covered" >			ar: 'إغلاق',</span>
+<span class="cstat-no" title="statement not covered" >			uk: 'Закрити',</span>
+<span class="cstat-no" title="statement not covered" >		}),</span>
+<span class="cstat-no" title="statement not covered" >	},</span>
+<span class="cstat-no" title="statement not covered" >} satisfies Dictionary;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export default supportPageContent;</span>
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-09-09T12:32:22.188Z
+            </div>
+        <script src="../../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../../sorter.js"></script>
+        <script src="../../../../block-navigation.js"></script>
+    </body>
+</html>
+    
