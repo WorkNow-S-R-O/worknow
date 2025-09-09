@@ -1,6 +1,6 @@
 import express from 'express';
-import { getCities } from '../controllers/cityController.js';
 import { getCategories } from '../controllers/categoryController.js';
+import { getCities } from '../controllers/cityController.js';
 
 const router = express.Router();
 

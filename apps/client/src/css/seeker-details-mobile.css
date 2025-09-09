@@ -1,10 +1,10 @@
 @media (max-width: 576px) {
-  .seeker-mobile-offset {
-    padding-top: 64px;
-  }
-  .badge.bg-primary {
-    font-size: 12px;
-    padding: 4px 8px;
-    line-height: 1.1;
-  }
-} 
+	.seeker-mobile-offset {
+		padding-top: 64px;
+	}
+	.badge.bg-primary {
+		font-size: 12px;
+		padding: 4px 8px;
+		line-height: 1.1;
+	}
+}

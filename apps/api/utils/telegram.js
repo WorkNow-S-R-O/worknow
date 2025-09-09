@@ -11,12 +11,16 @@ const TELEGRAM_MAX_LENGTH = 4000; // Учитываем запас для Markdo
  * @param {Array} jobs - Список вакансий пользователя
  */
 export const sendTelegramNotification = async (user, jobs) => {
-  try {
-    const messages = generateMessages(user, jobs, "🔥 *Новый премиум-пользователь!* 🔥");
-    await sendTelegramMessages(messages);
-  } catch (error) {
-    console.error('❌ Ошибка отправки в Telegram:', error);
-  }
+	try {
+		const messages = generateMessages(
+			user,
+			jobs,
+			'🔥 *Новый премиум-пользователь!* 🔥',
+		);
+		await sendTelegramMessages(messages);
+	} catch (error) {
+		console.error('❌ Ошибка отправки в Telegram:', error);
+	}
 };
 
 /**
@@ -25,21 +29,27 @@ export const sendTelegramNotification = async (user, jobs) => {
  * @param {Array} jobs - Список вакансий пользователя
  */
 export const sendUpdatedJobListToTelegram = async (user, jobs) => {
-  try {
-    const messages = generateMessages(user, jobs, "⚡ *Обновление у премиум-пользователя!* ⚡");
+	try {
+		const messages = generateMessages(
+			user,
+			jobs,
+			'⚡ *Обновление у премиум-пользователя!* ⚡',
+		);
 
-    if (jobs.length === 0) {
-      // 🔴 Уведомляем, если у пользователя больше нет вакансий
-      messages.push(`⚠️ *Премиум-пользователь больше не имеет ни одной вакансии!* ⚠️\n\n` +
-                    `👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
-                    `📧 *Email:* ${user.email}\n` +
-                    `❌ Все вакансии удалены.`);
-    }
+		if (jobs.length === 0) {
+			// 🔴 Уведомляем, если у пользователя больше нет вакансий
+			messages.push(
+				`⚠️ *Премиум-пользователь больше не имеет ни одной вакансии!* ⚠️\n\n` +
+					`👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
+					`📧 *Email:* ${user.email}\n` +
+					`❌ Все вакансии удалены.`,
+			);
+		}
 
-    await sendTelegramMessages(messages);
-  } catch (error) {
-    console.error(`❌ [Telegram] Ошибка при отправке уведомления:`, error);
-  }
+		await sendTelegramMessages(messages);
+	} catch (error) {
+		console.error(`❌ [Telegram] Ошибка при отправке уведомления:`, error);
+	}
 };
 
 /**
@@ -48,56 +58,58 @@ export const sendUpdatedJobListToTelegram = async (user, jobs) => {
  * @param {Object} job - Созданная вакансия
  */
 export const sendNewJobNotificationToTelegram = async (user, job) => {
-  try {
-    console.log("📢 Вызов sendNewJobNotificationToTelegram для вакансии:", job);
-    
-    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-      console.error("❌ Ошибка: TELEGRAM_BOT_TOKEN или TELEGRAM_CHAT_ID не установлены.");
-      return;
-    }
+	try {
+		console.log('📢 Вызов sendNewJobNotificationToTelegram для вакансии:', job);
 
-    const message = `🆕 *Новая вакансия от премиум-пользователя!* 🆕\n\n` +
-                    `👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
-                    `📧 *Email:* ${user.email}\n` +
-                    `⚒️ *Категория:* ${job.category || 'Не указана'}\n` +
-                    `💎 *Статус:* Премиум активирован!\n\n` +
-                    `📌 *Вакансия:*\n` +
-                    `🔹 *${job.title}* \n` +
-                    `📍 *Город:* ${job.city?.name || 'Не указан'}\n` +
-                    `💰 *Зарплата:* ${job.salary}\n` +
-                    `📞 *Телефон:* ${job.phone}\n` +
-                    `📅 *Дата:* ${new Date(job.createdAt).toLocaleDateString()}\n` +
-                    `📝 *Описание:* ${job.description || 'Нет описания'}\n` +
-                    `---`;
-                    
+		if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+			console.error(
+				'❌ Ошибка: TELEGRAM_BOT_TOKEN или TELEGRAM_CHAT_ID не установлены.',
+			);
+			return;
+		}
 
-    console.log(`📤 Отправляем сообщение в Telegram:\n${message}`);
+		const message =
+			`🆕 *Новая вакансия от премиум-пользователя!* 🆕\n\n` +
+			`👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
+			`📧 *Email:* ${user.email}\n` +
+			`⚒️ *Категория:* ${job.category || 'Не указана'}\n` +
+			`💎 *Статус:* Премиум активирован!\n\n` +
+			`📌 *Вакансия:*\n` +
+			`🔹 *${job.title}* \n` +
+			`📍 *Город:* ${job.city?.name || 'Не указан'}\n` +
+			`💰 *Зарплата:* ${job.salary}\n` +
+			`📞 *Телефон:* ${job.phone}\n` +
+			`📅 *Дата:* ${new Date(job.createdAt).toLocaleDateString()}\n` +
+			`📝 *Описание:* ${job.description || 'Нет описания'}\n` +
+			`---`;
 
-    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text: message,
-            parse_mode: 'Markdown',
-        }),
-    });
+		console.log(`📤 Отправляем сообщение в Telegram:\n${message}`);
 
-    const data = await response.json();
-    console.log("📩 Ответ от Telegram API:", data);
+		const response = await fetch(
+			`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+			{
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					chat_id: TELEGRAM_CHAT_ID,
+					text: message,
+					parse_mode: 'Markdown',
+				}),
+			},
+		);
 
-    if (!data.ok) {
-        console.error("❌ Ошибка Telegram:", data.description);
-    } else {
-        console.log(`✅ [Telegram] Уведомление о новой вакансии отправлено!`);
-    }
+		const data = await response.json();
+		console.log('📩 Ответ от Telegram API:', data);
 
-  } catch (error) {
-    console.error(`❌ Ошибка при отправке уведомления в Telegram:`, error);
-  }
+		if (!data.ok) {
+			console.error('❌ Ошибка Telegram:', data.description);
+		} else {
+			console.log(`✅ [Telegram] Уведомление о новой вакансии отправлено!`);
+		}
+	} catch (error) {
+		console.error(`❌ Ошибка при отправке уведомления в Telegram:`, error);
+	}
 };
-
-
 
 /**
  * Генерирует список сообщений для отправки в Telegram
@@ -107,41 +119,43 @@ export const sendNewJobNotificationToTelegram = async (user, job) => {
  * @returns {Array} messages - Разбитый список сообщений
  */
 const generateMessages = (user, jobs, header) => {
-  let messages = [];
-  let currentMessage = `${header}\n\n` +
-                       `👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
-                       `📧 *Email:* ${user.email}\n` +
-                       `💎 *Статус:* Премиум активирован!\n\n` +
-                       `📌 *Вакансии пользователя:*`;
+	let messages = [];
+	let currentMessage =
+		`${header}\n\n` +
+		`👤 *Имя:* ${user.firstName || 'Не указано'} ${user.lastName || ''}\n` +
+		`📧 *Email:* ${user.email}\n` +
+		`💎 *Статус:* Премиум активирован!\n\n` +
+		`📌 *Вакансии пользователя:*`;
 
-  if (jobs.length === 0) {
-    currentMessage += `\n❌ У пользователя пока нет вакансий.`;
-    messages.push(currentMessage);
-  } else {
-    jobs.forEach((job, index) => {
-      let jobMessage = `\n\n🔹 *${index + 1}. ${job.title}* \n` +
-                       `⚒️ *Категория:* ${job.category?.name || 'Не указана'}\n` +
-                       `📍 *Город:* ${job.city?.name || job.city || 'Не указан'}\n` +
-                       `💰 *Зарплата:* ${job.salary}\n` +
-                       `📞 *Телефон:* ${job.phone}\n` +
-                       `📅 *Дата:* ${new Date(job.createdAt).toLocaleDateString()}\n` +
-                       `📝 *Описание:* ${job.description || 'Нет описания'}\n` +
-                       `---`;
+	if (jobs.length === 0) {
+		currentMessage += `\n❌ У пользователя пока нет вакансий.`;
+		messages.push(currentMessage);
+	} else {
+		jobs.forEach((job, index) => {
+			let jobMessage =
+				`\n\n🔹 *${index + 1}. ${job.title}* \n` +
+				`⚒️ *Категория:* ${job.category?.name || 'Не указана'}\n` +
+				`📍 *Город:* ${job.city?.name || job.city || 'Не указан'}\n` +
+				`💰 *Зарплата:* ${job.salary}\n` +
+				`📞 *Телефон:* ${job.phone}\n` +
+				`📅 *Дата:* ${new Date(job.createdAt).toLocaleDateString()}\n` +
+				`📝 *Описание:* ${job.description || 'Нет описания'}\n` +
+				`---`;
 
-      if (currentMessage.length + jobMessage.length > TELEGRAM_MAX_LENGTH) {
-        messages.push(currentMessage);
-        currentMessage = ''; // Очищаем и создаем новый блок
-      }
+			if (currentMessage.length + jobMessage.length > TELEGRAM_MAX_LENGTH) {
+				messages.push(currentMessage);
+				currentMessage = ''; // Очищаем и создаем новый блок
+			}
 
-      currentMessage += jobMessage;
-    });
+			currentMessage += jobMessage;
+		});
 
-    if (currentMessage.length > 0) {
-      messages.push(currentMessage);
-    }
-  }
+		if (currentMessage.length > 0) {
+			messages.push(currentMessage);
+		}
+	}
 
-  return messages;
+	return messages;
 };
 
 /**
@@ -149,28 +163,31 @@ const generateMessages = (user, jobs, header) => {
  * @param {Array} messages - Список сообщений для отправки
  */
 const sendTelegramMessages = async (messages) => {
-  for (const msg of messages) {
-    console.log(`📤 Отправляем сообщение в Telegram:\n${msg}`);
+	for (const msg of messages) {
+		console.log(`📤 Отправляем сообщение в Telegram:\n${msg}`);
 
-    try {
-      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
-          text: msg,
-          parse_mode: 'Markdown',
-        }),
-      });
+		try {
+			const response = await fetch(
+				`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						chat_id: TELEGRAM_CHAT_ID,
+						text: msg,
+						parse_mode: 'Markdown',
+					}),
+				},
+			);
 
-      const data = await response.json();
-      console.log("📩 Ответ от Telegram API:", data);
+			const data = await response.json();
+			console.log('📩 Ответ от Telegram API:', data);
 
-      if (!data.ok) {
-        console.error("❌ Ошибка Telegram:", data.description);
-      }
-    } catch (error) {
-      console.error("❌ Ошибка сети при отправке:", error);
-    }
-  }
+			if (!data.ok) {
+				console.error('❌ Ошибка Telegram:', data.description);
+			}
+		} catch (error) {
+			console.error('❌ Ошибка сети при отправке:', error);
+		}
+	}
 };

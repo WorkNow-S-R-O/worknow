@@ -1,16 +1,19 @@
 import AWS from 'aws-sdk';
+import dotenv from 'dotenv';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-import dotenv from 'dotenv';
-import { moderateImage, validateRekognitionConfig } from '../services/imageModerationService.js';
+import {
+	moderateImage,
+	validateRekognitionConfig,
+} from '../services/imageModerationService.js';
 
 dotenv.config();
 
 // Configure AWS
 const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION || 'us-east-1'
+	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+	secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+	region: process.env.AWS_REGION || 'us-east-1',
 });
 
 const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
@@ -20,20 +23,20 @@ const storage = multer.memoryStorage();
 
 // File filter for images only
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
-    cb(null, true);
-  } else {
-    cb(new Error('Only image files are allowed!'), false);
-  }
+	if (file.mimetype.startsWith('image/')) {
+		cb(null, true);
+	} else {
+		cb(new Error('Only image files are allowed!'), false);
+	}
 };
 
 // Configure multer
 export const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
-  }
+	storage: storage,
+	fileFilter: fileFilter,
+	limits: {
+		fileSize: 5 * 1024 * 1024, // 5MB limit
+	},
 });
 
 /**
@@ -44,54 +47,62 @@ export const upload = multer({
  * @param {string} folder - Folder path in S3 (optional)
  * @returns {Promise<string>} Public URL of uploaded image
  */
-export const uploadToS3 = async (fileBuffer, originalname, mimetype, folder = 'jobs') => {
-  try {
-    console.log('🔍 S3 Upload - Starting upload process...');
-    console.log('🔍 S3 Upload - Bucket:', BUCKET_NAME);
-    console.log('🔍 S3 Upload - Region:', process.env.AWS_REGION);
-    console.log('🔍 S3 Upload - Access Key ID:', process.env.AWS_ACCESS_KEY_ID?.substring(0, 8) + '...');
-    
-    // Generate unique filename
-    const fileExtension = originalname.split('.').pop();
-    const fileName = `${folder}/${uuidv4()}.${fileExtension}`;
+export const uploadToS3 = async (
+	fileBuffer,
+	originalname,
+	mimetype,
+	folder = 'jobs',
+) => {
+	try {
+		console.log('🔍 S3 Upload - Starting upload process...');
+		console.log('🔍 S3 Upload - Bucket:', BUCKET_NAME);
+		console.log('🔍 S3 Upload - Region:', process.env.AWS_REGION);
+		console.log(
+			'🔍 S3 Upload - Access Key ID:',
+			process.env.AWS_ACCESS_KEY_ID?.substring(0, 8) + '...',
+		);
 
-    const uploadParams = {
-      Bucket: BUCKET_NAME,
-      Key: fileName,
-      Body: fileBuffer,
-      ContentType: mimetype,
-      Metadata: {
-        'original-name': originalname
-      }
-    };
+		// Generate unique filename
+		const fileExtension = originalname.split('.').pop();
+		const fileName = `${folder}/${uuidv4()}.${fileExtension}`;
 
-    console.log('🔍 S3 Upload - Upload params:', {
-      Bucket: uploadParams.Bucket,
-      Key: uploadParams.Key,
-      ContentType: uploadParams.ContentType,
-      BodySize: fileBuffer.length
-    });
+		const uploadParams = {
+			Bucket: BUCKET_NAME,
+			Key: fileName,
+			Body: fileBuffer,
+			ContentType: mimetype,
+			Metadata: {
+				'original-name': originalname,
+			},
+		};
 
-    const result = await s3.upload(uploadParams).promise();
-    
-    console.log('✅ S3 upload successful:', {
-      fileName: fileName,
-      url: result.Location,
-      size: fileBuffer.length
-    });
+		console.log('🔍 S3 Upload - Upload params:', {
+			Bucket: uploadParams.Bucket,
+			Key: uploadParams.Key,
+			ContentType: uploadParams.ContentType,
+			BodySize: fileBuffer.length,
+		});
 
-    return result.Location;
-  } catch (error) {
-    console.error('❌ S3 upload error details:', {
-      message: error.message,
-      code: error.code,
-      statusCode: error.statusCode,
-      requestId: error.requestId,
-      cfId: error.cfId,
-      extendedRequestId: error.extendedRequestId
-    });
-    throw new Error(`Failed to upload image to S3: ${error.message}`);
-  }
+		const result = await s3.upload(uploadParams).promise();
+
+		console.log('✅ S3 upload successful:', {
+			fileName: fileName,
+			url: result.Location,
+			size: fileBuffer.length,
+		});
+
+		return result.Location;
+	} catch (error) {
+		console.error('❌ S3 upload error details:', {
+			message: error.message,
+			code: error.code,
+			statusCode: error.statusCode,
+			requestId: error.requestId,
+			cfId: error.cfId,
+			extendedRequestId: error.extendedRequestId,
+		});
+		throw new Error(`Failed to upload image to S3: ${error.message}`);
+	}
 };
 
 /**
@@ -100,29 +111,29 @@ export const uploadToS3 = async (fileBuffer, originalname, mimetype, folder = 'j
  * @returns {Promise<boolean>} Success status
  */
 export const deleteFromS3 = async (imageUrl) => {
-  try {
-    if (!imageUrl || !imageUrl.includes(BUCKET_NAME)) {
-      console.warn('⚠️ Invalid S3 URL for deletion:', imageUrl);
-      return false;
-    }
+	try {
+		if (!imageUrl || !imageUrl.includes(BUCKET_NAME)) {
+			console.warn('⚠️ Invalid S3 URL for deletion:', imageUrl);
+			return false;
+		}
 
-    // Extract key from URL
-    const urlParts = imageUrl.split('/');
-    const key = urlParts.slice(3).join('/'); // Remove protocol, domain, and bucket name
+		// Extract key from URL
+		const urlParts = imageUrl.split('/');
+		const key = urlParts.slice(3).join('/'); // Remove protocol, domain, and bucket name
 
-    const deleteParams = {
-      Bucket: BUCKET_NAME,
-      Key: key
-    };
+		const deleteParams = {
+			Bucket: BUCKET_NAME,
+			Key: key,
+		};
 
-    await s3.deleteObject(deleteParams).promise();
-    
-    console.log('✅ S3 deletion successful:', key);
-    return true;
-  } catch (error) {
-    console.error('❌ S3 deletion error:', error);
-    return false;
-  }
+		await s3.deleteObject(deleteParams).promise();
+
+		console.log('✅ S3 deletion successful:', key);
+		return true;
+	} catch (error) {
+		console.error('❌ S3 deletion error:', error);
+		return false;
+	}
 };
 
 /**
@@ -130,46 +141,50 @@ export const deleteFromS3 = async (imageUrl) => {
  * @returns {Object} Configuration status with details
  */
 export const validateS3Config = () => {
-  const requiredEnvVars = [
-    'AWS_ACCESS_KEY_ID',
-    'AWS_SECRET_ACCESS_KEY',
-    'AWS_S3_BUCKET_NAME'
-  ];
+	const requiredEnvVars = [
+		'AWS_ACCESS_KEY_ID',
+		'AWS_SECRET_ACCESS_KEY',
+		'AWS_S3_BUCKET_NAME',
+	];
 
-  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-  
-  if (missingVars.length > 0) {
-    console.error('❌ Missing S3 environment variables:', missingVars);
-    console.error('💡 Please add the following to your .env file:');
-    missingVars.forEach(varName => {
-      console.error(`   ${varName}=your_${varName.toLowerCase()}`);
-    });
-    console.error('📖 See SETUP_GUIDE.md for detailed instructions');
-    return {
-      isValid: false,
-      missingVars,
-      message: `Missing S3 environment variables: ${missingVars.join(', ')}`
-    };
-  }
+	const missingVars = requiredEnvVars.filter(
+		(varName) => !process.env[varName],
+	);
 
-  return {
-    isValid: true,
-    missingVars: [],
-    message: 'S3 configuration is valid'
-  };
+	if (missingVars.length > 0) {
+		console.error('❌ Missing S3 environment variables:', missingVars);
+		console.error('💡 Please add the following to your .env file:');
+		missingVars.forEach((varName) => {
+			console.error(`   ${varName}=your_${varName.toLowerCase()}`);
+		});
+		console.error('📖 See SETUP_GUIDE.md for detailed instructions');
+		return {
+			isValid: false,
+			missingVars,
+			message: `Missing S3 environment variables: ${missingVars.join(', ')}`,
+		};
+	}
+
+	return {
+		isValid: true,
+		missingVars: [],
+		message: 'S3 configuration is valid',
+	};
 };
 
 // Validate configurations on startup
 const s3ConfigStatus = validateS3Config();
 if (!s3ConfigStatus.isValid) {
-  console.warn('⚠️ S3 configuration is incomplete. S3 uploads will not work.');
-  console.warn('📖 See SETUP_GUIDE.md for configuration instructions');
+	console.warn('⚠️ S3 configuration is incomplete. S3 uploads will not work.');
+	console.warn('📖 See SETUP_GUIDE.md for configuration instructions');
 }
 
 const rekognitionConfigStatus = validateRekognitionConfig();
 if (!rekognitionConfigStatus.isValid) {
-  console.warn('⚠️ Rekognition configuration is incomplete. Image moderation will not work.');
-  console.warn('📖 See SETUP_GUIDE.md for configuration instructions');
+	console.warn(
+		'⚠️ Rekognition configuration is incomplete. Image moderation will not work.',
+	);
+	console.warn('📖 See SETUP_GUIDE.md for configuration instructions');
 }
 
 /**
@@ -180,49 +195,62 @@ if (!rekognitionConfigStatus.isValid) {
  * @param {string} folder - Folder path in S3 (optional)
  * @returns {Promise<Object>} Upload result with moderation status
  */
-export const uploadToS3WithModeration = async (fileBuffer, originalname, mimetype, folder = 'jobs') => {
-  try {
-    console.log('🔍 S3 Upload with Moderation - Starting process...');
-    
-    // Step 1: Moderate the image
-    console.log('🔍 S3 Upload with Moderation - Running content moderation...');
-    const moderationResult = await moderateImage(fileBuffer);
-    
-    if (!moderationResult.isApproved) {
-      console.log('❌ S3 Upload with Moderation - Content rejected by moderation');
-      return {
-        success: false,
-        error: 'Image content violates community guidelines',
-        code: 'CONTENT_REJECTED',
-        moderationResult
-      };
-    }
-    
-    console.log('✅ S3 Upload with Moderation - Content approved, proceeding with upload');
-    
-    // Step 2: Upload to S3
-    const imageUrl = await uploadToS3(fileBuffer, originalname, mimetype, folder);
-    
-    return {
-      success: true,
-      imageUrl,
-      moderationResult
-    };
-    
-  } catch (error) {
-    console.error('❌ S3 Upload with Moderation - Error:', error);
-    return {
-      success: false,
-      error: error.message,
-      code: 'UPLOAD_FAILED'
-    };
-  }
+export const uploadToS3WithModeration = async (
+	fileBuffer,
+	originalname,
+	mimetype,
+	folder = 'jobs',
+) => {
+	try {
+		console.log('🔍 S3 Upload with Moderation - Starting process...');
+
+		// Step 1: Moderate the image
+		console.log('🔍 S3 Upload with Moderation - Running content moderation...');
+		const moderationResult = await moderateImage(fileBuffer);
+
+		if (!moderationResult.isApproved) {
+			console.log(
+				'❌ S3 Upload with Moderation - Content rejected by moderation',
+			);
+			return {
+				success: false,
+				error: 'Image content violates community guidelines',
+				code: 'CONTENT_REJECTED',
+				moderationResult,
+			};
+		}
+
+		console.log(
+			'✅ S3 Upload with Moderation - Content approved, proceeding with upload',
+		);
+
+		// Step 2: Upload to S3
+		const imageUrl = await uploadToS3(
+			fileBuffer,
+			originalname,
+			mimetype,
+			folder,
+		);
+
+		return {
+			success: true,
+			imageUrl,
+			moderationResult,
+		};
+	} catch (error) {
+		console.error('❌ S3 Upload with Moderation - Error:', error);
+		return {
+			success: false,
+			error: error.message,
+			code: 'UPLOAD_FAILED',
+		};
+	}
 };
 
 export default {
-  upload,
-  uploadToS3,
-  uploadToS3WithModeration,
-  deleteFromS3,
-  validateS3Config
-}; 
+	upload,
+	uploadToS3,
+	uploadToS3WithModeration,
+	deleteFromS3,
+	validateS3Config,
+};

@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
+import process from 'process';
 import { Resend } from 'resend';
 import { sendEmail } from '../utils/mailer.js';
-import process from 'process';
 
 const prisma = new PrismaClient();
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -10,41 +10,46 @@ const resend = new Resend(process.env.RESEND_API_KEY);
  * Send 3 latest candidates to a newly subscribed user (only once)
  */
 export async function sendInitialCandidatesToNewSubscriber(subscriber) {
-  try {
-    console.log(`📧 Отправляем 3 последних кандидата новому подписчику: ${subscriber.email}`);
+	try {
+		console.log(
+			`📧 Отправляем 3 последних кандидата новому подписчику: ${subscriber.email}`,
+		);
 
-    const candidates = await prisma.seeker.findMany({
-      where: { isActive: true },
-      orderBy: { createdAt: 'desc' },
-      take: 3
-    });
+		const candidates = await prisma.seeker.findMany({
+			where: { isActive: true },
+			orderBy: { createdAt: 'desc' },
+			take: 3,
+		});
 
-    if (candidates.length === 0) {
-      console.log('📧 Нет доступных кандидатов для отправки');
-      return;
-    }
+		if (candidates.length === 0) {
+			console.log('📧 Нет доступных кандидатов для отправки');
+			return;
+		}
 
-    const emailContent = generateInitialCandidatesEmail(candidates, subscriber);
-    const emailSubject = 'Добро пожаловать! Ваши первые кандидаты с WorkNow';
+		const emailContent = generateInitialCandidatesEmail(candidates, subscriber);
+		const emailSubject = 'Добро пожаловать! Ваши первые кандидаты с WorkNow';
 
-    try {
-      await resend.emails.send({
-        from: 'WorkNow <onboarding@resend.dev>',
-        to: subscriber.email,
-        subject: emailSubject,
-        html: emailContent
-      });
-      console.log(`📧 Email с первыми кандидатами отправлен: ${subscriber.email}`);
-    } catch (resendError) {
-      console.error('❌ Resend failed, trying Gmail fallback:', resendError);
-      await sendEmail(subscriber.email, emailSubject, emailContent);
-      console.log(`📧 Email с первыми кандидатами отправлен через Gmail: ${subscriber.email}`);
-    }
-
-  } catch (error) {
-    console.error('❌ Ошибка при отправке первых кандидатов:', error);
-    throw error;
-  }
+		try {
+			await resend.emails.send({
+				from: 'WorkNow <onboarding@resend.dev>',
+				to: subscriber.email,
+				subject: emailSubject,
+				html: emailContent,
+			});
+			console.log(
+				`📧 Email с первыми кандидатами отправлен: ${subscriber.email}`,
+			);
+		} catch (resendError) {
+			console.error('❌ Resend failed, trying Gmail fallback:', resendError);
+			await sendEmail(subscriber.email, emailSubject, emailContent);
+			console.log(
+				`📧 Email с первыми кандидатами отправлен через Gmail: ${subscriber.email}`,
+			);
+		}
+	} catch (error) {
+		console.error('❌ Ошибка при отправке первых кандидатов:', error);
+		throw error;
+	}
 }
 
 /**
@@ -53,182 +58,247 @@ export async function sendInitialCandidatesToNewSubscriber(subscriber) {
  * This is the SINGLE source of truth for candidate notifications
  */
 export async function checkAndSendNewCandidatesNotification() {
-  try {
-    console.log('📧 Проверяем необходимость отправки уведомлений о новых кандидатах...');
+	try {
+		console.log(
+			'📧 Проверяем необходимость отправки уведомлений о новых кандидатах...',
+		);
 
-    // Get the current total count of active candidates
-    const currentCandidateCount = await prisma.seeker.count({
-      where: { isActive: true }
-    });
+		// Get the current total count of active candidates
+		const currentCandidateCount = await prisma.seeker.count({
+			where: { isActive: true },
+		});
 
-    console.log(`📧 Всего активных кандидатов: ${currentCandidateCount}`);
+		console.log(`📧 Всего активных кандидатов: ${currentCandidateCount}`);
 
-    // Simple approach: only send notifications if we have exactly 3, 6, 9, etc. candidates
-    // AND the most recent candidate was created recently (within last 5 minutes)
-    const mostRecentCandidate = await prisma.seeker.findFirst({
-      where: { isActive: true },
-      orderBy: { createdAt: 'desc' }
-    });
+		// Simple approach: only send notifications if we have exactly 3, 6, 9, etc. candidates
+		// AND the most recent candidate was created recently (within last 5 minutes)
+		const mostRecentCandidate = await prisma.seeker.findFirst({
+			where: { isActive: true },
+			orderBy: { createdAt: 'desc' },
+		});
 
-    if (!mostRecentCandidate) {
-      console.log('📧 Нет кандидатов для уведомлений');
-      return;
-    }
+		if (!mostRecentCandidate) {
+			console.log('📧 Нет кандидатов для уведомлений');
+			return;
+		}
 
-    // Check if the most recent candidate was created recently (within last 5 minutes)
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-    const isRecent = mostRecentCandidate.createdAt > fiveMinutesAgo;
+		// Check if the most recent candidate was created recently (within last 5 minutes)
+		const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+		const isRecent = mostRecentCandidate.createdAt > fiveMinutesAgo;
 
-    if (!isRecent) {
-      console.log('📧 Последний кандидат был добавлен более 5 минут назад, уведомления уже отправлены');
-      return;
-    }
+		if (!isRecent) {
+			console.log(
+				'📧 Последний кандидат был добавлен более 5 минут назад, уведомления уже отправлены',
+			);
+			return;
+		}
 
-    // Only send notification if total count is divisible by 3 AND candidate is recent
-    if (currentCandidateCount > 0 && currentCandidateCount % 3 === 0 && isRecent) {
-      console.log(`📧 Триггер отправки: ${currentCandidateCount} кандидатов (делится на 3) и кандидат недавний`);
-      
-      // Get the 3 most recent candidates
-      const recentCandidates = await prisma.seeker.findMany({
-        where: { isActive: true },
-        orderBy: { createdAt: 'desc' },
-        take: 3
-      });
+		// Only send notification if total count is divisible by 3 AND candidate is recent
+		if (
+			currentCandidateCount > 0 &&
+			currentCandidateCount % 3 === 0 &&
+			isRecent
+		) {
+			console.log(
+				`📧 Триггер отправки: ${currentCandidateCount} кандидатов (делится на 3) и кандидат недавний`,
+			);
 
-      if (recentCandidates.length > 0) {
-        console.log(`📧 Отправляем уведомления о ${recentCandidates.length} новых кандидатах`);
-        await sendNewCandidatesNotification(recentCandidates);
-        console.log(`📧 Уведомления отправлены для ${currentCandidateCount} кандидатов`);
-      }
-    } else {
-      console.log(`📧 Триггер не сработал: ${currentCandidateCount} кандидатов, недавний: ${isRecent}`);
-    }
+			// Get the 3 most recent candidates
+			const recentCandidates = await prisma.seeker.findMany({
+				where: { isActive: true },
+				orderBy: { createdAt: 'desc' },
+				take: 3,
+			});
 
-  } catch (error) {
-    console.error('❌ Ошибка при проверке триггера рассылки:', error);
-  }
+			if (recentCandidates.length > 0) {
+				console.log(
+					`📧 Отправляем уведомления о ${recentCandidates.length} новых кандидатах`,
+				);
+				await sendNewCandidatesNotification(recentCandidates);
+				console.log(
+					`📧 Уведомления отправлены для ${currentCandidateCount} кандидатов`,
+				);
+			}
+		} else {
+			console.log(
+				`📧 Триггер не сработал: ${currentCandidateCount} кандидатов, недавний: ${isRecent}`,
+			);
+		}
+	} catch (error) {
+		console.error('❌ Ошибка при проверке триггера рассылки:', error);
+	}
 }
 
 /**
  * Send notification about new candidates to all active subscribers
  */
 async function sendNewCandidatesNotification(newCandidates) {
-  try {
-    console.log('📧 Отправляем уведомления о новых кандидатах всем подписчикам...');
+	try {
+		console.log(
+			'📧 Отправляем уведомления о новых кандидатах всем подписчикам...',
+		);
 
-    const subscribers = await prisma.newsletterSubscriber.findMany({
-      where: { isActive: true }
-    });
+		const subscribers = await prisma.newsletterSubscriber.findMany({
+			where: { isActive: true },
+		});
 
-    if (subscribers.length === 0) {
-      console.log('📧 Нет активных подписчиков для рассылки');
-      return;
-    }
+		if (subscribers.length === 0) {
+			console.log('📧 Нет активных подписчиков для рассылки');
+			return;
+		}
 
-    console.log(`📧 Отправляем уведомления ${subscribers.length} подписчикам о ${newCandidates.length} новых кандидатах`);
+		console.log(
+			`📧 Отправляем уведомления ${subscribers.length} подписчикам о ${newCandidates.length} новых кандидатах`,
+		);
 
-    for (const subscriber of subscribers) {
-      try {
-        const filteredCandidates = filterCandidatesByPreferences(newCandidates, subscriber);
-        
-        if (filteredCandidates.length > 0) {
-          const emailContent = generateNewCandidatesNotificationEmail(filteredCandidates, subscriber);
-          const emailSubject = 'Новые соискатели добавлены на WorkNow';
+		for (const subscriber of subscribers) {
+			try {
+				const filteredCandidates = filterCandidatesByPreferences(
+					newCandidates,
+					subscriber,
+				);
 
-          try {
-            await resend.emails.send({
-              from: 'WorkNow <onboarding@resend.dev>',
-              to: subscriber.email,
-              subject: emailSubject,
-              html: emailContent
-            });
-            console.log(`📧 Уведомление отправлено через Resend: ${subscriber.email}`);
-          } catch (resendError) {
-            await sendEmail(subscriber.email, emailSubject, emailContent);
-            console.log(`📧 Уведомление отправлено через Gmail: ${subscriber.email}`);
-          }
-        }
-      } catch (error) {
-        console.error(`❌ Ошибка при отправке уведомления подписчику ${subscriber.email}:`, error);
-      }
-    }
+				if (filteredCandidates.length > 0) {
+					const emailContent = generateNewCandidatesNotificationEmail(
+						filteredCandidates,
+						subscriber,
+					);
+					const emailSubject = 'Новые соискатели добавлены на WorkNow';
 
-    console.log('📧 Рассылка уведомлений о новых кандидатах завершена');
+					try {
+						await resend.emails.send({
+							from: 'WorkNow <onboarding@resend.dev>',
+							to: subscriber.email,
+							subject: emailSubject,
+							html: emailContent,
+						});
+						console.log(
+							`📧 Уведомление отправлено через Resend: ${subscriber.email}`,
+						);
+					} catch (resendError) {
+						await sendEmail(subscriber.email, emailSubject, emailContent);
+						console.log(
+							`📧 Уведомление отправлено через Gmail: ${subscriber.email}`,
+						);
+					}
+				}
+			} catch (error) {
+				console.error(
+					`❌ Ошибка при отправке уведомления подписчику ${subscriber.email}:`,
+					error,
+				);
+			}
+		}
 
-  } catch (error) {
-    console.error('❌ Ошибка при отправке уведомлений о новых кандидатах:', error);
-    throw error;
-  }
+		console.log('📧 Рассылка уведомлений о новых кандидатах завершена');
+	} catch (error) {
+		console.error(
+			'❌ Ошибка при отправке уведомлений о новых кандидатах:',
+			error,
+		);
+		throw error;
+	}
 }
 
 /**
  * Filter candidates based on subscriber preferences
  */
 function filterCandidatesByPreferences(candidates, subscriber) {
-  let filteredCandidates = [...candidates];
+	let filteredCandidates = [...candidates];
 
-  if (subscriber.preferredCities && subscriber.preferredCities.length > 0) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      subscriber.preferredCities.some(city => 
-        candidate.city && candidate.city.toLowerCase().includes(city.toLowerCase())
-      )
-    );
-  }
+	if (subscriber.preferredCities && subscriber.preferredCities.length > 0) {
+		filteredCandidates = filteredCandidates.filter((candidate) =>
+			subscriber.preferredCities.some(
+				(city) =>
+					candidate.city &&
+					candidate.city.toLowerCase().includes(city.toLowerCase()),
+			),
+		);
+	}
 
-  if (subscriber.preferredCategories && subscriber.preferredCategories.length > 0) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      subscriber.preferredCategories.some(category => 
-        candidate.category && candidate.category.toLowerCase().includes(category.toLowerCase())
-      )
-    );
-  }
+	if (
+		subscriber.preferredCategories &&
+		subscriber.preferredCategories.length > 0
+	) {
+		filteredCandidates = filteredCandidates.filter((candidate) =>
+			subscriber.preferredCategories.some(
+				(category) =>
+					candidate.category &&
+					candidate.category.toLowerCase().includes(category.toLowerCase()),
+			),
+		);
+	}
 
-  if (subscriber.preferredEmployment && subscriber.preferredEmployment.length > 0) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      subscriber.preferredEmployment.some(employment => 
-        candidate.employment && candidate.employment.toLowerCase().includes(employment.toLowerCase())
-      )
-    );
-  }
+	if (
+		subscriber.preferredEmployment &&
+		subscriber.preferredEmployment.length > 0
+	) {
+		filteredCandidates = filteredCandidates.filter((candidate) =>
+			subscriber.preferredEmployment.some(
+				(employment) =>
+					candidate.employment &&
+					candidate.employment.toLowerCase().includes(employment.toLowerCase()),
+			),
+		);
+	}
 
-  if (subscriber.preferredLanguages && subscriber.preferredLanguages.length > 0) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      candidate.languages && candidate.languages.some(lang => 
-        subscriber.preferredLanguages.some(prefLang => 
-          lang.toLowerCase().includes(prefLang.toLowerCase())
-        )
-      )
-    );
-  }
+	if (
+		subscriber.preferredLanguages &&
+		subscriber.preferredLanguages.length > 0
+	) {
+		filteredCandidates = filteredCandidates.filter(
+			(candidate) =>
+				candidate.languages &&
+				candidate.languages.some((lang) =>
+					subscriber.preferredLanguages.some((prefLang) =>
+						lang.toLowerCase().includes(prefLang.toLowerCase()),
+					),
+				),
+		);
+	}
 
-  if (subscriber.preferredGender) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      candidate.gender && candidate.gender.toLowerCase() === subscriber.preferredGender.toLowerCase()
-    );
-  }
+	if (subscriber.preferredGender) {
+		filteredCandidates = filteredCandidates.filter(
+			(candidate) =>
+				candidate.gender &&
+				candidate.gender.toLowerCase() ===
+					subscriber.preferredGender.toLowerCase(),
+		);
+	}
 
-  if (subscriber.preferredDocumentTypes && subscriber.preferredDocumentTypes.length > 0) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      candidate.documents && subscriber.preferredDocumentTypes.some(docType => 
-        candidate.documents.toLowerCase().includes(docType.toLowerCase())
-      )
-    );
-  }
+	if (
+		subscriber.preferredDocumentTypes &&
+		subscriber.preferredDocumentTypes.length > 0
+	) {
+		filteredCandidates = filteredCandidates.filter(
+			(candidate) =>
+				candidate.documents &&
+				subscriber.preferredDocumentTypes.some((docType) =>
+					candidate.documents.toLowerCase().includes(docType.toLowerCase()),
+				),
+		);
+	}
 
-  if (subscriber.onlyDemanded) {
-    filteredCandidates = filteredCandidates.filter(candidate => candidate.isDemanded === true);
-  }
+	if (subscriber.onlyDemanded) {
+		filteredCandidates = filteredCandidates.filter(
+			(candidate) => candidate.isDemanded === true,
+		);
+	}
 
-  console.log(`📧 Подписчик ${subscriber.email}: ${filteredCandidates.length} кандидатов после фильтрации из ${candidates.length} общих`);
+	console.log(
+		`📧 Подписчик ${subscriber.email}: ${filteredCandidates.length} кандидатов после фильтрации из ${candidates.length} общих`,
+	);
 
-  return filteredCandidates;
+	return filteredCandidates;
 }
 
 /**
  * Generate email content for initial subscription (first 3 candidates)
  */
 function generateInitialCandidatesEmail(candidates, subscriber) {
-  const candidatesHtml = candidates.map(candidate => `
+	const candidatesHtml = candidates
+		.map(
+			(candidate) => `
     <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9;">
       <h3 style="margin: 0 0 10px 0; color: #333; font-size: 18px;">
         <strong>Соискатель:</strong> ${candidate.name} ${candidate.gender ? `${candidate.gender}` : ''}
@@ -249,13 +319,16 @@ function generateInitialCandidatesEmail(candidates, subscriber) {
         <strong>Объявление:</strong> ${candidate.description || 'Описание не указано'}
       </p>
     </div>
-  `).join('');
+  `,
+		)
+		.join('');
 
-  const subscriberName = subscriber.firstName && subscriber.lastName 
-    ? `${subscriber.firstName} ${subscriber.lastName}`
-    : subscriber.firstName || subscriber.lastName || 'пользователь';
+	const subscriberName =
+		subscriber.firstName && subscriber.lastName
+			? `${subscriber.firstName} ${subscriber.lastName}`
+			: subscriber.firstName || subscriber.lastName || 'пользователь';
 
-  return `
+	return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -306,7 +379,9 @@ function generateInitialCandidatesEmail(candidates, subscriber) {
  * Generate email content for new candidates notification
  */
 function generateNewCandidatesNotificationEmail(candidates, subscriber) {
-  const candidatesHtml = candidates.map(candidate => `
+	const candidatesHtml = candidates
+		.map(
+			(candidate) => `
     <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9;">
       <h3 style="margin: 0 0 10px 0; color: #333; font-size: 18px;">
         <strong>Новый соискатель:</strong> ${candidate.name} ${candidate.gender ? `${candidate.gender}` : ''}
@@ -327,13 +402,16 @@ function generateNewCandidatesNotificationEmail(candidates, subscriber) {
         <strong>Объявление:</strong> ${candidate.description || 'Описание не указано'}
       </p>
     </div>
-  `).join('');
+  `,
+		)
+		.join('');
 
-  const subscriberName = subscriber.firstName && subscriber.lastName 
-    ? `${subscriber.firstName} ${subscriber.lastName}`
-    : subscriber.firstName || subscriber.lastName || 'пользователь';
+	const subscriberName =
+		subscriber.firstName && subscriber.lastName
+			? `${subscriber.firstName} ${subscriber.lastName}`
+			: subscriber.firstName || subscriber.lastName || 'пользователь';
 
-  return `
+	return `
     <!DOCTYPE html>
     <html>
     <head>

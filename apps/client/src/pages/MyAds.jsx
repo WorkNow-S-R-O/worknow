@@ -1,19 +1,19 @@
-import { Helmet } from "react-helmet-async";
-import { useTranslation } from "react-i18next";
-import { Button } from "../components/ui/button";
+import { Helmet } from 'react-helmet-async';
+import { useIntlayer } from 'react-intlayer';
+import { Button } from '../components/ui/button';
 
 function MyAds() {
-  const { t } = useTranslation();
+	const content = useIntlayer('myAdsPage');
 
-  return (
-    <>
-      <Helmet>
-        <title>{t("myads")}</title>
-        <meta name="description" content="My advertisements | WorkNow" />
-      </Helmet>
-      <Button />
-    </>
-  );
+	return (
+		<>
+			<Helmet>
+				<title>{content.myAds.value}</title>
+				<meta name="description" content="My advertisements | WorkNow" />
+			</Helmet>
+			<Button />
+		</>
+	);
 }
 
 export default MyAds;

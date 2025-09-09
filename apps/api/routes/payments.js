@@ -1,5 +1,13 @@
 import { Router } from 'express';
-import { createCheckoutSession, activatePremium, addPaymentHistory, getPaymentHistory, renewAutoRenewal, getStripePaymentHistory, cancelAutoRenewal } from '../controllers/payments.js';
+import {
+	activatePremium,
+	addPaymentHistory,
+	cancelAutoRenewal,
+	createCheckoutSession,
+	getPaymentHistory,
+	getStripePaymentHistory,
+	renewAutoRenewal,
+} from '../controllers/payments.js';
 
 const router = Router();
 

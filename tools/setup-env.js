@@ -15,9 +15,11 @@ const envExamplePath = path.join(__dirname, '.env.example');
 
 // Check if .env already exists
 if (fs.existsSync(envPath)) {
-  console.log('⚠️  .env file already exists!');
-  console.log('   If you want to create a new one, please delete the existing .env file first.\n');
-  process.exit(0);
+	console.log('⚠️  .env file already exists!');
+	console.log(
+		'   If you want to create a new one, please delete the existing .env file first.\n',
+	);
+	process.exit(0);
 }
 
 // Create .env.example if it doesn't exist
@@ -51,8 +53,8 @@ NODE_ENV=development
 `;
 
 if (!fs.existsSync(envExamplePath)) {
-  fs.writeFileSync(envExamplePath, envTemplate);
-  console.log('✅ Created .env.example file');
+	fs.writeFileSync(envExamplePath, envTemplate);
+	console.log('✅ Created .env.example file');
 }
 
 // Create .env file
@@ -78,4 +80,4 @@ console.log('- Never commit your .env file to version control');
 console.log('- Keep your AWS credentials secure');
 console.log('- Use different credentials for development and production');
 
-console.log('\n🎉 Setup complete! Edit your .env file and start developing!'); 
+console.log('\n🎉 Setup complete! Edit your .env file and start developing!');

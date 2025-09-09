@@ -1,14 +1,15 @@
 @media (max-width: 576px) {
-  .table {
-    width: 100% !important;
-    min-width: 0 !important;
-    table-layout: fixed !important;
-  }
-  .table td, .table th {
-    word-break: break-word;
-    white-space: normal;
-  }
-  .container {
-    overflow-x: hidden !important;
-  }
-} 
+	.table {
+		width: 100% !important;
+		min-width: 0 !important;
+		table-layout: fixed !important;
+	}
+	.table td,
+	.table th {
+		word-break: break-word;
+		white-space: normal;
+	}
+	.container {
+		overflow-x: hidden !important;
+	}
+}

@@ -1,5 +1,11 @@
 import { Router } from 'express';
-import { createMessage, getUserMessages, markMessageRead, broadcastMessage, deleteMessage } from '../controllers/messages.js';
+import {
+	broadcastMessage,
+	createMessage,
+	deleteMessage,
+	getUserMessages,
+	markMessageRead,
+} from '../controllers/messages.js';
 import { requireAdmin } from '../middlewares/auth.js';
 
 const router = Router();
@@ -21,4 +27,4 @@ router.delete('/:id', deleteMessage);
 // Отправить массовое сообщение (только для админов)
 router.post('/broadcast', requireAdmin, broadcastMessage);
 
-export default router; 
+export default router;

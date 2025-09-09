@@ -1,13 +1,18 @@
 import { PrismaClient } from '@prisma/client';
+import process from 'process';
 import { Resend } from 'resend';
 import { sendEmail } from '../utils/mailer.js';
-import process from 'process';
 
 const prisma = new PrismaClient();
 
 // Debug: Check if RESEND_API_KEY is available
 console.log('🔍 RESEND_API_KEY available:', !!process.env.RESEND_API_KEY);
-console.log('🔍 RESEND_API_KEY value:', process.env.RESEND_API_KEY ? process.env.RESEND_API_KEY.substring(0, 10) + '...' : 'NOT SET');
+console.log(
+	'🔍 RESEND_API_KEY value:',
+	process.env.RESEND_API_KEY
+		? process.env.RESEND_API_KEY.substring(0, 10) + '...'
+		: 'NOT SET',
+);
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -15,67 +20,76 @@ const resend = new Resend(process.env.RESEND_API_KEY);
  * Send 3 candidates to a newly subscribed user (only once)
  */
 export async function sendCandidatesToNewSubscriber(subscriber) {
-  try {
-    console.log(`📧 Отправляем 3 кандидата новому подписчику: ${subscriber.email}`);
+	try {
+		console.log(
+			`📧 Отправляем 3 кандидата новому подписчику: ${subscriber.email}`,
+		);
 
-    // Get 3 most recent active candidates
-    const candidates = await prisma.seeker.findMany({
-      where: {
-        isActive: true
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 3
-    });
+		// Get 3 most recent active candidates
+		const candidates = await prisma.seeker.findMany({
+			where: {
+				isActive: true,
+			},
+			orderBy: { createdAt: 'desc' },
+			take: 3,
+		});
 
-    if (candidates.length === 0) {
-      console.log('📧 Нет доступных кандидатов для отправки');
-      return;
-    }
+		if (candidates.length === 0) {
+			console.log('📧 Нет доступных кандидатов для отправки');
+			return;
+		}
 
-    // Generate email content
-    const emailContent = generateCandidatesEmailContent(candidates, subscriber);
-    const emailSubject = 'Новые соискатели с сайта WorkNow';
+		// Generate email content
+		const emailContent = generateCandidatesEmailContent(candidates, subscriber);
+		const emailSubject = 'Новые соискатели с сайта WorkNow';
 
-    // Send email with fallback
-    console.log('📧 Attempting to send email via Resend...');
-    console.log('📧 From:', 'WorkNow <onboarding@resend.dev>');
-    console.log('📧 To:', subscriber.email);
-    console.log('📧 Subject:', emailSubject);
-    
-    try {
-      const result = await resend.emails.send({
-        from: 'WorkNow <onboarding@resend.dev>',
-        to: subscriber.email,
-        subject: emailSubject,
-        html: emailContent
-      });
+		// Send email with fallback
+		console.log('📧 Attempting to send email via Resend...');
+		console.log('📧 From:', 'WorkNow <onboarding@resend.dev>');
+		console.log('📧 To:', subscriber.email);
+		console.log('📧 Subject:', emailSubject);
 
-      console.log('📧 Resend API response:', result);
-      console.log(`📧 Email с кандидатами успешно отправлен через Resend: ${subscriber.email}`);
-    } catch (resendError) {
-      console.error('❌ Resend failed, trying Gmail fallback:', resendError);
-      
-      // Fallback to Gmail
-      try {
-        await sendEmail(subscriber.email, emailSubject, emailContent);
-        console.log(`📧 Email с кандидатами успешно отправлен через Gmail: ${subscriber.email}`);
-      } catch (gmailError) {
-        console.error('❌ Gmail fallback also failed:', gmailError);
-        throw new Error(`Failed to send email: Resend error - ${resendError.message}, Gmail error - ${gmailError.message}`);
-      }
-    }
+		try {
+			const result = await resend.emails.send({
+				from: 'WorkNow <onboarding@resend.dev>',
+				to: subscriber.email,
+				subject: emailSubject,
+				html: emailContent,
+			});
 
-  } catch (error) {
-    console.error('❌ Ошибка при отправке кандидатов:', error);
-    throw error;
-  }
+			console.log('📧 Resend API response:', result);
+			console.log(
+				`📧 Email с кандидатами успешно отправлен через Resend: ${subscriber.email}`,
+			);
+		} catch (resendError) {
+			console.error('❌ Resend failed, trying Gmail fallback:', resendError);
+
+			// Fallback to Gmail
+			try {
+				await sendEmail(subscriber.email, emailSubject, emailContent);
+				console.log(
+					`📧 Email с кандидатами успешно отправлен через Gmail: ${subscriber.email}`,
+				);
+			} catch (gmailError) {
+				console.error('❌ Gmail fallback also failed:', gmailError);
+				throw new Error(
+					`Failed to send email: Resend error - ${resendError.message}, Gmail error - ${gmailError.message}`,
+				);
+			}
+		}
+	} catch (error) {
+		console.error('❌ Ошибка при отправке кандидатов:', error);
+		throw error;
+	}
 }
 
 /**
  * Generate email content with candidates
  */
 function generateCandidatesEmailContent(candidates, subscriber) {
-  const candidatesHtml = candidates.map(candidate => `
+	const candidatesHtml = candidates
+		.map(
+			(candidate) => `
     <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9;">
       <h3 style="margin: 0 0 10px 0; color: #333; font-size: 18px;">
         ${candidate.name} ${candidate.gender ? `${candidate.gender}` : ''}
@@ -97,13 +111,16 @@ function generateCandidatesEmailContent(candidates, subscriber) {
         <strong>Объявление:</strong> ${candidate.description || 'Описание не указано'}
       </p>
     </div>
-  `).join('');
+  `,
+		)
+		.join('');
 
-  const subscriberName = subscriber.firstName && subscriber.lastName 
-    ? `${subscriber.firstName} ${subscriber.lastName}`
-    : subscriber.firstName || subscriber.lastName || 'пользователь';
+	const subscriberName =
+		subscriber.firstName && subscriber.lastName
+			? `${subscriber.firstName} ${subscriber.lastName}`
+			: subscriber.firstName || subscriber.lastName || 'пользователь';
 
-  return `
+	return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -165,226 +182,295 @@ function generateCandidatesEmailContent(candidates, subscriber) {
  * Send candidates to existing subscribers (for testing or manual trigger)
  */
 export async function sendCandidatesToSubscribers(subscriberIds = null) {
-  try {
-    console.log('📧 Отправляем кандидатов подписчикам...');
+	try {
+		console.log('📧 Отправляем кандидатов подписчикам...');
 
-    // Get subscribers
-    const whereClause = subscriberIds 
-      ? { id: { in: subscriberIds }, isActive: true }
-      : { isActive: true };
+		// Get subscribers
+		const whereClause = subscriberIds
+			? { id: { in: subscriberIds }, isActive: true }
+			: { isActive: true };
 
-    const subscribers = await prisma.newsletterSubscriber.findMany({
-      where: whereClause
-    });
+		const subscribers = await prisma.newsletterSubscriber.findMany({
+			where: whereClause,
+		});
 
-    if (subscribers.length === 0) {
-      console.log('📧 Нет активных подписчиков для рассылки');
-      return;
-    }
+		if (subscribers.length === 0) {
+			console.log('📧 Нет активных подписчиков для рассылки');
+			return;
+		}
 
-    // Get 3 most recent active candidates
-    const candidates = await prisma.seeker.findMany({
-      where: {
-        isActive: true
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 3
-    });
+		// Get 3 most recent active candidates
+		const candidates = await prisma.seeker.findMany({
+			where: {
+				isActive: true,
+			},
+			orderBy: { createdAt: 'desc' },
+			take: 3,
+		});
 
-    if (candidates.length === 0) {
-      console.log('📧 Нет доступных кандидатов для отправки');
-      return;
-    }
+		if (candidates.length === 0) {
+			console.log('📧 Нет доступных кандидатов для отправки');
+			return;
+		}
 
-    console.log(`📧 Отправляем ${candidates.length} кандидатов ${subscribers.length} подписчикам`);
+		console.log(
+			`📧 Отправляем ${candidates.length} кандидатов ${subscribers.length} подписчикам`,
+		);
 
-    // Send emails to all subscribers with fallback
-    const emailPromises = subscribers.map(async (subscriber) => {
-      const emailContent = generateCandidatesEmailContent(candidates, subscriber);
-      const emailSubject = 'Новые соискатели с сайта WorkNow';
+		// Send emails to all subscribers with fallback
+		const emailPromises = subscribers.map(async (subscriber) => {
+			const emailContent = generateCandidatesEmailContent(
+				candidates,
+				subscriber,
+			);
+			const emailSubject = 'Новые соискатели с сайта WorkNow';
 
-      try {
-        const result = await resend.emails.send({
-          from: 'WorkNow <onboarding@resend.dev>',
-          to: subscriber.email,
-          subject: emailSubject,
-          html: emailContent
-        });
-        console.log(`📧 Email sent via Resend to: ${subscriber.email}`);
-        return result;
-      } catch (resendError) {
-        console.error(`❌ Resend failed for ${subscriber.email}, trying Gmail fallback:`, resendError);
-        
-        // Fallback to Gmail
-        try {
-          await sendEmail(subscriber.email, emailSubject, emailContent);
-          console.log(`📧 Email sent via Gmail to: ${subscriber.email}`);
-        } catch (gmailError) {
-          console.error(`❌ Gmail fallback also failed for ${subscriber.email}:`, gmailError);
-          throw new Error(`Failed to send email to ${subscriber.email}: Resend error - ${resendError.message}, Gmail error - ${gmailError.message}`);
-        }
-      }
-    });
+			try {
+				const result = await resend.emails.send({
+					from: 'WorkNow <onboarding@resend.dev>',
+					to: subscriber.email,
+					subject: emailSubject,
+					html: emailContent,
+				});
+				console.log(`📧 Email sent via Resend to: ${subscriber.email}`);
+				return result;
+			} catch (resendError) {
+				console.error(
+					`❌ Resend failed for ${subscriber.email}, trying Gmail fallback:`,
+					resendError,
+				);
 
-    await Promise.all(emailPromises);
+				// Fallback to Gmail
+				try {
+					await sendEmail(subscriber.email, emailSubject, emailContent);
+					console.log(`📧 Email sent via Gmail to: ${subscriber.email}`);
+				} catch (gmailError) {
+					console.error(
+						`❌ Gmail fallback also failed for ${subscriber.email}:`,
+						gmailError,
+					);
+					throw new Error(
+						`Failed to send email to ${subscriber.email}: Resend error - ${resendError.message}, Gmail error - ${gmailError.message}`,
+					);
+				}
+			}
+		});
 
-    console.log(`📧 Рассылка успешно отправлена ${subscribers.length} подписчикам`);
+		await Promise.all(emailPromises);
 
-  } catch (error) {
-    console.error('❌ Ошибка при отправке кандидатов подписчикам:', error);
-    throw error;
-  }
-} 
+		console.log(
+			`📧 Рассылка успешно отправлена ${subscribers.length} подписчикам`,
+		);
+	} catch (error) {
+		console.error('❌ Ошибка при отправке кандидатов подписчикам:', error);
+		throw error;
+	}
+}
 
 /**
  * Send filtered candidates to subscribers when 3 new candidates are added
  */
 export async function sendFilteredCandidatesToSubscribers() {
-  try {
-    console.log('📧 Checking for new candidates and sending filtered emails...');
+	try {
+		console.log(
+			'📧 Checking for new candidates and sending filtered emails...',
+		);
 
-    // Get all active subscribers
-    const subscribers = await prisma.newsletterSubscriber.findMany({
-      where: { isActive: true }
-    });
+		// Get all active subscribers
+		const subscribers = await prisma.newsletterSubscriber.findMany({
+			where: { isActive: true },
+		});
 
-    if (subscribers.length === 0) {
-      console.log('📧 Нет активных подписчиков для рассылки');
-      return;
-    }
+		if (subscribers.length === 0) {
+			console.log('📧 Нет активных подписчиков для рассылки');
+			return;
+		}
 
-    // Get all active candidates
-    const allCandidates = await prisma.seeker.findMany({
-      where: { isActive: true },
-      orderBy: { createdAt: 'desc' }
-    });
+		// Get all active candidates
+		const allCandidates = await prisma.seeker.findMany({
+			where: { isActive: true },
+			orderBy: { createdAt: 'desc' },
+		});
 
-    if (allCandidates.length === 0) {
-      console.log('📧 Нет доступных кандидатов для рассылки');
-      return;
-    }
+		if (allCandidates.length === 0) {
+			console.log('📧 Нет доступных кандидатов для рассылки');
+			return;
+		}
 
-    console.log(`📧 Найдено ${allCandidates.length} кандидатов и ${subscribers.length} подписчиков`);
+		console.log(
+			`📧 Найдено ${allCandidates.length} кандидатов и ${subscribers.length} подписчиков`,
+		);
 
-    // Send filtered candidates to each subscriber
-    for (const subscriber of subscribers) {
-      try {
-        const filteredCandidates = filterCandidatesByPreferences(allCandidates, subscriber);
-        
-        if (filteredCandidates.length > 0) {
-          // Take up to 3 candidates
-          const candidatesToSend = filteredCandidates.slice(0, 3);
-          
-          const emailContent = generateCandidatesEmailContent(candidatesToSend, subscriber);
-          const emailSubject = 'Новые соискатели с сайта WorkNow';
+		// Send filtered candidates to each subscriber
+		for (const subscriber of subscribers) {
+			try {
+				const filteredCandidates = filterCandidatesByPreferences(
+					allCandidates,
+					subscriber,
+				);
 
-          console.log(`📧 Отправляем ${candidatesToSend.length} отфильтрованных кандидатов подписчику: ${subscriber.email}`);
+				if (filteredCandidates.length > 0) {
+					// Take up to 3 candidates
+					const candidatesToSend = filteredCandidates.slice(0, 3);
 
-          // Send email with fallback
-          try {
-            await resend.emails.send({
-              from: 'WorkNow <onboarding@resend.dev>',
-              to: subscriber.email,
-              subject: emailSubject,
-              html: emailContent
-            });
+					const emailContent = generateCandidatesEmailContent(
+						candidatesToSend,
+						subscriber,
+					);
+					const emailSubject = 'Новые соискатели с сайта WorkNow';
 
-            console.log(`📧 Email с отфильтрованными кандидатами отправлен через Resend: ${subscriber.email}`);
-          } catch (resendError) {
-            console.error(`❌ Resend failed for ${subscriber.email}, trying Gmail fallback:`, resendError);
-            
-            // Fallback to Gmail
-            try {
-              await sendEmail(subscriber.email, emailSubject, emailContent);
-              console.log(`📧 Email с отфильтрованными кандидатами отправлен через Gmail: ${subscriber.email}`);
-            } catch (gmailError) {
-              console.error(`❌ Gmail fallback also failed for ${subscriber.email}:`, gmailError);
-            }
-          }
-        } else {
-          console.log(`📧 Нет подходящих кандидатов для подписчика: ${subscriber.email}`);
-        }
-      } catch (error) {
-        console.error(`❌ Ошибка при отправке кандидатов подписчику ${subscriber.email}:`, error);
-      }
-    }
+					console.log(
+						`📧 Отправляем ${candidatesToSend.length} отфильтрованных кандидатов подписчику: ${subscriber.email}`,
+					);
 
-    console.log('📧 Рассылка отфильтрованных кандидатов завершена');
+					// Send email with fallback
+					try {
+						await resend.emails.send({
+							from: 'WorkNow <onboarding@resend.dev>',
+							to: subscriber.email,
+							subject: emailSubject,
+							html: emailContent,
+						});
 
-  } catch (error) {
-    console.error('❌ Ошибка при отправке отфильтрованных кандидатов:', error);
-    throw error;
-  }
+						console.log(
+							`📧 Email с отфильтрованными кандидатами отправлен через Resend: ${subscriber.email}`,
+						);
+					} catch (resendError) {
+						console.error(
+							`❌ Resend failed for ${subscriber.email}, trying Gmail fallback:`,
+							resendError,
+						);
+
+						// Fallback to Gmail
+						try {
+							await sendEmail(subscriber.email, emailSubject, emailContent);
+							console.log(
+								`📧 Email с отфильтрованными кандидатами отправлен через Gmail: ${subscriber.email}`,
+							);
+						} catch (gmailError) {
+							console.error(
+								`❌ Gmail fallback also failed for ${subscriber.email}:`,
+								gmailError,
+							);
+						}
+					}
+				} else {
+					console.log(
+						`📧 Нет подходящих кандидатов для подписчика: ${subscriber.email}`,
+					);
+				}
+			} catch (error) {
+				console.error(
+					`❌ Ошибка при отправке кандидатов подписчику ${subscriber.email}:`,
+					error,
+				);
+			}
+		}
+
+		console.log('📧 Рассылка отфильтрованных кандидатов завершена');
+	} catch (error) {
+		console.error('❌ Ошибка при отправке отфильтрованных кандидатов:', error);
+		throw error;
+	}
 }
 
 /**
  * Filter candidates based on subscriber preferences
  */
 function filterCandidatesByPreferences(candidates, subscriber) {
-  let filteredCandidates = [...candidates];
+	let filteredCandidates = [...candidates];
 
-  // Filter by cities
-  if (subscriber.preferredCities && subscriber.preferredCities.length > 0) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      subscriber.preferredCities.some(city => 
-        candidate.city && candidate.city.toLowerCase().includes(city.toLowerCase())
-      )
-    );
-  }
+	// Filter by cities
+	if (subscriber.preferredCities && subscriber.preferredCities.length > 0) {
+		filteredCandidates = filteredCandidates.filter((candidate) =>
+			subscriber.preferredCities.some(
+				(city) =>
+					candidate.city &&
+					candidate.city.toLowerCase().includes(city.toLowerCase()),
+			),
+		);
+	}
 
-  // Filter by categories
-  if (subscriber.preferredCategories && subscriber.preferredCategories.length > 0) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      subscriber.preferredCategories.some(category => 
-        candidate.category && candidate.category.toLowerCase().includes(category.toLowerCase())
-      )
-    );
-  }
+	// Filter by categories
+	if (
+		subscriber.preferredCategories &&
+		subscriber.preferredCategories.length > 0
+	) {
+		filteredCandidates = filteredCandidates.filter((candidate) =>
+			subscriber.preferredCategories.some(
+				(category) =>
+					candidate.category &&
+					candidate.category.toLowerCase().includes(category.toLowerCase()),
+			),
+		);
+	}
 
-  // Filter by employment type
-  if (subscriber.preferredEmployment && subscriber.preferredEmployment.length > 0) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      subscriber.preferredEmployment.some(employment => 
-        candidate.employment && candidate.employment.toLowerCase().includes(employment.toLowerCase())
-      )
-    );
-  }
+	// Filter by employment type
+	if (
+		subscriber.preferredEmployment &&
+		subscriber.preferredEmployment.length > 0
+	) {
+		filteredCandidates = filteredCandidates.filter((candidate) =>
+			subscriber.preferredEmployment.some(
+				(employment) =>
+					candidate.employment &&
+					candidate.employment.toLowerCase().includes(employment.toLowerCase()),
+			),
+		);
+	}
 
-  // Filter by languages
-  if (subscriber.preferredLanguages && subscriber.preferredLanguages.length > 0) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      candidate.languages && candidate.languages.some(lang => 
-        subscriber.preferredLanguages.some(prefLang => 
-          lang.toLowerCase().includes(prefLang.toLowerCase())
-        )
-      )
-    );
-  }
+	// Filter by languages
+	if (
+		subscriber.preferredLanguages &&
+		subscriber.preferredLanguages.length > 0
+	) {
+		filteredCandidates = filteredCandidates.filter(
+			(candidate) =>
+				candidate.languages &&
+				candidate.languages.some((lang) =>
+					subscriber.preferredLanguages.some((prefLang) =>
+						lang.toLowerCase().includes(prefLang.toLowerCase()),
+					),
+				),
+		);
+	}
 
-  // Filter by gender
-  if (subscriber.preferredGender) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      candidate.gender && candidate.gender.toLowerCase() === subscriber.preferredGender.toLowerCase()
-    );
-  }
+	// Filter by gender
+	if (subscriber.preferredGender) {
+		filteredCandidates = filteredCandidates.filter(
+			(candidate) =>
+				candidate.gender &&
+				candidate.gender.toLowerCase() ===
+					subscriber.preferredGender.toLowerCase(),
+		);
+	}
 
-  // Filter by document types
-  if (subscriber.preferredDocumentTypes && subscriber.preferredDocumentTypes.length > 0) {
-    filteredCandidates = filteredCandidates.filter(candidate => 
-      candidate.documents && subscriber.preferredDocumentTypes.some(docType => 
-        candidate.documents.toLowerCase().includes(docType.toLowerCase())
-      )
-    );
-  }
+	// Filter by document types
+	if (
+		subscriber.preferredDocumentTypes &&
+		subscriber.preferredDocumentTypes.length > 0
+	) {
+		filteredCandidates = filteredCandidates.filter(
+			(candidate) =>
+				candidate.documents &&
+				subscriber.preferredDocumentTypes.some((docType) =>
+					candidate.documents.toLowerCase().includes(docType.toLowerCase()),
+				),
+		);
+	}
 
-  // Filter by demanded status
-  if (subscriber.onlyDemanded) {
-    filteredCandidates = filteredCandidates.filter(candidate => candidate.isDemanded === true);
-  }
+	// Filter by demanded status
+	if (subscriber.onlyDemanded) {
+		filteredCandidates = filteredCandidates.filter(
+			(candidate) => candidate.isDemanded === true,
+		);
+	}
 
-  console.log(`📧 Подписчик ${subscriber.email}: ${filteredCandidates.length} кандидатов после фильтрации из ${candidates.length} общих`);
+	console.log(
+		`📧 Подписчик ${subscriber.email}: ${filteredCandidates.length} кандидатов после фильтрации из ${candidates.length} общих`,
+	);
 
-  return filteredCandidates;
+	return filteredCandidates;
 }
 
 /**
@@ -393,17 +479,20 @@ function filterCandidatesByPreferences(candidates, subscriber) {
  * to prevent duplicate emails. This function now only handles newsletter subscriptions.
  */
 export async function checkAndSendFilteredNewsletter() {
-  try {
-    console.log('📧 Newsletter service: Duplicate notification logic disabled to prevent duplicate emails');
-    console.log('📧 Candidate notifications are now handled exclusively by candidateNotificationService.js');
-    
-    // This function no longer sends candidate notifications to prevent duplicates
-    // Candidate notifications are handled by candidateNotificationService.js
-    
-  } catch (error) {
-    console.error('❌ Error in newsletter service:', error);
-  }
-} 
+	try {
+		console.log(
+			'📧 Newsletter service: Duplicate notification logic disabled to prevent duplicate emails',
+		);
+		console.log(
+			'📧 Candidate notifications are now handled exclusively by candidateNotificationService.js',
+		);
+
+		// This function no longer sends candidate notifications to prevent duplicates
+		// Candidate notifications are handled by candidateNotificationService.js
+	} catch (error) {
+		console.error('❌ Error in newsletter service:', error);
+	}
+}
 
 // DISABLED: sendNewCandidatesNotification function moved to candidateNotificationService.js to prevent duplicate emails
 
