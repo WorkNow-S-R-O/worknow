@@ -18,6 +18,11 @@ build
 .env.test.local
 .env.production.local
 
+# Coverage reports
+coverage/
+*.lcov
+*.lcov.info
+
 # IDE and editor files
 .vscode
 .idea

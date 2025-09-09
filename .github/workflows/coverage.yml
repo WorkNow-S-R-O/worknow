@@ -31,3 +31,6 @@ jobs:
       with:
         token: qltcw_TLsXUi19eabAQPgs
         files: coverage/lcov.info
+
+    - name: Clean up coverage files
+      run: rm -rf coverage/
