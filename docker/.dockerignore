@@ -11,6 +11,11 @@ build
 .nuxt
 .vuepress/dist
 
+
+# Coverage reports
+coverage/
+*.lcov
+*.lcov.info
 # Environment files
 .env
 .env.local
