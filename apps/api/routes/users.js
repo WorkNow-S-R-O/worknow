@@ -1,5 +1,10 @@
 import express from 'express';
-import { syncUser, getUserByClerkId, getUserJobs, clerkWebhook } from '../controllers/usersController.js';
+import {
+	syncUser,
+	getUserByClerkId,
+	getUserJobs,
+	clerkWebhook,
+} from '../controllers/usersController.js';
 
 const router = express.Router();
 

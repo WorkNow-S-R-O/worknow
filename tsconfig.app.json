@@ -1,16 +1,12 @@
 {
-  "compilerOptions": {
-    "jsx": "react",
-    // ...
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "apps/client/src/*"
-      ]
-    }
-    // ...
-  },
-  "include": [
-    ".intlayer/**/*.ts"
-  ]
+	"compilerOptions": {
+		"jsx": "react",
+		// ...
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["apps/client/src/*"]
+		}
+		// ...
+	},
+	"include": [".intlayer/**/*.ts"]
 }

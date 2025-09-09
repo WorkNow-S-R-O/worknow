@@ -4,10 +4,10 @@ import process from 'process';
 
 // Initialize Resend only if API key is available
 const getResend = () => {
-  if (!process.env.RESEND_API_KEY) {
-    return null;
-  }
-  return new Resend(process.env.RESEND_API_KEY);
+	if (!process.env.RESEND_API_KEY) {
+		return null;
+	}
+	return new Resend(process.env.RESEND_API_KEY);
 };
 
 /**
@@ -16,10 +16,13 @@ const getResend = () => {
  * @param {string} userName - User's name (optional)
  * @returns {Promise<Object>} - Result of email sending
  */
-export const sendPremiumDeluxeWelcomeEmail = async (userEmail, userName = '') => {
-  const greeting = userName ? `Дорогой ${userName},` : 'Дорогой пользователь,';
-  
-  const emailHtml = `
+export const sendPremiumDeluxeWelcomeEmail = async (
+	userEmail,
+	userName = '',
+) => {
+	const greeting = userName ? `Дорогой ${userName},` : 'Дорогой пользователь,';
+
+	const emailHtml = `
     <!DOCTYPE html>
     <html lang="ru">
     <head>
@@ -185,7 +188,7 @@ export const sendPremiumDeluxeWelcomeEmail = async (userEmail, userName = '') =>
     </html>
   `;
 
-  const emailText = `
+	const emailText = `
 Добро пожаловать в Premium Deluxe!
 
 ${greeting}
@@ -222,46 +225,55 @@ ${greeting}
 Это письмо отправлено автоматически, пожалуйста, не отвечайте на него.
   `;
 
-  try {
-    // Try Resend first (if available)
-    const resend = getResend();
-    if (resend) {
-      console.log('📧 Attempting to send Premium Deluxe welcome email via Resend...');
-      
-      const result = await resend.emails.send({
-        from: 'WorkNow <onboarding@resend.dev>',
-        to: userEmail,
-        subject: '🎉 Добро пожаловать в Premium Deluxe! - WorkNow',
-        html: emailHtml,
-        text: emailText,
-      });
-      
-      console.log('✅ Premium Deluxe welcome email sent via Resend:', userEmail);
-      return { success: true, messageId: result.id || 'resend-' + Date.now() };
-    } else {
-      throw new Error('RESEND_API_KEY not available');
-    }
-  } catch (resendError) {
-    console.error('❌ Resend failed, trying Gmail fallback:', resendError);
-    
-    try {
-      // Fallback to Gmail
-      console.log('📧 Attempting to send Premium Deluxe welcome email via Gmail...');
-      
-      await sendEmail({
-        to: userEmail,
-        subject: '🎉 Добро пожаловать в Premium Deluxe! - WorkNow',
-        html: emailHtml,
-        text: emailText,
-      });
-      
-      console.log('✅ Premium Deluxe welcome email sent via Gmail:', userEmail);
-      return { success: true, messageId: 'gmail-' + Date.now() };
-    } catch (gmailError) {
-      console.error('❌ Gmail also failed:', gmailError);
-      throw new Error(`Failed to send Premium Deluxe welcome email: Resend error - ${resendError.message}, Gmail error - ${gmailError.message}`);
-    }
-  }
+	try {
+		// Try Resend first (if available)
+		const resend = getResend();
+		if (resend) {
+			console.log(
+				'📧 Attempting to send Premium Deluxe welcome email via Resend...',
+			);
+
+			const result = await resend.emails.send({
+				from: 'WorkNow <onboarding@resend.dev>',
+				to: userEmail,
+				subject: '🎉 Добро пожаловать в Premium Deluxe! - WorkNow',
+				html: emailHtml,
+				text: emailText,
+			});
+
+			console.log(
+				'✅ Premium Deluxe welcome email sent via Resend:',
+				userEmail,
+			);
+			return { success: true, messageId: result.id || 'resend-' + Date.now() };
+		} else {
+			throw new Error('RESEND_API_KEY not available');
+		}
+	} catch (resendError) {
+		console.error('❌ Resend failed, trying Gmail fallback:', resendError);
+
+		try {
+			// Fallback to Gmail
+			console.log(
+				'📧 Attempting to send Premium Deluxe welcome email via Gmail...',
+			);
+
+			await sendEmail({
+				to: userEmail,
+				subject: '🎉 Добро пожаловать в Premium Deluxe! - WorkNow',
+				html: emailHtml,
+				text: emailText,
+			});
+
+			console.log('✅ Premium Deluxe welcome email sent via Gmail:', userEmail);
+			return { success: true, messageId: 'gmail-' + Date.now() };
+		} catch (gmailError) {
+			console.error('❌ Gmail also failed:', gmailError);
+			throw new Error(
+				`Failed to send Premium Deluxe welcome email: Resend error - ${resendError.message}, Gmail error - ${gmailError.message}`,
+			);
+		}
+	}
 };
 
 /**
@@ -271,9 +283,9 @@ ${greeting}
  * @returns {Promise<Object>} - Result of email sending
  */
 export const sendProWelcomeEmail = async (userEmail, userName = '') => {
-  const greeting = userName ? `Дорогой ${userName},` : 'Дорогой пользователь,';
-  
-  const emailHtml = `
+	const greeting = userName ? `Дорогой ${userName},` : 'Дорогой пользователь,';
+
+	const emailHtml = `
     <!DOCTYPE html>
     <html lang="ru">
     <head>
@@ -430,7 +442,7 @@ export const sendProWelcomeEmail = async (userEmail, userName = '') => {
     </html>
   `;
 
-  const emailText = `
+	const emailText = `
 Добро пожаловать в Pro!
 
 ${greeting}
@@ -467,44 +479,46 @@ ${greeting}
 Это письмо отправлено автоматически, пожалуйста, не отвечайте на него.
   `;
 
-  try {
-    // Try Resend first (if available)
-    const resend = getResend();
-    if (resend) {
-      console.log('📧 Attempting to send Pro welcome email via Resend...');
-      
-      const result = await resend.emails.send({
-        from: 'WorkNow <onboarding@resend.dev>',
-        to: userEmail,
-        subject: '🚀 Добро пожаловать в Pro! - WorkNow',
-        html: emailHtml,
-        text: emailText,
-      });
-      
-      console.log('✅ Pro welcome email sent via Resend:', userEmail);
-      return { success: true, messageId: result.id || 'resend-' + Date.now() };
-    } else {
-      throw new Error('RESEND_API_KEY not available');
-    }
-  } catch (resendError) {
-    console.error('❌ Resend failed, trying Gmail fallback:', resendError);
-    
-    try {
-      // Fallback to Gmail
-      console.log('📧 Attempting to send Pro welcome email via Gmail...');
-      
-      await sendEmail({
-        to: userEmail,
-        subject: '🚀 Добро пожаловать в Pro! - WorkNow',
-        html: emailHtml,
-        text: emailText,
-      });
-      
-      console.log('✅ Pro welcome email sent via Gmail:', userEmail);
-      return { success: true, messageId: 'gmail-' + Date.now() };
-    } catch (gmailError) {
-      console.error('❌ Gmail also failed:', gmailError);
-      throw new Error(`Failed to send Pro welcome email: Resend error - ${resendError.message}, Gmail error - ${gmailError.message}`);
-    }
-  }
-}; 
+	try {
+		// Try Resend first (if available)
+		const resend = getResend();
+		if (resend) {
+			console.log('📧 Attempting to send Pro welcome email via Resend...');
+
+			const result = await resend.emails.send({
+				from: 'WorkNow <onboarding@resend.dev>',
+				to: userEmail,
+				subject: '🚀 Добро пожаловать в Pro! - WorkNow',
+				html: emailHtml,
+				text: emailText,
+			});
+
+			console.log('✅ Pro welcome email sent via Resend:', userEmail);
+			return { success: true, messageId: result.id || 'resend-' + Date.now() };
+		} else {
+			throw new Error('RESEND_API_KEY not available');
+		}
+	} catch (resendError) {
+		console.error('❌ Resend failed, trying Gmail fallback:', resendError);
+
+		try {
+			// Fallback to Gmail
+			console.log('📧 Attempting to send Pro welcome email via Gmail...');
+
+			await sendEmail({
+				to: userEmail,
+				subject: '🚀 Добро пожаловать в Pro! - WorkNow',
+				html: emailHtml,
+				text: emailText,
+			});
+
+			console.log('✅ Pro welcome email sent via Gmail:', userEmail);
+			return { success: true, messageId: 'gmail-' + Date.now() };
+		} catch (gmailError) {
+			console.error('❌ Gmail also failed:', gmailError);
+			throw new Error(
+				`Failed to send Pro welcome email: Resend error - ${resendError.message}, Gmail error - ${gmailError.message}`,
+			);
+		}
+	}
+};

@@ -5,17 +5,32 @@ import { sendEmail } from '../apps/api/utils/mailer.js';
 config();
 
 async function testEmailConfig() {
-  console.log('🔍 Testing email configuration...');
-  
-  // Check environment variables
-  console.log('📧 SMTP_HOST:', process.env.SMTP_HOST || 'smtp.gmail.com (default)');
-  console.log('📧 SMTP_USER:', process.env.SMTP_USER || process.env.EMAIL_USER || 'NOT SET');
-  console.log('📧 SMTP_PASS:', process.env.SMTP_PASS || process.env.EMAIL_PASS ? 'SET' : 'NOT SET');
-  console.log('📧 SMTP_FROM:', process.env.SMTP_FROM || process.env.SMTP_USER || process.env.EMAIL_USER || 'NOT SET');
-  
-  const testEmail = 'peterbaikov12@gmail.com';
-  const testSubject = 'WorkNow - Test Email Configuration';
-  const testContent = `
+	console.log('🔍 Testing email configuration...');
+
+	// Check environment variables
+	console.log(
+		'📧 SMTP_HOST:',
+		process.env.SMTP_HOST || 'smtp.gmail.com (default)',
+	);
+	console.log(
+		'📧 SMTP_USER:',
+		process.env.SMTP_USER || process.env.EMAIL_USER || 'NOT SET',
+	);
+	console.log(
+		'📧 SMTP_PASS:',
+		process.env.SMTP_PASS || process.env.EMAIL_PASS ? 'SET' : 'NOT SET',
+	);
+	console.log(
+		'📧 SMTP_FROM:',
+		process.env.SMTP_FROM ||
+			process.env.SMTP_USER ||
+			process.env.EMAIL_USER ||
+			'NOT SET',
+	);
+
+	const testEmail = 'peterbaikov12@gmail.com';
+	const testSubject = 'WorkNow - Test Email Configuration';
+	const testContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background-color: #1976d2; color: white; text-align: center; padding: 20px; border-radius: 8px 8px 0 0;">
         <h1 style="margin: 0; font-size: 24px;">WORKNOW</h1>
@@ -39,20 +54,20 @@ async function testEmailConfig() {
       </div>
     </div>
   `;
-  
-  try {
-    console.log('📧 Attempting to send test email...');
-    const result = await sendEmail(testEmail, testSubject, testContent);
-    console.log('✅ Test email sent successfully!');
-    console.log('📧 Result:', result);
-  } catch (error) {
-    console.error('❌ Failed to send test email:', error);
-    console.log('🔍 Error details:', {
-      message: error.message,
-      code: error.code,
-      command: error.command
-    });
-  }
+
+	try {
+		console.log('📧 Attempting to send test email...');
+		const result = await sendEmail(testEmail, testSubject, testContent);
+		console.log('✅ Test email sent successfully!');
+		console.log('📧 Result:', result);
+	} catch (error) {
+		console.error('❌ Failed to send test email:', error);
+		console.log('🔍 Error details:', {
+			message: error.message,
+			code: error.code,
+			command: error.command,
+		});
+	}
 }
 
-testEmailConfig().catch(console.error); 
+testEmailConfig().catch(console.error);

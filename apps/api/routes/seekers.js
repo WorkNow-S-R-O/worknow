@@ -1,5 +1,11 @@
 import express from 'express';
-import { getSeekers, addSeeker, getSeekerBySlugController, deleteSeekerController, getSeekerByIdController } from '../controllers/seekerController.js';
+import {
+	getSeekers,
+	addSeeker,
+	getSeekerBySlugController,
+	deleteSeekerController,
+	getSeekerByIdController,
+} from '../controllers/seekerController.js';
 
 const router = express.Router();
 

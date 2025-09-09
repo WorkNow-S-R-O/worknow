@@ -8,58 +8,61 @@ const prisma = new PrismaClient();
  * @param {Array} newSeekers - Array of newly added seekers
  */
 export async function sendNewCandidatesNotification(newSeekers) {
-  try {
-    console.log('📧 Starting to send notifications for', newSeekers.length, 'new candidates');
-    
-    // Get all users
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        clerkUserId: true,
-      }
-    });
+	try {
+		console.log(
+			'📧 Starting to send notifications for',
+			newSeekers.length,
+			'new candidates',
+		);
 
-    console.log('👥 Found', users.length, 'users to notify');
+		// Get all users
+		const users = await prisma.user.findMany({
+			select: {
+				id: true,
+				email: true,
+				firstName: true,
+				lastName: true,
+				clerkUserId: true,
+			},
+		});
 
-    if (users.length === 0) {
-      console.log('⚠️ No users found to notify');
-      return;
-    }
+		console.log('👥 Found', users.length, 'users to notify');
 
-    // Prepare email content
-    const emailContent = generateNewCandidatesEmail(newSeekers);
-    
-    // Send emails to all users
-    const emailPromises = users.map(user => 
-      sendEmailToUser(user, emailContent)
-    );
+		if (users.length === 0) {
+			console.log('⚠️ No users found to notify');
+			return;
+		}
 
-    // Wait for all emails to be sent
-    const results = await Promise.allSettled(emailPromises);
-    
-    // Log results
-    const successful = results.filter(r => r.status === 'fulfilled').length;
-    const failed = results.filter(r => r.status === 'rejected').length;
-    
-    console.log(`✅ Successfully sent ${successful} notifications`);
-    if (failed > 0) {
-      console.log(`❌ Failed to send ${failed} notifications`);
-    }
+		// Prepare email content
+		const emailContent = generateNewCandidatesEmail(newSeekers);
 
-    return {
-      totalUsers: users.length,
-      successful,
-      failed,
-      newCandidates: newSeekers.length
-    };
+		// Send emails to all users
+		const emailPromises = users.map((user) =>
+			sendEmailToUser(user, emailContent),
+		);
 
-  } catch (error) {
-    console.error('❌ Error sending new candidates notifications:', error);
-    throw error;
-  }
+		// Wait for all emails to be sent
+		const results = await Promise.allSettled(emailPromises);
+
+		// Log results
+		const successful = results.filter((r) => r.status === 'fulfilled').length;
+		const failed = results.filter((r) => r.status === 'rejected').length;
+
+		console.log(`✅ Successfully sent ${successful} notifications`);
+		if (failed > 0) {
+			console.log(`❌ Failed to send ${failed} notifications`);
+		}
+
+		return {
+			totalUsers: users.length,
+			successful,
+			failed,
+			newCandidates: newSeekers.length,
+		};
+	} catch (error) {
+		console.error('❌ Error sending new candidates notifications:', error);
+		throw error;
+	}
 }
 
 /**
@@ -68,21 +71,21 @@ export async function sendNewCandidatesNotification(newSeekers) {
  * @param {Object} emailContent - Email content object
  */
 async function sendEmailToUser(user, emailContent) {
-  try {
-    const userName = user.firstName || user.lastName || 'Пользователь';
-    
-    await sendEmail(
-      user.email,
-      emailContent.subject,
-      emailContent.html.replace('{{userName}}', userName)
-    );
-    
-    console.log(`✅ Email sent to ${user.email}`);
-    return { success: true, email: user.email };
-  } catch (error) {
-    console.error(`❌ Failed to send email to ${user.email}:`, error.message);
-    return { success: false, email: user.email, error: error.message };
-  }
+	try {
+		const userName = user.firstName || user.lastName || 'Пользователь';
+
+		await sendEmail(
+			user.email,
+			emailContent.subject,
+			emailContent.html.replace('{{userName}}', userName),
+		);
+
+		console.log(`✅ Email sent to ${user.email}`);
+		return { success: true, email: user.email };
+	} catch (error) {
+		console.error(`❌ Failed to send email to ${user.email}:`, error.message);
+		return { success: false, email: user.email, error: error.message };
+	}
 }
 
 /**
@@ -91,7 +94,9 @@ async function sendEmailToUser(user, emailContent) {
  * @returns {Object} Email content with subject and HTML
  */
 function generateNewCandidatesEmail(newSeekers) {
-  const candidatesList = newSeekers.map(seeker => `
+	const candidatesList = newSeekers
+		.map(
+			(seeker) => `
     <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9;">
       <h3 style="margin: 0 0 10px 0; color: #1976d2;">${seeker.name}</h3>
       <p style="margin: 5px 0; color: #666;"><strong>Город:</strong> ${seeker.city}</p>
@@ -101,11 +106,13 @@ function generateNewCandidatesEmail(newSeekers) {
       ${seeker.languages && seeker.languages.length > 0 ? `<p style="margin: 5px 0; color: #666;"><strong>Языки:</strong> ${seeker.languages.join(', ')}</p>` : ''}
       ${seeker.isDemanded ? '<p style="margin: 5px 0; color: #ff6b35; font-weight: bold;">⭐ Востребованный кандидат</p>' : ''}
     </div>
-  `).join('');
+  `,
+		)
+		.join('');
 
-  const subject = `Новые соискатели на WorkNow - ${newSeekers.length} новых кандидатов`;
-  
-  const html = `
+	const subject = `Новые соискатели на WorkNow - ${newSeekers.length} новых кандидатов`;
+
+	const html = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -148,7 +155,7 @@ function generateNewCandidatesEmail(newSeekers) {
     </html>
   `;
 
-  return { subject, html };
+	return { subject, html };
 }
 
 /**
@@ -156,7 +163,7 @@ function generateNewCandidatesEmail(newSeekers) {
  * @param {Object} seeker - Newly added seeker
  */
 export async function sendSingleCandidateNotification(seeker) {
-  return sendNewCandidatesNotification([seeker]);
+	return sendNewCandidatesNotification([seeker]);
 }
 
 /**
@@ -164,5 +171,5 @@ export async function sendSingleCandidateNotification(seeker) {
  * @param {Array} seekers - Array of newly added seekers
  */
 export async function sendMultipleCandidatesNotification(seekers) {
-  return sendNewCandidatesNotification(seekers);
-} 
+	return sendNewCandidatesNotification(seekers);
+}

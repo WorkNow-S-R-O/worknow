@@ -7,15 +7,20 @@ config();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function testResend() {
-  console.log('🔍 Testing Resend email service...');
-  
-  // Check environment variables
-  console.log('📧 RESEND_API_KEY available:', !!process.env.RESEND_API_KEY);
-  console.log('📧 RESEND_API_KEY value:', process.env.RESEND_API_KEY ? process.env.RESEND_API_KEY.substring(0, 10) + '...' : 'NOT SET');
-  
-  const testEmail = 'peterbaikov12@gmail.com';
-  const testSubject = 'WorkNow - Test Resend Email';
-  const testContent = `
+	console.log('🔍 Testing Resend email service...');
+
+	// Check environment variables
+	console.log('📧 RESEND_API_KEY available:', !!process.env.RESEND_API_KEY);
+	console.log(
+		'📧 RESEND_API_KEY value:',
+		process.env.RESEND_API_KEY
+			? process.env.RESEND_API_KEY.substring(0, 10) + '...'
+			: 'NOT SET',
+	);
+
+	const testEmail = 'peterbaikov12@gmail.com';
+	const testSubject = 'WorkNow - Test Resend Email';
+	const testContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background-color: #1976d2; color: white; text-align: center; padding: 20px; border-radius: 8px 8px 0 0;">
         <h1 style="margin: 0; font-size: 24px;">WORKNOW</h1>
@@ -39,30 +44,30 @@ async function testResend() {
       </div>
     </div>
   `;
-  
-  try {
-    console.log('📧 Attempting to send test email via Resend...');
-    console.log('📧 From: WorkNow <onboarding@resend.dev>');
-    console.log('📧 To:', testEmail);
-    console.log('📧 Subject:', testSubject);
-    
-    const result = await resend.emails.send({
-      from: 'WorkNow <onboarding@resend.dev>',
-      to: testEmail,
-      subject: testSubject,
-      html: testContent
-    });
-    
-    console.log('✅ Test email sent successfully via Resend!');
-    console.log('📧 Result:', result);
-  } catch (error) {
-    console.error('❌ Failed to send test email via Resend:', error);
-    console.log('🔍 Error details:', {
-      message: error.message,
-      code: error.code,
-      statusCode: error.statusCode
-    });
-  }
+
+	try {
+		console.log('📧 Attempting to send test email via Resend...');
+		console.log('📧 From: WorkNow <onboarding@resend.dev>');
+		console.log('📧 To:', testEmail);
+		console.log('📧 Subject:', testSubject);
+
+		const result = await resend.emails.send({
+			from: 'WorkNow <onboarding@resend.dev>',
+			to: testEmail,
+			subject: testSubject,
+			html: testContent,
+		});
+
+		console.log('✅ Test email sent successfully via Resend!');
+		console.log('📧 Result:', result);
+	} catch (error) {
+		console.error('❌ Failed to send test email via Resend:', error);
+		console.log('🔍 Error details:', {
+			message: error.message,
+			code: error.code,
+			statusCode: error.statusCode,
+		});
+	}
 }
 
-testResend().catch(console.error); 
+testResend().catch(console.error);
