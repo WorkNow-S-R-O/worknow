@@ -57,7 +57,7 @@ const JobCard = ({ job }) => {
           backgroundColor: job.user?.isPremium ? "#D4E6F9" : "white",
           width: "90%",
           maxWidth: "700px",
-          borderRadius: "10px",
+          borderRadius: "6px",
           minHeight: "220px",
           cursor: job.user?.clerkUserId ? "pointer" : "default",
         }}
@@ -120,7 +120,7 @@ const JobCard = ({ job }) => {
                   width={120} 
                   height={80} 
                   style={{
-                    borderRadius: '6px',
+                    borderRadius: '3px',
                     border: '1px solid #e0e0e0'
                   }}
                 />
@@ -133,7 +133,7 @@ const JobCard = ({ job }) => {
                   width: '120px',
                   height: '80px',
                   objectFit: 'cover',
-                  borderRadius: '6px',
+                  borderRadius: '3px',
                   border: '1px solid #e0e0e0',
                   cursor: 'pointer',
                   display: imageLoading ? 'none' : 'block'

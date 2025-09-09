@@ -173,8 +173,8 @@ export default function SeekerDetails() {
         <h3 className="mb-2">
           <span className="d-flex align-items-center flex-wrap gap-2">
             {seeker.name}
-            {seeker.gender && <span className="badge bg-dark" style={{ padding: '5px 6px', fontSize: '20px' }}>{getGenderLabel(seeker.gender)}</span>}
-            {seeker.isDemanded && <span className="badge bg-primary" style={{ padding: '5px 6px', fontSize: '20px' }}>{content.seekerProfileDemanded.value}</span>}
+            {seeker.gender && <span className="badge bg-dark" style={{ padding: '5px 6px', fontSize: '15px' }}>{getGenderLabel(seeker.gender)}</span>}
+            {seeker.isDemanded && <span className="badge bg-primary" style={{ padding: '5px 6px', fontSize: '15px' }}>{content.seekerProfileDemanded.value}</span>}
           </span>
         </h3>
         {isPremium && (seeker.contact || seeker.facebook) && (

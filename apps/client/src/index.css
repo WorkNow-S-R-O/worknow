@@ -327,7 +327,7 @@ button:focus-visible {
   font-weight: 600;
   font-size: 0.95em;
   padding: 2px 14px 2px 8px;
-  border-radius: 12px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.10);
@@ -363,4 +363,29 @@ button:focus-visible {
     width: 90vw !important;
     border-radius: 6px !important;
   }
+}
+
+/* Custom badge styles - less rounded */
+.badge {
+  border-radius: 2px !important;
+}
+
+/* Specific styling for gender and demanded candidate badges only */
+.badge.bg-dark,
+.badge.bg-primary {
+  font-weight: 600 !important;
+  letter-spacing: 0.025em !important;
+  text-transform: lowercase !important;
+  font-size: 0.80em !important;
+  padding: 2px 6px !important;
+}
+
+/* Category badges styling */
+.badge.bg-primary.text-white {
+  border-radius: 2px !important;
+}
+
+/* Custom button styles - less rounded */
+.btn {
+  border-radius: 4px !important;
 }

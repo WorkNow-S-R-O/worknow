@@ -275,7 +275,7 @@ const PremiumPage = () => {
                      style={{
                        minWidth: 0,
                        border: plan.highlight ? '2px solid #0d6efd' : '1px solid #dee2e6',
-                       borderRadius: '16px',
+                       borderRadius: '8px',
                        transition: 'all 0.3s ease',
                        cursor: 'pointer',
                        overflow: 'hidden'
@@ -298,7 +298,7 @@ const PremiumPage = () => {
                       <div className="text-center mb-4">
                         <span className="badge px-4 py-2" style={{ 
                           fontSize: window.innerWidth <= 768 ? '1.1rem' : '0.9rem',
-                          borderRadius: '25px',
+                          borderRadius: '12px',
                           fontWeight: '700',
                           background: 'linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%)',
                           color: 'white',
@@ -315,7 +315,7 @@ const PremiumPage = () => {
                       <div className="text-center mb-4">
                         <span className="badge px-4 py-2" style={{ 
                           fontSize: window.innerWidth <= 768 ? '1.1rem' : '0.9rem',
-                          borderRadius: '25px',
+                          borderRadius: '12px',
                           fontWeight: '700',
                           background: 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)',
                           color: 'white',
@@ -377,7 +377,7 @@ const PremiumPage = () => {
                             fontWeight: 700,
                             background: 'linear-gradient(135deg, #198754 0%, #157347 100%)',
                             color: 'white',
-                            borderRadius: '20px'
+                            borderRadius: '8px'
                           }}>
                             -50%
                           </span>
@@ -403,7 +403,7 @@ const PremiumPage = () => {
                                    fontSize: '1.4rem', 
                                    minWidth: '40px',
                                    height: '40px',
-                                   borderRadius: '50%',
+                                   borderRadius: '8px',
                                    backgroundColor: feature.color === 'text-primary' ? '#e3f2fd' :
                                                   feature.color === 'text-success' ? '#e8f5e8' :
                                                   feature.color === 'text-warning' ? '#fff3cd' :
@@ -435,7 +435,7 @@ const PremiumPage = () => {
                             className={`btn btn-lg w-100 btn-${plan.button.variant}`}
                             onClick={() => redirectToSignIn()}
                             style={{
-                              borderRadius: '12px',
+                              borderRadius: '6px',
                               fontWeight: '700',
                               transition: 'all 0.3s ease',
                               padding: '15px 20px',
@@ -451,7 +451,7 @@ const PremiumPage = () => {
                             className={`btn btn-lg w-100 btn-${plan.button.variant}`}
                             disabled={isActive}
                             style={{
-                              borderRadius: '12px',
+                              borderRadius: '6px',
                               fontWeight: '700',
                               transition: 'all 0.3s ease',
                               padding: '15px 20px',

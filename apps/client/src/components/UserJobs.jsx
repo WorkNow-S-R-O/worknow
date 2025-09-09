@@ -329,7 +329,7 @@ const UserJobs = () => {
                     maxWidth: "700px",
                     margin: "0 auto",
                     background: job.user?.isPremium ? "#D4E6F9" : "white",
-                    borderRadius: "10px",
+                    borderRadius: "6px",
                   }}
                 >
                   {/* Плашка Премиум */}
