@@ -26,10 +26,17 @@ jobs:
     - name: Run tests with coverage
       run: npm run test:coverage
       
+    - name: List coverage files (debug)
+      run: |
+        echo "Coverage directory contents:"
+        ls -la coverage/ || echo "No coverage directory found"
+        echo "Looking for lcov.info:"
+        find . -name "*.lcov" -o -name "lcov.info" || echo "No lcov files found"
+      
     - name: Upload coverage to Qlty
       uses: qltysh/qlty-action/coverage@v2
       with:
-        token: qltcw_TLsXUi19eabAQPgs
+        token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
         files: coverage/lcov.info
 
     - name: Clean up coverage files
