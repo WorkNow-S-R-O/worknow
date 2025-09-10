@@ -17,9 +17,10 @@
 		"lint": "eslint .",
 		"prepare": "husky install",
 		"release": "standard-version",
+		"changelog": "auto-changelog --commit-limit false --unreleased",
 		"prisma:push": "prisma db push",
 		"prisma:studio": "prisma studio",
-		"prisma:seed": "node prisma/seed.js",
+		"prisma:seed": "node prisma/seed.js", 
 		"postinstall": "prisma generate",
 		"setup": "node setup-env.js"
 	},

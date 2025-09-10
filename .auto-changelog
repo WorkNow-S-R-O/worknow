@@ -1,0 +1,15 @@
+{
+  "output": "CHANGELOG.md",
+  "template": "json",
+  "unreleased": true,
+  "commitLimit": false,
+  "backfillLimit": false,
+  "handlebarsHelpers": {},
+  "ignoreCommitPattern": "^(chore|docs|style|refactor|test):",
+  "sortCommits": "date",
+  "includeBranch": [
+    "master",
+    "main"
+  ],
+  "packageFile": "package.json"
+}
