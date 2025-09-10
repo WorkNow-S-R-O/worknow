@@ -363,7 +363,11 @@ button:focus-visible {
 	}
 }
 
-/* Premium page mobile spacing */
+/* Premium page spacing for all devices */
+.premium-page-container {
+	padding-top: 120px !important;
+}
+
 @media (max-width: 768px) {
 	.premium-page-container {
 		padding-top: 120px !important;

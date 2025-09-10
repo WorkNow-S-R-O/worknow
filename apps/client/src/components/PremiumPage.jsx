@@ -287,12 +287,15 @@ const PremiumPage = () => {
 					<p
 						className="lead text-secondary"
 						style={{
-							fontSize: '1.25rem',
-							lineHeight: 1.7,
-							fontWeight: 400,
-							color: '#6c757d',
+							fontSize: '1.3rem',
+							lineHeight: 1.8,
+							fontWeight: 500,
+							color: '#495057',
 							margin: '0 auto',
 							padding: '0 20px',
+							fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+							letterSpacing: '0.01em',
+							textAlign: 'center',
 						}}
 					>
 						{content.pricingDescription.value}
