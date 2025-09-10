@@ -7,6 +7,14 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
 
 [![Maintainability](https://qlty.sh/gh/symonbaikov/projects/job-listing/maintainability.svg)](https://qlty.sh/gh/symonbaikov/projects/job-listing)
 [![Code Coverage](https://qlty.sh/gh/symonbaikov/projects/job-listing/coverage.svg)](https://qlty.sh/gh/symonbaikov/projects/job-listing)
+
+## 🚀 CI/CD Status
+
+[![Node.js CI](https://github.com/symonbaikov/worknow/actions/workflows/node.js.yml/badge.svg)](https://github.com/symonbaikov/worknow/actions/workflows/node.js.yml)
+[![Coverage Report](https://github.com/symonbaikov/worknow/actions/workflows/coverage.yml/badge.svg)](https://github.com/symonbaikov/worknow/actions/workflows/coverage.yml)
+[![Update Changelog](https://github.com/symonbaikov/worknow/actions/workflows/changelog.yml/badge.svg)](https://github.com/symonbaikov/worknow/actions/workflows/changelog.yml)
+[![Docker Image](https://github.com/symonbaikov/worknow/actions/workflows/docker-image.yml/badge.svg)](https://github.com/symonbaikov/worknow/actions/workflows/docker-image.yml)
+[![DevSkim Security](https://github.com/symonbaikov/worknow/actions/workflows/devskim.yml/badge.svg)](https://github.com/symonbaikov/worknow/actions/workflows/devskim.yml)
 ---
 
 ## ✨ Features
