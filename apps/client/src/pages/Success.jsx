@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@clerk/clerk-react';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 
 const API_URL = import.meta.env.VITE_API_URL; // Используем переменную окружения
 
@@ -12,7 +12,7 @@ const Success = () => {
 	const sessionId = searchParams.get('session_id');
 	const navigate = useNavigate();
 	const { user } = useUser();
-	const { t } = useTranslation();
+	const content = useIntlayer('successPage');
 
 	useEffect(() => {
 		const activatePremium = async () => {
@@ -25,10 +25,10 @@ const Success = () => {
 					},
 				);
 
-				toast.success('🎉 Premium активирован!');
+				toast.success(content.premiumActivated.value);
 				navigate('/premium?fromSuccess=true');
 			} catch (error) {
-				toast.error('Ошибка активации Premium');
+				toast.error(content.activationError.value);
 			}
 		};
 
@@ -44,10 +44,10 @@ const Success = () => {
 				{/* Success Icon and Title Section - Compact spacing */}
 				<div className="text-center mb-4 sm:mb-6 md:mb-8">
 					<h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
-						{t('payment.success.title')}
+						{content.title.value}
 					</h1>
 					<p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-600">
-						{t('payment.success.subtitle')}
+						{content.subtitle.value}
 					</p>
 				</div>
 
@@ -66,11 +66,11 @@ const Success = () => {
 						<div className="flex items-center justify-center mb-2 sm:mb-3">
 							<div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-blue-500 rounded-full animate-pulse mr-2"></div>
 							<span className="text-xs sm:text-sm font-medium text-blue-700">
-								{t('payment.success.processing')}
+								{content.processing.value}
 							</span>
 						</div>
 						<p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-							{t('payment.success.wait_message')}
+							{content.waitMessage.value}
 						</p>
 					</div>
 				</div>
@@ -93,7 +93,7 @@ const Success = () => {
 				{/* Redirect Info - Compact for small screens */}
 				<div className="text-center">
 					<p className="text-xs sm:text-sm text-gray-500">
-						{t('payment.success.redirecting')}
+						{content.redirecting.value}
 					</p>
 				</div>
 			</div>

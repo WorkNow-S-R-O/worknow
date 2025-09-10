@@ -1,14 +1,14 @@
 import { Helmet } from 'react-helmet-async';
-import { useTranslation } from 'react-i18next';
+import { useIntlayer } from 'react-intlayer';
 import { Button } from '../components/ui/button';
 
 function MyAds() {
-	const { t } = useTranslation();
+	const content = useIntlayer('myAdsPage');
 
 	return (
 		<>
 			<Helmet>
-				<title>{t('myads')}</title>
+				<title>{content.myAds.value}</title>
 				<meta name="description" content="My advertisements | WorkNow" />
 			</Helmet>
 			<Button />
@@ -17,3 +17,4 @@ function MyAds() {
 }
 
 export default MyAds;
+
