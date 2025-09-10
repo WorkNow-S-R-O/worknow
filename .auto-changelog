@@ -1,6 +1,6 @@
 {
   "output": "CHANGELOG.md",
-  "template": "json",
+  "template": "default",
   "unreleased": true,
   "commitLimit": false,
   "backfillLimit": false,
