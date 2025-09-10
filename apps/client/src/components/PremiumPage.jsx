@@ -261,7 +261,7 @@ const PremiumPage = () => {
 	};
 
 	return (
-		<div className="container" style={{ paddingTop: 80, paddingBottom: 40 }}>
+		<div className="container premium-page-container" style={{ paddingBottom: 40 }}>
 			{/* Enhanced Header Section */}
 			<div className="text-center mb-5">
 				<h1

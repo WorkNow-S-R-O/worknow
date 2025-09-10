@@ -363,6 +363,19 @@ button:focus-visible {
 	}
 }
 
+/* Premium page mobile spacing */
+@media (max-width: 768px) {
+	.premium-page-container {
+		padding-top: 120px !important;
+	}
+}
+
+@media (max-width: 480px) {
+	.premium-page-container {
+		padding-top: 140px !important;
+	}
+}
+
 /* Custom badge styles - less rounded */
 .badge {
 	border-radius: 2px !important;
