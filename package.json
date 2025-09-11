@@ -20,7 +20,7 @@
 		"changelog": "auto-changelog --commit-limit false --unreleased",
 		"prisma:push": "prisma db push",
 		"prisma:studio": "prisma studio",
-		"prisma:seed": "node prisma/seed.js", 
+		"prisma:seed": "node prisma/seed.js",
 		"postinstall": "prisma generate",
 		"setup": "node setup-env.js"
 	},
@@ -130,7 +130,7 @@
 		"lint-staged": "^15.5.2",
 		"postcss": "^8.4.49",
 		"prisma": "^6.1.0",
-		"release-it": "^17.11.0",
+		"release-it": "^19.0.4",
 		"sass": "^1.83.0",
 		"standard-version": "^9.5.0",
 		"supabase": "^2.9.6",
