@@ -32,12 +32,31 @@ jobs:
         ls -la coverage/ || echo "No coverage directory found"
         echo "Looking for lcov.info:"
         find . -name "*.lcov" -o -name "lcov.info" || echo "No lcov files found"
+        echo "Repository info:"
+        echo "Repository: ${{ github.repository }}"
+        echo "Commit SHA: ${{ github.sha }}"
+        echo "Branch: ${{ github.ref_name }}"
+        echo "Event: ${{ github.event_name }}"
+      
+    - name: Verify Qlty token
+      run: |
+        if [ -z "${{ secrets.QLTY_COVERAGE_TOKEN }}" ]; then
+          echo "❌ QLTY_COVERAGE_TOKEN is not set"
+          exit 1
+        else
+          echo "✅ QLTY_COVERAGE_TOKEN is set (length: ${#QLTY_COVERAGE_TOKEN})"
+        fi
+      env:
+        QLTY_COVERAGE_TOKEN: ${{ secrets.QLTY_COVERAGE_TOKEN }}
       
     - name: Upload coverage to Qlty
       uses: qltysh/qlty-action/coverage@v2
       with:
         token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
         files: coverage/lcov.info
+        repository: ${{ github.repository }}
+        commit: ${{ github.sha }}
+        branch: ${{ github.ref_name }}
       continue-on-error: true
 
     - name: Clean up coverage files
