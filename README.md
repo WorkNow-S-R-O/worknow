@@ -5,8 +5,8 @@ WorkNow is a modern, full-featured job search platform designed for the Israeli 
 ![CleanShot 2025-09-09 at 17 46 13](https://github.com/user-attachments/assets/e16e4645-26d3-4c80-8794-a2aa2a5ca2de)
 
 
-[![Maintainability](https://qlty.sh/gh/symonbaikov/projects/job-listing/maintainability.svg)](https://qlty.sh/gh/symonbaikov/projects/job-listing)
-[![Code Coverage](https://qlty.sh/gh/symonbaikov/projects/job-listing/coverage.svg)](https://qlty.sh/gh/symonbaikov/projects/job-listing)
+[![Maintainability](https://qlty.sh/gh/symonbaikov/projects/worknow/maintainability.svg)](https://qlty.sh/gh/symonbaikov/projects/worknow)
+[![Code Coverage](https://qlty.sh/gh/symonbaikov/projects/worknow/coverage.svg)](https://qlty.sh/gh/symonbaikov/projects/worknow)
 
 ## 🚀 CI/CD Status
 
