@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useUser } from '@clerk/clerk-react';
 import { useIntlayer } from 'react-intlayer';
@@ -11,6 +11,8 @@ import AddSeekerModal from '../components/form/AddSeekerModal';
 import SeekerFilterModal from '../components/ui/SeekerFilterModal';
 import useSeekerFilterStore from '../store/seekerFilterStore';
 import useSeekers from '../hooks/useSeekers';
+import { downloadSeekersCSV } from '../utils/csvExport';
+import CSVDownloadModal from '../components/CSVDownloadModal';
 import '../css/seekers-table-mobile.css';
 import '../css/seekers-mobile.css';
 import Skeleton from 'react-loading-skeleton';
@@ -87,7 +89,7 @@ const renderContactCell = (
 					target="_blank"
 					rel="noopener noreferrer"
 					className="text-decoration-none"
-					title={content.facebookProfile.value}
+					title="Facebook Profile"
 				>
 					<Facebook className="text-primary fs-5" />
 				</a>
@@ -191,6 +193,7 @@ export default function Seekers() {
 
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [showFilterModal, setShowFilterModal] = useState(false);
+	const [showCSVModal, setShowCSVModal] = useState(false);
 	const [deleteMode, setDeleteMode] = useState(false);
 	const [selectedIds, setSelectedIds] = useState([]);
 	const [isNewsletterSubscribed, setIsNewsletterSubscribed] = useState(false);
@@ -303,8 +306,23 @@ export default function Seekers() {
 		}
 	};
 
+	// CSV Download functionality
+	const handleCSVDownload = async (options = {}) => {
+		const { days, downloadAll } = options;
+		
+		await downloadSeekersCSV({
+			isPremium,
+			filters: downloadAll ? {} : { ...filters, days },
+			seekers: seekers, // Always pass current seekers for fallback
+			startLoadingWithProgress,
+			completeLoading,
+			content,
+			apiUrl: API_URL,
+		});
+	};
+
 	// Check newsletter subscription status
-	const checkNewsletterSubscription = async () => {
+	const checkNewsletterSubscription = useCallback(async () => {
 		if (!user?.primaryEmailAddress?.emailAddress) {
 			setIsNewsletterSubscribed(false);
 			return;
@@ -323,11 +341,11 @@ export default function Seekers() {
 			console.error('Error checking newsletter subscription:', error);
 			setIsNewsletterSubscribed(false);
 		}
-	};
+	}, [user]);
 
 	useEffect(() => {
 		checkNewsletterSubscription();
-	}, [user]);
+	}, [checkNewsletterSubscription]);
 
 	return (
 		<>
@@ -349,6 +367,11 @@ export default function Seekers() {
 				onClose={() => setShowFilterModal(false)}
 				onApply={handleFilterApply}
 				currentFilters={filters}
+			/>
+			<CSVDownloadModal
+				isOpen={showCSVModal}
+				onClose={() => setShowCSVModal(false)}
+				onDownload={handleCSVDownload}
 			/>
 
 			<div
@@ -429,6 +452,22 @@ export default function Seekers() {
 							></i>
 							<span>{content.newsletter.value}</span>
 						</button>
+					<button
+						className={`btn d-flex align-items-center gap-2 seekers-btn ${isPremium ? 'btn-success' : 'btn-secondary'}`}
+						onClick={isPremium ? () => setShowCSVModal(true) : undefined}
+						disabled={!isPremium}
+						style={{
+							height: 'auto',
+							fontSize: '14px',
+							padding: '8px 12px',
+							minHeight: '40px',
+							whiteSpace: 'nowrap',
+						}}
+						title={isPremium ? content.downloadCSVTooltip.value : content.downloadCSVPremiumTooltip.value}
+					>
+						<i className="bi bi-file-earmark-spreadsheet" style={{ fontSize: '16px' }}></i>
+						<span>{content.downloadCSV.value}</span>
+					</button>
 						{isAdmin && (
 							<button
 								className="btn btn-primary d-flex align-items-center gap-2 seekers-btn"
@@ -642,16 +681,10 @@ export default function Seekers() {
 												</span>
 											)}
 									</div>
-									{totalPages > 1 && (
+									{totalPages > 1 && !isPremium && (
 										<small className="text-muted">
-											<i className="bi bi-arrow-left-right"></i>{' '}
-											{content.usePaginationForNavigation.value}
-											{totalPages > 10 && (
-												<span className="ms-2 text-warning">
-													<i className="bi bi-exclamation-triangle"></i>{' '}
-													{content.manyPagesWarning.value}
-												</span>
-											)}
+											<i className="bi bi-download"></i>{' '}
+											{content.premiumRequiredForCSV.value}
 										</small>
 									)}
 								</div>
