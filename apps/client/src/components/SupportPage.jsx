@@ -1,14 +1,4 @@
 import { useIntlayer } from 'react-intlayer';
-import {
-	Mail,
-	Phone,
-	MessageCircle,
-	Clock,
-	HelpCircle,
-	Users,
-	Shield,
-	Zap,
-} from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
 const SupportPage = () => {
@@ -25,16 +15,16 @@ const SupportPage = () => {
 
 	const supportMethods = [
 		{
-			icon: Mail,
+			icon: 'envelope',
 			title: content.support_email_title,
 			description: content.support_email_description,
 			contact: 'worknow.notifications@gmail.com',
 			action: 'mailto:worknow.notifications@gmail.com',
-			color: 'bg-blue-500',
-			hoverColor: 'hover:bg-blue-600',
+			color: 'bg-primary',
+			hoverColor: 'hover:bg-primary',
 		},
 		{
-			icon: MessageCircle,
+			icon: 'chat-dots',
 			title: content.support_live_chat_title,
 			description: content.support_live_chat_description,
 			contact: content.support_available_24_7,
@@ -44,13 +34,13 @@ const SupportPage = () => {
 			disabled: true,
 		},
 		{
-			icon: Phone,
+			icon: 'telephone',
 			title: content.support_phone_title,
 			description: content.support_phone_description,
 			contact: '+972-053-3033332',
 			action: 'tel:+972-053-3033332',
-			color: 'bg-purple-500',
-			hoverColor: 'hover:bg-purple-600',
+			color: 'bg-primary',
+			hoverColor: 'hover:bg-primary',
 		},
 	];
 
@@ -91,17 +81,17 @@ const SupportPage = () => {
 
 	const features = [
 		{
-			icon: Shield,
+			icon: 'shield-check',
 			title: content.support_secure_platform_title,
 			description: content.support_secure_platform_description,
 		},
 		{
-			icon: Zap,
+			icon: 'lightning',
 			title: content.support_fast_reliable_title,
 			description: content.support_fast_reliable_description,
 		},
 		{
-			icon: Users,
+			icon: 'people',
 			title: content.support_community_driven_title,
 			description: content.support_community_driven_description,
 		},
@@ -197,18 +187,18 @@ const SupportPage = () => {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+		<div className="min-h-screen bg-primary bg-opacity-10">
 			{/* Hero Section */}
-			<div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white mt-12 sm:mt-0">
+			<div className="bg-primary text-white mt-12 sm:mt-0">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
 					<div className="text-center">
 						<div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-white/20 mb-6">
-							<HelpCircle className="h-8 w-8 text-white" />
+							<i className="bi bi-question-circle text-white text-3xl"></i>
 						</div>
 						<h1 className="text-4xl font-bold mb-4">
 							{content.technical_support}
 						</h1>
-						<p className="text-xl text-blue-100 max-w-2xl mx-auto">
+						<p className="text-white text-opacity-80 max-w-2xl mx-auto">
 							{content.support_hero_description}
 						</p>
 					</div>
@@ -238,7 +228,7 @@ const SupportPage = () => {
 								<div
 									className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full ${method.color} ${method.hoverColor} transition-colors duration-200 mb-6`}
 								>
-									<method.icon className="h-8 w-8 text-white" />
+									<i className={`bi bi-${method.icon} text-white text-2xl`}></i>
 								</div>
 								<h3 className="text-xl font-semibold text-gray-900 mb-2">
 									{method.title}
@@ -278,8 +268,8 @@ const SupportPage = () => {
 					<div className="grid md:grid-cols-3 gap-8">
 						{features.map((feature, index) => (
 							<div key={index} className="text-center">
-								<div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-4">
-									<feature.icon className="h-8 w-8 text-blue-600" />
+								<div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-primary bg-opacity-10 mb-4">
+									<i className={`bi bi-${feature.icon} text-primary text-2xl`}></i>
 								</div>
 								<h3 className="text-xl font-semibold text-gray-900 mb-2">
 									{feature.title}
@@ -318,17 +308,17 @@ const SupportPage = () => {
 
 				{/* Contact Info */}
 				<div className="mt-12 text-center">
-					<div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
+					<div className="bg-primary rounded-2xl p-8 text-white">
 						<div className="flex items-center justify-center mb-4">
-							<Clock className="h-6 w-6 mr-2" />
+							<i className="bi bi-clock text-white text-xl mr-2"></i>
 							<span className="text-lg font-semibold">
 								{content.support_hours_title}
 							</span>
 						</div>
-						<p className="text-blue-100 mb-4">
+						<p className="text-white text-opacity-80 mb-4">
 							{content.support_hours_weekdays}
 						</p>
-						<p className="text-blue-100">{content.support_hours_weekend}</p>
+						<p className="text-white text-opacity-80">{content.support_hours_weekend}</p>
 					</div>
 				</div>
 			</div>
@@ -375,7 +365,7 @@ const SupportPage = () => {
 							<div
 								className={`mx-auto flex items-center justify-center h-20 w-20 rounded-full ${selectedMethod.color} mb-6`}
 							>
-								<selectedMethod.icon className="h-10 w-10 text-white" />
+								<i className={`bi bi-${selectedMethod.icon} text-white text-3xl`}></i>
 							</div>
 
 							<h3 className="text-2xl font-semibold text-gray-900 mb-4">
