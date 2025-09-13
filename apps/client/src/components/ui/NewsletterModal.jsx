@@ -1,10 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useIntlayer, useLocale } from 'react-intlayer';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 import VerificationModal from './VerificationModal.jsx';
+import NewsletterHeader from './NewsletterHeader.jsx';
+import NewsletterStatus from './NewsletterStatus.jsx';
+import NewsletterForm from './NewsletterForm.jsx';
+import NewsletterFilters from './NewsletterFilters.jsx';
+import NewsletterActions from './NewsletterActions.jsx';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -31,7 +36,7 @@ const NewsletterModal = ({ open, onClose }) => {
 	const [selectedEmployment, setSelectedEmployment] = useState([]);
 	const [selectedDocumentTypes, setSelectedDocumentTypes] = useState([]);
 	const [selectedLanguages, setSelectedLanguages] = useState([]);
-	const [selectedGender, setSelectedGender] = useState('');
+	const [selectedGender, setSelectedGender] = useState([]);
 	const [onlyDemanded, setOnlyDemanded] = useState(false);
 
 	const modalRef = useRef();
@@ -44,32 +49,6 @@ const NewsletterModal = ({ open, onClose }) => {
 
 	// Minimum swipe distance (in px)
 	const minSwipeDistance = 50;
-
-	// Filter options with translations
-	const languageOptions = [
-		{ value: 'русский', label: content.languageRussian.value },
-		{ value: 'украинский', label: content.languageUkrainian.value },
-		{ value: 'английский', label: content.languageEnglish.value },
-		{ value: 'иврит', label: content.languageHebrew.value },
-	];
-
-	const employmentOptions = [
-		{ value: 'полная', label: content.employmentFull.value },
-		{ value: 'частичная', label: content.employmentPartial.value },
-	];
-
-	const documentTypeOptions = [
-		{ value: 'Виза Б1', label: content.documentVisaB1.value },
-		{ value: 'Виза Б2', label: content.documentVisaB2.value },
-		{ value: 'Теудат Зеут', label: content.documentTeudatZehut.value },
-		{ value: 'Рабочая виза', label: content.documentWorkVisa.value },
-		{ value: 'Другое', label: content.documentOther.value },
-	];
-
-	const genderOptions = [
-		{ value: 'мужчина', label: content.genderMale.value },
-		{ value: 'женщина', label: content.genderFemale.value },
-	];
 
 	const onTouchStart = (e) => {
 		setTouchEnd(null);
@@ -98,7 +77,7 @@ const NewsletterModal = ({ open, onClose }) => {
 	};
 
 	// Check subscription status for an email
-	const checkSubscriptionStatus = async (email) => {
+	const checkSubscriptionStatus = useCallback(async (email) => {
 		if (!email || !email.trim() || !email.includes('@')) {
 			setIsAlreadySubscribed(false);
 			setSubscriberData(null);
@@ -131,7 +110,7 @@ const NewsletterModal = ({ open, onClose }) => {
 					setSelectedLanguages(
 						response.data.subscriber.preferredLanguages || [],
 					);
-					setSelectedGender(response.data.subscriber.preferredGender || '');
+					setSelectedGender(response.data.subscriber.preferredGender || []);
 					setSelectedDocumentTypes(
 						response.data.subscriber.preferredDocumentTypes || [],
 					);
@@ -146,7 +125,7 @@ const NewsletterModal = ({ open, onClose }) => {
 			setIsAlreadySubscribed(false);
 			setSubscriberData(null);
 		}
-	};
+	}, []);
 
 	// Check for logged-in user's email when modal opens
 	useEffect(() => {
@@ -166,10 +145,10 @@ const NewsletterModal = ({ open, onClose }) => {
 
 			// Fetch cities and categories for filter options
 			Promise.all([
-				fetch(`${API_URL}/api/cities?lang=${language}`).then((res) =>
+				fetch(`${API_URL}/api/cities?lang=${locale}`).then((res) =>
 					res.json(),
 				),
-				fetch(`${API_URL}/api/categories?lang=${language}`).then((res) =>
+				fetch(`${API_URL}/api/categories?lang=${locale}`).then((res) =>
 					res.json(),
 				),
 			])
@@ -183,7 +162,7 @@ const NewsletterModal = ({ open, onClose }) => {
 					setCategories([]);
 				});
 		}
-	}, [open, isLoaded, user, language]);
+	}, [open, isLoaded, user, locale, checkSubscriptionStatus]);
 
 	const handleSubscribe = async () => {
 		if (!email || !email.trim()) {
@@ -214,7 +193,7 @@ const NewsletterModal = ({ open, onClose }) => {
 					preferredCategories: selectedCategories,
 					preferredEmployment: selectedEmployment,
 					preferredLanguages: selectedLanguages,
-					preferredGender: selectedGender || null,
+					preferredGender: selectedGender.length > 0 ? selectedGender[0] : null,
 					preferredDocumentTypes: selectedDocumentTypes,
 					onlyDemanded,
 				},
@@ -312,6 +291,56 @@ const NewsletterModal = ({ open, onClose }) => {
 		}
 	};
 
+	// Filter change handlers
+	const handleCityChange = (city, checked) => {
+		if (checked) {
+			setSelectedCities([...selectedCities, city.name]);
+		} else {
+			setSelectedCities(selectedCities.filter((c) => c !== city.name));
+		}
+	};
+
+	const handleCategoryChange = (category, checked) => {
+		const value = category.label || category.name;
+		if (checked) {
+			setSelectedCategories([...selectedCategories, value]);
+		} else {
+			setSelectedCategories(selectedCategories.filter((c) => c !== value));
+		}
+	};
+
+	const handleEmploymentChange = (option, checked) => {
+		if (checked) {
+			setSelectedEmployment([...selectedEmployment, option.value]);
+		} else {
+			setSelectedEmployment(selectedEmployment.filter((emp) => emp !== option.value));
+		}
+	};
+
+	const handleDocumentTypeChange = (option, checked) => {
+		if (checked) {
+			setSelectedDocumentTypes([...selectedDocumentTypes, option.value]);
+		} else {
+			setSelectedDocumentTypes(selectedDocumentTypes.filter((doc) => doc !== option.value));
+		}
+	};
+
+	const handleLanguageChange = (languageValue, checked) => {
+		if (checked) {
+			setSelectedLanguages([...selectedLanguages, languageValue]);
+		} else {
+			setSelectedLanguages(selectedLanguages.filter((lang) => lang !== languageValue));
+		}
+	};
+
+	const handleGenderChange = (genderValue, checked) => {
+		if (checked) {
+			setSelectedGender([...selectedGender, genderValue]);
+		} else {
+			setSelectedGender(selectedGender.filter((g) => g !== genderValue));
+		}
+	};
+
 	// Fullscreen modal for mobile, original overlay for desktop
 	const modalStyle = isMobile
 		? {
@@ -381,46 +410,7 @@ const NewsletterModal = ({ open, onClose }) => {
 				onMouseDown={!isMobile ? handleOutsideClick : undefined}
 			>
 				<div ref={modalRef} style={contentStyle}>
-					{isMobile ? (
-						<div
-							style={{
-								display: 'flex',
-								justifyContent: 'space-between',
-								alignItems: 'center',
-								marginBottom: '24px',
-							}}
-						>
-							<h5 style={{ fontSize: '20px', fontWeight: '600', margin: 0 }}>
-								{content.newsletterTitle.value}
-							</h5>
-							<button
-								type="button"
-								className="btn-close"
-								aria-label="Close"
-								onClick={onClose}
-								style={{ fontSize: '15px' }}
-							></button>
-						</div>
-					) : (
-						<>
-							<button
-								type="button"
-								className="btn-close"
-								aria-label="Close"
-								onClick={onClose}
-								style={{
-									position: 'absolute',
-									margin: '5px',
-									top: '8px',
-									right: '8px',
-									fontSize: '16px',
-								}}
-							></button>
-							<h5 className="mb-4 font-size-10">
-								{content.newsletterTitle.value}
-							</h5>
-						</>
-					)}
+					<NewsletterHeader onClose={onClose} isMobile={isMobile} />
 
 					<div
 						style={{
@@ -431,140 +421,25 @@ const NewsletterModal = ({ open, onClose }) => {
 						}}
 					>
 						<div style={{ marginBottom: '24px' }}>
-							{isAlreadySubscribed ? (
-								// Already subscribed view
-								<div
-									style={{
-										backgroundColor: '#e8f5e8',
-										padding: '20px',
-										borderRadius: '8px',
-										marginBottom: '20px',
-										border: '1px solid #d4edda',
-									}}
-								>
-									<div
-										style={{
-											display: 'flex',
-											alignItems: 'center',
-											marginBottom: '15px',
-										}}
-									>
-										<i
-											className="bi bi-check-circle-fill"
-											style={{
-												color: '#28a745',
-												fontSize: '24px',
-												marginRight: '10px',
-											}}
-										></i>
-										<h6 style={{ margin: 0, color: '#155724' }}>
-											{content.newsletterAlreadySubscribed.value}
-										</h6>
-									</div>
-									<p style={{ margin: 0, color: '#155724', fontSize: '14px' }}>
-										{subscriberData?.firstName && subscriberData?.lastName
-											? `${subscriberData.firstName} ${subscriberData.lastName} (${email})`
-											: email}
-									</p>
-								</div>
-							) : (
-								// Subscribe view
-								<p
-									style={{
-										fontSize: isMobile ? '16px' : '14px',
-										color: '#666',
-										marginBottom: '20px',
-										lineHeight: '1.5',
-									}}
-								>
-									{content.newsletterDescription.value}
-								</p>
-							)}
+							<NewsletterStatus
+								isAlreadySubscribed={isAlreadySubscribed}
+								subscriberData={subscriberData}
+								email={email}
+								isMobile={isMobile}
+							/>
 
-							<div style={{ marginBottom: '16px' }}>
-								<label
-									style={{
-										fontSize: isMobile ? '16px' : '14px',
-										fontWeight: '500',
-										marginBottom: '8px',
-										display: 'block',
-									}}
-								>
-									{content.newsletterFirstName.value}
-								</label>
-								<input
-									type="text"
-									className="form-control"
-									value={firstName}
-									onChange={(e) => setFirstName(e.target.value)}
-									placeholder={content.newsletterFirstNamePlaceholder.value}
-									style={{
-										fontSize: isMobile ? '16px' : '14px',
-										padding: isMobile ? '12px' : '8px',
-										width: '100%',
-									}}
-									disabled={
-										isSubscribing || isUnsubscribing || isAlreadySubscribed
-									}
-								/>
-							</div>
-
-							<div style={{ marginBottom: '16px' }}>
-								<label
-									style={{
-										fontSize: isMobile ? '16px' : '14px',
-										fontWeight: '500',
-										marginBottom: '8px',
-										display: 'block',
-									}}
-								>
-									{content.newsletterLastName.value}
-								</label>
-								<input
-									type="text"
-									className="form-control"
-									value={lastName}
-									onChange={(e) => setLastName(e.target.value)}
-									placeholder={content.newsletterLastNamePlaceholder.value}
-									style={{
-										fontSize: isMobile ? '16px' : '14px',
-										padding: isMobile ? '12px' : '8px',
-										width: '100%',
-									}}
-									disabled={
-										isSubscribing || isUnsubscribing || isAlreadySubscribed
-									}
-								/>
-							</div>
-
-							<div style={{ marginBottom: '20px' }}>
-								<label
-									style={{
-										fontSize: isMobile ? '16px' : '14px',
-										fontWeight: '500',
-										marginBottom: '8px',
-										display: 'block',
-									}}
-								>
-									{content.newsletterEmailLabel.value}
-								</label>
-								<input
-									type="email"
-									className="form-control"
-									value={email}
-									onChange={handleEmailChange}
-									placeholder={content.newsletterEmailPlaceholder.value}
-									style={{
-										fontSize: isMobile ? '16px' : '14px',
-										padding: isMobile ? '12px' : '8px',
-										width: '100%',
-									}}
-									disabled={
-										isSubscribing || isUnsubscribing || isAlreadySubscribed
-									}
-									required
-								/>
-							</div>
+							<NewsletterForm
+								email={email}
+								firstName={firstName}
+								lastName={lastName}
+								onEmailChange={handleEmailChange}
+								onFirstNameChange={(e) => setFirstName(e.target.value)}
+								onLastNameChange={(e) => setLastName(e.target.value)}
+								isSubscribing={isSubscribing}
+								isUnsubscribing={isUnsubscribing}
+								isAlreadySubscribed={isAlreadySubscribed}
+								isMobile={isMobile}
+							/>
 
 							{/* Filter Preferences Section */}
 							{!isAlreadySubscribed && (
@@ -580,795 +455,27 @@ const NewsletterModal = ({ open, onClose }) => {
 										Получать уведомления о кандидатах:
 									</h6>
 
-									{isMobile ? (
-										// Mobile layout - single column
-										<>
-											{/* Cities */}
-											<div style={{ marginBottom: '20px' }}>
-												<label
-													style={{
-														fontSize: '16px',
-														fontWeight: '500',
-														marginBottom: '8px',
-														display: 'block',
-													}}
-												>
-													{content.city.value}
-												</label>
-												<div
-													style={{
-														display: 'grid',
-														gridTemplateColumns: 'repeat(2, 1fr)',
-														gap: '8px',
-													}}
-												>
-													{cities.map((city) => (
-														<div key={city.id} className="form-check">
-															<input
-																className="form-check-input"
-																type="checkbox"
-																id={`city-${city.id}`}
-																checked={selectedCities.includes(city.name)}
-																onChange={(e) => {
-																	if (e.target.checked) {
-																		setSelectedCities([
-																			...selectedCities,
-																			city.name,
-																		]);
-																	} else {
-																		setSelectedCities(
-																			selectedCities.filter(
-																				(c) => c !== city.name,
-																			),
-																		);
-																	}
-																}}
-																disabled={isSubscribing || isUnsubscribing}
-																style={{
-																	transform: 'scale(1.2)',
-																	zIndex: 10,
-																	position: 'relative',
-																}}
-															/>
-															<label
-																className="form-check-label"
-																htmlFor={`city-${city.id}`}
-																style={{ fontSize: '16px' }}
-															>
-																{city.name}
-															</label>
-														</div>
-													))}
-												</div>
-											</div>
-
-											{/* Categories */}
-											<div style={{ marginBottom: '20px' }}>
-												<label
-													style={{
-														fontSize: '16px',
-														fontWeight: '500',
-														marginBottom: '8px',
-														display: 'block',
-													}}
-												>
-													{content.category.value}
-												</label>
-												<div
-													style={{
-														display: 'grid',
-														gridTemplateColumns: 'repeat(2, 1fr)',
-														gap: '8px',
-													}}
-												>
-													{categories.map((cat) => (
-														<div key={cat.id} className="form-check">
-															<input
-																className="form-check-input"
-																type="checkbox"
-																id={`cat-${cat.id}`}
-																checked={selectedCategories.includes(
-																	cat.label || cat.name,
-																)}
-																onChange={(e) => {
-																	const value = cat.label || cat.name;
-																	if (e.target.checked) {
-																		setSelectedCategories([
-																			...selectedCategories,
-																			value,
-																		]);
-																	} else {
-																		setSelectedCategories(
-																			selectedCategories.filter(
-																				(c) => c !== value,
-																			),
-																		);
-																	}
-																}}
-																disabled={isSubscribing || isUnsubscribing}
-																style={{
-																	transform: 'scale(1.2)',
-																	zIndex: 10,
-																	position: 'relative',
-																}}
-															/>
-															<label
-																className="form-check-label"
-																htmlFor={`cat-${cat.id}`}
-																style={{ fontSize: '16px' }}
-															>
-																{cat.label || cat.name}
-															</label>
-														</div>
-													))}
-												</div>
-											</div>
-
-											{/* Employment Types */}
-											<div style={{ marginBottom: '20px' }}>
-												<label
-													style={{
-														fontSize: '16px',
-														fontWeight: '500',
-														marginBottom: '8px',
-														display: 'block',
-													}}
-												>
-													{content.employment.value}
-												</label>
-												<div
-													style={{
-														display: 'grid',
-														gridTemplateColumns: 'repeat(2, 1fr)',
-														gap: '8px',
-													}}
-												>
-													{employmentOptions.map((option) => (
-														<div key={option.value} className="form-check">
-															<input
-																className="form-check-input"
-																type="checkbox"
-																id={`emp-${option.value}`}
-																checked={selectedEmployment.includes(
-																	option.value,
-																)}
-																onChange={(e) => {
-																	if (e.target.checked) {
-																		setSelectedEmployment([
-																			...selectedEmployment,
-																			option.value,
-																		]);
-																	} else {
-																		setSelectedEmployment(
-																			selectedEmployment.filter(
-																				(emp) => emp !== option.value,
-																			),
-																		);
-																	}
-																}}
-																disabled={isSubscribing || isUnsubscribing}
-																style={{
-																	transform: 'scale(1.2)',
-																	zIndex: 10,
-																	position: 'relative',
-																}}
-															/>
-															<label
-																className="form-check-label"
-																htmlFor={`emp-${option.value}`}
-																style={{ fontSize: '16px' }}
-															>
-																{option.label}
-															</label>
-														</div>
-													))}
-												</div>
-											</div>
-
-											{/* Document Types */}
-											<div style={{ marginBottom: '20px' }}>
-												<label
-													style={{
-														fontSize: '16px',
-														fontWeight: '500',
-														marginBottom: '8px',
-														display: 'block',
-													}}
-												>
-													{content.documentType.value}
-												</label>
-												<div
-													style={{
-														display: 'grid',
-														gridTemplateColumns: 'repeat(2, 1fr)',
-														gap: '8px',
-													}}
-												>
-													{documentTypeOptions.map((option) => (
-														<div key={option.value} className="form-check">
-															<input
-																className="form-check-input"
-																type="checkbox"
-																id={`doc-${option.value}`}
-																checked={selectedDocumentTypes.includes(
-																	option.value,
-																)}
-																onChange={(e) => {
-																	if (e.target.checked) {
-																		setSelectedDocumentTypes([
-																			...selectedDocumentTypes,
-																			option.value,
-																		]);
-																	} else {
-																		setSelectedDocumentTypes(
-																			selectedDocumentTypes.filter(
-																				(doc) => doc !== option.value,
-																			),
-																		);
-																	}
-																}}
-																disabled={isSubscribing || isUnsubscribing}
-																style={{
-																	transform: 'scale(1.2)',
-																	zIndex: 10,
-																	position: 'relative',
-																}}
-															/>
-															<label
-																className="form-check-label"
-																htmlFor={`doc-${option.value}`}
-																style={{ fontSize: '16px' }}
-															>
-																{option.label}
-															</label>
-														</div>
-													))}
-												</div>
-											</div>
-
-											{/* Gender */}
-											<div style={{ marginBottom: '20px' }}>
-												<label
-													style={{
-														fontSize: '16px',
-														fontWeight: '500',
-														marginBottom: '8px',
-														display: 'block',
-													}}
-												>
-													{content.gender.value}
-												</label>
-												<div
-													style={{
-														display: 'grid',
-														gridTemplateColumns: 'repeat(2, 1fr)',
-														gap: '8px',
-													}}
-												>
-													{genderOptions.map((option) => (
-														<div key={option.value} className="form-check">
-															<input
-																className="form-check-input"
-																type="checkbox"
-																id={`gender-${option.value}`}
-																checked={selectedGender.includes(option.value)}
-																onChange={(e) => {
-																	if (e.target.checked) {
-																		setSelectedGender([
-																			...selectedGender,
-																			option.value,
-																		]);
-																	} else {
-																		setSelectedGender(
-																			selectedGender.filter(
-																				(g) => g !== option.value,
-																			),
-																		);
-																	}
-																}}
-																disabled={isSubscribing || isUnsubscribing}
-																style={{
-																	transform: 'scale(1.2)',
-																	zIndex: 10,
-																	position: 'relative',
-																}}
-															/>
-															<label
-																className="form-check-label"
-																htmlFor={`gender-${option.value}`}
-																style={{ fontSize: '16px' }}
-															>
-																{option.label}
-															</label>
-														</div>
-													))}
-												</div>
-											</div>
-
-											{/* Languages */}
-											<div style={{ marginBottom: '20px' }}>
-												<label
-													style={{
-														fontSize: '16px',
-														fontWeight: '500',
-														marginBottom: '8px',
-														display: 'block',
-													}}
-												>
-													{content.languages.value}
-												</label>
-												<div style={{ marginLeft: '8px' }}>
-													{languageOptions.map((option) => (
-														<div className="form-check" key={option.value}>
-															<input
-																className="form-check-input"
-																type="checkbox"
-																id={`lang-${option.value}`}
-																checked={selectedLanguages.includes(
-																	option.value,
-																)}
-																onChange={(e) => {
-																	if (e.target.checked) {
-																		setSelectedLanguages([
-																			...selectedLanguages,
-																			option.value,
-																		]);
-																	} else {
-																		setSelectedLanguages(
-																			selectedLanguages.filter(
-																				(lang) => lang !== option.value,
-																			),
-																		);
-																	}
-																}}
-																disabled={isSubscribing || isUnsubscribing}
-																style={{
-																	transform: 'scale(1.2)',
-																	zIndex: 10,
-																	position: 'relative',
-																}}
-															/>
-															<label
-																className="form-check-label"
-																htmlFor={`lang-${option.value}`}
-																style={{ fontSize: '16px' }}
-															>
-																{option.label}
-															</label>
-														</div>
-													))}
-												</div>
-											</div>
-
-											{/* Only Demanded */}
-											<div style={{ marginBottom: '20px' }}>
-												<div className="form-check">
-													<input
-														className="form-check-input"
-														type="checkbox"
-														id="onlyDemanded"
-														checked={onlyDemanded}
-														onChange={(e) => setOnlyDemanded(e.target.checked)}
-														disabled={isSubscribing || isUnsubscribing}
-														style={{
-															transform: 'scale(1.2)',
-															zIndex: 10,
-															position: 'relative',
-														}}
-													/>
-													<label
-														className="form-check-label"
-														htmlFor="onlyDemanded"
-														style={{ fontSize: '16px' }}
-													>
-														{content.demanded.value}
-													</label>
-												</div>
-											</div>
-										</>
-									) : (
-										// Desktop layout - two columns
-										<div
-											style={{
-												display: 'grid',
-												gridTemplateColumns: '1fr 1fr',
-												gap: '24px',
-											}}
-										>
-											{/* Left Column */}
-											<div>
-												{/* Cities */}
-												<div style={{ marginBottom: '16px' }}>
-													<label
-														style={{
-															fontSize: '14px',
-															fontWeight: '500',
-															marginBottom: '8px',
-															display: 'block',
-														}}
-													>
-														{content.city.value}
-													</label>
-													<div
-														style={{
-															display: 'grid',
-															gridTemplateColumns: 'repeat(2, 1fr)',
-															gap: '6px',
-														}}
-													>
-														{cities.map((city) => (
-															<div key={city.id} className="form-check">
-																<input
-																	className="form-check-input"
-																	type="checkbox"
-																	id={`city-${city.id}`}
-																	checked={selectedCities.includes(city.name)}
-																	onChange={(e) => {
-																		if (e.target.checked) {
-																			setSelectedCities([
-																				...selectedCities,
-																				city.name,
-																			]);
-																		} else {
-																			setSelectedCities(
-																				selectedCities.filter(
-																					(c) => c !== city.name,
-																				),
-																			);
-																		}
-																	}}
-																	disabled={isSubscribing || isUnsubscribing}
-																	style={{
-																		transform: 'scale(1.2)',
-																		zIndex: 10,
-																		position: 'relative',
-																	}}
-																/>
-																<label
-																	className="form-check-label"
-																	htmlFor={`city-${city.id}`}
-																	style={{ fontSize: '14px' }}
-																>
-																	{city.name}
-																</label>
-															</div>
-														))}
-													</div>
-												</div>
-
-												{/* Categories */}
-												<div style={{ marginBottom: '16px' }}>
-													<label
-														style={{
-															fontSize: '14px',
-															fontWeight: '500',
-															marginBottom: '8px',
-															display: 'block',
-														}}
-													>
-														{content.category.value}
-													</label>
-													<div
-														style={{
-															display: 'grid',
-															gridTemplateColumns: 'repeat(2, 1fr)',
-															gap: '6px',
-														}}
-													>
-														{categories.map((cat) => (
-															<div key={cat.id} className="form-check">
-																<input
-																	className="form-check-input"
-																	type="checkbox"
-																	id={`cat-${cat.id}`}
-																	checked={selectedCategories.includes(
-																		cat.label || cat.name,
-																	)}
-																	onChange={(e) => {
-																		const value = cat.label || cat.name;
-																		if (e.target.checked) {
-																			setSelectedCategories([
-																				...selectedCategories,
-																				value,
-																			]);
-																		} else {
-																			setSelectedCategories(
-																				selectedCategories.filter(
-																					(c) => c !== value,
-																				),
-																			);
-																		}
-																	}}
-																	disabled={isSubscribing || isUnsubscribing}
-																	style={{
-																		transform: 'scale(1.2)',
-																		zIndex: 10,
-																		position: 'relative',
-																	}}
-																/>
-																<label
-																	className="form-check-label"
-																	htmlFor={`cat-${cat.id}`}
-																	style={{ fontSize: '14px' }}
-																>
-																	{cat.label || cat.name}
-																</label>
-															</div>
-														))}
-													</div>
-												</div>
-
-												{/* Employment Types */}
-												<div style={{ marginBottom: '16px' }}>
-													<label
-														style={{
-															fontSize: '14px',
-															fontWeight: '500',
-															marginBottom: '8px',
-															display: 'block',
-														}}
-													>
-														{content.employment.value}
-													</label>
-													<div
-														style={{
-															display: 'grid',
-															gridTemplateColumns: 'repeat(2, 1fr)',
-															gap: '6px',
-														}}
-													>
-														{employmentOptions.map((option) => (
-															<div key={option.value} className="form-check">
-																<input
-																	className="form-check-input"
-																	type="checkbox"
-																	id={`emp-${option.value}`}
-																	checked={selectedEmployment.includes(
-																		option.value,
-																	)}
-																	onChange={(e) => {
-																		if (e.target.checked) {
-																			setSelectedEmployment([
-																				...selectedEmployment,
-																				option.value,
-																			]);
-																		} else {
-																			setSelectedEmployment(
-																				selectedEmployment.filter(
-																					(emp) => emp !== option.value,
-																				),
-																			);
-																		}
-																	}}
-																	disabled={isSubscribing || isUnsubscribing}
-																	style={{
-																		transform: 'scale(1.2)',
-																		zIndex: 10,
-																		position: 'relative',
-																	}}
-																/>
-																<label
-																	className="form-check-label"
-																	htmlFor={`emp-${option.value}`}
-																	style={{ fontSize: '14px' }}
-																>
-																	{option.label}
-																</label>
-															</div>
-														))}
-													</div>
-												</div>
-
-												{/* Document Types */}
-												<div style={{ marginBottom: '16px' }}>
-													<label
-														style={{
-															fontSize: '14px',
-															fontWeight: '500',
-															marginBottom: '8px',
-															display: 'block',
-														}}
-													>
-														{content.documentType.value}
-													</label>
-													<div
-														style={{
-															display: 'grid',
-															gridTemplateColumns: 'repeat(2, 1fr)',
-															gap: '6px',
-														}}
-													>
-														{documentTypeOptions.map((option) => (
-															<div key={option.value} className="form-check">
-																<input
-																	className="form-check-input"
-																	type="checkbox"
-																	id={`doc-${option.value}`}
-																	checked={selectedDocumentTypes.includes(
-																		option.value,
-																	)}
-																	onChange={(e) => {
-																		if (e.target.checked) {
-																			setSelectedDocumentTypes([
-																				...selectedDocumentTypes,
-																				option.value,
-																			]);
-																		} else {
-																			setSelectedDocumentTypes(
-																				selectedDocumentTypes.filter(
-																					(doc) => doc !== option.value,
-																				),
-																			);
-																		}
-																	}}
-																	disabled={isSubscribing || isUnsubscribing}
-																	style={{
-																		transform: 'scale(1.2)',
-																		zIndex: 10,
-																		position: 'relative',
-																	}}
-																/>
-																<label
-																	className="form-check-label"
-																	htmlFor={`doc-${option.value}`}
-																	style={{ fontSize: '14px' }}
-																>
-																	{option.label}
-																</label>
-															</div>
-														))}
-													</div>
-												</div>
-											</div>
-
-											{/* Right Column */}
-											<div>
-												{/* Gender */}
-												<div style={{ marginBottom: '16px' }}>
-													<label
-														style={{
-															fontSize: '14px',
-															fontWeight: '500',
-															marginBottom: '8px',
-															display: 'block',
-														}}
-													>
-														{content.gender.value}
-													</label>
-													<div
-														style={{
-															display: 'grid',
-															gridTemplateColumns: 'repeat(2, 1fr)',
-															gap: '6px',
-														}}
-													>
-														{genderOptions.map((option) => (
-															<div key={option.value} className="form-check">
-																<input
-																	className="form-check-input"
-																	type="checkbox"
-																	id={`gender-${option.value}`}
-																	checked={selectedGender.includes(
-																		option.value,
-																	)}
-																	onChange={(e) => {
-																		if (e.target.checked) {
-																			setSelectedGender([
-																				...selectedGender,
-																				option.value,
-																			]);
-																		} else {
-																			setSelectedGender(
-																				selectedGender.filter(
-																					(g) => g !== option.value,
-																				),
-																			);
-																		}
-																	}}
-																	disabled={isSubscribing || isUnsubscribing}
-																	style={{
-																		transform: 'scale(1.2)',
-																		zIndex: 10,
-																		position: 'relative',
-																	}}
-																/>
-																<label
-																	className="form-check-label"
-																	htmlFor={`gender-${option.value}`}
-																	style={{ fontSize: '14px' }}
-																>
-																	{option.label}
-																</label>
-															</div>
-														))}
-													</div>
-												</div>
-
-												{/* Languages */}
-												<div style={{ marginBottom: '16px' }}>
-													<label
-														style={{
-															fontSize: '14px',
-															fontWeight: '500',
-															marginBottom: '8px',
-															display: 'block',
-														}}
-													>
-														{content.languages.value}
-													</label>
-													<div style={{ marginLeft: '8px' }}>
-														{languageOptions.map((option) => (
-															<div className="form-check" key={option.value}>
-																<input
-																	className="form-check-input"
-																	type="checkbox"
-																	id={`lang-${option.value}`}
-																	checked={selectedLanguages.includes(
-																		option.value,
-																	)}
-																	onChange={(e) => {
-																		if (e.target.checked) {
-																			setSelectedLanguages([
-																				...selectedLanguages,
-																				option.value,
-																			]);
-																		} else {
-																			setSelectedLanguages(
-																				selectedLanguages.filter(
-																					(lang) => lang !== option.value,
-																				),
-																			);
-																		}
-																	}}
-																	disabled={isSubscribing || isUnsubscribing}
-																	style={{
-																		transform: 'scale(1.2)',
-																		zIndex: 10,
-																		position: 'relative',
-																	}}
-																/>
-																<label
-																	className="form-check-label"
-																	htmlFor={`lang-${option.value}`}
-																	style={{ fontSize: '14px' }}
-																>
-																	{option.label}
-																</label>
-															</div>
-														))}
-													</div>
-												</div>
-
-												{/* Only Demanded */}
-												<div style={{ marginBottom: '16px' }}>
-													<div className="form-check">
-														<input
-															className="form-check-input"
-															type="checkbox"
-															id="onlyDemanded"
-															checked={onlyDemanded}
-															onChange={(e) =>
-																setOnlyDemanded(e.target.checked)
-															}
-															disabled={isSubscribing || isUnsubscribing}
-															style={{
-																transform: 'scale(1.2)',
-																zIndex: 10,
-																position: 'relative',
-															}}
-														/>
-														<label
-															className="form-check-label"
-															htmlFor="onlyDemanded"
-															style={{ fontSize: '14px' }}
-														>
-															{content.demanded.value}
-														</label>
-													</div>
-												</div>
-											</div>
-										</div>
-									)}
+									<NewsletterFilters
+										cities={cities}
+										categories={categories}
+										selectedCities={selectedCities}
+										selectedCategories={selectedCategories}
+										selectedEmployment={selectedEmployment}
+										selectedDocumentTypes={selectedDocumentTypes}
+										selectedLanguages={selectedLanguages}
+										selectedGender={selectedGender}
+										onlyDemanded={onlyDemanded}
+										onCityChange={handleCityChange}
+										onCategoryChange={handleCategoryChange}
+										onEmploymentChange={handleEmploymentChange}
+										onDocumentTypeChange={handleDocumentTypeChange}
+										onLanguageChange={handleLanguageChange}
+										onGenderChange={handleGenderChange}
+										onOnlyDemandedChange={setOnlyDemanded}
+										isSubscribing={isSubscribing}
+										isUnsubscribing={isUnsubscribing}
+										isMobile={isMobile}
+									/>
 								</div>
 							)}
 						</div>
@@ -1383,86 +490,14 @@ const NewsletterModal = ({ open, onClose }) => {
 							borderTop: '1px solid #e0e0e0',
 						}}
 					>
-						{isAlreadySubscribed ? (
-							// Show unsubscribe button and "Вы уже подписаны" text
-							<>
-								<div
-									style={{
-										display: 'flex',
-										alignItems: 'center',
-										color: '#666',
-										fontSize: isMobile ? '16px' : '14px',
-									}}
-								>
-									<i
-										className="bi bi-info-circle me-2"
-										style={{ color: '#17a2b8' }}
-									></i>
-									{content.newsletterAlreadySubscribed.value}
-								</div>
-								<button
-									className="btn btn-danger"
-									onClick={handleUnsubscribe}
-									disabled={isUnsubscribing}
-									style={{
-										fontSize: isMobile ? '16px' : '14px',
-										padding: isMobile ? '12px 20px' : '8px 16px',
-									}}
-								>
-									{isUnsubscribing ? (
-										<>
-											<span
-												className="spinner-border spinner-border-sm me-2"
-												role="status"
-												aria-hidden="true"
-											></span>
-											{content.newsletterUnsubscribing.value}
-										</>
-									) : (
-										<>
-											<i className="bi bi-envelope-x me-2"></i>
-											{content.unsubscribe.value}
-										</>
-									)}
-								</button>
-							</>
-						) : (
-							// Show only subscribe button (no reset button for new subscriptions)
-							<div
-								style={{
-									width: '100%',
-									display: 'flex',
-									justifyContent: 'center',
-								}}
-							>
-								<button
-									className="btn btn-primary px-4"
-									onClick={handleSubscribe}
-									disabled={isSubscribing || !email.trim()}
-									style={{
-										fontSize: isMobile ? '16px' : '14px',
-										padding: isMobile ? '12px 24px' : '8px 16px',
-										minWidth: '200px',
-									}}
-								>
-									{isSubscribing ? (
-										<>
-											<span
-												className="spinner-border spinner-border-sm me-2"
-												role="status"
-												aria-hidden="true"
-											></span>
-											{content.newsletterSubscribing.value}
-										</>
-									) : (
-										<>
-											<i className="bi bi-envelope-plus me-2"></i>
-											{content.newsletterSubscribe.value}
-										</>
-									)}
-								</button>
-							</div>
-						)}
+						<NewsletterActions
+							isAlreadySubscribed={isAlreadySubscribed}
+							isSubscribing={isSubscribing}
+							isUnsubscribing={isUnsubscribing}
+							onSubscribe={handleSubscribe}
+							onUnsubscribe={handleUnsubscribe}
+							isMobile={isMobile}
+						/>
 					</div>
 				</div>
 			</div>
