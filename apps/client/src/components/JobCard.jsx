@@ -173,7 +173,7 @@ const JobCard = ({ job }) => {
 					onHide={handleCloseModal}
 					imageUrl={job.imageUrl}
 					imageAlt={job.title}
-					onImageError={() => {}}
+					onImageError={() => {null}}
 				/>
 			)}
 		</>

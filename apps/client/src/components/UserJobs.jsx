@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { Modal, Button } from 'react-bootstrap';
@@ -129,7 +129,7 @@ const UserJobs = () => {
 
 	useEffect(() => {
 		fetchUserJobs();
-	}, [user, currentPage, locale]); // Loading functions are stable now
+	}, [user, currentPage, locale]);
 
 	const handleDelete = async () => {
 		if (!jobToDelete) return;

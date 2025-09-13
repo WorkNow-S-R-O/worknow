@@ -48,7 +48,6 @@ const JobList = ({ jobs, loading }) => {
 	});
 };
 
-// **Валидация пропсов**
 JobList.propTypes = {
 	jobs: PropTypes.arrayOf(
 		PropTypes.shape({
