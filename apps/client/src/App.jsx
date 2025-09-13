@@ -18,7 +18,6 @@ import AccessDenied from './pages/AccessDenied.jsx';
 import { EditJobForm } from './components/form/EditJobForm.jsx';
 import UserProfile from './components/UserProfile.jsx';
 import SupportPage from './components/SupportPage.jsx';
-import SurveyWidget from './components/SurveyWidget.jsx';
 import ProtectedRoute from './components/routes/ProtectedRoute.jsx';
 import Success from './pages/Success.jsx';
 import Cancel from './pages/Cancel.jsx';
@@ -103,7 +102,6 @@ const router = createBrowserRouter([
 			},
 			{ path: 'profile/:clerkUserId', element: <UserProfile /> },
 			{ path: 'support', element: <SupportPage /> },
-			{ path: 'survey', element: <SurveyWidget /> },
 			{ path: 'success', element: <Success /> },
 			{ path: 'cancel', element: <Cancel /> },
 			{ path: 'seekers', element: <Seekers /> },
