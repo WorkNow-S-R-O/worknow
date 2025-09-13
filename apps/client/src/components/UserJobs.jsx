@@ -336,7 +336,7 @@ const UserJobs = () => {
 							return (
 								<div
 									key={job.id}
-									className={`card mb-3 position-relative shadow-sm ${
+									className={`card mb-3 d-flex flex-column shadow-sm ${
 										job.user?.isPremium ? 'premium-job' : ''
 									}`}
 									style={{
@@ -345,6 +345,7 @@ const UserJobs = () => {
 										margin: '0 auto',
 										background: job.user?.isPremium ? '#D4E6F9' : 'white',
 										borderRadius: '6px',
+										minHeight: '300px',
 									}}
 								>
 									{/* Плашка Премиум */}
@@ -354,11 +355,13 @@ const UserJobs = () => {
 											{content.premiumBadge.value}
 										</div>
 									)}
+									{/* Content area - takes up available space */}
 									<div
-										className="card-body"
+										className="card-body flex-grow-1"
 										style={{
 											textAlign:
 												locale === 'he' || locale === 'ar' ? 'right' : 'left',
+											paddingBottom: '20px',
 										}}
 									>
 										<h5 className="card-title text-primary">{job.title}</h5>
@@ -495,7 +498,17 @@ const UserJobs = () => {
 											</div>
 										)}
 
-										<div className="text-muted">
+									</div>
+									{/* Buttons area - always at the bottom */}
+									<div
+										className={`d-flex gap-3 p-3 ${locale === 'he' || locale === 'ar' ? 'flex-row-reverse' : ''}`}
+										style={{
+											borderTop: '1px solid #e9ecef',
+											backgroundColor: 'rgba(0,0,0,0.02)',
+										}}
+									>
+										{/* Creation date moved to bottom bar */}
+										<div className="text-muted flex-grow-1">
 											<small>
 												<span className="d-none d-sm-inline">
 													{content.createdAt.value + ': '}
@@ -503,10 +516,6 @@ const UserJobs = () => {
 												{formatDate(job.createdAt)}
 											</small>
 										</div>
-									</div>
-									<div
-										className={`position-absolute bottom-0 mb-3 d-flex gap-3 ${locale === 'he' || locale === 'ar' ? 'start-0 ms-3 flex-row-reverse' : 'end-0 me-3'}`}
-									>
 										<div className="position-relative">
 											{isBoosted ? (
 												<div
