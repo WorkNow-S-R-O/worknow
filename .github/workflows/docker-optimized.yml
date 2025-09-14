@@ -15,6 +15,9 @@ jobs:
   # Build optimized Docker images
   build-images:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     strategy:
       matrix:
         target: [frontend, backend, production]
