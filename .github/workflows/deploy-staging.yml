@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: symonbaikov/worknow
+  IMAGE_NAME: worknow-s-r-o/worknow
 
 jobs:
   # Build staging image
