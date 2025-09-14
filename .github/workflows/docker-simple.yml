@@ -45,7 +45,7 @@ jobs:
         with:
           context: .
           file: ./docker/Dockerfile.prod
-          push: false  # Temporarily disable push to test build
+          push: true # Re-enable push after creating package
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
