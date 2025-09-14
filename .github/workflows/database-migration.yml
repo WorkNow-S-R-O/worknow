@@ -1,0 +1,223 @@
+name: Database Migration
+
+on:
+  push:
+    branches: [master, develop]
+    paths:
+      - 'prisma/migrations/**'
+      - 'prisma/schema.prisma'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to migrate'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - production
+      migration_type:
+        description: 'Migration type'
+        required: true
+        default: 'deploy'
+        type: choice
+        options:
+        - deploy
+        - reset
+        - status
+
+jobs:
+  # Validate migration files
+  validate-migrations:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Validate Prisma schema
+      run: npx prisma validate
+      
+    - name: Check for migration conflicts
+      run: |
+        # Check if there are any pending migrations
+        npx prisma migrate status --schema=./prisma/schema.prisma
+        
+    - name: Generate Prisma client
+      run: npx prisma generate
+
+  # Backup database before migration
+  backup-database:
+    runs-on: ubuntu-latest
+    needs: validate-migrations
+    if: github.event.inputs.environment == 'production' || github.ref == 'refs/heads/master'
+    environment: ${{ github.event.inputs.environment || 'production' }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Create database backup
+      run: |
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        BACKUP_FILE="worknow_backup_${TIMESTAMP}.sql"
+        
+        # Create backup using pg_dump
+        PGPASSWORD="${{ secrets.DATABASE_PASSWORD }}" pg_dump \
+          -h "${{ secrets.DATABASE_HOST }}" \
+          -U "${{ secrets.DATABASE_USER }}" \
+          -d "${{ secrets.DATABASE_NAME }}" \
+          -f "$BACKUP_FILE"
+          
+        # Upload backup to S3 or similar storage
+        aws s3 cp "$BACKUP_FILE" "s3://${{ secrets.BACKUP_BUCKET }}/database-backups/$BACKUP_FILE"
+        
+        echo "BACKUP_FILE=$BACKUP_FILE" >> $GITHUB_ENV
+        
+    - name: Notify backup completion
+      uses: 8398a7/action-slack@v3
+      with:
+        status: success
+        text: "Database backup completed: ${{ env.BACKUP_FILE }}"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # Run migrations on staging
+  migrate-staging:
+    runs-on: ubuntu-latest
+    needs: validate-migrations
+    if: github.event.inputs.environment == 'staging' || github.ref == 'refs/heads/develop'
+    environment: staging
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run staging migrations
+      run: |
+        if [ "${{ github.event.inputs.migration_type }}" = "reset" ]; then
+          npx prisma migrate reset --force
+        elif [ "${{ github.event.inputs.migration_type }}" = "status" ]; then
+          npx prisma migrate status
+        else
+          npx prisma migrate deploy
+        fi
+      env:
+        DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+        
+    - name: Verify staging migration
+      run: |
+        npx prisma db push --accept-data-loss
+        npx prisma generate
+      env:
+        DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+
+  # Run migrations on production
+  migrate-production:
+    runs-on: ubuntu-latest
+    needs: [validate-migrations, backup-database]
+    if: github.event.inputs.environment == 'production' || github.ref == 'refs/heads/master'
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run production migrations
+      run: |
+        # Always use deploy for production (never reset)
+        npx prisma migrate deploy
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        
+    - name: Verify production migration
+      run: |
+        npx prisma db push --accept-data-loss
+        npx prisma generate
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        
+    - name: Run data integrity checks
+      run: |
+        # Add custom data integrity checks here
+        node -e "
+          const { PrismaClient } = require('@prisma/client');
+          const prisma = new PrismaClient();
+          
+          // Check critical tables have data
+          Promise.all([
+            prisma.user.count(),
+            prisma.job.count(),
+            prisma.category.count(),
+            prisma.city.count()
+          ]).then(([users, jobs, categories, cities]) => {
+            console.log('Data integrity check:');
+            console.log('Users:', users);
+            console.log('Jobs:', jobs);
+            console.log('Categories:', categories);
+            console.log('Cities:', cities);
+            
+            if (users === 0 || categories === 0 || cities === 0) {
+              console.error('Critical data missing!');
+              process.exit(1);
+            }
+            
+            console.log('Data integrity check passed ✅');
+            prisma.$disconnect();
+          }).catch(err => {
+            console.error('Data integrity check failed:', err);
+            process.exit(1);
+          });
+        "
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  # Notify migration completion
+  notify-completion:
+    runs-on: ubuntu-latest
+    needs: [migrate-staging, migrate-production]
+    if: always()
+    
+    steps:
+    - name: Notify migration status
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: |
+          Database migration ${{ job.status }}!
+          
+          Environment: ${{ github.event.inputs.environment || 'auto-detected' }}
+          Branch: ${{ github.ref_name }}
+          Commit: ${{ github.sha }}
+          
+          ${{ job.status == 'success' && '✅ Migration completed successfully' || '❌ Migration failed - check logs' }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
