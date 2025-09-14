@@ -48,7 +48,7 @@ jobs:
         tags: |
           type=ref,event=branch
           type=ref,event=pr,prefix=pr-
-          type=sha,prefix=staging-
+          type=sha,prefix=sha-
           
     - name: Build and push staging image
       uses: docker/build-push-action@v5

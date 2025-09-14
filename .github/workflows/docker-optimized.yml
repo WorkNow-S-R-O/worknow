@@ -51,7 +51,7 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr,prefix=pr-
             type=semver,pattern={{version}}
-            type=sha,prefix={{branch}}-
+            type=sha,prefix=sha-
 
       # Build frontend image
       - name: Build frontend image
