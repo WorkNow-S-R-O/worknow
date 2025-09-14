@@ -134,14 +134,30 @@ jobs:
           sleep 30
           curl -f ${{ secrets.PRODUCTION_URL }}/api/health || exit 1
 
-      - name: Notify deployment success
-        uses: 8398a7/action-slack@v3
+      - name: Send deployment success email
+        uses: dawidd6/action-send-mail@v3
         with:
-          status: success
-          text: "WorkNow production deployment successful! 🚀"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "WorkNow Production Deployment Success"
+          to: peterbaikov12@gmail.com
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            🚀 WorkNow Production Deployment Successful!
+
+            Environment: Production
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref }}
+            Deployed at: $(date)
+            Image Tag: ${{ needs.build-and-test.outputs.image-tag }}
+
+            The production deployment has been completed successfully.
+            Health check passed.
+
+            Best regards,
+            WorkNow CI/CD System
 
   # Rollback job (manual trigger)
   rollback:
@@ -161,10 +177,26 @@ jobs:
             docker-compose -f docker-compose.prod.yml down
             docker-compose -f docker-compose.prod.yml up -d
 
-      - name: Notify rollback
-        uses: 8398a7/action-slack@v3
+      - name: Send rollback email
+        uses: dawidd6/action-send-mail@v3
         with:
-          status: warning
-          text: "WorkNow production rollback completed ⚠️"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "WorkNow Production Rollback Completed"
+          to: peterbaikov12@gmail.com
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            ⚠️ WorkNow Production Rollback Completed!
+
+            Environment: Production
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref }}
+            Rolled back at: $(date)
+
+            The production deployment has been rolled back to the previous version.
+            Please check the system status.
+
+            Best regards,
+            WorkNow CI/CD System
