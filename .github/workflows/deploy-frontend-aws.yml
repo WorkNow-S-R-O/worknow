@@ -68,21 +68,11 @@ jobs:
           cd apps/client
           aws s3 sync dist/ s3://worknow-frontend --delete
 
-      - name: Invalidate CloudFront cache
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-            --paths "/*"
-        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
-
       - name: Notify deployment success
         uses: 8398a7/action-slack@v3
         with:
           status: success
           text: "🚀 Frontend deployed to AWS S3 successfully!"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()
 
   rollback:
     runs-on: ubuntu-latest
@@ -102,11 +92,3 @@ jobs:
           # This would require storing previous versions in S3
           # For now, we'll just notify about the failure
           echo "Frontend deployment failed - manual rollback required"
-
-      - name: Notify rollback
-        uses: 8398a7/action-slack@v3
-        with:
-          status: failure
-          text: "⚠️ Frontend deployment failed - manual rollback required"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
