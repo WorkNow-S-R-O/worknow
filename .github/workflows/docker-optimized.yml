@@ -68,7 +68,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=frontend
-          cache-to: type=gha,mode=max,scope=frontend
+          # cache-to: type=gha,mode=max,scope=frontend  # Disabled due to GitHub Actions Cache service issues
           platforms: linux/amd64,linux/arm64
           build-args: |
             BUILDKIT_INLINE_CACHE=1
@@ -85,7 +85,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=backend
-          cache-to: type=gha,mode=max,scope=backend
+          # cache-to: type=gha,mode=max,scope=backend  # Disabled due to GitHub Actions Cache service issues
           platforms: linux/amd64,linux/arm64
           build-args: |
             BUILDKIT_INLINE_CACHE=1
@@ -104,7 +104,7 @@ jobs:
           cache-from: |
             type=gha,scope=production
             type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:cache
-          cache-to: type=gha,mode=max,scope=production
+          # cache-to: type=gha,mode=max,scope=production  # Disabled due to GitHub Actions Cache service issues
           platforms: linux/amd64,linux/arm64
           build-args: |
             BUILDKIT_INLINE_CACHE=1
