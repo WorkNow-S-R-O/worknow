@@ -1,11 +1,20 @@
-name: Deploy Frontend to AWS S3
+name: Deploy Frontend to AWS S3 (Manual Only)
 
 on:
-  push:
-    branches: [master, main]
-  pull_request:
-    branches: [master, main]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - staging
+      confirm_deployment:
+        description: "Type 'DEPLOY' to confirm deployment"
+        required: true
+        type: string
 
 jobs:
   build-and-test:
@@ -32,7 +41,8 @@ jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
     needs: build-and-test
-    environment: production
+    environment: ${{ github.event.inputs.environment }}
+    if: github.event.inputs.confirm_deployment == 'DEPLOY'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -68,27 +78,56 @@ jobs:
           cd apps/client
           aws s3 sync dist/ s3://worknow-frontend --delete
 
-      - name: Notify deployment success
-        uses: 8398a7/action-slack@v3
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
         with:
-          status: success
-          text: "🚀 Frontend deployed to AWS S3 successfully!"
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "WorkNow Frontend Deployment Success"
+          to: peterbaikov12@gmail.com
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            🚀 WorkNow Frontend Deployment Successful!
+
+            Environment: ${{ github.event.inputs.environment }}
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref }}
+            Deployed at: $(date)
+
+            The frontend has been successfully deployed to AWS S3.
+
+            Best regards,
+            WorkNow CI/CD System
 
   rollback:
     runs-on: ubuntu-latest
     needs: deploy-frontend
     if: failure()
-    environment: production
+    environment: ${{ github.event.inputs.environment }}
     steps:
-      - name: Rollback frontend
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Send failure email notification
+        uses: dawidd6/action-send-mail@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "WorkNow Frontend Deployment Failed"
+          to: peterbaikov12@gmail.com
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            ❌ WorkNow Frontend Deployment Failed!
 
-      - name: Restore previous version from S3
-        run: |
-          # This would require storing previous versions in S3
-          # For now, we'll just notify about the failure
-          echo "Frontend deployment failed - manual rollback required"
+            Environment: ${{ github.event.inputs.environment }}
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref }}
+            Failed at: $(date)
+
+            The frontend deployment has failed. Manual intervention required.
+
+            Please check the GitHub Actions logs for more details.
+
+            Best regards,
+            WorkNow CI/CD System
