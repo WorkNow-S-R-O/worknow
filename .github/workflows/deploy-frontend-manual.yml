@@ -1,0 +1,84 @@
+name: Deploy Frontend to AWS S3 (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - staging
+      confirm_deployment:
+        description: "Type 'DEPLOY' to confirm deployment"
+        required: true
+        type: string
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # Deploy frontend to AWS S3
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    if: github.event.inputs.confirm_deployment == 'DEPLOY'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend for production
+        run: |
+          cd apps/client
+          VITE_API_URL=https://api.worknow.co.il \
+          VITE_CLERK_PUBLISHABLE_KEY=pk_live_Y2xlcmsud29ya25vdy5jby5pbCQ \
+          npm run build
+        env:
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy to S3
+        run: |
+          cd apps/client
+          aws s3 sync dist/ s3://worknow-frontend --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+
+      - name: Deployment Summary
+        run: |
+          echo "🚀 Frontend deployment completed successfully!"
+          echo "📦 Built from commit: ${{ github.sha }}"
+          echo "🌍 Environment: ${{ github.event.inputs.environment }}"
+          echo "📅 Deployed at: $(date)"
+          echo "🔗 S3 Bucket: s3://worknow-frontend"
+
+      - name: Notify deployment success
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: "WorkNow frontend deployed to ${{ github.event.inputs.environment }}! 🚀"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
