@@ -16,6 +16,9 @@ jobs:
   # Build staging image
   build-staging:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     outputs:
       image-tag: ${{ steps.meta.outputs.tags }}
       pr-number: ${{ steps.pr-meta.outputs.number }}
