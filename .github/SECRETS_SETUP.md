@@ -52,6 +52,12 @@ This document outlines all the GitHub secrets required for the WorkNow CI/CD pip
 - `AWS_ACCESS_KEY_ID` - AWS access key for S3
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key for S3
 
+### AWS Frontend Deployment
+
+- `AWS_REGION` - AWS region (e.g., us-east-1)
+- `CLOUDFRONT_DISTRIBUTION_ID` - CloudFront distribution ID for cache invalidation
+- `S3_BUCKET_NAME` - S3 bucket name for frontend deployment (e.g., worknow-frontend)
+
 ### Container Registry
 
 - `GITHUB_TOKEN` - Automatically provided by GitHub Actions

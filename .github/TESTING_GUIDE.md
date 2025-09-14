@@ -387,6 +387,40 @@ Your CI/CD pipeline is working correctly if:
 7. **Alerts are sent when needed**
 8. **Rollbacks work in emergencies**
 
+## 4. Test AWS S3 Frontend Deployment
+
+### Prerequisites
+
+- AWS credentials configured in GitHub secrets
+- S3 bucket `worknow-frontend` exists
+- CloudFront distribution configured (optional)
+
+### Manual Trigger
+
+1. Go to Actions → "Deploy Frontend to AWS S3"
+2. Click "Run workflow"
+3. Select branch: `master`
+4. Click "Run workflow"
+
+### Expected Results
+
+- ✅ Build and test passes
+- ✅ Frontend builds with production environment variables
+- ✅ AWS credentials configured
+- ✅ Files uploaded to S3 bucket
+- ✅ CloudFront cache invalidated (if configured)
+- ✅ Slack notification sent
+
+### Verify Deployment
+
+```bash
+# Check S3 bucket contents
+aws s3 ls s3://worknow-frontend --recursive
+
+# Test website
+curl -I https://worknow.co.il
+```
+
 ## Next Steps After Testing
 
 Once testing is complete:
