@@ -45,7 +45,7 @@ jobs:
         with:
           context: .
           file: ./docker/Dockerfile.prod
-          push: true # Re-enable push after creating package
+          push: true  # Re-enable push after adding labels and creating package
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
