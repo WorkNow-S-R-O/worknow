@@ -12,6 +12,9 @@ COPY vite.config.js ./
 COPY tailwind.config.js ./
 COPY postcss.config.js ./
 
+# Copy Prisma schema for postinstall script
+COPY prisma/ ./prisma/
+
 # Install dependencies
 RUN npm ci
 
