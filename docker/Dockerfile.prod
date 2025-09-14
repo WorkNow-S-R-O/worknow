@@ -1,11 +1,6 @@
 # Production Dockerfile for WorkNow
 # Multi-stage build for optimized production image
 
-# Add metadata labels for GitHub Container Registry
-LABEL org.opencontainers.image.source=https://github.com/WorkNow-S-R-O/worknow
-LABEL org.opencontainers.image.description="WorkNow is a platform that helps employers find employees and job seekers find work. It allows users to post job listings, browse job offers, and contact employers."
-LABEL org.opencontainers.image.licenses=MIT
-
 # Stage 1: Build frontend
 FROM node:20-alpine AS frontend-builder
 
@@ -59,6 +54,11 @@ RUN npx prisma generate
 
 # Stage 3: Production runtime
 FROM node:20-alpine AS production
+
+# Add metadata labels for GitHub Container Registry
+LABEL org.opencontainers.image.source=https://github.com/WorkNow-S-R-O/worknow
+LABEL org.opencontainers.image.description="WorkNow is a platform that helps employers find employees and job seekers find work. It allows users to post job listings, browse job offers, and contact employers."
+LABEL org.opencontainers.image.licenses=MIT
 
 # Install necessary packages
 RUN apk add --no-cache \
