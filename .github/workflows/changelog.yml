@@ -44,14 +44,11 @@ jobs:
             # Push to the new branch
             git push origin "$BRANCH_NAME"
             
-            # Create a pull request using GitHub CLI
-            gh pr create \
-              --title "Update Changelog" \
-              --body "Automated changelog update" \
-              --base master \
-              --head "$BRANCH_NAME"
-            
-            echo "✅ Changelog PR created: $BRANCH_NAME"
+            # Provide URL for manual PR creation
+            PR_URL="https://github.com/WorkNow-S-R-O/worknow/pull/new/$BRANCH_NAME"
+            echo "✅ Changelog branch created: $BRANCH_NAME"
+            echo "📝 Create PR manually at: $PR_URL"
+            echo "🔗 Or use: gh pr create --title 'Update Changelog' --body 'Automated changelog update' --base master --head $BRANCH_NAME"
           else
             echo "No changes to commit"
           fi
