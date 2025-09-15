@@ -13,6 +13,9 @@ export default defineConfig({
 	publicDir: '../../public',
 	envDir: '../..', // Load environment variables from root directory
 	plugins: [react(), intlayerPlugin()],
+	define: {
+		global: 'globalThis',
+	},
 	server: {
 		cors: true,
 		port: 3000,
@@ -35,5 +38,8 @@ export default defineConfig({
 	},
 	optimizeDeps: {
 		include: ['zod', '@hookform/resolvers/zod'],
+	},
+	ssr: {
+		noExternal: ['@clerk/clerk-react', 'react-hot-toast'],
 	},
 });
