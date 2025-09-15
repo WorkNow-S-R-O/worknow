@@ -1,0 +1,133 @@
+name: Deploy Frontend to AWS S3 (Manual Only) - Updated
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - production
+          - staging
+      confirm_deployment:
+        description: "Type 'DEPLOY' to confirm deployment"
+        required: true
+        type: string
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build application
+        run: npm run build
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    environment: ${{ github.event.inputs.environment }}
+    if: github.event.inputs.confirm_deployment == 'DEPLOY'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend for production
+        run: |
+          VITE_API_URL=https://api.worknow.co.il \
+          VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }} \
+          CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} \
+          npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Navigate to client directory
+        run: cd apps/client
+
+      - name: Deploy to AWS S3
+        run: |
+          cd apps/client
+          aws s3 sync dist/ s3://worknow-frontend --delete
+
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "WorkNow Frontend Deployment Success"
+          to: peterbaikov12@gmail.com
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            🚀 WorkNow Frontend Deployment Successful!
+
+            Environment: ${{ github.event.inputs.environment }}
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref }}
+            Deployed at: $(date)
+
+            The frontend has been successfully deployed to AWS S3.
+
+            Best regards,
+            WorkNow CI/CD System
+
+  rollback:
+    runs-on: ubuntu-latest
+    needs: deploy-frontend
+    if: failure()
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Send failure email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "WorkNow Frontend Deployment Failed"
+          to: peterbaikov12@gmail.com
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            ❌ WorkNow Frontend Deployment Failed!
+
+            Environment: ${{ github.event.inputs.environment }}
+            Commit: ${{ github.sha }}
+            Branch: ${{ github.ref }}
+            Failed at: $(date)
+
+            The frontend deployment has failed. Manual intervention required.
+
+            Please check the GitHub Actions logs for more details.
+
+            Best regards,
+            WorkNow CI/CD System

@@ -1,0 +1,49 @@
+# Frontend-only Dockerfile for WorkNow
+# Optimized for building React frontend
+
+FROM node:20-alpine AS frontend-builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY apps/client/package*.json ./apps/client/
+COPY vite.config.js ./
+COPY tailwind.config.js ./
+COPY postcss.config.js ./
+
+# Copy Prisma schema for postinstall script
+COPY prisma/ ./prisma/
+
+# Install dependencies
+RUN npm ci
+
+# Copy frontend source
+COPY apps/client/ ./apps/client/
+COPY public/ ./public/
+COPY libs/ ./libs/
+
+# Set build environment
+ENV NODE_ENV=production
+ENV DOCKER_BUILD=true
+
+# Build frontend
+RUN npm run build
+
+# Production stage
+FROM nginx:alpine AS production
+
+# Copy built frontend
+COPY --from=frontend-builder /app/apps/client/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY docker/nginx/frontend.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost/ || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,108 @@
+# Docker Compose Staging Configuration
+
+services:
+  # PostgreSQL Database for Staging
+  postgres-staging:
+    image: postgres:15-alpine
+    container_name: worknow-postgres-staging-${COMPOSE_PROJECT_NAME:-staging}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: worknow_staging
+      POSTGRES_USER: worknow_staging
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-staging_password}
+    volumes:
+      - postgres_staging_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    networks:
+      - worknow-staging-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U worknow_staging -d worknow_staging"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis for Staging
+  redis-staging:
+    image: redis:7-alpine
+    container_name: worknow-redis-staging-${COMPOSE_PROJECT_NAME:-staging}
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-staging_redis_password}
+    volumes:
+      - redis_staging_data:/data
+    ports:
+      - "${REDIS_PORT:-6380}:6379"
+    networks:
+      - worknow-staging-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # WorkNow Staging Application
+  worknow-staging:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAME:-worknow}:${IMAGE_TAG:-latest}
+    container_name: worknow-app-staging-${COMPOSE_PROJECT_NAME:-staging}
+    restart: unless-stopped
+    environment:
+      # Database
+      DATABASE_URL: postgresql://worknow_staging:${POSTGRES_PASSWORD:-staging_password}@postgres-staging:5432/worknow_staging
+
+      # Node environment
+      NODE_ENV: staging
+      PORT: ${PORT:-8000}
+
+      # Clerk Authentication (staging keys)
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET}
+
+      # Stripe (test mode)
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+
+      # Email (staging/test email)
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
+
+      # Redis
+      REDIS_URL: redis://:${REDIS_PASSWORD:-staging_redis_password}@redis-staging:6379
+
+      # Frontend Environment Variables
+      VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY}
+      VITE_API_URL: ${VITE_API_URL}
+      VITE_STRIPE_PUBLISHABLE_KEY: ${VITE_STRIPE_PUBLISHABLE_KEY}
+
+      # Staging specific
+      STAGING_MODE: true
+      LOG_LEVEL: debug
+    ports:
+      - "${PORT:-8000}:${PORT:-8000}"
+    depends_on:
+      postgres-staging:
+        condition: service_healthy
+      redis-staging:
+        condition: service_healthy
+    networks:
+      - worknow-staging-network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:${PORT:-8000}/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_staging_data:
+    driver: local
+  redis_staging_data:
+    driver: local
+
+networks:
+  worknow-staging-network:
+    driver: bridge

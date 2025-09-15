@@ -1,0 +1,61 @@
+# Backend-only Dockerfile for WorkNow
+# Optimized for Node.js/Express API
+
+FROM node:20-alpine AS backend-builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY apps/api/package*.json ./apps/api/
+
+# Copy Prisma schema
+COPY prisma/ ./prisma/
+
+# Install dependencies
+RUN npm ci
+
+# Copy backend source
+COPY apps/api/ ./apps/api/
+COPY libs/ ./libs/
+
+# Generate Prisma client
+RUN npx prisma generate
+
+# Production stage
+FROM node:20-alpine AS production
+
+# Install necessary packages
+RUN apk add --no-cache \
+    dumb-init \
+    curl \
+    && rm -rf /var/cache/apk/*
+
+# Create app user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S worknow -u 1001
+
+WORKDIR /app
+
+# Copy built backend
+COPY --from=backend-builder --chown=worknow:nodejs /app/node_modules ./node_modules
+COPY --from=backend-builder --chown=worknow:nodejs /app/apps/api ./apps/api
+COPY --from=backend-builder --chown=worknow:nodejs /app/prisma ./prisma
+COPY --from=backend-builder --chown=worknow:nodejs /app/libs ./libs
+COPY --from=backend-builder --chown=worknow:nodejs /app/package*.json ./
+
+# Switch to non-root user
+USER worknow
+
+# Expose port
+EXPOSE 3001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3001/api/health || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the application
+CMD ["node", "apps/api/index.js"]
