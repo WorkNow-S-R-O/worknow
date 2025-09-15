@@ -25,14 +25,18 @@ jobs:
       - run: npm ci
       - run: npm run changelog
       - name: Commit and push changelog
+        env:
+          GIT_CONFIG_GLOBAL: /dev/null
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git config --global commit.gpgsign false
           git config --global pull.rebase false
+          git config --global gpg.program ""
+          git config --global core.editor "true"
           if [[ $(git status --porcelain) ]]; then
             git add CHANGELOG.md
-            git commit -m "chore: update changelog [skip ci]"
+            git commit --no-gpg-sign -m "chore: update changelog [skip ci]"
             git push origin HEAD:master
           else
             echo "No changes to commit"
