@@ -58,19 +58,12 @@ jobs:
         
     - name: Alert on failure
       if: failure()
-      uses: 8398a7/action-slack@v3
-      with:
-        status: failure
-        text: |
-          🚨 **Production Health Check Failed!**
-          
-          Environment: Production
-          Time: $(date)
-          Branch: ${{ github.ref_name }}
-          
-          Please check the production environment immediately!
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      run: |
+        echo "🚨 Production Health Check Failed!"
+        echo "Environment: Production"
+        echo "Time: $(date)"
+        echo "Branch: ${{ github.ref_name }}"
+        echo "Please check the production environment immediately!"
 
   # Health check staging
   health-check-staging:
@@ -235,21 +228,17 @@ jobs:
     
     steps:
     - name: Send monitoring summary
-      uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        text: |
-          📊 **WorkNow Monitoring Summary**
-          
-          Health Check: ${{ needs.health-check-production.result }}
-          Performance: ${{ needs.performance-monitoring.result }}
-          Security: ${{ needs.security-monitoring.result }}
-          Resources: ${{ needs.resource-monitoring.result }}
-          Logs: ${{ needs.log-analysis.result }}
-          
-          Time: $(date)
-          
-          ${{ job.status == 'success' && '✅ All systems operational' || '⚠️ Some issues detected - check individual jobs' }}
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      run: |
+        echo "📊 WorkNow Monitoring Summary"
+        echo "Health Check: ${{ needs.health-check-production.result }}"
+        echo "Performance: ${{ needs.performance-monitoring.result }}"
+        echo "Security: ${{ needs.security-monitoring.result }}"
+        echo "Resources: ${{ needs.resource-monitoring.result }}"
+        echo "Logs: ${{ needs.log-analysis.result }}"
+        echo "Time: $(date)"
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "✅ All systems operational"
+        else
+          echo "⚠️ Some issues detected - check individual jobs"
+        fi
 
