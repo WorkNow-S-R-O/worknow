@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: ${{ !contains(github.event.head_commit.message || '', '[skip ci]') }}
+    if: false  # Temporarily disabled due to repository signature requirements
     steps:
       - uses: actions/checkout@v4
         with:
