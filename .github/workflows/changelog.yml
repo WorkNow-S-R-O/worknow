@@ -1,10 +1,6 @@
 name: Update Changelog
 
 on:
-  # Temporarily disabled due to repository signature requirements
-  # push:
-  #   branches:
-  #     - master
   workflow_dispatch:
 
 jobs:
@@ -12,7 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: false  # Temporarily disabled due to repository signature requirements
     steps:
       - uses: actions/checkout@v4
         with:
