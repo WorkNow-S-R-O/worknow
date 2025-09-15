@@ -1,9 +1,10 @@
 name: Update Changelog
 
 on:
-  push:
-    branches:
-      - master
+  # Temporarily disabled due to repository signature requirements
+  # push:
+  #   branches:
+  #     - master
   workflow_dispatch:
 
 jobs:
