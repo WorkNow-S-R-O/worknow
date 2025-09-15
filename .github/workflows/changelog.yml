@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,7 +21,7 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npm run changelog
-      - name: Commit and push changelog
+      - name: Create changelog PR
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -28,10 +29,28 @@ jobs:
           git config --global pull.rebase false
           git config --global gpg.program ""
           git config --global core.editor "true"
+          
           if [[ $(git status --porcelain) ]]; then
+            # Create a new branch for the changelog
+            BRANCH_NAME="changelog-update-$(date +%Y%m%d-%H%M%S)"
+            git checkout -b "$BRANCH_NAME"
+            
+            # Commit the changelog changes
             git add CHANGELOG.md
             git commit --no-gpg-sign -m "chore: update changelog [skip ci]"
-            git push origin HEAD:master
+            
+            # Push to the new branch
+            git push origin "$BRANCH_NAME"
+            
+            # Create a pull request using GitHub CLI
+            gh pr create \
+              --title "Update Changelog" \
+              --body "Automated changelog update" \
+              --base master \
+              --head "$BRANCH_NAME" \
+              --label "changelog,automated"
+            
+            echo "✅ Changelog PR created: $BRANCH_NAME"
           else
             echo "No changes to commit"
           fi
