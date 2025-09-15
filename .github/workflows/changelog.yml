@@ -49,8 +49,7 @@ jobs:
               --title "Update Changelog" \
               --body "Automated changelog update" \
               --base master \
-              --head "$BRANCH_NAME" \
-              --label "changelog,automated"
+              --head "$BRANCH_NAME"
             
             echo "✅ Changelog PR created: $BRANCH_NAME"
           else
