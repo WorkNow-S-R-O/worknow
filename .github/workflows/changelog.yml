@@ -17,6 +17,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -27,10 +28,12 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global commit.gpgsign false
+          git config --global pull.rebase false
           if [[ $(git status --porcelain) ]]; then
             git add CHANGELOG.md
             git commit -m "chore: update changelog [skip ci]"
-            git push
+            git push origin HEAD:master
           else
             echo "No changes to commit"
           fi
