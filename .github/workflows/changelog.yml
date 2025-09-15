@@ -22,6 +22,8 @@ jobs:
       - run: npm ci
       - run: npm run changelog
       - name: Create changelog PR
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -29,7 +31,7 @@ jobs:
           git config --global pull.rebase false
           git config --global gpg.program ""
           git config --global core.editor "true"
-          
+
           if [[ $(git status --porcelain) ]]; then
             # Create a new branch for the changelog
             BRANCH_NAME="changelog-update-$(date +%Y%m%d-%H%M%S)"
