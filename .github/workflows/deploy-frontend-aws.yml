@@ -1,4 +1,4 @@
-name: Deploy Frontend to AWS S3 (Manual Only)
+name: Deploy Frontend to AWS S3 (Manual Only) - Updated
 
 on:
   workflow_dispatch:
