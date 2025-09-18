@@ -60,12 +60,6 @@ jobs:
           cd apps/client
           aws s3 sync dist/ s3://worknow-frontend --delete
 
-      - name: Invalidate CloudFront cache
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-            --paths "/*"
-
       - name: Deployment Summary
         run: |
           echo "🚀 Frontend deployment completed successfully!"
