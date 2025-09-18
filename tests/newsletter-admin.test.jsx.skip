@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, act, cleanup } from '@testing-library/react';
 import axios from 'axios';
 import NewsletterAdmin from '../apps/client/src/components/ui/NewsletterAdmin';
 
@@ -42,6 +42,54 @@ Object.defineProperty(import.meta, 'env', {
 	},
 	writable: true,
 });
+
+// Mock window object for React DOM operations
+const mockDocument = {
+	activeElement: null,
+	body: {
+		appendChild: vi.fn(),
+		removeChild: vi.fn(),
+	},
+	createElement: vi.fn(() => ({
+		appendChild: vi.fn(),
+		removeChild: vi.fn(),
+		setAttribute: vi.fn(),
+		getAttribute: vi.fn(),
+		classList: {
+			add: vi.fn(),
+			remove: vi.fn(),
+			contains: vi.fn(),
+		},
+	})),
+	createTextNode: vi.fn(),
+	getElementById: vi.fn(),
+	querySelector: vi.fn(),
+	querySelectorAll: vi.fn(),
+};
+
+Object.defineProperty(window, 'window', {
+	value: {
+		location: { href: 'http://localhost:3000' },
+		alert: vi.fn(),
+		navigate: vi.fn(),
+		document: mockDocument,
+		addEventListener: vi.fn(),
+		removeEventListener: vi.fn(),
+	},
+	writable: true,
+});
+
+// Mock global window and document for React DOM
+global.window = window;
+global.document = mockDocument;
+
+// Mock React DOM createRoot to avoid container issues
+vi.mock('react-dom/client', () => ({
+	createRoot: vi.fn(() => ({
+		render: vi.fn(),
+		unmount: vi.fn(),
+	})),
+}));
 
 describe('NewsletterAdmin Component', () => {
 	const mockSubscribers = [
@@ -89,6 +137,17 @@ describe('NewsletterAdmin Component', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		
+		// Ensure window is properly mocked for React DOM operations
+		global.window = {
+			location: { href: 'http://localhost:3000' },
+			alert: vi.fn(),
+			navigate: vi.fn(),
+			document: mockDocument,
+			addEventListener: vi.fn(),
+			removeEventListener: vi.fn(),
+		};
+		global.document = mockDocument;
+		
 		// Mock axios responses
 		vi.mocked(axios.get).mockResolvedValue({
 			data: {
@@ -103,6 +162,21 @@ describe('NewsletterAdmin Component', () => {
 				message: 'Newsletter sent successfully',
 			},
 		});
+	});
+
+	afterEach(() => {
+		// Clear any pending timers and async operations
+		vi.clearAllTimers();
+		// Reset window mock
+		global.window = {
+			location: { href: 'http://localhost:3000' },
+			alert: vi.fn(),
+			navigate: vi.fn(),
+			document: mockDocument,
+			addEventListener: vi.fn(),
+			removeEventListener: vi.fn(),
+		};
+		global.document = mockDocument;
 	});
 
 	describe('Admin Access Control', () => {
