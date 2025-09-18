@@ -77,7 +77,7 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: "WorkNow Frontend Deployment Success"
           to: peterbaikov12@gmail.com
-          from: ${{ secrets.EMAIL_USERNAME }}
+          from: peterbaikov12@gmail.com
           body: |
             🚀 WorkNow Frontend Deployment Successful!
             
