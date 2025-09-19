@@ -75,7 +75,7 @@ export const mockUserData = {
 		imageUrl: 'https://example.com/premium-avatar.jpg',
 		isPremium: true,
 		isAutoRenewal: true,
-		premiumEndsAt: new Date('2024-12-31T23:59:59Z'),
+		premiumEndsAt: new Date('2025-01-01T00:00:00Z'),
 		stripeSubscriptionId: 'sub_premium123',
 		premiumDeluxe: true,
 		isAdmin: false,
