@@ -1,16 +1,4 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-// Mock process.exit to prevent actual exit
-const mockProcessExit = vi.fn();
-vi.stubGlobal('process', {
-	...process,
-	exit: mockProcessExit,
-	env: {
-		...process.env,
-		WEBHOOK_SECRET: 'whsec_test_secret',
-	},
-});
-
 import { clerkWebhook } from '../apps/api/controllers/webhookController.js';
 import {
 	mockWebhook,

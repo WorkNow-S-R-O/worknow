@@ -26,6 +26,28 @@ vi.mock('@prisma/client', () => ({
 	PrismaClient: vi.fn(() => mockPrismaInstance),
 }));
 
+// Mock AWS SDK to prevent network calls
+vi.mock('aws-sdk', () => ({
+	default: {
+		SNS: vi.fn(() => ({
+			publish: vi.fn().mockReturnValue({
+				promise: vi.fn().mockResolvedValue({ MessageId: 'test-message-id' }),
+			}),
+		})),
+		config: {
+			update: vi.fn(),
+		},
+	},
+	SNS: vi.fn(() => ({
+		publish: vi.fn().mockReturnValue({
+			promise: vi.fn().mockResolvedValue({ MessageId: 'test-message-id' }),
+		}),
+	})),
+	config: {
+		update: vi.fn(),
+	},
+}));
+
 // Mock services
 export const mockSendInitialCandidatesToNewSubscriber = vi.fn();
 export const mockSendVerificationCode = vi.fn();

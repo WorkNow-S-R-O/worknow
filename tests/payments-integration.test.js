@@ -1,29 +1,4 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-// Mock environment variables before importing any modules
-vi.mock('process', () => ({
-	default: {
-		env: {
-			CLERK_SECRET_KEY: 'sk_test_clerk_secret_key',
-			WEBHOOK_SECRET: 'whsec_test_webhook_secret',
-			STRIPE_SECRET_KEY: 'sk_test_stripe_secret_key',
-		},
-	},
-}));
-
-// Mock process.exit to prevent actual exit
-const mockProcessExit = vi.fn();
-vi.stubGlobal('process', {
-	...process,
-	exit: mockProcessExit,
-	env: {
-		...process.env,
-		CLERK_SECRET_KEY: 'sk_test_clerk_secret_key',
-		WEBHOOK_SECRET: 'whsec_test_webhook_secret',
-		STRIPE_SECRET_KEY: 'sk_test_stripe_secret_key',
-	},
-});
-
 import request from 'supertest';
 import express from 'express';
 

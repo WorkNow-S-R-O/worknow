@@ -8,6 +8,19 @@ vi.stubEnv('VITE_API_URL', 'http://localhost:3001');
 vi.stubEnv('VITE_CLERK_PUBLISHABLE_KEY', 'test_clerk_key');
 vi.stubEnv('VITE_STRIPE_PUBLISHABLE_KEY', 'test_stripe_key');
 
+// Mock server-side environment variables to prevent process.exit calls
+vi.stubEnv('CLERK_SECRET_KEY', 'sk_test_clerk_secret_key');
+vi.stubEnv('WEBHOOK_SECRET', 'whsec_test_webhook_secret');
+vi.stubEnv('STRIPE_SECRET_KEY', 'sk_test_stripe_secret_key');
+vi.stubEnv('RESEND_API_KEY', 're_test_resend_key');
+
+// Mock process.exit to prevent actual exit
+const mockProcessExit = vi.fn();
+vi.stubGlobal('process', {
+	...process,
+	exit: mockProcessExit,
+});
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
 	writable: true,
