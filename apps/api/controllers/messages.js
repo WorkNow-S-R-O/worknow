@@ -37,7 +37,8 @@ export const createMessage = async (req, res) => {
 // Получить все сообщения пользователя (по clerkUserId)
 export const getUserMessages = async (req, res) => {
 	try {
-		const { clerkUserId } = req.query;
+		// Check both query parameter and path parameter
+		const clerkUserId = req.query.clerkUserId || req.params.userId;
 		if (!clerkUserId)
 			return res.status(400).json({ error: 'clerkUserId обязателен' });
 		const messages = await prisma.message.findMany({

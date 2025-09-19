@@ -1,4 +1,14 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
+// Mock environment variables before importing controllers
+vi.mock('process', () => ({
+	default: {
+		env: {
+			RESEND_API_KEY: 'test-resend-key',
+		},
+	},
+}));
+
 import {
 	getSeekers,
 	addSeeker,

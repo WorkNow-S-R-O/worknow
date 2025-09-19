@@ -10,7 +10,7 @@ export const getCategories = async (req, res) => {
 			include: { translations: true },
 		});
 		const result = categories.map((category) => {
-			const translation = category.translations.find((t) => t.lang === lang);
+			const translation = category.translations?.find((t) => t.lang === lang);
 			return {
 				id: category.id,
 				label: translation?.name || category.name,
