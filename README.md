@@ -272,4 +272,35 @@ worknow/
 
 ### User Management
 - `GET /api/users` – Get user profile (auth required)
-- `
+- `PUT /api/users` – Update user profile (auth required)
+- `POST /api/users/sync` – Sync user data with Clerk (auth required)
+
+### Job Seekers
+- `GET /api/seekers` – List job seekers (with filters, pagination)
+- `POST /api/seekers` – Create new seeker profile
+- `GET /api/seekers/:id` – Get specific seeker details
+- `PUT /api/seekers/:id` – Update seeker profile (auth required)
+- `DELETE /api/seekers/:id` – Delete seeker profile (admin only)
+
+### Newsletter & Subscriptions
+- `POST /api/newsletter/send-verification` – Send verification email
+- `POST /api/newsletter/verify` – Verify subscription
+- `GET /api/newsletter/check-subscription` – Check subscription status
+- `POST /api/newsletter/unsubscribe` – Unsubscribe from newsletter
+
+### Payments & Premium
+- `POST /api/payments/create-checkout-session` – Create Stripe checkout session
+- `POST /api/payments/cancel-subscription` – Cancel premium subscription
+- `POST /api/payments/cancel-auto-renewal` – Disable auto-renewal
+- `POST /api/payments/activate-premium` – Activate premium features
+
+### Categories & Cities
+- `GET /api/categories` – Get all job categories (with translations)
+- `GET /api/cities` – Get all cities (with translations)
+
+### Messages & Notifications
+- `GET /api/messages` – Get user messages (auth required)
+- `POST /api/messages` – Send message to user (admin only)
+
+### Webhooks
+- `POST /webhook` – Handle external service webhooks (Clerk, Stripe)
