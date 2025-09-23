@@ -1105,7 +1105,6 @@ const NewsletterSubscription = () => {
 				<div
 					style={{
 						padding: '20px',
-						backgroundColor: '#f8f9fa',
 					}}
 				>
 					<div className="text-center">
