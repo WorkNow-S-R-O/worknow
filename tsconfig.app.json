@@ -4,7 +4,8 @@
 		// ...
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["apps/client/src/*"]
+			"@/*": ["apps/client/src/*"],
+			"@services/*": ["apps/client/src/services/*"]
 		}
 		// ...
 	},

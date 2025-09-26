@@ -33,6 +33,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, 'apps/client/src'),
+			'@services': path.resolve(__dirname, 'apps/client/src/services'),
 			libs: path.resolve(__dirname, 'libs'),
 		},
 	},

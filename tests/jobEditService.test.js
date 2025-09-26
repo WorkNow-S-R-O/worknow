@@ -8,17 +8,17 @@ import {
 	mockUpdatePayload,
 	mockUpdatedJobResponse,
 	createAxiosResponse,
-} from '@mocks/editFormService.js';
+} from '@mocks/jobEditService.js';
 
 vi.mock('axios');
 
 const importService = async () => {
 	vi.resetModules();
 	vi.stubEnv('VITE_API_URL', mockApiUrl);
-	return import('../apps/api/editFormService.js');
+	return import('@services/jobEditService.js');
 };
 
-describe('editFormService', () => {
+describe('jobEditService', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});

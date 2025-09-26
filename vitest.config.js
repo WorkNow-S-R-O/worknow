@@ -50,6 +50,7 @@ export default defineConfig({
 			'@utils': resolve(__dirname, './apps/client/src/utils'),
 			'@css': resolve(__dirname, './apps/client/src/css'),
 			'@mocks': resolve(__dirname, './tests/mocks'),
+			'@services': resolve(__dirname, './apps/client/src/services'),
 			'bootstrap-icons': resolve(__dirname, './tests/mocks/bootstrap-icons.js'),
 			'libs/jobs': resolve(__dirname, './tests/mocks/libs-jobs.js'),
 			'libs/utils': resolve(__dirname, './tests/mocks/libs-utils.js'),
