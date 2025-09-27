@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import {
+	render,
+	screen,
+	fireEvent,
+	waitFor,
+	act,
+} from '@testing-library/react';
 import { useState, useRef, useEffect } from 'react';
 
 // Mock CSS imports
@@ -11,7 +17,9 @@ const mockUseIntlayer = vi.fn(() => ({
 	optional: { value: 'Optional' },
 	imageUploadSuccess: { value: 'Image uploaded successfully' },
 	imageModerationError: { value: 'Image moderation failed' },
-	imageModerationErrorDescription: { value: 'Image contains inappropriate content' },
+	imageModerationErrorDescription: {
+		value: 'Image contains inappropriate content',
+	},
 	imageUploadError: { value: 'Failed to upload image' },
 	imageDeletedSuccess: { value: 'Image deleted successfully' },
 	imageDeleteError: { value: 'Failed to delete image' },
@@ -55,9 +63,9 @@ vi.mock('../../contexts/ImageUploadContext.jsx', () => ({
 	}),
 }));
 
-// Mock libs/jobs
+// Mock libs aggregator
 const mockDeleteJobImage = vi.fn();
-vi.mock('libs/jobs', () => ({
+vi.mock('libs', () => ({
 	deleteJobImage: mockDeleteJobImage,
 }));
 
@@ -308,12 +316,14 @@ describe('ImageUpload Component', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		
+
 		// Reset FileReader mock
-		mockFileReader.readAsDataURL.mockImplementation(function() {
+		mockFileReader.readAsDataURL.mockImplementation(function () {
 			setTimeout(() => {
 				if (this.onload) {
-					this.onload({ target: { result: 'data:image/jpeg;base64,test-image-data' } });
+					this.onload({
+						target: { result: 'data:image/jpeg;base64,test-image-data' },
+					});
 				}
 			}, 0);
 		});
@@ -333,7 +343,9 @@ describe('ImageUpload Component', () => {
 			expect(screen.getByText('Job Image')).toBeInTheDocument();
 			expect(screen.getByText('(Optional)')).toBeInTheDocument();
 			expect(screen.getByText('Click to upload')).toBeInTheDocument();
-			expect(screen.getByText('Supported formats: JPG, PNG, GIF')).toBeInTheDocument();
+			expect(
+				screen.getByText('Supported formats: JPG, PNG, GIF'),
+			).toBeInTheDocument();
 		});
 
 		it('applies custom className', async () => {
@@ -346,7 +358,9 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...propsWithClassName} />);
 			});
 
-			const container = screen.getByText('Job Image').closest('.image-upload-container');
+			const container = screen
+				.getByText('Job Image')
+				.closest('.image-upload-container');
 			expect(container).toHaveClass('custom-class');
 		});
 
@@ -356,7 +370,9 @@ describe('ImageUpload Component', () => {
 			});
 
 			expect(screen.getByText('Click to upload')).toBeInTheDocument();
-			expect(screen.getByText('Supported formats: JPG, PNG, GIF')).toBeInTheDocument();
+			expect(
+				screen.getByText('Supported formats: JPG, PNG, GIF'),
+			).toBeInTheDocument();
 			expect(screen.queryByAltText('Preview')).not.toBeInTheDocument();
 		});
 
@@ -382,8 +398,8 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...defaultProps} />);
 			});
 
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const fileInput = document.querySelector('input[type="file"]');
+
 			await act(async () => {
 				fireEvent.change(fileInput, { target: { files: [mockFile] } });
 			});
@@ -395,11 +411,13 @@ describe('ImageUpload Component', () => {
 			await waitFor(() => {
 				expect(defaultProps.onImageUpload).toHaveBeenCalledWith(
 					'https://example.com/uploaded-image.jpg',
-					mockFile
+					mockFile,
 				);
 			});
 
-			expect(mockToast.success).toHaveBeenCalledWith('Image uploaded successfully');
+			expect(mockToast.success).toHaveBeenCalledWith(
+				'Image uploaded successfully',
+			);
 		});
 
 		it('shows preview immediately when file is selected', async () => {
@@ -407,8 +425,8 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...defaultProps} />);
 			});
 
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const fileInput = document.querySelector('input[type="file"]');
+
 			await act(async () => {
 				fireEvent.change(fileInput, { target: { files: [mockFile] } });
 			});
@@ -427,8 +445,8 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...defaultProps} />);
 			});
 
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const fileInput = document.querySelector('input[type="file"]');
+
 			await act(async () => {
 				fireEvent.change(fileInput, { target: { files: [mockFile] } });
 			});
@@ -446,14 +464,16 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...defaultProps} />);
 			});
 
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const fileInput = document.querySelector('input[type="file"]');
+
 			await act(async () => {
 				fireEvent.change(fileInput, { target: { files: [mockFile] } });
 			});
 
 			await waitFor(() => {
-				expect(mockToast.error).toHaveBeenCalledWith('Image contains inappropriate content');
+				expect(mockToast.error).toHaveBeenCalledWith(
+					'Image contains inappropriate content',
+				);
 			});
 		});
 
@@ -462,8 +482,8 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...defaultProps} />);
 			});
 
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const fileInput = document.querySelector('input[type="file"]');
+
 			await act(async () => {
 				fireEvent.change(fileInput, { target: { files: [] } });
 			});
@@ -484,7 +504,7 @@ describe('ImageUpload Component', () => {
 			});
 
 			const removeButton = screen.getByText('Remove Image');
-			
+
 			await act(async () => {
 				fireEvent.click(removeButton);
 			});
@@ -492,11 +512,13 @@ describe('ImageUpload Component', () => {
 			await waitFor(() => {
 				expect(mockDeleteJobImage).toHaveBeenCalledWith(
 					'https://example.com/test-image.jpg',
-					'mock-token'
+					'mock-token',
 				);
 			});
 
-			expect(mockToast.success).toHaveBeenCalledWith('Image deleted successfully');
+			expect(mockToast.success).toHaveBeenCalledWith(
+				'Image deleted successfully',
+			);
 			expect(defaultProps.onImageUpload).toHaveBeenCalledWith(null, null);
 		});
 
@@ -513,7 +535,7 @@ describe('ImageUpload Component', () => {
 			});
 
 			const removeButton = screen.getByText('Remove Image');
-			
+
 			await act(async () => {
 				fireEvent.click(removeButton);
 			});
@@ -532,8 +554,8 @@ describe('ImageUpload Component', () => {
 			});
 
 			// First upload an image
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const fileInput = document.querySelector('input[type="file"]');
+
 			await act(async () => {
 				fireEvent.change(fileInput, { target: { files: [mockFile] } });
 			});
@@ -543,7 +565,7 @@ describe('ImageUpload Component', () => {
 			});
 
 			const removeButton = screen.getByText('Remove Image');
-			
+
 			await act(async () => {
 				fireEvent.click(removeButton);
 			});
@@ -560,9 +582,11 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...defaultProps} />);
 			});
 
-			const uploadArea = screen.getByText('Click to upload').closest('.upload-placeholder');
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const uploadArea = screen
+				.getByText('Click to upload')
+				.closest('.upload-placeholder');
+			const fileInput = document.querySelector('input[type="file"]');
+
 			// Mock click method
 			const clickSpy = vi.spyOn(fileInput, 'click');
 
@@ -584,8 +608,8 @@ describe('ImageUpload Component', () => {
 			});
 
 			const changeButton = screen.getByText('Change Image');
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const fileInput = document.querySelector('input[type="file"]');
+
 			// Mock click method
 			const clickSpy = vi.spyOn(fileInput, 'click');
 
@@ -601,8 +625,10 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...defaultProps} />);
 			});
 
-			const uploadArea = screen.getByText('Click to upload').closest('.upload-placeholder');
-			
+			const uploadArea = screen
+				.getByText('Click to upload')
+				.closest('.upload-placeholder');
+
 			await act(async () => {
 				fireEvent.mouseEnter(uploadArea);
 			});
@@ -637,7 +663,10 @@ describe('ImageUpload Component', () => {
 			});
 
 			expect(screen.getByAltText('Preview')).toBeInTheDocument();
-			expect(screen.getByAltText('Preview')).toHaveAttribute('src', 'https://example.com/new-image.jpg');
+			expect(screen.getByAltText('Preview')).toHaveAttribute(
+				'src',
+				'https://example.com/new-image.jpg',
+			);
 		});
 
 		it('clears preview URL when currentImageUrl becomes null', async () => {
@@ -664,7 +693,7 @@ describe('ImageUpload Component', () => {
 	describe('Error Handling', () => {
 		it('handles FileReader error gracefully', async () => {
 			// Mock FileReader error
-			mockFileReader.readAsDataURL.mockImplementation(function() {
+			mockFileReader.readAsDataURL.mockImplementation(function () {
 				setTimeout(() => {
 					if (this.onerror) {
 						this.onerror(new Error('File read error'));
@@ -676,8 +705,8 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...defaultProps} />);
 			});
 
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const fileInput = document.querySelector('input[type="file"]');
+
 			await act(async () => {
 				fireEvent.change(fileInput, { target: { files: [mockFile] } });
 			});
@@ -698,8 +727,8 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...propsWithoutCallback} />);
 			});
 
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const fileInput = document.querySelector('input[type="file"]');
+
 			await act(async () => {
 				fireEvent.change(fileInput, { target: { files: [mockFile] } });
 			});
@@ -709,7 +738,9 @@ describe('ImageUpload Component', () => {
 			});
 
 			// Should not crash when onImageUpload is null
-			expect(mockToast.success).toHaveBeenCalledWith('Image uploaded successfully');
+			expect(mockToast.success).toHaveBeenCalledWith(
+				'Image uploaded successfully',
+			);
 		});
 	});
 
@@ -743,8 +774,8 @@ describe('ImageUpload Component', () => {
 				render(<ImageUpload {...defaultProps} />);
 			});
 
-    const fileInput = document.querySelector('input[type="file"]');
-			
+			const fileInput = document.querySelector('input[type="file"]');
+
 			expect(fileInput).toHaveAttribute('type', 'file');
 			expect(fileInput).toHaveAttribute('accept', 'image/*');
 			expect(fileInput).toHaveStyle({ display: 'none' });

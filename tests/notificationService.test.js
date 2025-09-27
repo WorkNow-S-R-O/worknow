@@ -33,7 +33,7 @@ describe('NotificationService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetNotificationServiceMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
@@ -95,14 +95,16 @@ describe('NotificationService', () => {
 
 		it('should process multiple users correctly', () => {
 			const users = mockUserArrays.multipleUsers;
-			const userNames = users.map(user => mockEmailGenerationLogic.generateUserName(user));
+			const userNames = users.map((user) =>
+				mockEmailGenerationLogic.generateUserName(user),
+			);
 
 			expect(userNames).toEqual([
 				'John Doe',
 				'Jane',
 				'Smith',
 				'Пользователь',
-				'Пользователь'
+				'Пользователь',
 			]);
 		});
 
@@ -207,7 +209,7 @@ describe('NotificationService', () => {
 			const seekers = mockSeekerArrays.demandedSeekers;
 
 			expect(seekers).toHaveLength(3);
-			seekers.forEach(seeker => {
+			seekers.forEach((seeker) => {
 				expect(seeker.isDemanded).toBe(true);
 			});
 		});
@@ -216,7 +218,7 @@ describe('NotificationService', () => {
 			const seekers = mockSeekerArrays.nonDemandedSeekers;
 
 			expect(seekers).toHaveLength(2);
-			seekers.forEach(seeker => {
+			seekers.forEach((seeker) => {
 				expect(seeker.isDemanded).toBe(false);
 			});
 		});
@@ -243,7 +245,9 @@ describe('NotificationService', () => {
 
 		it('should generate candidate list for seeker with all fields', () => {
 			const seeker = mockSeekerData.seekerWithAllFields;
-			const candidateList = mockEmailGenerationLogic.generateCandidateList([seeker]);
+			const candidateList = mockEmailGenerationLogic.generateCandidateList([
+				seeker,
+			]);
 
 			expect(candidateList).toContain(seeker.name);
 			expect(candidateList).toContain(seeker.city);
@@ -256,7 +260,9 @@ describe('NotificationService', () => {
 
 		it('should generate candidate list for seeker with minimal fields', () => {
 			const seeker = mockSeekerData.seekerWithMinimalFields;
-			const candidateList = mockEmailGenerationLogic.generateCandidateList([seeker]);
+			const candidateList = mockEmailGenerationLogic.generateCandidateList([
+				seeker,
+			]);
 
 			expect(candidateList).toContain(seeker.name);
 			expect(candidateList).toContain(seeker.city);
@@ -269,7 +275,9 @@ describe('NotificationService', () => {
 
 		it('should generate candidate list for seeker with partial fields', () => {
 			const seeker = mockSeekerData.seekerWithPartialFields;
-			const candidateList = mockEmailGenerationLogic.generateCandidateList([seeker]);
+			const candidateList = mockEmailGenerationLogic.generateCandidateList([
+				seeker,
+			]);
 
 			expect(candidateList).toContain(seeker.name);
 			expect(candidateList).toContain(seeker.city);
@@ -282,7 +290,8 @@ describe('NotificationService', () => {
 
 		it('should generate candidate list for multiple seekers', () => {
 			const seekers = mockSeekerArrays.multipleSeekers;
-			const candidateList = mockEmailGenerationLogic.generateCandidateList(seekers);
+			const candidateList =
+				mockEmailGenerationLogic.generateCandidateList(seekers);
 
 			expect(candidateList).toContain(seekers[0].name);
 			expect(candidateList).toContain(seekers[1].name);
@@ -291,7 +300,8 @@ describe('NotificationService', () => {
 
 		it('should handle empty seekers array', () => {
 			const seekers = mockSeekerArrays.emptySeekers;
-			const candidateList = mockEmailGenerationLogic.generateCandidateList(seekers);
+			const candidateList =
+				mockEmailGenerationLogic.generateCandidateList(seekers);
 
 			expect(candidateList).toBe('');
 		});
@@ -299,7 +309,10 @@ describe('NotificationService', () => {
 		it('should replace userName placeholder', () => {
 			const html = mockEmailContent.htmlTemplate;
 			const userName = 'John Doe';
-			const replacedHtml = mockEmailGenerationLogic.replaceUserName(html, userName);
+			const replacedHtml = mockEmailGenerationLogic.replaceUserName(
+				html,
+				userName,
+			);
 
 			expect(replacedHtml).toContain('Здравствуйте, John Doe!');
 			expect(replacedHtml).not.toContain('{{userName}}');
@@ -308,7 +321,10 @@ describe('NotificationService', () => {
 		it('should handle special characters in userName', () => {
 			const html = mockEmailContent.htmlTemplate;
 			const userName = 'Ольга & Петр';
-			const replacedHtml = mockEmailGenerationLogic.replaceUserName(html, userName);
+			const replacedHtml = mockEmailGenerationLogic.replaceUserName(
+				html,
+				userName,
+			);
 
 			expect(replacedHtml).toContain('Здравствуйте, Ольга & Петр!');
 		});
@@ -316,7 +332,10 @@ describe('NotificationService', () => {
 		it('should handle empty userName', () => {
 			const html = mockEmailContent.htmlTemplate;
 			const userName = '';
-			const replacedHtml = mockEmailGenerationLogic.replaceUserName(html, userName);
+			const replacedHtml = mockEmailGenerationLogic.replaceUserName(
+				html,
+				userName,
+			);
 
 			expect(replacedHtml).toContain('Здравствуйте, !');
 		});
@@ -353,8 +372,13 @@ describe('NotificationService', () => {
 
 		it('should generate email template with correct structure', () => {
 			const seekerCount = 3;
-			const candidatesList = mockEmailGenerationLogic.generateCandidateList(mockSeekerArrays.multipleSeekers);
-			const template = mockHtmlGenerationLogic.generateEmailTemplate(seekerCount, candidatesList);
+			const candidatesList = mockEmailGenerationLogic.generateCandidateList(
+				mockSeekerArrays.multipleSeekers,
+			);
+			const template = mockHtmlGenerationLogic.generateEmailTemplate(
+				seekerCount,
+				candidatesList,
+			);
 
 			expect(template).toContain('<!DOCTYPE html>');
 			expect(template).toContain('<html>');
@@ -370,7 +394,10 @@ describe('NotificationService', () => {
 		it('should include frontend URL in template', () => {
 			const seekerCount = 1;
 			const candidatesList = '';
-			const template = mockHtmlGenerationLogic.generateEmailTemplate(seekerCount, candidatesList);
+			const template = mockHtmlGenerationLogic.generateEmailTemplate(
+				seekerCount,
+				candidatesList,
+			);
 
 			expect(template).toContain('href="');
 			expect(template).toContain('/seekers');
@@ -428,7 +455,7 @@ describe('NotificationService', () => {
 			const results = mockEmailResults.allSuccessful;
 
 			expect(results).toHaveLength(3);
-			results.forEach(result => {
+			results.forEach((result) => {
 				expect(result.status).toBe('fulfilled');
 			});
 		});
@@ -437,21 +464,21 @@ describe('NotificationService', () => {
 			const results = mockEmailResults.allFailed;
 
 			expect(results).toHaveLength(3);
-			results.forEach(result => {
+			results.forEach((result) => {
 				expect(result.status).toBe('rejected');
 			});
 		});
 
 		it('should count successful emails', () => {
 			const results = mockEmailResults.mixedResults;
-			const successful = results.filter(r => r.status === 'fulfilled').length;
+			const successful = results.filter((r) => r.status === 'fulfilled').length;
 
 			expect(successful).toBe(3);
 		});
 
 		it('should count failed emails', () => {
 			const results = mockEmailResults.mixedResults;
-			const failed = results.filter(r => r.status === 'rejected').length;
+			const failed = results.filter((r) => r.status === 'rejected').length;
 
 			expect(failed).toBe(1);
 		});
@@ -616,7 +643,9 @@ describe('NotificationService', () => {
 			const logMessage = mockConsoleLogData.errorSending;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('❌ Error sending new candidates notifications:');
+			expect(logMessage).toContain(
+				'❌ Error sending new candidates notifications:',
+			);
 		});
 
 		it('should log email failed message', () => {
@@ -795,7 +824,7 @@ describe('NotificationService', () => {
 			expect(errors).toHaveProperty('prismaError');
 			expect(errors).toHaveProperty('timeoutError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -810,7 +839,7 @@ describe('NotificationService', () => {
 			expect(errorMessages).toHaveProperty('databaseError');
 			expect(errorMessages).toHaveProperty('prismaError');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -824,7 +853,7 @@ describe('NotificationService', () => {
 			expect(successMessages).toHaveProperty('usersFound');
 			expect(successMessages).toHaveProperty('usersToNotify');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -838,7 +867,7 @@ describe('NotificationService', () => {
 			expect(consoleLogData).toHaveProperty('noUsersFound');
 			expect(consoleLogData).toHaveProperty('emailSent');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});

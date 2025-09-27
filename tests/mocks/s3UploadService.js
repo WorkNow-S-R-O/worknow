@@ -22,9 +22,15 @@ export const mockPrisma = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
-export const mockConsoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
+export const mockConsoleWarn = vi
+	.spyOn(console, 'warn')
+	.mockImplementation(() => {});
 
 // Mock file data
 export const mockFileData = {
@@ -36,7 +42,7 @@ export const mockFileData = {
 		size: 1024000, // 1MB
 		buffer: Buffer.from('fake-image-data'),
 	},
-	
+
 	largeImageFile: {
 		fieldname: 'image',
 		originalname: 'large-image.jpg',
@@ -45,7 +51,7 @@ export const mockFileData = {
 		size: 6 * 1024 * 1024, // 6MB
 		buffer: Buffer.from('fake-large-image-data'),
 	},
-	
+
 	invalidFileType: {
 		fieldname: 'image',
 		originalname: 'test-document.pdf',
@@ -54,7 +60,7 @@ export const mockFileData = {
 		size: 1024000,
 		buffer: Buffer.from('fake-pdf-data'),
 	},
-	
+
 	invalidFileExtension: {
 		fieldname: 'image',
 		originalname: 'test-image.bmp',
@@ -63,7 +69,7 @@ export const mockFileData = {
 		size: 1024000,
 		buffer: Buffer.from('fake-bmp-data'),
 	},
-	
+
 	emptyFile: {
 		fieldname: 'image',
 		originalname: 'empty-image.jpg',
@@ -72,7 +78,7 @@ export const mockFileData = {
 		size: 0,
 		buffer: Buffer.from(''),
 	},
-	
+
 	webpFile: {
 		fieldname: 'image',
 		originalname: 'test-image.webp',
@@ -81,7 +87,7 @@ export const mockFileData = {
 		size: 1024000,
 		buffer: Buffer.from('fake-webp-data'),
 	},
-	
+
 	pngFile: {
 		fieldname: 'image',
 		originalname: 'test-image.png',
@@ -90,7 +96,7 @@ export const mockFileData = {
 		size: 1024000,
 		buffer: Buffer.from('fake-png-data'),
 	},
-	
+
 	gifFile: {
 		fieldname: 'image',
 		originalname: 'test-image.gif',
@@ -111,7 +117,7 @@ export const mockUserData = {
 		isPremium: false,
 		premiumDeluxe: false,
 	},
-	
+
 	premiumUser: {
 		id: 'premium456',
 		email: 'premium@example.com',
@@ -120,7 +126,7 @@ export const mockUserData = {
 		isPremium: true,
 		premiumDeluxe: false,
 	},
-	
+
 	premiumDeluxeUser: {
 		id: 'deluxe789',
 		email: 'deluxe@example.com',
@@ -129,7 +135,7 @@ export const mockUserData = {
 		isPremium: false,
 		premiumDeluxe: true,
 	},
-	
+
 	nonExistentUser: null,
 };
 
@@ -145,7 +151,7 @@ export const mockJobData = {
 		shuttle: 'true',
 		meals: 'false',
 	},
-	
+
 	jobDataWithStringBooleans: {
 		title: 'Marketing Manager',
 		salary: '80000',
@@ -156,13 +162,13 @@ export const mockJobData = {
 		shuttle: 'false',
 		meals: 'true',
 	},
-	
+
 	jobDataWithMissingFields: {
 		title: 'Incomplete Job',
 		salary: '50000',
 		// phone, description, cityId, categoryId are missing
 	},
-	
+
 	jobDataWithNumericIds: {
 		title: 'Designer',
 		salary: '75000',
@@ -198,7 +204,7 @@ export const mockJobObjects = {
 			email: 'free@example.com',
 		},
 	},
-	
+
 	existingJob: {
 		id: 2,
 		title: 'Marketing Manager',
@@ -212,7 +218,7 @@ export const mockJobObjects = {
 		shuttle: false,
 		meals: true,
 	},
-	
+
 	jobWithoutImage: {
 		id: 3,
 		title: 'Designer',
@@ -226,7 +232,7 @@ export const mockJobObjects = {
 		shuttle: true,
 		meals: true,
 	},
-	
+
 	jobWithUndefinedImage: {
 		id: 4,
 		title: 'Undefined Image Job',
@@ -240,7 +246,7 @@ export const mockJobObjects = {
 		shuttle: false,
 		meals: false,
 	},
-	
+
 	updatedJob: {
 		id: 2,
 		title: 'Marketing Manager',
@@ -273,18 +279,18 @@ export const mockS3UploadResults = {
 		size: 1024000,
 		mimetype: 'image/jpeg',
 	},
-	
+
 	contentRejected: {
 		success: false,
 		code: 'CONTENT_REJECTED',
 		error: 'Image contains inappropriate content',
 	},
-	
+
 	uploadFailed: {
 		success: false,
 		error: 'S3 upload failed',
 	},
-	
+
 	moderationFailed: {
 		success: false,
 		code: 'MODERATION_FAILED',
@@ -306,13 +312,13 @@ export const mockS3ConfigStatus = {
 		missingVars: [],
 		message: 'S3 configuration is valid',
 	},
-	
+
 	invalid: {
 		isValid: false,
 		missingVars: ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY'],
 		message: 'S3 configuration is incomplete',
 	},
-	
+
 	partial: {
 		isValid: false,
 		missingVars: ['AWS_S3_BUCKET_NAME'],
@@ -335,11 +341,15 @@ export const mockErrors = {
 	noFileProvided: new Error('No file provided'),
 	invalidFileType: new Error('Only image files are allowed'),
 	fileSizeExceeded: new Error('File size exceeds 5MB limit'),
-	contentRejected: new Error('Image content violates community guidelines: Image contains inappropriate content'),
+	contentRejected: new Error(
+		'Image content violates community guidelines: Image contains inappropriate content',
+	),
 	uploadFailed: new Error('Upload failed: S3 upload failed'),
 	missingRequiredFields: new Error('Missing required fields: title, salary'),
 	userNotFound: new Error('User not found'),
-	jobLimitExceeded: new Error('Вы уже разместили 5 объявлений. Для размещения большего количества объявлений перейдите на Premium тариф.'),
+	jobLimitExceeded: new Error(
+		'Вы уже разместили 5 объявлений. Для размещения большего количества объявлений перейдите на Premium тариф.',
+	),
 	premiumJobLimitExceeded: new Error('Вы уже разместили 10 объявлений.'),
 	jobNotFound: new Error('Job not found or access denied'),
 	databaseError: new Error('Database connection failed'),
@@ -357,7 +367,8 @@ export const mockErrorMessages = {
 	uploadFailed: 'Upload failed',
 	missingRequiredFields: 'Missing required fields',
 	userNotFound: 'User not found',
-	jobLimitExceeded: 'Вы уже разместили 5 объявлений. Для размещения большего количества объявлений перейдите на Premium тариф.',
+	jobLimitExceeded:
+		'Вы уже разместили 5 объявлений. Для размещения большего количества объявлений перейдите на Premium тариф.',
 	premiumJobLimitExceeded: 'Вы уже разместили 10 объявлений.',
 	jobNotFound: 'Job not found or access denied',
 	databaseError: 'Database connection failed',
@@ -386,7 +397,8 @@ export const mockConsoleLogData = {
 	deleteJobFailed: '❌ S3UploadService: Delete job failed:',
 	cleanupFailed: '❌ S3UploadService: Failed to cleanup image:',
 	cleanupNewImageFailed: '❌ S3UploadService: Failed to cleanup new image:',
-	imageDeletionFailed: '⚠️ S3UploadService: Image deletion failed or image not found',
+	imageDeletionFailed:
+		'⚠️ S3UploadService: Image deletion failed or image not found',
 	imageDeleted: 'Image deleted successfully',
 	cleanedUpImage: 'Cleaned up uploaded image after job creation failure',
 	cleanedUpNewImage: 'Cleaned up new image after update failure',
@@ -403,19 +415,19 @@ export const mockEnvironmentVariables = {
 		AWS_S3_BUCKET_NAME: 'worknow-images',
 		AWS_REGION: 'us-east-1',
 	},
-	
+
 	missingRequired: {
 		AWS_ACCESS_KEY_ID: 'AKIAIOSFODNN7EXAMPLE',
 		// AWS_SECRET_ACCESS_KEY is missing
 		AWS_S3_BUCKET_NAME: 'worknow-images',
 	},
-	
+
 	missingBucket: {
 		AWS_ACCESS_KEY_ID: 'AKIAIOSFODNN7EXAMPLE',
 		AWS_SECRET_ACCESS_KEY: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
 		// AWS_S3_BUCKET_NAME is missing
 	},
-	
+
 	empty: {},
 };
 
@@ -425,30 +437,34 @@ export const mockFileValidationResults = {
 		isValid: true,
 		errors: [],
 	},
-	
+
 	noFile: {
 		isValid: false,
 		errors: ['No file provided'],
 	},
-	
+
 	invalidType: {
 		isValid: false,
 		errors: ['Only image files are allowed'],
 	},
-	
+
 	fileSizeExceeded: {
 		isValid: false,
 		errors: ['File size exceeds 5MB limit'],
 	},
-	
+
 	invalidExtension: {
 		isValid: false,
 		errors: ['Invalid file extension. Allowed: jpg, jpeg, png, gif, webp'],
 	},
-	
+
 	multipleErrors: {
 		isValid: false,
-		errors: ['Only image files are allowed', 'File size exceeds 5MB limit', 'Invalid file extension. Allowed: jpg, jpeg, png, gif, webp'],
+		errors: [
+			'Only image files are allowed',
+			'File size exceeds 5MB limit',
+			'Invalid file extension. Allowed: jpg, jpeg, png, gif, webp',
+		],
 	},
 };
 
@@ -461,23 +477,23 @@ export const mockServiceResponses = {
 		size: 1024000,
 		mimetype: 'image/jpeg',
 	},
-	
+
 	createJobSuccess: {
 		success: true,
 		job: mockJobObjects.createdJob,
 		imageUrl: 'https://s3.amazonaws.com/bucket/jobs/image1.jpg',
 	},
-	
+
 	updateJobImageSuccess: {
 		success: true,
 		job: mockJobObjects.updatedJob,
 		imageUrl: 'https://s3.amazonaws.com/bucket/jobs/new-image2.jpg',
 	},
-	
+
 	deleteImageSuccess: true,
-	
+
 	deleteJobSuccess: true,
-	
+
 	configurationStatus: {
 		isConfigured: true,
 		requiredEnvVars: [
@@ -500,7 +516,7 @@ export const mockDataConversions = {
 		filename: 'test-image.jpg',
 		mimetype: 'image/jpeg',
 	},
-	
+
 	number: {
 		cityId: 1,
 		categoryId: 2,
@@ -509,7 +525,7 @@ export const mockDataConversions = {
 		jobCount: 5,
 		maxJobs: 10,
 	},
-	
+
 	boolean: {
 		shuttle: true,
 		meals: false,
@@ -519,7 +535,7 @@ export const mockDataConversions = {
 		success: true,
 		isValid: true,
 	},
-	
+
 	object: {
 		file: mockFileData.validImageFile,
 		job: mockJobObjects.createdJob,
@@ -534,42 +550,50 @@ export const mockFileTypeValidationLogic = {
 	isImageFile: (mimetype) => {
 		return mimetype.startsWith('image/');
 	},
-	
+
 	isValidImageType: (mimetype) => {
-		const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+		const validTypes = [
+			'image/jpeg',
+			'image/jpg',
+			'image/png',
+			'image/gif',
+			'image/webp',
+		];
 		return validTypes.includes(mimetype);
 	},
-	
+
 	isValidFileExtension: (filename) => {
 		const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-		const fileExtension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
+		const fileExtension = filename
+			.toLowerCase()
+			.substring(filename.lastIndexOf('.'));
 		return allowedExtensions.includes(fileExtension);
 	},
-	
+
 	isValidFileSize: (size, maxSize = 5 * 1024 * 1024) => {
 		return size <= maxSize;
 	},
-	
+
 	validateFile: (file) => {
 		const errors = [];
-		
+
 		if (!file) {
 			errors.push('No file provided');
 			return { isValid: false, errors };
 		}
-		
+
 		if (!mockFileTypeValidationLogic.isImageFile(file.mimetype)) {
 			errors.push('Only image files are allowed');
 		}
-		
+
 		if (!mockFileTypeValidationLogic.isValidFileSize(file.size)) {
 			errors.push('File size exceeds 5MB limit');
 		}
-		
+
 		if (!mockFileTypeValidationLogic.isValidFileExtension(file.originalname)) {
 			errors.push('Invalid file extension. Allowed: jpg, jpeg, png, gif, webp');
 		}
-		
+
 		return {
 			isValid: errors.length === 0,
 			errors,
@@ -583,16 +607,16 @@ export const mockJobLimitLogic = {
 		const isPremium = user.isPremium || user.premiumDeluxe;
 		return isPremium ? 10 : 5;
 	},
-	
+
 	isAtLimit: (jobCount, user) => {
 		const maxJobs = mockJobLimitLogic.getMaxJobs(user);
 		return jobCount >= maxJobs;
 	},
-	
+
 	getLimitMessage: (user, jobCount) => {
 		const isPremium = user.isPremium || user.premiumDeluxe;
 		const maxJobs = isPremium ? 10 : 5;
-		
+
 		if (isPremium) {
 			return `Вы уже разместили ${maxJobs} объявлений.`;
 		} else {
@@ -604,16 +628,23 @@ export const mockJobLimitLogic = {
 // Mock S3 configuration logic
 export const mockS3ConfigurationLogic = {
 	validateConfig: (envVars) => {
-		const requiredVars = ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_S3_BUCKET_NAME'];
-		const missingVars = requiredVars.filter(varName => !envVars[varName]);
-		
+		const requiredVars = [
+			'AWS_ACCESS_KEY_ID',
+			'AWS_SECRET_ACCESS_KEY',
+			'AWS_S3_BUCKET_NAME',
+		];
+		const missingVars = requiredVars.filter((varName) => !envVars[varName]);
+
 		return {
 			isValid: missingVars.length === 0,
 			missingVars,
-			message: missingVars.length === 0 ? 'S3 configuration is valid' : 'S3 configuration is incomplete',
+			message:
+				missingVars.length === 0
+					? 'S3 configuration is valid'
+					: 'S3 configuration is incomplete',
 		};
 	},
-	
+
 	getConfigurationStatus: (isConfigured) => {
 		return {
 			isConfigured,

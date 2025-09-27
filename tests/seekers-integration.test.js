@@ -41,11 +41,11 @@ describe('Seekers Integration Tests', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console methods to avoid noise in tests
 		console.log = vi.fn();
 		console.error = vi.fn();
-		
+
 		// Reset all mocks
 		resetSeekersMocks();
 	});
@@ -63,9 +63,7 @@ describe('Seekers Integration Tests', () => {
 				mockGetAllSeekers.mockResolvedValue(mockSeekerListResponse);
 
 				// Act
-				const response = await request(app)
-					.get('/api/seekers')
-					.expect(200);
+				const response = await request(app).get('/api/seekers').expect(200);
 
 				// Assert
 				expect(response.body).toEqual(mockServiceResponses.getSeekersSuccess);
@@ -135,9 +133,7 @@ describe('Seekers Integration Tests', () => {
 				mockGetAllSeekers.mockRejectedValue(new Error('Database error'));
 
 				// Act
-				const response = await request(app)
-					.get('/api/seekers')
-					.expect(500);
+				const response = await request(app).get('/api/seekers').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -194,7 +190,9 @@ describe('Seekers Integration Tests', () => {
 				};
 
 				mockCreateSeeker.mockResolvedValue(mockSeekerData);
-				mockCheckAndSendNewCandidatesNotification.mockRejectedValue(new Error('Notification failed'));
+				mockCheckAndSendNewCandidatesNotification.mockRejectedValue(
+					new Error('Notification failed'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -247,8 +245,12 @@ describe('Seekers Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.getSeekerBySlugSuccess);
-				expect(mockGetSeekerBySlug).toHaveBeenCalledWith('john-doe-experienced-software-developer');
+				expect(response.body).toEqual(
+					mockServiceResponses.getSeekerBySlugSuccess,
+				);
+				expect(mockGetSeekerBySlug).toHaveBeenCalledWith(
+					'john-doe-experienced-software-developer',
+				);
 			});
 		});
 
@@ -292,9 +294,7 @@ describe('Seekers Integration Tests', () => {
 				mockGetSeekerById.mockResolvedValue(mockSeekerData);
 
 				// Act
-				const response = await request(app)
-					.get('/api/seekers/1')
-					.expect(200);
+				const response = await request(app).get('/api/seekers/1').expect(200);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -315,9 +315,13 @@ describe('Seekers Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.getSeekerByIdSuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.getSeekerByIdSuccess,
+				);
 				expect(mockGetSeekerById).toHaveBeenCalledWith(1);
-				expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('clerk_123456789');
+				expect(mockGetUserByClerkIdService).toHaveBeenCalledWith(
+					'clerk_123456789',
+				);
 			});
 
 			it('should handle non-premium user', async () => {
@@ -357,9 +361,7 @@ describe('Seekers Integration Tests', () => {
 				mockGetSeekerById.mockResolvedValue(null);
 
 				// Act
-				const response = await request(app)
-					.get('/api/seekers/999')
-					.expect(404);
+				const response = await request(app).get('/api/seekers/999').expect(404);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -372,9 +374,7 @@ describe('Seekers Integration Tests', () => {
 				mockGetSeekerById.mockRejectedValue(new Error('Database error'));
 
 				// Act
-				const response = await request(app)
-					.get('/api/seekers/1')
-					.expect(500);
+				const response = await request(app).get('/api/seekers/1').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -422,23 +422,17 @@ describe('Seekers Integration Tests', () => {
 	describe('HTTP Method Validation', () => {
 		it('should reject POST requests for GET endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.post('/api/seekers/slug/test-slug')
-				.expect(404);
+			await request(app).post('/api/seekers/slug/test-slug').expect(404);
 		});
 
 		it('should reject PUT requests for GET endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.put('/api/seekers/1')
-				.expect(404);
+			await request(app).put('/api/seekers/1').expect(404);
 		});
 
 		it('should reject PATCH requests for POST endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.patch('/api/seekers')
-				.expect(404);
+			await request(app).patch('/api/seekers').expect(404);
 		});
 	});
 
@@ -460,5 +454,3 @@ describe('Seekers Integration Tests', () => {
 		});
 	});
 });
-
-

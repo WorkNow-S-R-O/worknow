@@ -39,11 +39,11 @@ describe('Messages Integration Tests', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console methods to avoid noise in tests
 		console.log = vi.fn();
 		console.error = vi.fn();
-		
+
 		// Reset all mocks
 		resetMessagesMocks();
 	});
@@ -113,9 +113,7 @@ describe('Messages Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should require clerkUserId parameter', async () => {
 				// Act
-				const response = await request(app)
-					.get('/api/messages')
-					.expect(400);
+				const response = await request(app).get('/api/messages').expect(400);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -125,7 +123,9 @@ describe('Messages Integration Tests', () => {
 
 			it('should handle database errors', async () => {
 				// Arrange
-				mockPrismaInstance.message.findMany.mockRejectedValue(new Error('Database connection failed'));
+				mockPrismaInstance.message.findMany.mockRejectedValue(
+					new Error('Database connection failed'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -154,23 +154,17 @@ describe('Messages Integration Tests', () => {
 		describe('HTTP Method Validation', () => {
 			it('should reject POST requests', async () => {
 				// Act & Assert
-				await request(app)
-					.post('/api/messages')
-					.expect(400); // Will hit createMessage which requires body
+				await request(app).post('/api/messages').expect(400); // Will hit createMessage which requires body
 			});
 
 			it('should reject PUT requests', async () => {
 				// Act & Assert
-				await request(app)
-					.put('/api/messages')
-					.expect(404);
+				await request(app).put('/api/messages').expect(404);
 			});
 
 			it('should reject DELETE requests', async () => {
 				// Act & Assert
-				await request(app)
-					.delete('/api/messages')
-					.expect(404);
+				await request(app).delete('/api/messages').expect(404);
 			});
 		});
 
@@ -218,7 +212,9 @@ describe('Messages Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should handle database errors for path parameter', async () => {
 				// Arrange
-				mockPrismaInstance.message.findMany.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.message.findMany.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -264,7 +260,7 @@ describe('Messages Integration Tests', () => {
 				expect(mockSendEmail).toHaveBeenCalledWith(
 					'test@example.com',
 					'Test Message',
-					'<h2>Test Message</h2><p>This is a test message</p>'
+					'<h2>Test Message</h2><p>This is a test message</p>',
 				);
 			});
 
@@ -375,7 +371,9 @@ describe('Messages Integration Tests', () => {
 					title: 'Test Message',
 					body: 'This is a test message',
 				};
-				mockPrismaInstance.message.create.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.message.create.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -440,7 +438,9 @@ describe('Messages Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should handle database errors', async () => {
 				// Arrange
-				mockPrismaInstance.message.update.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.message.update.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -455,7 +455,9 @@ describe('Messages Integration Tests', () => {
 
 			it('should handle invalid message ID', async () => {
 				// Arrange
-				mockPrismaInstance.message.update.mockRejectedValue(new Error('Record not found'));
+				mockPrismaInstance.message.update.mockRejectedValue(
+					new Error('Record not found'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -474,7 +476,9 @@ describe('Messages Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should delete message successfully', async () => {
 				// Arrange
-				mockPrismaInstance.message.findUnique.mockResolvedValue(mockMessageData);
+				mockPrismaInstance.message.findUnique.mockResolvedValue(
+					mockMessageData,
+				);
 				mockPrismaInstance.message.delete.mockResolvedValue(mockMessageData);
 
 				// Act
@@ -523,7 +527,9 @@ describe('Messages Integration Tests', () => {
 				// Arrange
 				const prismaError = new Error('Record not found');
 				prismaError.code = 'P2025';
-				mockPrismaInstance.message.findUnique.mockResolvedValue(mockMessageData);
+				mockPrismaInstance.message.findUnique.mockResolvedValue(
+					mockMessageData,
+				);
 				mockPrismaInstance.message.delete.mockRejectedValue(prismaError);
 
 				// Act
@@ -541,7 +547,9 @@ describe('Messages Integration Tests', () => {
 				// Arrange
 				const prismaError = new Error('Invalid format');
 				prismaError.code = 'P2002';
-				mockPrismaInstance.message.findUnique.mockResolvedValue(mockMessageData);
+				mockPrismaInstance.message.findUnique.mockResolvedValue(
+					mockMessageData,
+				);
 				mockPrismaInstance.message.delete.mockRejectedValue(prismaError);
 
 				// Act
@@ -557,8 +565,12 @@ describe('Messages Integration Tests', () => {
 
 			it('should handle general database errors', async () => {
 				// Arrange
-				mockPrismaInstance.message.findUnique.mockResolvedValue(mockMessageData);
-				mockPrismaInstance.message.delete.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.message.findUnique.mockResolvedValue(
+					mockMessageData,
+				);
+				mockPrismaInstance.message.delete.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -717,7 +729,9 @@ describe('Messages Integration Tests', () => {
 
 			it('should handle database errors', async () => {
 				// Arrange
-				mockPrismaInstance.user.findMany.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.user.findMany.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -765,7 +779,7 @@ describe('Messages Integration Tests', () => {
 
 			// Act - Make multiple concurrent requests
 			const promises = Array.from({ length: 5 }).map(() =>
-				request(app).get('/api/messages?clerkUserId=user_123456789')
+				request(app).get('/api/messages?clerkUserId=user_123456789'),
 			);
 
 			const responses = await Promise.all(promises);
@@ -786,13 +800,11 @@ describe('Messages Integration Tests', () => {
 
 			// Act - Make multiple concurrent requests
 			const promises = Array.from({ length: 3 }).map(() =>
-				request(app)
-					.post('/api/messages')
-					.send({
-						clerkUserId: 'user_123456789',
-						title: 'Test Message',
-						body: 'This is a test message',
-					})
+				request(app).post('/api/messages').send({
+					clerkUserId: 'user_123456789',
+					title: 'Test Message',
+					body: 'This is a test message',
+				}),
 			);
 
 			const responses = await Promise.all(promises);
@@ -806,5 +818,3 @@ describe('Messages Integration Tests', () => {
 		});
 	});
 });
-
-

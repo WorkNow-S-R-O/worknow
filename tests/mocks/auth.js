@@ -5,7 +5,9 @@ const headerSegment = Buffer.from(
 ).toString('base64');
 
 export const buildJwt = (payload) => {
-	const payloadSegment = Buffer.from(JSON.stringify(payload)).toString('base64');
+	const payloadSegment = Buffer.from(JSON.stringify(payload)).toString(
+		'base64',
+	);
 	return `${headerSegment}.${payloadSegment}.signature`;
 };
 

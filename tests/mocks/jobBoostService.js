@@ -30,7 +30,7 @@ export const mockJobData = {
 			isPremium: true,
 		},
 	},
-	
+
 	jobWithRecentBoost: {
 		id: 2,
 		title: 'Marketing Manager',
@@ -51,7 +51,7 @@ export const mockJobData = {
 			isPremium: true,
 		},
 	},
-	
+
 	jobWithOldBoost: {
 		id: 3,
 		title: 'Designer',
@@ -72,7 +72,7 @@ export const mockJobData = {
 			isPremium: true,
 		},
 	},
-	
+
 	jobWithoutUser: {
 		id: 4,
 		title: 'Orphaned Job',
@@ -86,7 +86,7 @@ export const mockJobData = {
 		boostedAt: null,
 		user: null,
 	},
-	
+
 	nullJob: null,
 };
 
@@ -118,31 +118,31 @@ export const mockTimeScenarios = {
 		expectedHoursLeft: 23,
 		expectedMinutesLeft: 55,
 	},
-	
+
 	oneHourAgo: {
 		boostedAt: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1 hour ago
 		expectedHoursLeft: 23,
 		expectedMinutesLeft: 0,
 	},
-	
+
 	twelveHoursAgo: {
 		boostedAt: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12 hours ago
 		expectedHoursLeft: 12,
 		expectedMinutesLeft: 0,
 	},
-	
+
 	twentyThreeHoursAgo: {
 		boostedAt: new Date(Date.now() - 23 * 60 * 60 * 1000), // 23 hours ago
 		expectedHoursLeft: 1,
 		expectedMinutesLeft: 0,
 	},
-	
+
 	twentyThreeHoursThirtyMinutesAgo: {
 		boostedAt: new Date(Date.now() - (23 * 60 * 60 + 30 * 60) * 1000), // 23 hours 30 minutes ago
 		expectedHoursLeft: 0,
 		expectedMinutesLeft: 30,
 	},
-	
+
 	moreThanOneDayAgo: {
 		boostedAt: new Date(Date.now() - 25 * 60 * 60 * 1000), // 25 hours ago
 		expectedHoursLeft: 0,
@@ -157,7 +157,7 @@ export const mockJobIds = {
 		number: 1,
 		largeNumber: 999999,
 	},
-	
+
 	invalidIds: {
 		null: null,
 		undefined: undefined,
@@ -178,7 +178,7 @@ export const mockPrismaQueryOptions = {
 		where: { id: 1 },
 		include: { user: true },
 	},
-	
+
 	update: {
 		where: { id: 1 },
 		data: { boostedAt: expect.any(Date) },
@@ -227,19 +227,19 @@ export const mockServiceResponses = {
 	success: {
 		boostedJob: mockBoostedJob,
 	},
-	
+
 	jobNotFound: {
 		error: mockErrorMessages.jobNotFound,
 	},
-	
+
 	userNotFound: {
 		error: mockErrorMessages.userNotFound,
 	},
-	
+
 	cooldownActive: {
 		error: mockCooldownMessages.oneHourLeft,
 	},
-	
+
 	databaseError: {
 		error: mockErrorMessages.boostError,
 		details: 'Database connection failed',

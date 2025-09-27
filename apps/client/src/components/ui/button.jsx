@@ -1,7 +1,8 @@
 import { useIntlayer } from 'react-intlayer';
-import UserJobs from '../UserJobs';
 import { useUser, useClerk } from '@clerk/clerk-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
+
+import { UserJobs } from '@/components';
 
 const Button = () => {
 	const content = useIntlayer('button');

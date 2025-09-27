@@ -24,9 +24,10 @@ describe('CreateJobService', () => {
 	describe('Data Processing Logic', () => {
 		it('should correctly destructure job data', () => {
 			const jobData = mockJobData.validJobData;
-			
+
 			// Test the destructuring logic from the service
-			const { title, description, salary, cityId, categoryId, userId, phone } = jobData;
+			const { title, description, salary, cityId, categoryId, userId, phone } =
+				jobData;
 
 			expect(title).toBe('Software Developer');
 			expect(description).toBe('Looking for an experienced software developer');
@@ -98,7 +99,8 @@ describe('CreateJobService', () => {
 
 		it('should create correct data structure for Prisma', () => {
 			const jobData = mockJobData.validJobData;
-			const { title, description, salary, cityId, categoryId, userId, phone } = jobData;
+			const { title, description, salary, cityId, categoryId, userId, phone } =
+				jobData;
 
 			// Test the data structure that would be sent to Prisma
 			const prismaData = {
@@ -150,7 +152,8 @@ describe('CreateJobService', () => {
 				phone: '',
 			};
 
-			const { title, description, salary, cityId, categoryId, userId, phone } = emptyStringData;
+			const { title, description, salary, cityId, categoryId, userId, phone } =
+				emptyStringData;
 
 			const prismaData = {
 				title,
@@ -186,7 +189,8 @@ describe('CreateJobService', () => {
 				phone: null,
 			};
 
-			const { title, description, salary, cityId, categoryId, userId, phone } = nullData;
+			const { title, description, salary, cityId, categoryId, userId, phone } =
+				nullData;
 
 			const prismaData = {
 				title,
@@ -222,7 +226,8 @@ describe('CreateJobService', () => {
 				phone: undefined,
 			};
 
-			const { title, description, salary, cityId, categoryId, userId, phone } = undefinedData;
+			const { title, description, salary, cityId, categoryId, userId, phone } =
+				undefinedData;
 
 			const prismaData = {
 				title,
@@ -258,7 +263,8 @@ describe('CreateJobService', () => {
 				phone: '+972-50-123-4567',
 			};
 
-			const { title, description, salary, cityId, categoryId, userId, phone } = mixedData;
+			const { title, description, salary, cityId, categoryId, userId, phone } =
+				mixedData;
 
 			const prismaData = {
 				title,
@@ -336,7 +342,7 @@ describe('CreateJobService', () => {
 			};
 
 			const dbError = new Error('Database connection failed');
-			
+
 			expect(() => handleError(dbError)).toThrow('Failed to create job');
 		});
 
@@ -347,9 +353,12 @@ describe('CreateJobService', () => {
 			};
 
 			const originalError = new Error('Original database error');
-			
+
 			expect(() => handleError(originalError)).toThrow('Failed to create job');
-			expect(console.error).toHaveBeenCalledWith('Error creating job:', originalError);
+			expect(console.error).toHaveBeenCalledWith(
+				'Error creating job:',
+				originalError,
+			);
 		});
 
 		it('should handle non-Error objects thrown by Prisma', () => {
@@ -359,9 +368,12 @@ describe('CreateJobService', () => {
 			};
 
 			const nonErrorObject = { message: 'Not an Error object' };
-			
+
 			expect(() => handleError(nonErrorObject)).toThrow('Failed to create job');
-			expect(console.error).toHaveBeenCalledWith('Error creating job:', nonErrorObject);
+			expect(console.error).toHaveBeenCalledWith(
+				'Error creating job:',
+				nonErrorObject,
+			);
 		});
 
 		it('should throw generic error message for any database error', () => {
@@ -371,7 +383,7 @@ describe('CreateJobService', () => {
 			};
 
 			const customError = new Error('Custom database error');
-			
+
 			expect(() => handleError(customError)).toThrow('Failed to create job');
 		});
 	});

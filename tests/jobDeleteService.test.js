@@ -30,7 +30,7 @@ describe('JobDeleteService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetJobDeleteMocks();
-		
+
 		// Mock console methods
 		console.warn = vi.fn();
 		console.error = vi.fn();
@@ -46,7 +46,7 @@ describe('JobDeleteService', () => {
 		it('should accept valid job IDs', () => {
 			const validIds = Object.values(mockJobIds.validIds);
 
-			validIds.forEach(id => {
+			validIds.forEach((id) => {
 				expect(id).toBeDefined();
 				expect(id !== null).toBe(true);
 				expect(id !== undefined).toBe(true);
@@ -112,7 +112,7 @@ describe('JobDeleteService', () => {
 		it('should accept valid user IDs', () => {
 			const validUserIds = Object.values(mockUserIds.validUserIds);
 
-			validUserIds.forEach(userId => {
+			validUserIds.forEach((userId) => {
 				expect(userId).toBeDefined();
 				expect(typeof userId).toBe('string');
 				expect(userId.length).toBeGreaterThan(0);
@@ -122,7 +122,7 @@ describe('JobDeleteService', () => {
 		it('should reject invalid user IDs', () => {
 			const invalidUserIds = Object.values(mockUserIds.invalidUserIds);
 
-			invalidUserIds.forEach(userId => {
+			invalidUserIds.forEach((userId) => {
 				if (userId !== null && userId !== undefined) {
 					// Check if it's a string but invalid (empty or whitespace)
 					if (typeof userId === 'string') {
@@ -170,7 +170,9 @@ describe('JobDeleteService', () => {
 			const job = mockJobData.jobWithImage;
 
 			expect(job).toHaveProperty('imageUrl');
-			expect(job.imageUrl).toBe('https://s3.amazonaws.com/bucket/job-image.jpg');
+			expect(job.imageUrl).toBe(
+				'https://s3.amazonaws.com/bucket/job-image.jpg',
+			);
 			expect(typeof job.imageUrl).toBe('string');
 		});
 
@@ -405,8 +407,12 @@ describe('JobDeleteService', () => {
 			const user = mockJobData.jobWithImage.user;
 			const userJobs = mockUserJobs;
 
-			expect(mockTelegramNotification.sendUpdatedJobListToTelegram).toBeDefined();
-			expect(typeof mockTelegramNotification.sendUpdatedJobListToTelegram).toBe('function');
+			expect(
+				mockTelegramNotification.sendUpdatedJobListToTelegram,
+			).toBeDefined();
+			expect(typeof mockTelegramNotification.sendUpdatedJobListToTelegram).toBe(
+				'function',
+			);
 		});
 
 		it('should not send Telegram notification for free user', () => {
@@ -421,7 +427,7 @@ describe('JobDeleteService', () => {
 			expect(Array.isArray(userJobs)).toBe(true);
 			expect(userJobs).toHaveLength(2);
 
-			userJobs.forEach(job => {
+			userJobs.forEach((job) => {
 				expect(job).toHaveProperty('id');
 				expect(job).toHaveProperty('title');
 				expect(job).toHaveProperty('city');
@@ -439,7 +445,9 @@ describe('JobDeleteService', () => {
 
 			logS3Warning();
 
-			expect(console.warn).toHaveBeenCalledWith(mockConsoleLogData.s3DeletionWarning);
+			expect(console.warn).toHaveBeenCalledWith(
+				mockConsoleLogData.s3DeletionWarning,
+			);
 		});
 
 		it('should log S3 deletion error', () => {
@@ -450,7 +458,10 @@ describe('JobDeleteService', () => {
 			const error = new Error('S3 deletion failed');
 			logS3Error(error);
 
-			expect(console.error).toHaveBeenCalledWith(mockConsoleLogData.s3DeletionError, error);
+			expect(console.error).toHaveBeenCalledWith(
+				mockConsoleLogData.s3DeletionError,
+				error,
+			);
 		});
 
 		it('should handle S3 deletion warning message', () => {
@@ -734,9 +745,13 @@ describe('JobDeleteService', () => {
 		it('should have valid mock Telegram notification', () => {
 			const telegramNotification = mockTelegramNotification;
 
-			expect(telegramNotification).toHaveProperty('sendUpdatedJobListToTelegram');
+			expect(telegramNotification).toHaveProperty(
+				'sendUpdatedJobListToTelegram',
+			);
 
-			expect(typeof telegramNotification.sendUpdatedJobListToTelegram).toBe('function');
+			expect(typeof telegramNotification.sendUpdatedJobListToTelegram).toBe(
+				'function',
+			);
 		});
 
 		it('should have valid mock user jobs', () => {
@@ -745,7 +760,7 @@ describe('JobDeleteService', () => {
 			expect(Array.isArray(userJobs)).toBe(true);
 			expect(userJobs).toHaveLength(2);
 
-			userJobs.forEach(job => {
+			userJobs.forEach((job) => {
 				expect(job).toHaveProperty('id');
 				expect(job).toHaveProperty('title');
 				expect(job).toHaveProperty('description');
@@ -783,7 +798,7 @@ describe('JobDeleteService', () => {
 			expect(errors).toHaveProperty('s3Error');
 			expect(errors).toHaveProperty('telegramError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -802,7 +817,9 @@ describe('JobDeleteService', () => {
 			expect(typeof errorMessages.deleteError).toBe('string');
 
 			expect(errorMessages.jobNotFound).toBe('Объявление не найдено');
-			expect(errorMessages.unauthorized).toBe('У вас нет прав для удаления этого объявления');
+			expect(errorMessages.unauthorized).toBe(
+				'У вас нет прав для удаления этого объявления',
+			);
 			expect(errorMessages.deleteError).toBe('Ошибка удаления объявления');
 		});
 
@@ -818,8 +835,12 @@ describe('JobDeleteService', () => {
 			expect(typeof successMessages.telegramSent).toBe('string');
 
 			expect(successMessages.jobDeleted).toBe('Job deleted successfully');
-			expect(successMessages.imageDeleted).toBe('Image deleted from S3 successfully');
-			expect(successMessages.telegramSent).toBe('Telegram notification sent successfully');
+			expect(successMessages.imageDeleted).toBe(
+				'Image deleted from S3 successfully',
+			);
+			expect(successMessages.telegramSent).toBe(
+				'Telegram notification sent successfully',
+			);
 		});
 
 		it('should have valid mock console log data', () => {
@@ -831,8 +852,12 @@ describe('JobDeleteService', () => {
 			expect(typeof consoleData.s3DeletionWarning).toBe('string');
 			expect(typeof consoleData.s3DeletionError).toBe('string');
 
-			expect(consoleData.s3DeletionWarning).toContain('Failed to delete image from S3');
-			expect(consoleData.s3DeletionError).toContain('Error deleting image from S3');
+			expect(consoleData.s3DeletionWarning).toContain(
+				'Failed to delete image from S3',
+			);
+			expect(consoleData.s3DeletionError).toContain(
+				'Error deleting image from S3',
+			);
 		});
 
 		it('should have valid mock service responses', () => {

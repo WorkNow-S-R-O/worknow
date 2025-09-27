@@ -130,9 +130,7 @@ export const mockCategoriesWithLongNames = [
 	{
 		id: 1,
 		name: 'A'.repeat(1000), // Very long name
-		translations: [
-			{ lang: 'ru', name: 'Очень длинное название категории' },
-		],
+		translations: [{ lang: 'ru', name: 'Очень длинное название категории' }],
 	},
 ];
 
@@ -140,16 +138,12 @@ export const mockCategoriesWithSpecialChars = [
 	{
 		id: 1,
 		name: 'IT & Software',
-		translations: [
-			{ lang: 'ru', name: 'IT и программное обеспечение' },
-		],
+		translations: [{ lang: 'ru', name: 'IT и программное обеспечение' }],
 	},
 	{
 		id: 2,
 		name: 'Sales/Marketing',
-		translations: [
-			{ lang: 'ru', name: 'Продажи/Маркетинг' },
-		],
+		translations: [{ lang: 'ru', name: 'Продажи/Маркетинг' }],
 	},
 ];
 
@@ -166,4 +160,3 @@ export const resetCategoriesMocks = () => {
 	mockFindMany.mockClear();
 	vi.clearAllMocks();
 };
-

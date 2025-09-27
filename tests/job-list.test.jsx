@@ -5,11 +5,7 @@ import JobList from '../apps/client/src/components/JobList';
 // Mock react-loading-skeleton
 vi.mock('react-loading-skeleton', () => ({
 	default: ({ height, width, className }) => (
-		<div 
-			data-testid="skeleton" 
-			style={{ height, width }} 
-			className={className}
-		>
+		<div data-testid="skeleton" style={{ height, width }} className={className}>
 			Skeleton
 		</div>
 	),
@@ -35,8 +31,12 @@ vi.mock('../apps/client/src/components/JobCard', () => ({
 			<span data-testid="job-title">{job.title}</span>
 			<span data-testid="job-salary">{job.salary}</span>
 			<span data-testid="job-city">{job.city?.name}</span>
-			<span data-testid="current-user-name">{currentUserName || 'No user'}</span>
-			<span data-testid="current-user-image">{currentUserImageUrl || 'No image'}</span>
+			<span data-testid="current-user-name">
+				{currentUserName || 'No user'}
+			</span>
+			<span data-testid="current-user-image">
+				{currentUserImageUrl || 'No image'}
+			</span>
 		</div>
 	),
 }));
@@ -88,9 +88,11 @@ describe('JobList Component', () => {
 		it('renders correct number of skeleton cards', () => {
 			render(<JobList jobs={[]} loading={true} />);
 
-			const skeletonCards = screen.getAllByTestId('skeleton').filter(
-				(skeleton) => skeleton.parentElement?.classList.contains('card-body')
-			);
+			const skeletonCards = screen
+				.getAllByTestId('skeleton')
+				.filter((skeleton) =>
+					skeleton.parentElement?.classList.contains('card-body'),
+				);
 			expect(skeletonCards).toHaveLength(15); // 5 cards × 3 skeletons per card
 		});
 
@@ -304,9 +306,9 @@ describe('JobList Component', () => {
 			const { unmount } = render(<JobList jobs={mockJobs} loading={false} />);
 
 			expect(screen.getAllByTestId('job-card')).toHaveLength(2);
-			
+
 			unmount();
-			
+
 			expect(screen.queryByTestId('job-card')).not.toBeInTheDocument();
 		});
 
@@ -326,20 +328,23 @@ describe('JobList Component', () => {
 
 			expect(screen.getAllByTestId('job-card')).toHaveLength(2);
 
-			const newJobs = [...mockJobs, {
-				id: 3,
-				title: 'Test Job 3',
-				salary: '7000₪',
-				city: { name: 'Jerusalem' },
-				description: 'Test description 3',
-				phone: '050-9999999',
-				createdAt: '2024-01-03',
-				user: {
-					clerkUserId: 'user789',
-					imageUrl: 'https://example.com/user3.jpg',
-					isPremium: false,
+			const newJobs = [
+				...mockJobs,
+				{
+					id: 3,
+					title: 'Test Job 3',
+					salary: '7000₪',
+					city: { name: 'Jerusalem' },
+					description: 'Test description 3',
+					phone: '050-9999999',
+					createdAt: '2024-01-03',
+					user: {
+						clerkUserId: 'user789',
+						imageUrl: 'https://example.com/user3.jpg',
+						isPremium: false,
+					},
 				},
-			}];
+			];
 
 			rerender(<JobList jobs={newJobs} loading={false} />);
 

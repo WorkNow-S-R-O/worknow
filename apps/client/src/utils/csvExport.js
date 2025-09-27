@@ -38,11 +38,11 @@ const parseContactField = (contact) => {
 const cleanText = (text) => {
 	if (!text) return '';
 	return String(text)
-		.replace(/\r\n/g, ' ')  // Replace line breaks with spaces
-		.replace(/\n/g, ' ')     // Replace newlines with spaces
-		.replace(/\r/g, ' ')     // Replace carriage returns with spaces
-		.replace(/\s+/g, ' ')    // Replace multiple spaces with single space
-		.trim();                 // Remove leading/trailing whitespace
+		.replace(/\r\n/g, ' ') // Replace line breaks with spaces
+		.replace(/\n/g, ' ') // Replace newlines with spaces
+		.replace(/\r/g, ' ') // Replace carriage returns with spaces
+		.replace(/\s+/g, ' ') // Replace multiple spaces with single space
+		.trim(); // Remove leading/trailing whitespace
 };
 
 // Helper function to truncate long text for better CSV readability
@@ -72,7 +72,7 @@ const formatLanguages = (languages) => {
 const formatDocumentStatus = (documents, documentType) => {
 	const docStatus = cleanText(documents);
 	const docType = cleanText(documentType);
-	
+
 	if (docStatus && docType) {
 		return `${docStatus} (${docType})`;
 	} else if (docStatus) {
@@ -99,13 +99,18 @@ const transformSeekerForCSV = (seeker) => {
 		nativeLanguage: cleanText(seeker.nativeLanguage),
 		employmentType: cleanText(seeker.employment),
 		category: cleanText(seeker.category),
-		documentStatus: truncateText(formatDocumentStatus(seeker.documents, seeker.documentType), 80),
+		documentStatus: truncateText(
+			formatDocumentStatus(seeker.documents, seeker.documentType),
+			80,
+		),
 		note: truncateText(seeker.note, 100),
 		announcement: truncateText(seeker.announcement, 100),
 		gender: cleanText(seeker.gender),
 		isActive: seeker.isActive ? 'Yes' : 'No',
 		isDemanded: seeker.isDemanded ? 'Yes' : 'No',
-		createdDate: seeker.createdAt ? new Date(seeker.createdAt).toLocaleDateString() : ''
+		createdDate: seeker.createdAt
+			? new Date(seeker.createdAt).toLocaleDateString()
+			: '',
 	};
 };
 
@@ -127,12 +132,15 @@ export const downloadSeekersCSV = async ({
 	startLoadingWithProgress,
 	completeLoading,
 	content,
-	apiUrl
+	apiUrl,
 }) => {
 	try {
 		// Check if user has premium access
 		if (!isPremium) {
-			toast.error(content.premiumRequired?.value || 'Premium subscription required for CSV download');
+			toast.error(
+				content.premiumRequired?.value ||
+					'Premium subscription required for CSV download',
+			);
 			return;
 		}
 
@@ -141,25 +149,25 @@ export const downloadSeekersCSV = async ({
 		// Try to fetch from API first
 		try {
 			let apiParams = { ...filters };
-			
+
 			// If downloading all candidates, fetch all pages
 			if (filters.downloadAll) {
 				apiParams = {
 					...filters,
 					limit: 10000, // Large limit to get all seekers
-					page: 1
+					page: 1,
 				};
 			}
 
 			const response = await axios.get(`${apiUrl}/api/seekers/export`, {
 				params: apiParams,
-				timeout: 60000 // Increased timeout for large datasets
+				timeout: 60000, // Increased timeout for large datasets
 			});
 
 			if (response.data && response.data.length > 0) {
 				// Transform data for CSV
 				const transformedData = response.data.map(transformSeekerForCSV);
-				
+
 				// Create CSV configuration with Excel compatibility
 				const csvConfig = mkConfig({
 					filename: `seekers_${new Date().toISOString().split('T')[0]}`,
@@ -168,7 +176,9 @@ export const downloadSeekersCSV = async ({
 					quoteStrings: true, // Quote all strings for better Excel compatibility
 					fieldSeparator: ',',
 					showTitle: true,
-					title: filters.downloadAll ? 'WorkNow All Candidates Export' : 'WorkNow Candidates Export',
+					title: filters.downloadAll
+						? 'WorkNow All Candidates Export'
+						: 'WorkNow Candidates Export',
 					showColumnHeaders: true,
 					columnHeaders: [
 						{ key: 'name', displayLabel: 'Name' },
@@ -186,8 +196,8 @@ export const downloadSeekersCSV = async ({
 						{ key: 'gender', displayLabel: 'Gender' },
 						{ key: 'isActive', displayLabel: 'Is Active' },
 						{ key: 'isDemanded', displayLabel: 'Is Demanded' },
-						{ key: 'createdDate', displayLabel: 'Created Date' }
-					]
+						{ key: 'createdDate', displayLabel: 'Created Date' },
+					],
 				});
 
 				// Generate and download CSV
@@ -200,11 +210,9 @@ export const downloadSeekersCSV = async ({
 						? `${content.csvDownloadSuccess?.value || 'CSV file downloaded successfully!'} (Last ${filters.days} days - ${transformedData.length} candidates)`
 						: `${content.csvDownloadSuccess?.value || 'CSV file downloaded successfully!'} (${transformedData.length} candidates)`;
 				toast.success(message);
-
 			} else {
 				throw new Error('No data received from API');
 			}
-
 		} catch (error) {
 			console.log('API call failed, using fallback CSV generation');
 			console.log('Available seekers:', seekers.length);
@@ -213,17 +221,21 @@ export const downloadSeekersCSV = async ({
 			// If downloadAll is true but API failed, try to fetch all seekers from regular endpoint
 			if (filters.downloadAll && seekers.length === 0) {
 				try {
-					console.log('Attempting to fetch all seekers from regular API endpoint...');
+					console.log(
+						'Attempting to fetch all seekers from regular API endpoint...',
+					);
 					const allSeekersResponse = await axios.get(`${apiUrl}/api/seekers`, {
 						params: {
 							limit: 10000,
-							page: 1
+							page: 1,
 						},
-						timeout: 60000
+						timeout: 60000,
 					});
 
 					if (allSeekersResponse.data && allSeekersResponse.data.length > 0) {
-						console.log(`Fetched ${allSeekersResponse.data.length} seekers from regular API`);
+						console.log(
+							`Fetched ${allSeekersResponse.data.length} seekers from regular API`,
+						);
 						createCSVFromCurrentData(allSeekersResponse.data, content, filters);
 						return;
 					}
@@ -233,17 +245,21 @@ export const downloadSeekersCSV = async ({
 			}
 
 			if (seekers.length === 0) {
-				toast.error(content.noSeekersToExport?.value || 'No seekers data available to export');
+				toast.error(
+					content.noSeekersToExport?.value ||
+						'No seekers data available to export',
+				);
 				return;
 			}
 
 			// Use fallback: generate CSV from current data
 			createCSVFromCurrentData(seekers, content, filters);
 		}
-
 	} catch (error) {
 		console.error('CSV download error:', error);
-		toast.error(content.csvDownloadError?.value || 'Error downloading CSV file');
+		toast.error(
+			content.csvDownloadError?.value || 'Error downloading CSV file',
+		);
 	} finally {
 		completeLoading();
 	}
@@ -258,7 +274,10 @@ export const downloadSeekersCSV = async ({
 export const createCSVFromCurrentData = (seekers, content, filters = {}) => {
 	try {
 		if (!seekers || seekers.length === 0) {
-			toast.error(content.noSeekersToExport?.value || 'No seekers data available to export');
+			toast.error(
+				content.noSeekersToExport?.value ||
+					'No seekers data available to export',
+			);
 			return;
 		}
 
@@ -266,14 +285,17 @@ export const createCSVFromCurrentData = (seekers, content, filters = {}) => {
 		if (filters.days) {
 			const cutoffDate = new Date();
 			cutoffDate.setDate(cutoffDate.getDate() - filters.days);
-			filteredSeekers = seekers.filter(seeker => {
+			filteredSeekers = seekers.filter((seeker) => {
 				const createdAt = new Date(seeker.createdAt);
 				return createdAt >= cutoffDate;
 			});
 		}
 
 		if (filteredSeekers.length === 0) {
-			toast.error(content.noSeekersInDateRange?.value || 'No seekers found in the specified date range');
+			toast.error(
+				content.noSeekersInDateRange?.value ||
+					'No seekers found in the specified date range',
+			);
 			return;
 		}
 
@@ -288,7 +310,9 @@ export const createCSVFromCurrentData = (seekers, content, filters = {}) => {
 			quoteStrings: true, // Quote all strings for better Excel compatibility
 			fieldSeparator: ',',
 			showTitle: true,
-			title: filters.downloadAll ? 'WorkNow All Candidates Export (Fallback)' : 'WorkNow Candidates Export (Current Page Data)',
+			title: filters.downloadAll
+				? 'WorkNow All Candidates Export (Fallback)'
+				: 'WorkNow Candidates Export (Current Page Data)',
 			showColumnHeaders: true,
 			columnHeaders: [
 				{ key: 'name', displayLabel: 'Name' },
@@ -306,8 +330,8 @@ export const createCSVFromCurrentData = (seekers, content, filters = {}) => {
 				{ key: 'gender', displayLabel: 'Gender' },
 				{ key: 'isActive', displayLabel: 'Is Active' },
 				{ key: 'isDemanded', displayLabel: 'Is Demanded' },
-				{ key: 'createdDate', displayLabel: 'Created Date' }
-			]
+				{ key: 'createdDate', displayLabel: 'Created Date' },
+			],
 		});
 
 		// Generate and download CSV
@@ -322,7 +346,6 @@ export const createCSVFromCurrentData = (seekers, content, filters = {}) => {
 					? `${content.csvDownloadSuccess?.value || 'CSV file downloaded successfully!'} (Current page data - API unavailable - ${transformedData.length} candidates)`
 					: `${content.csvDownloadSuccess?.value || 'CSV file downloaded successfully!'} (Filtered results - ${transformedData.length} candidates)`;
 		toast.success(message);
-
 	} catch (error) {
 		console.error('CSV generation error:', error);
 		toast.error(content.csvDownloadError?.value || 'Error generating CSV file');
@@ -337,10 +360,22 @@ export const formatSeekerForCSV = (seeker) => {
 
 export const getSeekerCSVHeaders = () => {
 	return [
-		'Name', 'Contact Phone', 'City', 'Description', 'Facebook Profile',
-		'Languages', 'Native Language', 'Employment Type', 'Category',
-		'Document Status', 'Note', 'Announcement', 'Gender',
-		'Is Active', 'Is Demanded', 'Created Date'
+		'Name',
+		'Contact Phone',
+		'City',
+		'Description',
+		'Facebook Profile',
+		'Languages',
+		'Native Language',
+		'Employment Type',
+		'Category',
+		'Document Status',
+		'Note',
+		'Announcement',
+		'Gender',
+		'Is Active',
+		'Is Demanded',
+		'Created Date',
 	];
 };
 
@@ -355,7 +390,7 @@ export const createCSVContent = (seekers) => {
 		useBom: true,
 		quoteStrings: true,
 		showTitle: true,
-		title: 'WorkNow Candidates Export'
+		title: 'WorkNow Candidates Export',
 	});
 	const csvOutput = generateCsv(csvConfig)(transformedData);
 	return asString(csvOutput);

@@ -1,21 +1,22 @@
-import { Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { useIntlayer } from 'react-intlayer';
-import { useLanguageManager } from '../hooks/useLanguageManager';
-import PremiumButton from './ui/premium-button';
-import LanguageSelector from './ui/LanguageSelector';
-import UserAuth from './ui/UserAuth';
-import MobileNavbarHeader from './ui/MobileNavbarHeader';
-import Logo from './ui/Logo';
-import { SignedIn } from '@clerk/clerk-react';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import MailDropdown from './ui/MailDropdown';
+
+import { SignedIn } from '@clerk/clerk-react';
+import { useIntlayer } from 'react-intlayer';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router';
+
+import LanguageSelector from '@/components/ui/LanguageSelector';
+import Logo from '@/components/ui/Logo';
+import MailDropdown from '@/components/ui/MailDropdown';
+import MobileNavbarHeader from '@/components/ui/MobileNavbarHeader';
+import PremiumButton from '@/components/ui/premium-button';
+import UserAuth from '@/components/ui/UserAuth';
+import { useLanguageManager } from '@/hooks';
 
 const Navbar = () => {
 	const content = useIntlayer('navbar');
 	const { clearLanguagePreference } = useLanguageManager();
 	const location = useLocation();
-
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	// Close mobile navbar when route changes
@@ -121,9 +122,9 @@ const Navbar = () => {
 			</div>
 
 			{/* Mobile Version */}
-			<MobileNavbarHeader 
-				isExpanded={isExpanded} 
-				setIsExpanded={setIsExpanded} 
+			<MobileNavbarHeader
+				isExpanded={isExpanded}
+				setIsExpanded={setIsExpanded}
 			/>
 		</>
 	);

@@ -24,8 +24,8 @@ describe('CityService', () => {
 					translations: [
 						{ lang: 'ru', name: 'Тель-Авив' },
 						{ lang: 'he', name: 'תל אביב' },
-						{ lang: 'en', name: 'Tel Aviv' }
-					]
+						{ lang: 'en', name: 'Tel Aviv' },
+					],
 				},
 				{
 					id: 2,
@@ -33,9 +33,9 @@ describe('CityService', () => {
 					translations: [
 						{ lang: 'ru', name: 'Иерусалим' },
 						{ lang: 'he', name: 'ירושלים' },
-						{ lang: 'en', name: 'Jerusalem' }
-					]
-				}
+						{ lang: 'en', name: 'Jerusalem' },
+					],
+				},
 			];
 
 			// Test the mapping logic from the service
@@ -50,7 +50,7 @@ describe('CityService', () => {
 
 			expect(result).toEqual([
 				{ id: 1, name: 'Тель-Авив' },
-				{ id: 2, name: 'Иерусалим' }
+				{ id: 2, name: 'Иерусалим' },
 			]);
 		});
 
@@ -59,30 +59,24 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'ru', name: 'Тель-Авив' }
-					]
-				}
+					translations: [{ lang: 'ru', name: 'Тель-Авив' }],
+				},
 			];
 
 			const mockCitiesHe = [
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'he', name: 'תל אביב' }
-					]
-				}
+					translations: [{ lang: 'he', name: 'תל אביב' }],
+				},
 			];
 
 			const mockCitiesEn = [
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'en', name: 'Tel Aviv' }
-					]
-				}
+					translations: [{ lang: 'en', name: 'Tel Aviv' }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -103,22 +97,20 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'ru', name: 'Тель-Авив' }
-					]
+					translations: [{ lang: 'ru', name: 'Тель-Авив' }],
 				},
 				{
 					id: 2,
 					name: 'Jerusalem',
-					translations: [] // No translations
+					translations: [], // No translations
 				},
 				{
 					id: 3,
 					name: 'Haifa',
 					translations: [
-						{ lang: 'en', name: 'Haifa' } // Wrong language
-					]
-				}
+						{ lang: 'en', name: 'Haifa' }, // Wrong language
+					],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -133,7 +125,7 @@ describe('CityService', () => {
 			expect(result).toEqual([
 				{ id: 1, name: 'Тель-Авив' }, // Has translation
 				{ id: 2, name: 'Jerusalem' }, // Fallback to original name
-				{ id: 3, name: 'Haifa' } // Fallback to original name
+				{ id: 3, name: 'Haifa' }, // Fallback to original name
 			]);
 		});
 
@@ -142,19 +134,19 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: null
+					translations: null,
 				},
 				{
 					id: 2,
 					name: 'Jerusalem',
-					translations: undefined
-				}
+					translations: undefined,
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
 				return cities.map((city) => ({
 					id: city.id,
-					name: city.translations && city.translations[0]?.name || city.name,
+					name: (city.translations && city.translations[0]?.name) || city.name,
 				}));
 			};
 
@@ -162,7 +154,7 @@ describe('CityService', () => {
 
 			expect(result).toEqual([
 				{ id: 1, name: 'Tel Aviv' }, // Fallback to original name
-				{ id: 2, name: 'Jerusalem' } // Fallback to original name
+				{ id: 2, name: 'Jerusalem' }, // Fallback to original name
 			]);
 		});
 
@@ -171,10 +163,8 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'ru', name: null }
-					]
-				}
+					translations: [{ lang: 'ru', name: null }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -187,9 +177,7 @@ describe('CityService', () => {
 			const result = mapCities(mockCities, 'ru');
 
 			// Should fallback to original name when translation name is null
-			expect(result).toEqual([
-				{ id: 1, name: 'Tel Aviv' }
-			]);
+			expect(result).toEqual([{ id: 1, name: 'Tel Aviv' }]);
 		});
 
 		it('should handle cities with translation name as empty string', () => {
@@ -197,10 +185,8 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'ru', name: '' }
-					]
-				}
+					translations: [{ lang: 'ru', name: '' }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -213,9 +199,7 @@ describe('CityService', () => {
 			const result = mapCities(mockCities, 'ru');
 
 			// Should fallback to original name when translation name is empty
-			expect(result).toEqual([
-				{ id: 1, name: 'Tel Aviv' }
-			]);
+			expect(result).toEqual([{ id: 1, name: 'Tel Aviv' }]);
 		});
 
 		it('should handle cities with translation name as undefined', () => {
@@ -223,10 +207,8 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'ru', name: undefined }
-					]
-				}
+					translations: [{ lang: 'ru', name: undefined }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -239,9 +221,7 @@ describe('CityService', () => {
 			const result = mapCities(mockCities, 'ru');
 
 			// Should fallback to original name when translation name is undefined
-			expect(result).toEqual([
-				{ id: 1, name: 'Tel Aviv' }
-			]);
+			expect(result).toEqual([{ id: 1, name: 'Tel Aviv' }]);
 		});
 
 		it('should handle empty cities list', () => {
@@ -266,9 +246,9 @@ describe('CityService', () => {
 					name: 'Tel Aviv',
 					translations: [
 						{ lang: 'ru', name: 'Тель-Авив' },
-						{ lang: 'ru', name: 'Тель-Авив-Яффо' } // Duplicate language
-					]
-				}
+						{ lang: 'ru', name: 'Тель-Авив-Яффо' }, // Duplicate language
+					],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -281,9 +261,7 @@ describe('CityService', () => {
 			const result = mapCities(mockCities, 'ru');
 
 			// Should use the first translation found
-			expect(result).toEqual([
-				{ id: 1, name: 'Тель-Авив' }
-			]);
+			expect(result).toEqual([{ id: 1, name: 'Тель-Авив' }]);
 		});
 	});
 
@@ -293,10 +271,8 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'ru', name: 'Тель-Авив' }
-					]
-				}
+					translations: [{ lang: 'ru', name: 'Тель-Авив' }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -315,10 +291,8 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'he', name: 'תל אביב' }
-					]
-				}
+					translations: [{ lang: 'he', name: 'תל אביב' }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -337,10 +311,8 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'en', name: 'Tel Aviv' }
-					]
-				}
+					translations: [{ lang: 'en', name: 'Tel Aviv' }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -359,10 +331,8 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'ar', name: 'تل أبيب' }
-					]
-				}
+					translations: [{ lang: 'ar', name: 'تل أبيب' }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -383,10 +353,8 @@ describe('CityService', () => {
 				{
 					id: 42,
 					name: 'Test City',
-					translations: [
-						{ lang: 'ru', name: 'Тестовый город' }
-					]
-				}
+					translations: [{ lang: 'ru', name: 'Тестовый город' }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -407,10 +375,8 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Test City',
-					translations: [
-						{ lang: 'ru', name: 'Тестовый город' }
-					]
-				}
+					translations: [{ lang: 'ru', name: 'Тестовый город' }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -431,10 +397,8 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'ru', name: 'Тель-Авив' }
-					]
-				}
+					translations: [{ lang: 'ru', name: 'Тель-Авив' }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -482,7 +446,7 @@ describe('CityService', () => {
 				{ value: null, expected: 'Unknown' },
 				{ value: undefined, expected: 'Unknown' },
 				{ value: '', expected: 'Unknown' },
-				{ value: 'Valid Value', expected: 'Valid Value' }
+				{ value: 'Valid Value', expected: 'Valid Value' },
 			];
 
 			testCases.forEach(({ value, expected }) => {
@@ -496,9 +460,7 @@ describe('CityService', () => {
 			const mockCities = Array.from({ length: 100 }, (_, index) => ({
 				id: index + 1,
 				name: `City ${index + 1}`,
-				translations: [
-					{ lang: 'ru', name: `Город ${index + 1}` }
-				]
+				translations: [{ lang: 'ru', name: `Город ${index + 1}` }],
 			}));
 
 			const mapCities = (cities, lang = 'ru') => {
@@ -522,10 +484,8 @@ describe('CityService', () => {
 				{
 					id: 1,
 					name: 'Tel Aviv',
-					translations: [
-						{ lang: 'ru', name: 'Тель-Авив' }
-					]
-				}
+					translations: [{ lang: 'ru', name: 'Тель-Авив' }],
+				},
 			];
 
 			const mapCities = (cities, lang = 'ru') => {

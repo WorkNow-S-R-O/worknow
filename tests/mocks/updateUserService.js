@@ -8,8 +8,12 @@ export const mockPrisma = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock user data
 export const mockUserData = {
@@ -29,7 +33,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-15T10:00:00Z'),
 		updatedAt: new Date('2024-01-15T10:00:00Z'),
 	},
-	
+
 	premiumUser: {
 		id: 'premium456',
 		email: 'premium@example.com',
@@ -46,7 +50,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-10T09:30:00Z'),
 		updatedAt: new Date('2024-01-15T14:20:00Z'),
 	},
-	
+
 	premiumDeluxeUser: {
 		id: 'deluxe789',
 		email: 'deluxe@example.com',
@@ -63,7 +67,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-05T08:15:00Z'),
 		updatedAt: new Date('2024-01-15T16:45:00Z'),
 	},
-	
+
 	adminUser: {
 		id: 'admin101',
 		email: 'admin@example.com',
@@ -80,7 +84,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-01T00:00:00Z'),
 		updatedAt: new Date('2024-01-15T18:30:00Z'),
 	},
-	
+
 	userWithMinimalData: {
 		id: 'minimal202',
 		email: 'minimal@example.com',
@@ -97,7 +101,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-20T12:00:00Z'),
 		updatedAt: new Date('2024-01-20T12:00:00Z'),
 	},
-	
+
 	userWithExpiredPremium: {
 		id: 'expired303',
 		email: 'expired@example.com',
@@ -114,7 +118,7 @@ export const mockUserData = {
 		createdAt: new Date('2023-01-01T00:00:00Z'),
 		updatedAt: new Date('2024-01-01T00:00:00Z'),
 	},
-	
+
 	nonExistentUser: null,
 };
 
@@ -138,32 +142,32 @@ export const mockServiceResponses = {
 	getUserByClerkIdSuccess: {
 		user: mockUserData.validUser,
 	},
-	
+
 	getUserByClerkIdNotFound: {
 		error: 'Пользователь не найден',
 	},
-	
+
 	getUserByClerkIdError: {
 		error: 'Ошибка получения данных пользователя',
 		details: 'Database connection failed',
 	},
-	
+
 	getPremiumUserSuccess: {
 		user: mockUserData.premiumUser,
 	},
-	
+
 	getDeluxeUserSuccess: {
 		user: mockUserData.premiumDeluxeUser,
 	},
-	
+
 	getAdminUserSuccess: {
 		user: mockUserData.adminUser,
 	},
-	
+
 	getMinimalUserSuccess: {
 		user: mockUserData.userWithMinimalData,
 	},
-	
+
 	getExpiredUserSuccess: {
 		user: mockUserData.userWithExpiredPremium,
 	},
@@ -231,26 +235,26 @@ export const mockDataConversions = {
 		imageUrl: 'https://example.com/avatar.jpg',
 		stripeSubscriptionId: 'sub_premium123',
 	},
-	
+
 	boolean: {
 		isPremium: true,
 		isAutoRenewal: true,
 		premiumDeluxe: true,
 		isAdmin: true,
 	},
-	
+
 	date: {
 		premiumEndsAt: new Date('2024-12-31T23:59:59Z'),
 		createdAt: new Date('2024-01-15T10:00:00Z'),
 		updatedAt: new Date('2024-01-15T10:00:00Z'),
 	},
-	
+
 	object: {
 		user: mockUserData.validUser,
 		response: mockServiceResponses.getUserByClerkIdSuccess,
 		error: mockErrors.databaseError,
 	},
-	
+
 	null: {
 		firstName: null,
 		lastName: null,
@@ -265,36 +269,36 @@ export const mockUserValidationLogic = {
 	isValidUser: (user) => {
 		return !!(user && user.id && user.email && user.clerkUserId);
 	},
-	
+
 	isPremiumUser: (user) => {
 		return user && (user.isPremium || user.premiumDeluxe);
 	},
-	
+
 	isAdminUser: (user) => {
 		return user && user.isAdmin;
 	},
-	
+
 	hasActivePremium: (user) => {
 		if (!user) return false;
 		if (!user.isPremium && !user.premiumDeluxe) return false;
 		if (!user.premiumEndsAt) return true;
 		return new Date(user.premiumEndsAt) > new Date();
 	},
-	
+
 	isExpiredPremium: (user) => {
 		if (!user) return false;
 		if (!user.premiumEndsAt) return false;
 		return new Date(user.premiumEndsAt) < new Date();
 	},
-	
+
 	hasStripeSubscription: (user) => {
 		return !!(user && user.stripeSubscriptionId);
 	},
-	
+
 	isAutoRenewalEnabled: (user) => {
 		return user && user.isAutoRenewal;
 	},
-	
+
 	getUserDisplayName: (user) => {
 		if (!user) return 'Unknown User';
 		if (user.firstName && user.lastName) {
@@ -304,7 +308,7 @@ export const mockUserValidationLogic = {
 		if (user.lastName) return user.lastName;
 		return user.email || 'Unknown User';
 	},
-	
+
 	getUserStatus: (user) => {
 		if (!user) return 'unknown';
 		if (user.isAdmin) return 'admin';
@@ -317,20 +321,24 @@ export const mockUserValidationLogic = {
 // Mock clerk ID validation logic
 export const mockClerkIdValidationLogic = {
 	isValidClerkId: (clerkId) => {
-		return typeof clerkId === 'string' && clerkId.length > 0 && clerkId.startsWith('clerk_');
+		return (
+			typeof clerkId === 'string' &&
+			clerkId.length > 0 &&
+			clerkId.startsWith('clerk_')
+		);
 	},
-	
+
 	normalizeClerkId: (clerkId) => {
 		if (typeof clerkId !== 'string') return null;
 		return clerkId.trim();
 	},
-	
+
 	extractClerkId: (clerkId) => {
 		if (!clerkId) return null;
 		const match = clerkId.match(/^clerk_(.+)$/);
 		return match ? match[1] : null;
 	},
-	
+
 	generateClerkId: (userId) => {
 		return `clerk_${userId}`;
 	},
@@ -343,22 +351,24 @@ export const mockDatabaseQueryLogic = {
 			where: { clerkUserId },
 		};
 	},
-	
+
 	validateQueryResult: (result) => {
-		return result !== null && result !== undefined && typeof result === 'object';
+		return (
+			result !== null && result !== undefined && typeof result === 'object'
+		);
 	},
-	
+
 	handleQueryError: (error) => {
 		return {
 			error: 'Ошибка получения данных пользователя',
 			details: error.message,
 		};
 	},
-	
+
 	handleNotFound: () => {
 		return { error: 'Пользователь не найден' };
 	},
-	
+
 	handleSuccess: (user) => {
 		return { user };
 	},
@@ -368,7 +378,7 @@ export const mockDatabaseQueryLogic = {
 export const mockServiceLogic = {
 	processUserData: (user) => {
 		if (!user) return null;
-		
+
 		return {
 			...user,
 			displayName: mockUserValidationLogic.getUserDisplayName(user),
@@ -377,19 +387,19 @@ export const mockServiceLogic = {
 			isExpiredPremium: mockUserValidationLogic.isExpiredPremium(user),
 		};
 	},
-	
+
 	validateServiceInput: (clerkUserId) => {
 		if (!clerkUserId) {
 			return { isValid: false, error: 'Clerk ID is required' };
 		}
-		
+
 		if (!mockClerkIdValidationLogic.isValidClerkId(clerkUserId)) {
 			return { isValid: false, error: 'Invalid Clerk ID format' };
 		}
-		
+
 		return { isValid: true };
 	},
-	
+
 	handleServiceError: (error) => {
 		console.error('Service error:', error);
 		return {
@@ -397,7 +407,7 @@ export const mockServiceLogic = {
 			details: error.message,
 		};
 	},
-	
+
 	handleServiceSuccess: (user) => {
 		return { user };
 	},
@@ -412,7 +422,7 @@ export const mockResponseFormatLogic = {
 			timestamp: new Date().toISOString(),
 		};
 	},
-	
+
 	formatErrorResponse: (error, details = null) => {
 		return {
 			success: false,
@@ -421,7 +431,7 @@ export const mockResponseFormatLogic = {
 			timestamp: new Date().toISOString(),
 		};
 	},
-	
+
 	formatNotFoundResponse: () => {
 		return {
 			success: false,
@@ -429,9 +439,13 @@ export const mockResponseFormatLogic = {
 			timestamp: new Date().toISOString(),
 		};
 	},
-	
+
 	validateResponse: (response) => {
-		return !!(response && typeof response === 'object' && ('user' in response || 'error' in response));
+		return !!(
+			response &&
+			typeof response === 'object' &&
+			('user' in response || 'error' in response)
+		);
 	},
 };
 
@@ -443,32 +457,32 @@ export const mockErrorHandlingLogic = {
 			details: error.message,
 		};
 	},
-	
+
 	handleValidationError: (error) => {
 		return {
 			error: 'Ошибка валидации данных',
 			details: error.message,
 		};
 	},
-	
+
 	handleServiceError: (error) => {
 		return {
 			error: 'Ошибка сервиса',
 			details: error.message,
 		};
 	},
-	
+
 	handleUnknownError: (error) => {
 		return {
 			error: 'Неизвестная ошибка',
 			details: error.message,
 		};
 	},
-	
+
 	logError: (error, context = '') => {
 		console.error(`Error in ${context}:`, error);
 	},
-	
+
 	logSuccess: (message, context = '') => {
 		console.log(`Success in ${context}:`, message);
 	},
@@ -478,7 +492,7 @@ export const mockErrorHandlingLogic = {
 export const mockUserStatusLogic = {
 	getUserPremiumStatus: (user) => {
 		if (!user) return 'unknown';
-		
+
 		if (user.isAdmin) return 'admin';
 		if (user.premiumDeluxe) return 'premium_deluxe';
 		if (user.isPremium) {
@@ -488,18 +502,18 @@ export const mockUserStatusLogic = {
 				return 'premium_expired';
 			}
 		}
-		
+
 		// Check if user has expired premium (has premiumEndsAt but isPremium is false)
 		if (user.premiumEndsAt && new Date(user.premiumEndsAt) < new Date()) {
 			return 'premium_expired';
 		}
-		
+
 		return 'free';
 	},
-	
+
 	getUserSubscriptionStatus: (user) => {
 		if (!user) return 'none';
-		
+
 		if (user.stripeSubscriptionId) {
 			if (mockUserValidationLogic.hasActivePremium(user)) {
 				return 'active';
@@ -507,27 +521,27 @@ export const mockUserStatusLogic = {
 				return 'expired';
 			}
 		}
-		
+
 		return 'none';
 	},
-	
+
 	getUserRenewalStatus: (user) => {
 		if (!user) return 'unknown';
-		
+
 		if (user.isAutoRenewal) {
 			return 'enabled';
 		} else {
 			return 'disabled';
 		}
 	},
-	
+
 	getUserAccountStatus: (user) => {
 		if (!user) return 'inactive';
-		
+
 		if (user.isAdmin) return 'admin';
 		if (user.premiumDeluxe) return 'premium_deluxe';
 		if (user.isPremium) return 'premium';
-		
+
 		return 'free';
 	},
 };

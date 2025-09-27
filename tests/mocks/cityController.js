@@ -6,8 +6,12 @@ export const mockCityService = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock request and response objects
 export const mockRequest = {
@@ -75,7 +79,7 @@ export const mockCityData = {
 			],
 		},
 	],
-	
+
 	citiesWithPartialTranslations: [
 		{
 			id: 1,
@@ -96,7 +100,7 @@ export const mockCityData = {
 			],
 		},
 	],
-	
+
 	citiesWithNoTranslations: [
 		{
 			id: 1,
@@ -109,7 +113,7 @@ export const mockCityData = {
 			translations: [],
 		},
 	],
-	
+
 	citiesWithNullTranslations: [
 		{
 			id: 1,
@@ -122,7 +126,7 @@ export const mockCityData = {
 			translations: undefined,
 		},
 	],
-	
+
 	singleCity: {
 		id: 1,
 		name: 'Tel Aviv',
@@ -133,7 +137,7 @@ export const mockCityData = {
 			{ lang: 'ar', name: 'تل أبيب' },
 		],
 	},
-	
+
 	emptyCities: [],
 };
 
@@ -146,7 +150,7 @@ export const mockProcessedCityData = {
 		{ id: 4, name: 'Беэр-Шева' },
 		{ id: 5, name: 'Эйлат' },
 	],
-	
+
 	englishCities: [
 		{ id: 1, name: 'Tel Aviv' },
 		{ id: 2, name: 'Jerusalem' },
@@ -154,7 +158,7 @@ export const mockProcessedCityData = {
 		{ id: 4, name: 'Beer Sheva' },
 		{ id: 5, name: 'Eilat' },
 	],
-	
+
 	hebrewCities: [
 		{ id: 1, name: 'תל אביב' },
 		{ id: 2, name: 'ירושלים' },
@@ -162,7 +166,7 @@ export const mockProcessedCityData = {
 		{ id: 4, name: 'באר שבע' },
 		{ id: 5, name: 'אילת' },
 	],
-	
+
 	arabicCities: [
 		{ id: 1, name: 'تل أبيب' },
 		{ id: 2, name: 'القدس' },
@@ -170,12 +174,12 @@ export const mockProcessedCityData = {
 		{ id: 4, name: 'بئر السبع' },
 		{ id: 5, name: 'إيلات' },
 	],
-	
+
 	citiesWithFallback: [
 		{ id: 1, name: 'Tel Aviv' }, // Falls back to original name
 		{ id: 2, name: 'Jerusalem' }, // Falls back to original name
 	],
-	
+
 	emptyProcessedCities: [],
 };
 
@@ -185,22 +189,22 @@ export const mockServiceResponses = {
 		cities: mockProcessedCityData.russianCities,
 		status: 200,
 	},
-	
+
 	errorResponse: {
 		error: 'Ошибка сервера при получении городов',
 		status: 500,
 	},
-	
+
 	emptyResponse: {
 		cities: [],
 		status: 200,
 	},
-	
+
 	partialErrorResponse: {
 		error: 'Partial error in city service',
 		status: 500,
 	},
-	
+
 	networkErrorResponse: {
 		error: 'Network error occurred',
 		status: 500,
@@ -268,33 +272,33 @@ export const mockDataConversions = {
 		translationName: 'Тель-Авив',
 		errorMessage: 'Ошибка сервера при получении городов',
 	},
-	
+
 	number: {
 		cityId: 1,
 		statusCode: 200,
 		errorStatusCode: 500,
 	},
-	
+
 	boolean: {
 		hasTranslation: true,
 		isEmpty: false,
 		hasError: false,
 		success: true,
 	},
-	
+
 	object: {
 		city: mockCityData.singleCity,
 		response: mockServiceResponses.successResponse,
 		error: mockErrors.cityServiceError,
 		translation: { lang: 'ru', name: 'Тель-Авив' },
 	},
-	
+
 	array: {
 		cities: mockCityData.citiesWithTranslations,
 		translations: mockCityData.singleCity.translations,
 		processedCities: mockProcessedCityData.russianCities,
 	},
-	
+
 	null: {
 		translation: null,
 		city: null,
@@ -313,48 +317,48 @@ export const mockCityProcessingLogic = {
 			};
 		});
 	},
-	
+
 	findTranslation: (translations, lang) => {
 		return translations?.find((t) => t.lang === lang);
 	},
-	
+
 	getFallbackName: (city) => {
 		return city.name;
 	},
-	
+
 	buildCityResponse: (cities) => {
 		return cities.map((city) => ({
 			id: city.id,
 			name: city.name,
 		}));
 	},
-	
+
 	handleCityError: (error) => {
 		return {
 			error: 'Ошибка сервера при получении городов',
 			details: error.message,
 		};
 	},
-	
+
 	handleCitySuccess: (cities) => {
 		return cities;
 	},
-	
+
 	validateLanguage: (lang) => {
 		return ['ru', 'en', 'he', 'ar'].includes(lang);
 	},
-	
+
 	getDefaultLanguage: () => {
 		return 'ru';
 	},
-	
+
 	sortCities: (cities) => {
 		return cities.sort((a, b) => a.name.localeCompare(b.name));
 	},
-	
+
 	filterCities: (cities, filter) => {
-		return cities.filter((city) => 
-			city.name.toLowerCase().includes(filter.toLowerCase())
+		return cities.filter((city) =>
+			city.name.toLowerCase().includes(filter.toLowerCase()),
 		);
 	},
 };
@@ -364,7 +368,7 @@ export const mockServiceIntegrationLogic = {
 	callCityService: async (lang) => {
 		return await mockCityService.getCitiesService(lang);
 	},
-	
+
 	handleServiceResponse: (result) => {
 		if (result.error) {
 			return {
@@ -377,22 +381,22 @@ export const mockServiceIntegrationLogic = {
 			cities: result.cities,
 		};
 	},
-	
+
 	handleServiceError: (error) => {
 		return {
 			success: false,
 			error: error.message,
 		};
 	},
-	
+
 	validateServiceResult: (result) => {
 		return result !== null && result !== undefined;
 	},
-	
+
 	processServiceResult: (result) => {
 		return result;
 	},
-	
+
 	handleServiceSuccess: (result) => {
 		return result.cities;
 	},
@@ -408,37 +412,37 @@ export const mockRequestResponseLogic = {
 			},
 		};
 	},
-	
+
 	buildResponse: () => {
 		return {
 			json: vi.fn(),
 			status: vi.fn().mockReturnThis(),
 		};
 	},
-	
+
 	handleSuccessResponse: (res, data, statusCode = 200) => {
 		res.status(statusCode).json(data);
 	},
-	
+
 	handleErrorResponse: (res, error, statusCode = 500) => {
 		res.status(statusCode).json({ error: error.message });
 	},
-	
+
 	validateRequest: (req) => {
 		return !!(req && req.query);
 	},
-	
+
 	extractLanguage: (req) => {
 		return req.query.lang || 'ru';
 	},
-	
+
 	handleRequestError: (error) => {
 		return {
 			error: 'Request processing failed',
 			details: error.message,
 		};
 	},
-	
+
 	logError: (error) => {
 		console.error('❌ Ошибка в getCitiesService:', error);
 	},
@@ -457,20 +461,22 @@ export const mockControllerLogic = {
 
 		res.status(200).json(result.cities);
 	},
-	
+
 	handleControllerError: (error, res) => {
 		console.error('❌ Ошибка в getCitiesService:', error);
-		return res.status(500).json({ error: typeof error === 'string' ? error : error.message });
+		return res
+			.status(500)
+			.json({ error: typeof error === 'string' ? error : error.message });
 	},
-	
+
 	handleControllerSuccess: (cities, res) => {
 		return res.status(200).json(cities);
 	},
-	
+
 	validateControllerInput: (req) => {
 		return !!(req && req.query);
 	},
-	
+
 	processControllerResponse: (result, res) => {
 		if (result.error) {
 			return mockControllerLogic.handleControllerError(result.error, res);

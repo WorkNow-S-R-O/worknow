@@ -21,7 +21,7 @@ const createAuthConfig = async (headers = {}) => {
 	};
 };
 
-export const createJob = async (jobData: any, token?: string) => {
+export const createJob = async (jobData, token) => {
 	const config = await createAuthConfig();
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
@@ -31,10 +31,7 @@ export const createJob = async (jobData: any, token?: string) => {
 	return response.data;
 };
 
-export const createJobWithImage = async (
-	formData: FormData,
-	token?: string,
-) => {
+export const createJobWithImage = async (formData, token) => {
 	const config = await createAuthConfig({
 		'Content-Type': 'multipart/form-data',
 	});
@@ -50,7 +47,7 @@ export const createJobWithImage = async (
 	return response.data;
 };
 
-export const updateJob = async (id: number, jobData: any, token?: string) => {
+export const updateJob = async (id, jobData, token) => {
 	const config = await createAuthConfig();
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;
@@ -64,11 +61,7 @@ export const updateJob = async (id: number, jobData: any, token?: string) => {
 	return response.data;
 };
 
-export const updateJobImage = async (
-	jobId: number,
-	imageFile: File,
-	token?: string,
-) => {
+export const updateJobImage = async (jobId, imageFile, token) => {
 	const formData = new FormData();
 	formData.append('image', imageFile);
 
@@ -87,7 +80,7 @@ export const updateJobImage = async (
 	return response.data;
 };
 
-export const deleteJobImage = async (imageUrl: string, token?: string) => {
+export const deleteJobImage = async (imageUrl, token) => {
 	const config = await createAuthConfig();
 	if (token) {
 		config.headers.Authorization = `Bearer ${token}`;

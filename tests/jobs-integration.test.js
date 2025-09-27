@@ -41,11 +41,11 @@ describe('Jobs Integration Tests', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console methods to avoid noise in tests
 		console.log = vi.fn();
 		console.error = vi.fn();
-		
+
 		// Reset all mocks
 		resetJobsMocks();
 	});
@@ -60,12 +60,12 @@ describe('Jobs Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should return jobs list with pagination', async () => {
 				// Arrange
-				mockGetJobsService.mockResolvedValue(mockServiceResponses.getJobsSuccess);
+				mockGetJobsService.mockResolvedValue(
+					mockServiceResponses.getJobsSuccess,
+				);
 
 				// Act
-				const response = await request(app)
-					.get('/api/jobs')
-					.expect(200);
+				const response = await request(app).get('/api/jobs').expect(200);
 
 				// Assert
 				expect(response.body).toHaveProperty('jobs');
@@ -85,11 +85,15 @@ describe('Jobs Integration Tests', () => {
 
 			it('should handle query parameters correctly', async () => {
 				// Arrange
-				mockGetJobsService.mockResolvedValue(mockServiceResponses.getJobsSuccess);
+				mockGetJobsService.mockResolvedValue(
+					mockServiceResponses.getJobsSuccess,
+				);
 
 				// Act
 				const response = await request(app)
-					.get('/api/jobs?page=2&limit=5&category=1&city=1&salary=50000&shuttle=true&meals=false&lang=en')
+					.get(
+						'/api/jobs?page=2&limit=5&category=1&city=1&salary=50000&shuttle=true&meals=false&lang=en',
+					)
 					.expect(200);
 
 				// Assert
@@ -107,7 +111,9 @@ describe('Jobs Integration Tests', () => {
 
 			it('should handle language parameter for category translations', async () => {
 				// Arrange
-				mockGetJobsService.mockResolvedValue(mockServiceResponses.getJobsSuccess);
+				mockGetJobsService.mockResolvedValue(
+					mockServiceResponses.getJobsSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -116,18 +122,20 @@ describe('Jobs Integration Tests', () => {
 
 				// Assert
 				expect(response.body.jobs).toHaveLength(2);
-				expect(response.body.jobs[0].category.label).toBe('Information Technology');
+				expect(response.body.jobs[0].category.label).toBe(
+					'Information Technology',
+				);
 				expect(response.body.jobs[1].category.label).toBe('Marketing');
 			});
 
 			it('should handle Russian language by default', async () => {
 				// Arrange
-				mockGetJobsService.mockResolvedValue(mockServiceResponses.getJobsSuccess);
+				mockGetJobsService.mockResolvedValue(
+					mockServiceResponses.getJobsSuccess,
+				);
 
 				// Act
-				const response = await request(app)
-					.get('/api/jobs')
-					.expect(200);
+				const response = await request(app).get('/api/jobs').expect(200);
 
 				// Assert
 				expect(response.body.jobs).toHaveLength(2);
@@ -143,9 +151,7 @@ describe('Jobs Integration Tests', () => {
 				});
 
 				// Act
-				const response = await request(app)
-					.get('/api/jobs')
-					.expect(200);
+				const response = await request(app).get('/api/jobs').expect(200);
 
 				// Assert
 				expect(response.body.jobs).toHaveLength(0);
@@ -159,9 +165,7 @@ describe('Jobs Integration Tests', () => {
 				mockGetJobsService.mockResolvedValue(mockServiceResponses.getJobsError);
 
 				// Act
-				const response = await request(app)
-					.get('/api/jobs')
-					.expect(500);
+				const response = await request(app).get('/api/jobs').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -171,12 +175,12 @@ describe('Jobs Integration Tests', () => {
 
 			it('should handle service promise rejection', async () => {
 				// Arrange
-				mockGetJobsService.mockRejectedValue(new Error('Database connection failed'));
+				mockGetJobsService.mockRejectedValue(
+					new Error('Database connection failed'),
+				);
 
 				// Act
-				const response = await request(app)
-					.get('/api/jobs')
-					.expect(500);
+				const response = await request(app).get('/api/jobs').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -188,37 +192,31 @@ describe('Jobs Integration Tests', () => {
 		describe('HTTP Method Validation', () => {
 			it('should reject POST requests', async () => {
 				// Act & Assert
-				await request(app)
-					.post('/api/jobs')
-					.expect(401); // Requires authentication
+				await request(app).post('/api/jobs').expect(401); // Requires authentication
 			});
 
 			it('should reject PUT requests', async () => {
 				// Act & Assert
-				await request(app)
-					.put('/api/jobs')
-					.expect(404);
+				await request(app).put('/api/jobs').expect(404);
 			});
 
 			it('should reject DELETE requests', async () => {
 				// Act & Assert
-				await request(app)
-					.delete('/api/jobs')
-					.expect(404);
+				await request(app).delete('/api/jobs').expect(404);
 			});
 
 			it('should reject PATCH requests', async () => {
 				// Act & Assert
-				await request(app)
-					.patch('/api/jobs')
-					.expect(404);
+				await request(app).patch('/api/jobs').expect(404);
 			});
 		});
 
 		describe('Response Format Validation', () => {
 			it('should return valid JSON response', async () => {
 				// Arrange
-				mockGetJobsService.mockResolvedValue(mockServiceResponses.getJobsSuccess);
+				mockGetJobsService.mockResolvedValue(
+					mockServiceResponses.getJobsSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -239,12 +237,12 @@ describe('Jobs Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should return job by ID', async () => {
 				// Arrange
-				mockGetJobByIdService.mockResolvedValue(mockServiceResponses.getJobByIdSuccess);
+				mockGetJobByIdService.mockResolvedValue(
+					mockServiceResponses.getJobByIdSuccess,
+				);
 
 				// Act
-				const response = await request(app)
-					.get('/api/jobs/1')
-					.expect(200);
+				const response = await request(app).get('/api/jobs/1').expect(200);
 
 				// Assert
 				expect(response.body).toEqual(mockJobData);
@@ -253,12 +251,12 @@ describe('Jobs Integration Tests', () => {
 
 			it('should handle numeric job ID', async () => {
 				// Arrange
-				mockGetJobByIdService.mockResolvedValue(mockServiceResponses.getJobByIdSuccess);
+				mockGetJobByIdService.mockResolvedValue(
+					mockServiceResponses.getJobByIdSuccess,
+				);
 
 				// Act
-				const response = await request(app)
-					.get('/api/jobs/123')
-					.expect(200);
+				const response = await request(app).get('/api/jobs/123').expect(200);
 
 				// Assert
 				expect(response.body).toEqual(mockJobData);
@@ -281,12 +279,12 @@ describe('Jobs Integration Tests', () => {
 
 			it('should handle missing job ID', async () => {
 				// Arrange
-				mockGetJobsService.mockResolvedValue(mockServiceResponses.getJobsSuccess);
+				mockGetJobsService.mockResolvedValue(
+					mockServiceResponses.getJobsSuccess,
+				);
 
 				// Act
-				const response = await request(app)
-					.get('/api/jobs/')
-					.expect(200); // This will hit the GET / route instead
+				const response = await request(app).get('/api/jobs/').expect(200); // This will hit the GET / route instead
 
 				// Assert
 				expect(response.body).toHaveProperty('jobs');
@@ -294,12 +292,12 @@ describe('Jobs Integration Tests', () => {
 
 			it('should handle job not found', async () => {
 				// Arrange
-				mockGetJobByIdService.mockResolvedValue(mockServiceResponses.getJobByIdError);
+				mockGetJobByIdService.mockResolvedValue(
+					mockServiceResponses.getJobByIdError,
+				);
 
 				// Act
-				const response = await request(app)
-					.get('/api/jobs/999')
-					.expect(404);
+				const response = await request(app).get('/api/jobs/999').expect(404);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -312,9 +310,7 @@ describe('Jobs Integration Tests', () => {
 				mockGetJobByIdService.mockRejectedValue(new Error('Database error'));
 
 				// Act
-				const response = await request(app)
-					.get('/api/jobs/1')
-					.expect(500);
+				const response = await request(app).get('/api/jobs/1').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -340,7 +336,9 @@ describe('Jobs Integration Tests', () => {
 					meals: false,
 					imageUrl: 'https://example.com/job-image.jpg',
 				};
-				mockCreateJobService.mockResolvedValue(mockServiceResponses.createJobSuccess);
+				mockCreateJobService.mockResolvedValue(
+					mockServiceResponses.createJobSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -369,7 +367,9 @@ describe('Jobs Integration Tests', () => {
 					shuttle: false,
 					meals: true,
 				};
-				mockCreateJobService.mockResolvedValue(mockServiceResponses.createJobSuccess);
+				mockCreateJobService.mockResolvedValue(
+					mockServiceResponses.createJobSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -443,7 +443,9 @@ describe('Jobs Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should handle validation errors', async () => {
 				// Arrange
-				mockCreateJobService.mockResolvedValue(mockServiceResponses.createJobValidationError);
+				mockCreateJobService.mockResolvedValue(
+					mockServiceResponses.createJobValidationError,
+				);
 
 				// Act
 				const response = await request(app)
@@ -464,7 +466,9 @@ describe('Jobs Integration Tests', () => {
 
 			it('should handle service errors', async () => {
 				// Arrange
-				mockCreateJobService.mockResolvedValue(mockServiceResponses.createJobError);
+				mockCreateJobService.mockResolvedValue(
+					mockServiceResponses.createJobError,
+				);
 
 				// Act
 				const response = await request(app)
@@ -506,7 +510,9 @@ describe('Jobs Integration Tests', () => {
 					title: 'Updated Software Developer',
 					salary: '60000',
 				};
-				mockUpdateJobService.mockResolvedValue(mockServiceResponses.updateJobSuccess);
+				mockUpdateJobService.mockResolvedValue(
+					mockServiceResponses.updateJobSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -542,7 +548,9 @@ describe('Jobs Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should handle update errors', async () => {
 				// Arrange
-				mockUpdateJobService.mockResolvedValue(mockServiceResponses.updateJobError);
+				mockUpdateJobService.mockResolvedValue(
+					mockServiceResponses.updateJobError,
+				);
 
 				// Act
 				const response = await request(app)
@@ -563,7 +571,9 @@ describe('Jobs Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should delete job with authentication', async () => {
 				// Arrange
-				mockDeleteJobService.mockResolvedValue(mockServiceResponses.deleteJobSuccess);
+				mockDeleteJobService.mockResolvedValue(
+					mockServiceResponses.deleteJobSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -575,16 +585,17 @@ describe('Jobs Integration Tests', () => {
 				expect(response.body).toEqual({
 					message: 'Объявление удалено',
 				});
-				expect(mockDeleteJobService).toHaveBeenCalledWith('1', 'user_123456789');
+				expect(mockDeleteJobService).toHaveBeenCalledWith(
+					'1',
+					'user_123456789',
+				);
 			});
 		});
 
 		describe('Authentication', () => {
 			it('should require authentication', async () => {
 				// Act
-				const response = await request(app)
-					.delete('/api/jobs/1')
-					.expect(401);
+				const response = await request(app).delete('/api/jobs/1').expect(401);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -596,7 +607,9 @@ describe('Jobs Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should handle delete errors', async () => {
 				// Arrange
-				mockDeleteJobService.mockResolvedValue(mockServiceResponses.deleteJobError);
+				mockDeleteJobService.mockResolvedValue(
+					mockServiceResponses.deleteJobError,
+				);
 
 				// Act
 				const response = await request(app)
@@ -615,13 +628,13 @@ describe('Jobs Integration Tests', () => {
 	describe('Performance and Caching', () => {
 		it('should handle concurrent GET requests', async () => {
 			// Arrange - Set up mock to handle multiple calls
-			mockGetJobsService.mockImplementation(() => 
-				Promise.resolve(mockServiceResponses.getJobsSuccess)
+			mockGetJobsService.mockImplementation(() =>
+				Promise.resolve(mockServiceResponses.getJobsSuccess),
 			);
 
 			// Act - Make multiple concurrent requests
 			const promises = Array.from({ length: 5 }).map(() =>
-				request(app).get('/api/jobs')
+				request(app).get('/api/jobs'),
 			);
 
 			const responses = await Promise.all(promises);
@@ -636,8 +649,8 @@ describe('Jobs Integration Tests', () => {
 
 		it('should handle concurrent authenticated requests', async () => {
 			// Arrange - Set up mock to handle multiple calls
-			mockCreateJobService.mockImplementation(() => 
-				Promise.resolve(mockServiceResponses.createJobSuccess)
+			mockCreateJobService.mockImplementation(() =>
+				Promise.resolve(mockServiceResponses.createJobSuccess),
 			);
 
 			// Act - Make multiple concurrent requests
@@ -645,7 +658,7 @@ describe('Jobs Integration Tests', () => {
 				request(app)
 					.post('/api/jobs')
 					.set('Authorization', mockAuthTokens.validToken)
-					.send({ title: 'Test Job' })
+					.send({ title: 'Test Job' }),
 			);
 
 			const responses = await Promise.all(promises);

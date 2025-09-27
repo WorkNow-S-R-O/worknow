@@ -25,7 +25,7 @@ describe('JobBoostService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetJobBoostMocks();
-		
+
 		// Mock console methods
 		console.error = vi.fn();
 		console.log = vi.fn();
@@ -41,7 +41,7 @@ describe('JobBoostService', () => {
 		it('should accept valid job IDs', () => {
 			const validIds = Object.values(mockJobIds.validIds);
 
-			validIds.forEach(id => {
+			validIds.forEach((id) => {
 				expect(id).toBeDefined();
 				expect(id !== null).toBe(true);
 				expect(id !== undefined).toBe(true);
@@ -264,14 +264,16 @@ describe('JobBoostService', () => {
 
 	describe('Time Calculation Logic', () => {
 		it('should calculate hours left correctly', () => {
-			const timeLeft = 2 * mockTimeConstants.ONE_HOUR + 30 * mockTimeConstants.ONE_MINUTE;
+			const timeLeft =
+				2 * mockTimeConstants.ONE_HOUR + 30 * mockTimeConstants.ONE_MINUTE;
 			const hoursLeft = Math.floor(timeLeft / mockTimeConstants.ONE_HOUR);
 
 			expect(hoursLeft).toBe(2);
 		});
 
 		it('should calculate minutes left correctly', () => {
-			const timeLeft = 2 * mockTimeConstants.ONE_HOUR + 30 * mockTimeConstants.ONE_MINUTE;
+			const timeLeft =
+				2 * mockTimeConstants.ONE_HOUR + 30 * mockTimeConstants.ONE_MINUTE;
 			const minutesLeft = Math.floor(
 				(timeLeft % mockTimeConstants.ONE_HOUR) / mockTimeConstants.ONE_MINUTE,
 			);
@@ -696,7 +698,7 @@ describe('JobBoostService', () => {
 			expect(scenarios).toHaveProperty('twentyThreeHoursThirtyMinutesAgo');
 			expect(scenarios).toHaveProperty('moreThanOneDayAgo');
 
-			Object.values(scenarios).forEach(scenario => {
+			Object.values(scenarios).forEach((scenario) => {
 				expect(scenario).toHaveProperty('boostedAt');
 				expect(scenario).toHaveProperty('expectedHoursLeft');
 				expect(scenario).toHaveProperty('expectedMinutesLeft');
@@ -756,7 +758,7 @@ describe('JobBoostService', () => {
 			expect(errors).toHaveProperty('permissionError');
 			expect(errors).toHaveProperty('networkError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -785,7 +787,9 @@ describe('JobBoostService', () => {
 			expect(successMessages).toHaveProperty('boostedSuccessfully');
 
 			expect(typeof successMessages.boostedSuccessfully).toBe('string');
-			expect(successMessages.boostedSuccessfully).toBe('Job boosted successfully');
+			expect(successMessages.boostedSuccessfully).toBe(
+				'Job boosted successfully',
+			);
 		});
 
 		it('should have valid mock console log data', () => {

@@ -50,11 +50,7 @@ vi.mock('../apps/client/src/components/ui/Logo', () => ({
 }));
 
 const renderWithRouter = (component) => {
-	return render(
-		<BrowserRouter>
-			{component}
-		</BrowserRouter>
-	);
+	return render(<BrowserRouter>{component}</BrowserRouter>);
 };
 
 describe('MobileNavbarHeader Component', () => {
@@ -67,10 +63,10 @@ describe('MobileNavbarHeader Component', () => {
 	describe('Basic Functionality', () => {
 		it('renders the component', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			expect(screen.getByTestId('logo')).toBeInTheDocument();
@@ -81,10 +77,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('renders mobile navigation links', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			expect(screen.getByText('Vacancies')).toBeInTheDocument();
@@ -95,37 +91,45 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('renders hamburger toggle button', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
-			const toggleButton = screen.getByRole('button', { name: 'Toggle navigation' });
+			const toggleButton = screen.getByRole('button', {
+				name: 'Toggle navigation',
+			});
 			expect(toggleButton).toBeInTheDocument();
 			expect(toggleButton).toHaveClass('navbar-toggler');
 		});
 
 		it('renders navbar with proper Bootstrap classes', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const navbar = screen.getByRole('navigation');
-			expect(navbar).toHaveClass('navbar', 'navbar-expand-lg', 'navbar-light', 'd-lg-none', 'fixed-top');
+			expect(navbar).toHaveClass(
+				'navbar',
+				'navbar-expand-lg',
+				'navbar-light',
+				'd-lg-none',
+				'fixed-top',
+			);
 		});
 	});
 
 	describe('Navigation Links', () => {
 		it('has proper navigation structure', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const vacanciesLink = screen.getByRole('link', { name: 'Vacancies' });
@@ -139,10 +143,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('has proper link styling', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const vacanciesLink = screen.getByRole('link', { name: 'Vacancies' });
@@ -151,10 +155,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('renders navigation items with proper structure', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const navList = screen.getByText('Vacancies').closest('ul');
@@ -165,10 +169,10 @@ describe('MobileNavbarHeader Component', () => {
 	describe('Support Dropdown', () => {
 		it('renders support dropdown button', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const supportButton = screen.getByRole('button', { name: 'Support' });
@@ -179,10 +183,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('renders support dropdown menu items', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			expect(screen.getByText('Rules')).toBeInTheDocument();
@@ -191,44 +195,54 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('has proper support links', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const rulesLink = screen.getByRole('link', { name: 'Rules' });
-			const supportLink = screen.getByRole('link', { name: 'Technical Support' });
+			const supportLink = screen.getByRole('link', {
+				name: 'Technical Support',
+			});
 
-			expect(rulesLink).toHaveAttribute('href', 'https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca');
+			expect(rulesLink).toHaveAttribute(
+				'href',
+				'https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca',
+			);
 			expect(rulesLink).toHaveAttribute('target', '_blank');
 			expect(supportLink).toHaveAttribute('href', '/support');
 		});
 
 		it('has proper dropdown menu styling', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const dropdownMenu = screen.getByText('Rules').closest('ul');
 			expect(dropdownMenu).toHaveClass('dropdown-menu');
-			expect(dropdownMenu).toHaveAttribute('aria-labelledby', 'mobileSupportDropdown');
+			expect(dropdownMenu).toHaveAttribute(
+				'aria-labelledby',
+				'mobileSupportDropdown',
+			);
 		});
 	});
 
 	describe('Toggle Functionality', () => {
 		it('calls setIsExpanded when toggle button is clicked', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
-			const toggleButton = screen.getByRole('button', { name: 'Toggle navigation' });
+			const toggleButton = screen.getByRole('button', {
+				name: 'Toggle navigation',
+			});
 			fireEvent.click(toggleButton);
 
 			expect(mockSetIsExpanded).toHaveBeenCalledWith(true);
@@ -236,25 +250,29 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('shows correct aria-expanded state', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={true} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={true}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
-			const toggleButton = screen.getByRole('button', { name: 'Toggle navigation' });
+			const toggleButton = screen.getByRole('button', {
+				name: 'Toggle navigation',
+			});
 			expect(toggleButton).toHaveAttribute('aria-expanded', 'true');
 		});
 
 		it('shows collapsed state when isExpanded is false', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
-			const toggleButton = screen.getByRole('button', { name: 'Toggle navigation' });
+			const toggleButton = screen.getByRole('button', {
+				name: 'Toggle navigation',
+			});
 			expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
 		});
 	});
@@ -262,26 +280,30 @@ describe('MobileNavbarHeader Component', () => {
 	describe('Collapsible Menu', () => {
 		it('shows collapsed menu when isExpanded is false', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
-			const collapsibleDiv = screen.getByText('Vacancies').closest('.navbar-collapse');
+			const collapsibleDiv = screen
+				.getByText('Vacancies')
+				.closest('.navbar-collapse');
 			expect(collapsibleDiv).toHaveClass('navbar-collapse', 'collapse');
 			expect(collapsibleDiv).not.toHaveClass('show');
 		});
 
 		it('shows expanded menu when isExpanded is true', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={true} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={true}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
-			const collapsibleDiv = screen.getByText('Vacancies').closest('.navbar-collapse');
+			const collapsibleDiv = screen
+				.getByText('Vacancies')
+				.closest('.navbar-collapse');
 			expect(collapsibleDiv).toHaveClass('navbar-collapse', 'show');
 			expect(collapsibleDiv).not.toHaveClass('collapse');
 		});
@@ -290,10 +312,10 @@ describe('MobileNavbarHeader Component', () => {
 	describe('Component Integration', () => {
 		it('renders all UI components', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			expect(screen.getByTestId('logo')).toBeInTheDocument();
@@ -305,10 +327,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('passes isMobile prop to child components', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			// Components should render (they handle isMobile internally)
@@ -318,10 +340,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('renders signed-in components', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			expect(screen.getByTestId('signed-in')).toBeInTheDocument();
@@ -332,10 +354,10 @@ describe('MobileNavbarHeader Component', () => {
 	describe('Styling and Layout', () => {
 		it('has proper container structure', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const container = screen.getByTestId('logo').closest('.container-fluid');
@@ -344,10 +366,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('has proper mobile-specific classes', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const navbar = screen.getByRole('navigation');
@@ -356,10 +378,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('has proper background styling', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const navbar = screen.getByRole('navigation');
@@ -368,10 +390,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('has proper z-index', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const navbar = screen.getByRole('navigation');
@@ -382,13 +404,15 @@ describe('MobileNavbarHeader Component', () => {
 	describe('Accessibility', () => {
 		it('has proper ARIA attributes', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
-			const toggleButton = screen.getByRole('button', { name: 'Toggle navigation' });
+			const toggleButton = screen.getByRole('button', {
+				name: 'Toggle navigation',
+			});
 			expect(toggleButton).toHaveAttribute('aria-controls', 'navbarNav');
 			expect(toggleButton).toHaveAttribute('aria-expanded', 'false');
 			expect(toggleButton).toHaveAttribute('aria-label', 'Toggle navigation');
@@ -396,10 +420,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('has proper navigation role', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const navbar = screen.getByRole('navigation');
@@ -408,10 +432,10 @@ describe('MobileNavbarHeader Component', () => {
 
 		it('has proper external link attributes', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			const rulesLink = screen.getByRole('link', { name: 'Rules' });
@@ -423,37 +447,43 @@ describe('MobileNavbarHeader Component', () => {
 	describe('Props Handling', () => {
 		it('handles isExpanded prop correctly', () => {
 			const { rerender } = renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
-			let collapsibleDiv = screen.getByText('Vacancies').closest('.navbar-collapse');
+			let collapsibleDiv = screen
+				.getByText('Vacancies')
+				.closest('.navbar-collapse');
 			expect(collapsibleDiv).toHaveClass('collapse');
 
 			rerender(
 				<BrowserRouter>
-					<MobileNavbarHeader 
-						isExpanded={true} 
-						setIsExpanded={mockSetIsExpanded} 
+					<MobileNavbarHeader
+						isExpanded={true}
+						setIsExpanded={mockSetIsExpanded}
 					/>
-				</BrowserRouter>
+				</BrowserRouter>,
 			);
 
-			collapsibleDiv = screen.getByText('Vacancies').closest('.navbar-collapse');
+			collapsibleDiv = screen
+				.getByText('Vacancies')
+				.closest('.navbar-collapse');
 			expect(collapsibleDiv).toHaveClass('show');
 		});
 
 		it('handles setIsExpanded prop correctly', () => {
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
-			const toggleButton = screen.getByRole('button', { name: 'Toggle navigation' });
+			const toggleButton = screen.getByRole('button', {
+				name: 'Toggle navigation',
+			});
 			fireEvent.click(toggleButton);
 
 			expect(mockSetIsExpanded).toHaveBeenCalledTimes(1);
@@ -464,26 +494,23 @@ describe('MobileNavbarHeader Component', () => {
 	describe('Edge Cases', () => {
 		it('handles component mounting and unmounting', () => {
 			const { unmount } = renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={false} 
-					setIsExpanded={mockSetIsExpanded} 
-				/>
+				<MobileNavbarHeader
+					isExpanded={false}
+					setIsExpanded={mockSetIsExpanded}
+				/>,
 			);
 
 			expect(screen.getByTestId('logo')).toBeInTheDocument();
-			
+
 			unmount();
-			
+
 			expect(screen.queryByTestId('logo')).not.toBeInTheDocument();
 		});
 
 		it('handles missing props gracefully', () => {
 			// Test with undefined props
 			renderWithRouter(
-				<MobileNavbarHeader 
-					isExpanded={undefined} 
-					setIsExpanded={undefined} 
-				/>
+				<MobileNavbarHeader isExpanded={undefined} setIsExpanded={undefined} />,
 			);
 
 			// Should still render without crashing

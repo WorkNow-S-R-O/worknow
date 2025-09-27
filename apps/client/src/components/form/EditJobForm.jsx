@@ -1,18 +1,19 @@
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import { useUser, useAuth } from '@clerk/clerk-react';
-import { jobSchema } from './JobFormSchema';
-import useFetchCities from '../../hooks/useFetchCities';
-import useFetchCategories from '../../hooks/useFetchCategories';
-import useFetchJob from '../../hooks/useUpdateJobs';
-import { updateJob } from 'libs/jobs';
-import { showToastError, showToastSuccess } from 'libs/utils';
-import { EditJobFields } from './EditJobFields';
-import { useIntlayer } from 'react-intlayer';
 import { Helmet } from 'react-helmet-async'; // 🔹 SEO
-import { useLoadingProgress } from '../../hooks/useLoadingProgress';
+import { useIntlayer } from 'react-intlayer';
+
+import { EditJobFields, jobSchema } from '@/components/form';
+import {
+	useFetchCategories,
+	useFetchCities,
+	useFetchJob,
+	useLoadingProgress,
+} from '@/hooks';
+import { showToastError, showToastSuccess, updateJob } from '@/libs';
 
 const EditJobForm = () => {
 	const { id } = useParams();

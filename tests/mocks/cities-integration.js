@@ -133,9 +133,7 @@ export const mockCitiesWithLongNames = [
 	{
 		id: 1,
 		name: 'A'.repeat(1000), // Very long name
-		translations: [
-			{ lang: 'ru', name: 'Очень длинное название города' },
-		],
+		translations: [{ lang: 'ru', name: 'Очень длинное название города' }],
 	},
 ];
 
@@ -143,16 +141,12 @@ export const mockCitiesWithSpecialChars = [
 	{
 		id: 1,
 		name: 'Беэр-Шева',
-		translations: [
-			{ lang: 'ru', name: 'Беэр-Шева' },
-		],
+		translations: [{ lang: 'ru', name: 'Беэр-Шева' }],
 	},
 	{
 		id: 2,
 		name: 'Рамле/Лод',
-		translations: [
-			{ lang: 'ru', name: 'Рамле/Лод' },
-		],
+		translations: [{ lang: 'ru', name: 'Рамле/Лод' }],
 	},
 ];
 

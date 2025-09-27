@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useUser, useClerk } from '@clerk/clerk-react';
 import axios from 'axios';
-import { useUserSync } from '../hooks/useUserSync.js';
 import { useIntlayer } from 'react-intlayer';
-import { useLoadingProgress } from '../hooks/useLoadingProgress';
-import { useGoogleAnalytics } from '../hooks/useGoogleAnalytics.js';
+import { useGoogleAnalytics, useLoadingProgress, useUserSync } from '@/hooks';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -261,7 +259,10 @@ const PremiumPage = () => {
 	};
 
 	return (
-		<div className="container premium-page-container" style={{ paddingBottom: 40 }}>
+		<div
+			className="container premium-page-container"
+			style={{ paddingBottom: 40 }}
+		>
 			{/* Enhanced Header Section */}
 			<div className="text-center mb-5">
 				<h1
@@ -293,7 +294,8 @@ const PremiumPage = () => {
 							color: '#495057',
 							margin: '0 auto',
 							padding: '0 20px',
-							fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+							fontFamily:
+								'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
 							letterSpacing: '0.01em',
 							textAlign: 'center',
 						}}

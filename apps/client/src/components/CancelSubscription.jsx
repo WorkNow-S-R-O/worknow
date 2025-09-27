@@ -18,7 +18,6 @@ const CancelSubscription = () => {
 	const [renewLoading, setRenewLoading] = useState(false);
 	const [renewError, setRenewError] = useState('');
 
-
 	// Получаем статус премиума и автопродления с сервера
 	const fetchUserStatus = async () => {
 		if (!user) return;

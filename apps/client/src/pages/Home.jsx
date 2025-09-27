@@ -1,4 +1,4 @@
-import { JobListing } from '../components/JobListing';
+import { JobListing } from '@/components';
 import { Helmet } from 'react-helmet-async';
 import { useIntlayer } from 'react-intlayer';
 

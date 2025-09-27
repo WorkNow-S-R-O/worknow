@@ -142,7 +142,7 @@ export const mockUserServiceLogic = {
 		if (!clerkUserId) {
 			throw mockErrors.validationError;
 		}
-		
+
 		if (clerkUserId === 'user_123') {
 			return mockServiceResponses.successfulUserLookup;
 		}
@@ -167,7 +167,7 @@ export const mockUserServiceLogic = {
 		if (clerkUserId === 'service_error_user') {
 			throw mockErrors.serviceError;
 		}
-		
+
 		// Default case
 		return mockServiceResponses.userNotFound;
 	},
@@ -188,12 +188,10 @@ export const mockControllerLogic = {
 			res.status(200).json(user);
 		} catch (error) {
 			console.error('Ошибка получения данных пользователя:', error.message);
-			res
-				.status(500)
-				.json({
-					error: 'Ошибка получения данных пользователя',
-					details: error.message,
-				});
+			res.status(500).json({
+				error: 'Ошибка получения данных пользователя',
+				details: error.message,
+			});
 		}
 	},
 };
@@ -215,7 +213,7 @@ export const mockRequestResponseLogic = {
 	},
 	validateControllerInput: (req) => {
 		// Basic validation logic
-		return !!(req.params?.clerkUserId);
+		return !!req.params?.clerkUserId;
 	},
 };
 

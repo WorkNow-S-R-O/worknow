@@ -37,26 +37,26 @@ vi.mock('../../apps/api/services/jobBoostService.js', () => ({
 export const mockRequireAuth = vi.fn((req, res, next) => {
 	// Check if authorization header exists and is valid
 	const authHeader = req.headers.authorization;
-	
+
 	if (!authHeader || !authHeader.startsWith('Bearer ')) {
 		return res.status(401).json({ error: 'No authorization token provided' });
 	}
-	
+
 	const token = authHeader.substring(7);
-	
+
 	// Check for invalid tokens
 	if (token === 'invalid.token.here') {
 		return res.status(401).json({ error: 'Token verification failed' });
 	}
-	
+
 	if (token === 'malformed') {
 		return res.status(401).json({ error: 'Invalid token format' });
 	}
-	
+
 	if (token === 'invalid.token.here' || !token.includes('.')) {
 		return res.status(401).json({ error: 'Token verification failed' });
 	}
-	
+
 	// Valid token - set user
 	req.user = {
 		clerkUserId: 'user_123456789',

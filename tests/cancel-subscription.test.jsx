@@ -63,10 +63,16 @@ describe('CancelSubscription Component', () => {
 
 		it('renders container with proper styling', async () => {
 			render(<CancelSubscription />);
-			const container = screen.getByText('Cancel Subscription').closest('.container');
+			const container = screen
+				.getByText('Cancel Subscription')
+				.closest('.container');
 			await waitFor(() => {
 				expect(container).toHaveClass('container');
-				expect(container).toHaveStyle({ maxWidth: '480px', margin: '0 auto', paddingTop: '60px' });
+				expect(container).toHaveStyle({
+					maxWidth: '480px',
+					margin: '0 auto',
+					paddingTop: '60px',
+				});
 			});
 		});
 
@@ -142,7 +148,9 @@ describe('CancelSubscription Component', () => {
 
 			render(<CancelSubscription />);
 
-			const alert = screen.getByText('No active subscription').closest('.alert');
+			const alert = screen
+				.getByText('No active subscription')
+				.closest('.alert');
 			await waitFor(() => {
 				expect(alert).toHaveClass('alert', 'alert-info', 'text-center');
 				expect(alert).toHaveStyle({ background: '#d1f3fa' });
@@ -153,11 +161,11 @@ describe('CancelSubscription Component', () => {
 	describe('Edge Cases', () => {
 		it('handles component mounting and unmounting', async () => {
 			const { unmount } = render(<CancelSubscription />);
-			
+
 			await waitFor(() => {
 				expect(screen.getByText('Cancel Subscription')).toBeInTheDocument();
 			});
-			
+
 			unmount();
 		});
 

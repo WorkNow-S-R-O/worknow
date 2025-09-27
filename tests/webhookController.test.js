@@ -201,32 +201,50 @@ describe('WebhookController', () => {
 		it('should handle webhook verification errors', async () => {
 			const rawBody = mockRawBodyData.invalidRawBody;
 			const headers = mockHeaders.validSvixHeaders;
-			expect(() => mockSvixWebhookLogic.verifyWebhook(rawBody, headers)).toThrow();
+			expect(() =>
+				mockSvixWebhookLogic.verifyWebhook(rawBody, headers),
+			).toThrow();
 		});
 
 		it('should handle invalid signature', async () => {
 			const rawBody = mockRawBodyData.validRawBody;
-			const headers = { ...mockHeaders.validSvixHeaders, 'svix-id': 'invalid_id' };
-			expect(() => mockSvixWebhookLogic.verifyWebhook(rawBody, headers)).toThrow();
+			const headers = {
+				...mockHeaders.validSvixHeaders,
+				'svix-id': 'invalid_id',
+			};
+			expect(() =>
+				mockSvixWebhookLogic.verifyWebhook(rawBody, headers),
+			).toThrow();
 		});
 
 		it('should handle invalid timestamp', async () => {
 			const rawBody = mockRawBodyData.validRawBody;
-			const headers = { ...mockHeaders.validSvixHeaders, 'svix-timestamp': 'invalid_timestamp' };
-			expect(() => mockSvixWebhookLogic.verifyWebhook(rawBody, headers)).toThrow();
+			const headers = {
+				...mockHeaders.validSvixHeaders,
+				'svix-timestamp': 'invalid_timestamp',
+			};
+			expect(() =>
+				mockSvixWebhookLogic.verifyWebhook(rawBody, headers),
+			).toThrow();
 		});
 
 		it('should handle invalid signature', async () => {
 			const rawBody = mockRawBodyData.validRawBody;
-			const headers = { ...mockHeaders.validSvixHeaders, 'svix-signature': 'invalid_signature' };
-			expect(() => mockSvixWebhookLogic.verifyWebhook(rawBody, headers)).toThrow();
+			const headers = {
+				...mockHeaders.validSvixHeaders,
+				'svix-signature': 'invalid_signature',
+			};
+			expect(() =>
+				mockSvixWebhookLogic.verifyWebhook(rawBody, headers),
+			).toThrow();
 		});
 	});
 
 	describe('Webhook Service Integration Logic', () => {
 		it('should call processClerkWebhookService correctly', async () => {
 			const event = mockWebhookEventData.userCreated;
-			const result = await mockWebhookServiceLogic.processClerkWebhookService(event);
+			const result =
+				await mockWebhookServiceLogic.processClerkWebhookService(event);
 			expect(result).toBeDefined();
 			expect(result.success).toBe(true);
 			expect(result.message).toBe('User created successfully');
@@ -234,21 +252,24 @@ describe('WebhookController', () => {
 
 		it('should handle user created events', async () => {
 			const event = mockWebhookEventData.userCreated;
-			const result = await mockWebhookServiceLogic.processClerkWebhookService(event);
+			const result =
+				await mockWebhookServiceLogic.processClerkWebhookService(event);
 			expect(result.success).toBe(true);
 			expect(result.user.id).toBe('user_123');
 		});
 
 		it('should handle user updated events', async () => {
 			const event = mockWebhookEventData.userUpdated;
-			const result = await mockWebhookServiceLogic.processClerkWebhookService(event);
+			const result =
+				await mockWebhookServiceLogic.processClerkWebhookService(event);
 			expect(result.success).toBe(true);
 			expect(result.user.id).toBe('user_456');
 		});
 
 		it('should handle user deleted events', async () => {
 			const event = mockWebhookEventData.userDeleted;
-			const result = await mockWebhookServiceLogic.processClerkWebhookService(event);
+			const result =
+				await mockWebhookServiceLogic.processClerkWebhookService(event);
 			expect(result.success).toBe(true);
 			expect(result.user.id).toBe('user_789');
 		});
@@ -256,10 +277,14 @@ describe('WebhookController', () => {
 		it('should handle session events', async () => {
 			const sessionCreated = mockWebhookEventData.sessionCreated;
 			const sessionEnded = mockWebhookEventData.sessionEnded;
-			
-			const result1 = await mockWebhookServiceLogic.processClerkWebhookService(sessionCreated);
-			const result2 = await mockWebhookServiceLogic.processClerkWebhookService(sessionEnded);
-			
+
+			const result1 =
+				await mockWebhookServiceLogic.processClerkWebhookService(
+					sessionCreated,
+				);
+			const result2 =
+				await mockWebhookServiceLogic.processClerkWebhookService(sessionEnded);
+
 			expect(result1.success).toBe(true);
 			expect(result2.success).toBe(true);
 		});
@@ -381,9 +406,9 @@ describe('WebhookController', () => {
 		it('should handle missing webhook secret', async () => {
 			const originalSecret = process.env.WEBHOOK_SECRET;
 			delete process.env.WEBHOOK_SECRET;
-			
+
 			expect(process.env.WEBHOOK_SECRET).toBeUndefined();
-			
+
 			// Restore original secret
 			process.env.WEBHOOK_SECRET = originalSecret;
 		});
@@ -391,10 +416,10 @@ describe('WebhookController', () => {
 		it('should handle process exit on missing secret', async () => {
 			const originalSecret = process.env.WEBHOOK_SECRET;
 			delete process.env.WEBHOOK_SECRET;
-			
+
 			// This would trigger process.exit(1) in the actual controller
 			expect(process.env.WEBHOOK_SECRET).toBeUndefined();
-			
+
 			// Restore original secret
 			process.env.WEBHOOK_SECRET = originalSecret;
 		});
@@ -407,21 +432,28 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.validSvixHeaders,
-				mockRawBodyData.validRawBody
+				mockRawBodyData.validRawBody,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockWebhookVerify.mockReturnValue(mockWebhookEventData.userCreated);
-			mockProcessClerkWebhookService.mockResolvedValue(mockServiceResponses.userCreatedSuccess);
+			mockProcessClerkWebhookService.mockResolvedValue(
+				mockServiceResponses.userCreatedSuccess,
+			);
 
 			await mockControllerLogic.processClerkWebhook(req, res);
 
-			expect(mockWebhookVerify).toHaveBeenCalledWith(mockRawBodyData.validRawBody, {
-				'svix-id': 'msg_123456789',
-				'svix-timestamp': '1640995200',
-				'svix-signature': 'v1,signature_hash',
-			});
-			expect(mockProcessClerkWebhookService).toHaveBeenCalledWith(mockWebhookEventData.userCreated);
+			expect(mockWebhookVerify).toHaveBeenCalledWith(
+				mockRawBodyData.validRawBody,
+				{
+					'svix-id': 'msg_123456789',
+					'svix-timestamp': '1640995200',
+					'svix-signature': 'v1,signature_hash',
+				},
+			);
+			expect(mockProcessClerkWebhookService).toHaveBeenCalledWith(
+				mockWebhookEventData.userCreated,
+			);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith({ success: true });
 		});
@@ -432,16 +464,20 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.validSvixHeaders,
-				JSON.stringify(mockWebhookEventData.userUpdated)
+				JSON.stringify(mockWebhookEventData.userUpdated),
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockWebhookVerify.mockReturnValue(mockWebhookEventData.userUpdated);
-			mockProcessClerkWebhookService.mockResolvedValue(mockServiceResponses.userUpdatedSuccess);
+			mockProcessClerkWebhookService.mockResolvedValue(
+				mockServiceResponses.userUpdatedSuccess,
+			);
 
 			await mockControllerLogic.processClerkWebhook(req, res);
 
-			expect(mockProcessClerkWebhookService).toHaveBeenCalledWith(mockWebhookEventData.userUpdated);
+			expect(mockProcessClerkWebhookService).toHaveBeenCalledWith(
+				mockWebhookEventData.userUpdated,
+			);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith({ success: true });
 		});
@@ -452,16 +488,20 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.validSvixHeaders,
-				JSON.stringify(mockWebhookEventData.userDeleted)
+				JSON.stringify(mockWebhookEventData.userDeleted),
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockWebhookVerify.mockReturnValue(mockWebhookEventData.userDeleted);
-			mockProcessClerkWebhookService.mockResolvedValue(mockServiceResponses.userDeletedSuccess);
+			mockProcessClerkWebhookService.mockResolvedValue(
+				mockServiceResponses.userDeletedSuccess,
+			);
 
 			await mockControllerLogic.processClerkWebhook(req, res);
 
-			expect(mockProcessClerkWebhookService).toHaveBeenCalledWith(mockWebhookEventData.userDeleted);
+			expect(mockProcessClerkWebhookService).toHaveBeenCalledWith(
+				mockWebhookEventData.userDeleted,
+			);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith({ success: true });
 		});
@@ -472,7 +512,7 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.emptyHeaders,
-				mockRawBodyData.validRawBody
+				mockRawBodyData.validRawBody,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
@@ -490,7 +530,7 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.missingSvixId,
-				mockRawBodyData.validRawBody
+				mockRawBodyData.validRawBody,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
@@ -508,7 +548,7 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.missingSvixTimestamp,
-				mockRawBodyData.validRawBody
+				mockRawBodyData.validRawBody,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
@@ -526,7 +566,7 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.missingSvixSignature,
-				mockRawBodyData.validRawBody
+				mockRawBodyData.validRawBody,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
@@ -544,7 +584,7 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.validSvixHeaders,
-				mockRawBodyData.invalidRawBody
+				mockRawBodyData.invalidRawBody,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
@@ -557,7 +597,9 @@ describe('WebhookController', () => {
 			expect(mockWebhookVerify).toHaveBeenCalled();
 			expect(mockProcessClerkWebhookService).not.toHaveBeenCalled();
 			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Webhook verification failed' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Webhook verification failed',
+			});
 		});
 
 		it('should process clerkWebhook request with service error', async () => {
@@ -566,19 +608,25 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.validSvixHeaders,
-				mockRawBodyData.validRawBody
+				mockRawBodyData.validRawBody,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockWebhookVerify.mockReturnValue(mockWebhookEventData.userCreated);
-			mockProcessClerkWebhookService.mockResolvedValue(mockServiceResponses.processingError);
+			mockProcessClerkWebhookService.mockResolvedValue(
+				mockServiceResponses.processingError,
+			);
 
 			await mockControllerLogic.processClerkWebhook(req, res);
 
 			expect(mockWebhookVerify).toHaveBeenCalled();
-			expect(mockProcessClerkWebhookService).toHaveBeenCalledWith(mockWebhookEventData.userCreated);
+			expect(mockProcessClerkWebhookService).toHaveBeenCalledWith(
+				mockWebhookEventData.userCreated,
+			);
 			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Error processing webhook' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Error processing webhook',
+			});
 		});
 
 		it('should process clerkWebhook request with service exception', async () => {
@@ -587,19 +635,25 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.validSvixHeaders,
-				mockRawBodyData.validRawBody
+				mockRawBodyData.validRawBody,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockWebhookVerify.mockReturnValue(mockWebhookEventData.userCreated);
-			mockProcessClerkWebhookService.mockRejectedValue(mockErrors.processingError);
+			mockProcessClerkWebhookService.mockRejectedValue(
+				mockErrors.processingError,
+			);
 
 			await mockControllerLogic.processClerkWebhook(req, res);
 
 			expect(mockWebhookVerify).toHaveBeenCalled();
-			expect(mockProcessClerkWebhookService).toHaveBeenCalledWith(mockWebhookEventData.userCreated);
+			expect(mockProcessClerkWebhookService).toHaveBeenCalledWith(
+				mockWebhookEventData.userCreated,
+			);
 			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Webhook verification failed' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Webhook verification failed',
+			});
 		});
 
 		it('should handle controller errors', async () => {
@@ -608,7 +662,7 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.emptyHeaders,
-				mockRawBodyData.validRawBody
+				mockRawBodyData.validRawBody,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
@@ -624,12 +678,14 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.validSvixHeaders,
-				mockRawBodyData.validRawBody
+				mockRawBodyData.validRawBody,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockWebhookVerify.mockReturnValue(mockWebhookEventData.userCreated);
-			mockProcessClerkWebhookService.mockResolvedValue(mockServiceResponses.userCreatedSuccess);
+			mockProcessClerkWebhookService.mockResolvedValue(
+				mockServiceResponses.userCreatedSuccess,
+			);
 
 			await mockControllerLogic.processClerkWebhook(req, res);
 
@@ -643,12 +699,22 @@ describe('WebhookController', () => {
 				{},
 				{},
 				mockHeaders.validSvixHeaders,
-				mockRawBodyData.validRawBody
+				mockRawBodyData.validRawBody,
 			);
-			const invalidRequest = mockRequestResponseLogic.buildRequest({}, {}, {}, {}, '');
+			const invalidRequest = mockRequestResponseLogic.buildRequest(
+				{},
+				{},
+				{},
+				{},
+				'',
+			);
 
-			expect(mockRequestResponseLogic.validateControllerInput(validRequest)).toBe(true);
-			expect(mockRequestResponseLogic.validateControllerInput(invalidRequest)).toBe(true);
+			expect(
+				mockRequestResponseLogic.validateControllerInput(validRequest),
+			).toBe(true);
+			expect(
+				mockRequestResponseLogic.validateControllerInput(invalidRequest),
+			).toBe(true);
 		});
 	});
 });

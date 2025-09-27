@@ -14,7 +14,12 @@ export const mockConsole = {
 };
 
 // Mock request and response objects
-export const mockRequest = (body = {}, params = {}, query = {}, headers = {}) => ({
+export const mockRequest = (
+	body = {},
+	params = {},
+	query = {},
+	headers = {},
+) => ({
 	body,
 	params,
 	query,
@@ -373,7 +378,10 @@ export const mockControllerLogic = {
 	},
 	processGetUserJobs: async (req, res) => {
 		const lang = req.query.lang || 'ru';
-		const result = await mockGetUserJobsService(req.params.clerkUserId, req.query);
+		const result = await mockGetUserJobsService(
+			req.params.clerkUserId,
+			req.query,
+		);
 		if (result.error) return res.status(500).json({ error: result.error });
 		// Формируем ответ с переводом категории
 		const jobs = result.jobs.map((job) => {
@@ -386,7 +394,9 @@ export const mockControllerLogic = {
 			}
 			return {
 				...job,
-				category: job.category ? { ...job.category, label: categoryLabel } : null,
+				category: job.category
+					? { ...job.category, label: categoryLabel }
+					: null,
 			};
 		});
 		res.status(200).json({ ...result, jobs });

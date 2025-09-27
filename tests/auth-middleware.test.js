@@ -28,7 +28,9 @@ vi.mock('@prisma/client', () => {
 	};
 });
 
-const { requireAuth, requireAdmin } = await import('../apps/api/middlewares/auth.js');
+const { requireAuth, requireAdmin } = await import(
+	'../apps/api/middlewares/auth.js'
+);
 
 const createRequest = (overrides = {}) => ({
 	headers: overrides.headers || {},
@@ -44,7 +46,9 @@ const createResponse = () => {
 };
 
 describe('auth middleware', () => {
-	const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+	const consoleErrorSpy = vi
+		.spyOn(console, 'error')
+		.mockImplementation(() => {});
 
 	beforeEach(() => {
 		findUniqueMock.mockReset();
@@ -111,7 +115,9 @@ describe('auth middleware', () => {
 			await requireAuth(req, res, next);
 
 			expect(res.status).toHaveBeenCalledWith(401);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Invalid token - no user ID' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Invalid token - no user ID',
+			});
 			expect(next).not.toHaveBeenCalled();
 		});
 
@@ -123,7 +129,9 @@ describe('auth middleware', () => {
 			await requireAuth(req, res, next);
 
 			expect(res.status).toHaveBeenCalledWith(401);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Token verification failed' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Token verification failed',
+			});
 			expect(next).not.toHaveBeenCalled();
 		});
 	});

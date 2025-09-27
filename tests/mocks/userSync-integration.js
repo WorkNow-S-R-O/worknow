@@ -63,8 +63,6 @@ export const mockErrors = {
 export const resetUserSyncMocks = () => {
 	mockPrismaInstance.user.upsert.mockClear();
 	mockSyncUserService.mockClear();
-	
+
 	vi.clearAllMocks();
 };
-
-

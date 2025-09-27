@@ -30,11 +30,11 @@ describe('Upload Integration Tests - Simple', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console methods to avoid noise in tests
 		console.log = vi.fn();
 		console.error = vi.fn();
-		
+
 		// Reset multer mock to default behavior
 		mockMulterUpload.single.mockImplementation(() => (req, res, next) => {
 			req.file = {
@@ -66,7 +66,9 @@ describe('Upload Integration Tests - Simple', () => {
 
 				// Assert
 				expect(response.body.success).toBe(true);
-				expect(response.body.imageUrl).toContain('http://localhost:3001/images/jobs/');
+				expect(response.body.imageUrl).toContain(
+					'http://localhost:3001/images/jobs/',
+				);
 				expect(response.body.filename).toMatch(/^job-\d+-\d+\.jpg$/);
 			});
 
@@ -80,7 +82,9 @@ describe('Upload Integration Tests - Simple', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body.imageUrl).toContain('https://worknow.co.il/images/jobs/');
+				expect(response.body.imageUrl).toContain(
+					'https://worknow.co.il/images/jobs/',
+				);
 			});
 		});
 
@@ -126,36 +130,27 @@ describe('Upload Integration Tests - Simple', () => {
 				});
 			});
 		});
-
 	});
 
 	describe('HTTP Method Validation', () => {
 		it('should reject GET requests', async () => {
 			// Act & Assert
-			await request(app)
-				.get('/api/upload/job-image')
-				.expect(404);
+			await request(app).get('/api/upload/job-image').expect(404);
 		});
 
 		it('should reject PUT requests', async () => {
 			// Act & Assert
-			await request(app)
-				.put('/api/upload/job-image')
-				.expect(404);
+			await request(app).put('/api/upload/job-image').expect(404);
 		});
 
 		it('should reject DELETE requests', async () => {
 			// Act & Assert
-			await request(app)
-				.delete('/api/upload/job-image')
-				.expect(404);
+			await request(app).delete('/api/upload/job-image').expect(404);
 		});
 
 		it('should reject PATCH requests', async () => {
 			// Act & Assert
-			await request(app)
-				.patch('/api/upload/job-image')
-				.expect(404);
+			await request(app).patch('/api/upload/job-image').expect(404);
 		});
 	});
 

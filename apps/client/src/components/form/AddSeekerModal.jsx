@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useIntlayer } from 'react-intlayer';
-import useFetchCities from '../../hooks/useFetchCities';
-import useFetchCategories from '../../hooks/useFetchCategories';
+import { useFetchCategories, useFetchCities } from '@/hooks';
 import PropTypes from 'prop-types';
 
 export default function AddSeekerModal({ show, onClose, onSubmit }) {

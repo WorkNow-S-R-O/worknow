@@ -1,35 +1,40 @@
-import { useMemo, Suspense, useEffect } from 'react';
-import { Toaster } from 'react-hot-toast';
-import { ClerkProvider } from '@clerk/clerk-react';
-import { baseTheme } from '@clerk/themes';
-import { ruRU, enUS, heIL, arSA, ukUA } from '@clerk/localizations';
-import { RouterProvider, Outlet, createBrowserRouter } from 'react-router-dom';
-import { HelmetProvider, Helmet } from 'react-helmet-async'; // 🔹 SEO
-import { ImageUploadProvider } from './contexts/ImageUploadContext.jsx';
-import { LoadingProvider } from './contexts/LoadingContext.jsx';
-import { IntlayerProvider, useIntlayer, useLocale } from 'react-intlayer';
-import { useI18nHTMLAttributes } from './hooks/useI18nHTMLAttributes';
-import ProgressBar from './components/ui/ProgressBar.jsx';
-import Home from './pages/Home.jsx';
-import MyAds from './pages/MyAds.jsx';
-import CreateNewAd from './pages/CreateNewAd.jsx';
-import NotFoundPage from './pages/NotFoundPage.jsx';
-import AccessDenied from './pages/AccessDenied.jsx';
-import { EditJobForm } from './components/form/EditJobForm.jsx';
-import UserProfile from './components/UserProfile.jsx';
-import SupportPage from './components/SupportPage.jsx';
-import ProtectedRoute from './components/routes/ProtectedRoute.jsx';
-import Success from './pages/Success.jsx';
-import Cancel from './pages/Cancel.jsx';
-import Seekers from './pages/Seekers.jsx';
-import SeekerDetails from './pages/SeekerDetails.jsx';
-import PremiumPage from './components/PremiumPage.jsx';
-import { Navbar } from './components/Navbar.jsx';
-import { Footer } from './components/Footer.jsx';
 import './css/ripple.css';
-import CancelSubscription from './components/CancelSubscription.jsx';
-import BillingPage from './components/BillingPage.jsx';
-import NewsletterSubscription from './pages/NewsletterSubscription.jsx';
+
+import { ClerkProvider } from '@clerk/clerk-react';
+import { ruRU, enUS, heIL, arSA, ukUA } from '@clerk/localizations';
+import { baseTheme } from '@clerk/themes';
+import { IntlayerProvider, useIntlayer, useLocale } from 'react-intlayer';
+import { Toaster } from 'react-hot-toast';
+import { Helmet, HelmetProvider } from 'react-helmet-async'; // 🔹 SEO
+import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Suspense, useEffect, useMemo } from 'react';
+
+import {
+	BillingPage,
+	CancelSubscription,
+	Footer,
+	Navbar,
+	PremiumPage,
+	SupportPage,
+	UserProfile,
+} from '@/components';
+import { EditJobForm } from '@/components/form';
+import { ProtectedRoute } from '@/components/routes';
+import { ProgressBar } from '@/components/ui';
+import { ImageUploadProvider, LoadingProvider } from '@/contexts';
+import { useI18nHTMLAttributes } from '@/hooks';
+import {
+	AccessDenied,
+	Cancel,
+	CreateNewAd,
+	Home,
+	MyAds,
+	NewsletterSubscription,
+	NotFoundPage,
+	SeekerDetails,
+	Seekers,
+	Success,
+} from '@/pages';
 
 // Google Analytics Configuration
 const GA_TRACKING_ID = import.meta.env.VITE_GA_TRACKING_ID || 'G-XXXXXXXXXX';

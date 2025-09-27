@@ -1,5 +1,5 @@
 import { useIntlayer, useLocale } from 'react-intlayer';
-import { useLanguageManager } from '../../hooks/useLanguageManager';
+import { useLanguageManager } from '@/hooks';
 
 const LanguageSelector = ({ isMobile = false }) => {
 	const content = useIntlayer('navbar');
@@ -30,12 +30,10 @@ const LanguageSelector = ({ isMobile = false }) => {
 	];
 
 	const dropdownId = isMobile ? 'mobileLanguageDropdown' : 'languageDropdown';
-	const buttonClass = isMobile 
+	const buttonClass = isMobile
 		? 'btn btn-secondary dropdown-toggle w-100'
 		: 'btn btn-secondary dropdown-toggle';
-	const menuClass = isMobile 
-		? 'dropdown-menu w-100'
-		: 'dropdown-menu';
+	const menuClass = isMobile ? 'dropdown-menu w-100' : 'dropdown-menu';
 
 	return (
 		<div className={isMobile ? 'dropdown mb-2' : 'dropdown me-2'}>

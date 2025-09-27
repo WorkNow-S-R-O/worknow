@@ -29,7 +29,7 @@ describe('JobService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetJobServiceMocks();
-		
+
 		// Mock console methods
 		console.error = vi.fn();
 	});
@@ -271,14 +271,17 @@ describe('JobService', () => {
 			const orderedJobs = mockJobOrderingLogic.createdAtDesc(jobs);
 
 			expect(orderedJobs[0].createdAt.getTime()).toBeGreaterThanOrEqual(
-				orderedJobs[1].createdAt.getTime()
+				orderedJobs[1].createdAt.getTime(),
 			);
 		});
 
 		it('should handle jobs with null boostedAt', () => {
 			const jobs = [
 				{ boostedAt: null, createdAt: new Date('2024-01-01') },
-				{ boostedAt: new Date('2024-01-02'), createdAt: new Date('2024-01-01') },
+				{
+					boostedAt: new Date('2024-01-02'),
+					createdAt: new Date('2024-01-01'),
+				},
 			];
 			const orderedJobs = mockJobOrderingLogic.boostedFirst(jobs);
 
@@ -290,35 +293,40 @@ describe('JobService', () => {
 	describe('Salary Filtering Logic', () => {
 		it('should extract salary from single number format', () => {
 			const salaryString = mockSalaryFilteringData.salaryPatterns.singleNumber;
-			const extractedSalary = mockSalaryExtractionLogic.extractSalary(salaryString);
+			const extractedSalary =
+				mockSalaryExtractionLogic.extractSalary(salaryString);
 
 			expect(extractedSalary).toBe(120);
 		});
 
 		it('should extract salary from range format', () => {
 			const salaryString = mockSalaryFilteringData.salaryPatterns.range;
-			const extractedSalary = mockSalaryExtractionLogic.extractSalary(salaryString);
+			const extractedSalary =
+				mockSalaryExtractionLogic.extractSalary(salaryString);
 
 			expect(extractedSalary).toBe(45);
 		});
 
 		it('should extract salary from text format', () => {
 			const salaryString = mockSalaryFilteringData.salaryPatterns.withText;
-			const extractedSalary = mockSalaryExtractionLogic.extractSalary(salaryString);
+			const extractedSalary =
+				mockSalaryExtractionLogic.extractSalary(salaryString);
 
 			expect(extractedSalary).toBe(50);
 		});
 
 		it('should return null for invalid salary format', () => {
 			const salaryString = mockSalaryFilteringData.salaryPatterns.invalid;
-			const extractedSalary = mockSalaryExtractionLogic.extractSalary(salaryString);
+			const extractedSalary =
+				mockSalaryExtractionLogic.extractSalary(salaryString);
 
 			expect(extractedSalary).toBe(null);
 		});
 
 		it('should return null for empty salary string', () => {
 			const salaryString = mockSalaryFilteringData.salaryPatterns.empty;
-			const extractedSalary = mockSalaryExtractionLogic.extractSalary(salaryString);
+			const extractedSalary =
+				mockSalaryExtractionLogic.extractSalary(salaryString);
 
 			expect(extractedSalary).toBe(null);
 		});
@@ -326,7 +334,10 @@ describe('JobService', () => {
 		it('should filter jobs by minimum salary', () => {
 			const jobs = mockJobArrays.multipleJobs;
 			const minSalary = 50;
-			const filteredJobs = mockSalaryExtractionLogic.filterBySalary(jobs, minSalary);
+			const filteredJobs = mockSalaryExtractionLogic.filterBySalary(
+				jobs,
+				minSalary,
+			);
 
 			expect(filteredJobs).toHaveLength(3);
 			expect(filteredJobs[0].id).toBe(3); // 150 шек/час
@@ -337,7 +348,10 @@ describe('JobService', () => {
 		it('should filter jobs by higher minimum salary', () => {
 			const jobs = mockJobArrays.multipleJobs;
 			const minSalary = 100;
-			const filteredJobs = mockSalaryExtractionLogic.filterBySalary(jobs, minSalary);
+			const filteredJobs = mockSalaryExtractionLogic.filterBySalary(
+				jobs,
+				minSalary,
+			);
 
 			expect(filteredJobs).toHaveLength(2);
 			expect(filteredJobs[0].id).toBe(3); // 150 шек/час
@@ -347,7 +361,10 @@ describe('JobService', () => {
 		it('should return empty array for very high minimum salary', () => {
 			const jobs = mockJobArrays.multipleJobs;
 			const minSalary = 200;
-			const filteredJobs = mockSalaryExtractionLogic.filterBySalary(jobs, minSalary);
+			const filteredJobs = mockSalaryExtractionLogic.filterBySalary(
+				jobs,
+				minSalary,
+			);
 
 			expect(filteredJobs).toHaveLength(0);
 		});
@@ -358,7 +375,10 @@ describe('JobService', () => {
 				{ id: 2, salary: '50 шек/час' },
 			];
 			const minSalary = 40;
-			const filteredJobs = mockSalaryExtractionLogic.filterBySalary(jobs, minSalary);
+			const filteredJobs = mockSalaryExtractionLogic.filterBySalary(
+				jobs,
+				minSalary,
+			);
 
 			expect(filteredJobs).toHaveLength(1);
 			expect(filteredJobs[0].id).toBe(2);
@@ -708,7 +728,10 @@ describe('JobService', () => {
 			const error = new Error('Database error');
 			logJobsError(error);
 
-			expect(console.error).toHaveBeenCalledWith(mockConsoleLogData.jobsError, error);
+			expect(console.error).toHaveBeenCalledWith(
+				mockConsoleLogData.jobsError,
+				error,
+			);
 		});
 
 		it('should log job error', () => {
@@ -719,7 +742,10 @@ describe('JobService', () => {
 			const error = new Error('Job not found');
 			logJobError(error);
 
-			expect(console.error).toHaveBeenCalledWith(mockConsoleLogData.jobError, error);
+			expect(console.error).toHaveBeenCalledWith(
+				mockConsoleLogData.jobError,
+				error,
+			);
 		});
 
 		it('should log create error', () => {
@@ -730,7 +756,10 @@ describe('JobService', () => {
 			const error = new Error('Create failed');
 			logCreateError(error);
 
-			expect(console.error).toHaveBeenCalledWith(mockConsoleLogData.createError, error);
+			expect(console.error).toHaveBeenCalledWith(
+				mockConsoleLogData.createError,
+				error,
+			);
 		});
 
 		it('should handle cache hit messages', () => {
@@ -739,7 +768,7 @@ describe('JobService', () => {
 				mockConsoleLogData.jobCacheHit,
 			];
 
-			cacheMessages.forEach(message => {
+			cacheMessages.forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -751,7 +780,7 @@ describe('JobService', () => {
 				mockConsoleLogData.jobCacheSet,
 			];
 
-			cacheMessages.forEach(message => {
+			cacheMessages.forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -885,7 +914,7 @@ describe('JobService', () => {
 			expect(errors).toHaveProperty('timeoutError');
 			expect(errors).toHaveProperty('redisError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -900,7 +929,7 @@ describe('JobService', () => {
 			expect(errorMessages).toHaveProperty('jobNotFound');
 			expect(errorMessages).toHaveProperty('createError');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -914,7 +943,7 @@ describe('JobService', () => {
 			expect(successMessages).toHaveProperty('jobCreated');
 			expect(successMessages).toHaveProperty('cacheHit');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -928,7 +957,7 @@ describe('JobService', () => {
 			expect(consoleData).toHaveProperty('createError');
 			expect(consoleData).toHaveProperty('cacheHit');
 
-			Object.values(consoleData).forEach(message => {
+			Object.values(consoleData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});

@@ -28,7 +28,7 @@ describe('WebhookService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetWebhookServiceMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
@@ -54,7 +54,9 @@ describe('WebhookService', () => {
 			const event = mockWebhookEvents.userUpdated;
 			expect(event.type).toBe('user.updated');
 			expect(event.data.id).toBe('clerk_user123');
-			expect(event.data.email_addresses[0].email_address).toBe('john.updated@example.com');
+			expect(event.data.email_addresses[0].email_address).toBe(
+				'john.updated@example.com',
+			);
 			expect(event.data.first_name).toBe('John');
 			expect(event.data.last_name).toBe('Doe Updated');
 		});
@@ -103,28 +105,54 @@ describe('WebhookService', () => {
 
 	describe('Webhook Processing Logic', () => {
 		it('should validate event types', () => {
-			expect(mockWebhookProcessingLogic.isValidEventType('user.created')).toBe(true);
-			expect(mockWebhookProcessingLogic.isValidEventType('user.updated')).toBe(true);
-			expect(mockWebhookProcessingLogic.isValidEventType('user.deleted')).toBe(true);
-			expect(mockWebhookProcessingLogic.isValidEventType('invalid.event')).toBe(false);
+			expect(mockWebhookProcessingLogic.isValidEventType('user.created')).toBe(
+				true,
+			);
+			expect(mockWebhookProcessingLogic.isValidEventType('user.updated')).toBe(
+				true,
+			);
+			expect(mockWebhookProcessingLogic.isValidEventType('user.deleted')).toBe(
+				true,
+			);
+			expect(mockWebhookProcessingLogic.isValidEventType('invalid.event')).toBe(
+				false,
+			);
 		});
 
 		it('should identify user creation events', () => {
-			expect(mockWebhookProcessingLogic.isUserCreationEvent('user.created')).toBe(true);
-			expect(mockWebhookProcessingLogic.isUserCreationEvent('user.updated')).toBe(false);
-			expect(mockWebhookProcessingLogic.isUserCreationEvent('user.deleted')).toBe(false);
+			expect(
+				mockWebhookProcessingLogic.isUserCreationEvent('user.created'),
+			).toBe(true);
+			expect(
+				mockWebhookProcessingLogic.isUserCreationEvent('user.updated'),
+			).toBe(false);
+			expect(
+				mockWebhookProcessingLogic.isUserCreationEvent('user.deleted'),
+			).toBe(false);
 		});
 
 		it('should identify user update events', () => {
-			expect(mockWebhookProcessingLogic.isUserUpdateEvent('user.updated')).toBe(true);
-			expect(mockWebhookProcessingLogic.isUserUpdateEvent('user.created')).toBe(false);
-			expect(mockWebhookProcessingLogic.isUserUpdateEvent('user.deleted')).toBe(false);
+			expect(mockWebhookProcessingLogic.isUserUpdateEvent('user.updated')).toBe(
+				true,
+			);
+			expect(mockWebhookProcessingLogic.isUserUpdateEvent('user.created')).toBe(
+				false,
+			);
+			expect(mockWebhookProcessingLogic.isUserUpdateEvent('user.deleted')).toBe(
+				false,
+			);
 		});
 
 		it('should identify user deletion events', () => {
-			expect(mockWebhookProcessingLogic.isUserDeletionEvent('user.deleted')).toBe(true);
-			expect(mockWebhookProcessingLogic.isUserDeletionEvent('user.created')).toBe(false);
-			expect(mockWebhookProcessingLogic.isUserDeletionEvent('user.updated')).toBe(false);
+			expect(
+				mockWebhookProcessingLogic.isUserDeletionEvent('user.deleted'),
+			).toBe(true);
+			expect(
+				mockWebhookProcessingLogic.isUserDeletionEvent('user.created'),
+			).toBe(false);
+			expect(
+				mockWebhookProcessingLogic.isUserDeletionEvent('user.updated'),
+			).toBe(false);
 		});
 
 		it('should extract user ID from event data', () => {
@@ -136,7 +164,7 @@ describe('WebhookService', () => {
 		it('should extract user data from event data', () => {
 			const eventData = mockWebhookEvents.userCreated.data;
 			const userData = mockWebhookProcessingLogic.extractUserData(eventData);
-			
+
 			expect(userData.email).toBe('new@example.com');
 			expect(userData.firstName).toBe('New');
 			expect(userData.lastName).toBe('User');
@@ -151,8 +179,11 @@ describe('WebhookService', () => {
 				lastName: 'Doe',
 				imageUrl: 'https://example.com/avatar.jpg',
 			};
-			const upsertData = mockWebhookProcessingLogic.buildUpsertData(userId, userData);
-			
+			const upsertData = mockWebhookProcessingLogic.buildUpsertData(
+				userId,
+				userData,
+			);
+
 			expect(upsertData).toHaveProperty('where');
 			expect(upsertData).toHaveProperty('update');
 			expect(upsertData).toHaveProperty('create');
@@ -164,7 +195,7 @@ describe('WebhookService', () => {
 		it('should build delete data for user deletion', () => {
 			const userId = 'clerk_user123';
 			const deleteData = mockWebhookProcessingLogic.buildDeleteData(userId);
-			
+
 			expect(deleteData).toHaveProperty('where');
 			expect(deleteData.where.clerkUserId).toBe('clerk_user123');
 		});
@@ -184,7 +215,11 @@ describe('WebhookService', () => {
 		});
 
 		it('should validate event data', () => {
-			expect(mockWebhookProcessingLogic.validateEventData(mockWebhookEvents.userCreated.data)).toBe(true);
+			expect(
+				mockWebhookProcessingLogic.validateEventData(
+					mockWebhookEvents.userCreated.data,
+				),
+			).toBe(true);
 			expect(mockWebhookProcessingLogic.validateEventData(null)).toBe(false);
 			expect(mockWebhookProcessingLogic.validateEventData({})).toBe(false);
 		});
@@ -195,7 +230,9 @@ describe('WebhookService', () => {
 				firstName: 'John',
 				lastName: 'Doe',
 			};
-			expect(mockWebhookProcessingLogic.validateUserData(validUserData)).toBe(true);
+			expect(mockWebhookProcessingLogic.validateUserData(validUserData)).toBe(
+				true,
+			);
 			expect(mockWebhookProcessingLogic.validateUserData(null)).toBe(false);
 			expect(mockWebhookProcessingLogic.validateUserData({})).toBe(false);
 		});
@@ -210,8 +247,11 @@ describe('WebhookService', () => {
 				lastName: 'Doe',
 				imageUrl: 'https://example.com/avatar.jpg',
 			};
-			const operation = mockDatabaseOperationsLogic.buildUserUpsertOperation(userId, userData);
-			
+			const operation = mockDatabaseOperationsLogic.buildUserUpsertOperation(
+				userId,
+				userData,
+			);
+
 			expect(operation).toHaveProperty('where');
 			expect(operation).toHaveProperty('update');
 			expect(operation).toHaveProperty('create');
@@ -222,8 +262,9 @@ describe('WebhookService', () => {
 
 		it('should build user delete operation', () => {
 			const userId = 'clerk_user123';
-			const operation = mockDatabaseOperationsLogic.buildUserDeleteOperation(userId);
-			
+			const operation =
+				mockDatabaseOperationsLogic.buildUserDeleteOperation(userId);
+
 			expect(operation).toHaveProperty('where');
 			expect(operation.where.clerkUserId).toBe('clerk_user123');
 		});
@@ -243,13 +284,23 @@ describe('WebhookService', () => {
 		});
 
 		it('should validate database result', () => {
-			expect(mockDatabaseOperationsLogic.validateDatabaseResult(mockUserData.validUser)).toBe(true);
-			expect(mockDatabaseOperationsLogic.validateDatabaseResult(null)).toBe(false);
-			expect(mockDatabaseOperationsLogic.validateDatabaseResult('string')).toBe(false);
+			expect(
+				mockDatabaseOperationsLogic.validateDatabaseResult(
+					mockUserData.validUser,
+				),
+			).toBe(true);
+			expect(mockDatabaseOperationsLogic.validateDatabaseResult(null)).toBe(
+				false,
+			);
+			expect(mockDatabaseOperationsLogic.validateDatabaseResult('string')).toBe(
+				false,
+			);
 		});
 
 		it('should process database result', () => {
-			const result = mockDatabaseOperationsLogic.processDatabaseResult(mockUserData.validUser);
+			const result = mockDatabaseOperationsLogic.processDatabaseResult(
+				mockUserData.validUser,
+			);
 			expect(result).toEqual(mockUserData.validUser);
 		});
 	});
@@ -257,8 +308,9 @@ describe('WebhookService', () => {
 	describe('Event Processing Logic', () => {
 		it('should process user creation events', async () => {
 			const eventData = mockWebhookEvents.userCreated.data;
-			const result = await mockEventProcessingLogic.processUserCreationEvent(eventData);
-			
+			const result =
+				await mockEventProcessingLogic.processUserCreationEvent(eventData);
+
 			expect(result).toHaveProperty('operation');
 			expect(result).toHaveProperty('userId');
 			expect(result).toHaveProperty('userData');
@@ -269,8 +321,9 @@ describe('WebhookService', () => {
 
 		it('should process user update events', async () => {
 			const eventData = mockWebhookEvents.userUpdated.data;
-			const result = await mockEventProcessingLogic.processUserUpdateEvent(eventData);
-			
+			const result =
+				await mockEventProcessingLogic.processUserUpdateEvent(eventData);
+
 			expect(result).toHaveProperty('operation');
 			expect(result).toHaveProperty('userId');
 			expect(result).toHaveProperty('userData');
@@ -281,8 +334,9 @@ describe('WebhookService', () => {
 
 		it('should process user deletion events', async () => {
 			const eventData = mockWebhookEvents.userDeleted.data;
-			const result = await mockEventProcessingLogic.processUserDeletionEvent(eventData);
-			
+			const result =
+				await mockEventProcessingLogic.processUserDeletionEvent(eventData);
+
 			expect(result).toHaveProperty('operation');
 			expect(result).toHaveProperty('userId');
 			expect(result.operation).toBe('delete');
@@ -291,8 +345,9 @@ describe('WebhookService', () => {
 
 		it('should process unknown events', async () => {
 			const eventData = mockWebhookEvents.invalidEvent.data;
-			const result = await mockEventProcessingLogic.processUnknownEvent(eventData);
-			
+			const result =
+				await mockEventProcessingLogic.processUnknownEvent(eventData);
+
 			expect(result).toHaveProperty('operation');
 			expect(result).toHaveProperty('eventData');
 			expect(result.operation).toBe('unknown');
@@ -311,7 +366,9 @@ describe('WebhookService', () => {
 
 	describe('Validation Logic', () => {
 		it('should validate webhook events', () => {
-			expect(mockValidationLogic.validateWebhookEvent(mockWebhookEvents.userCreated)).toBe(true);
+			expect(
+				mockValidationLogic.validateWebhookEvent(mockWebhookEvents.userCreated),
+			).toBe(true);
 			expect(mockValidationLogic.validateWebhookEvent(null)).toBe(false);
 			expect(mockValidationLogic.validateWebhookEvent({})).toBe(false);
 		});
@@ -320,11 +377,17 @@ describe('WebhookService', () => {
 			expect(mockValidationLogic.validateEventType('user.created')).toBe(true);
 			expect(mockValidationLogic.validateEventType('user.updated')).toBe(true);
 			expect(mockValidationLogic.validateEventType('user.deleted')).toBe(true);
-			expect(mockValidationLogic.validateEventType('invalid.event')).toBe(false);
+			expect(mockValidationLogic.validateEventType('invalid.event')).toBe(
+				false,
+			);
 		});
 
 		it('should validate event data', () => {
-			expect(mockValidationLogic.validateEventData(mockWebhookEvents.userCreated.data)).toBe(true);
+			expect(
+				mockValidationLogic.validateEventData(
+					mockWebhookEvents.userCreated.data,
+				),
+			).toBe(true);
 			expect(mockValidationLogic.validateEventData(null)).toBe(false);
 			expect(mockValidationLogic.validateEventData({})).toBe(false);
 		});
@@ -344,7 +407,9 @@ describe('WebhookService', () => {
 			const validEmailAddresses = [
 				{ email_address: 'john@example.com', id: 'email123' },
 			];
-			expect(mockValidationLogic.validateEmailAddress(validEmailAddresses)).toBe(true);
+			expect(
+				mockValidationLogic.validateEmailAddress(validEmailAddresses),
+			).toBe(true);
 			expect(mockValidationLogic.validateEmailAddress([])).toBe(false);
 			expect(mockValidationLogic.validateEmailAddress(null)).toBe(false);
 		});
@@ -547,7 +612,7 @@ describe('WebhookService', () => {
 			expect(errors).toHaveProperty('userUpsertError');
 			expect(errors).toHaveProperty('userDeleteError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -562,7 +627,7 @@ describe('WebhookService', () => {
 			expect(errorMessages).toHaveProperty('userUpsertError');
 			expect(errorMessages).toHaveProperty('userDeleteError');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -576,7 +641,7 @@ describe('WebhookService', () => {
 			expect(successMessages).toHaveProperty('userDeleted');
 			expect(successMessages).toHaveProperty('operationCompleted');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -590,7 +655,7 @@ describe('WebhookService', () => {
 			expect(consoleLogData).toHaveProperty('userUpdated');
 			expect(consoleLogData).toHaveProperty('userDeleted');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});

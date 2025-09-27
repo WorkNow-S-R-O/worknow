@@ -237,7 +237,8 @@ export const mockErrors = {
 	userNotFoundOrNoEmail: 'Пользователь не найден или отсутствует email',
 	clerkUserIdRequired: 'clerkUserId is required',
 	clerkUserIdRequiredRu: 'clerkUserId обязателен',
-	invalidPriceId: 'Неверный price ID: price_invalid. Пожалуйста, обратитесь к администратору.',
+	invalidPriceId:
+		'Неверный price ID: price_invalid. Пожалуйста, обратитесь к администратору.',
 	paymentNotCompleted: 'Платеж не прошел',
 	premiumActivationError: 'Ошибка активации премиума',
 	checkoutSessionError: 'Ошибка при создании сессии',

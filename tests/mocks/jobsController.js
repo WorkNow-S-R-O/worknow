@@ -10,8 +10,12 @@ export const mockJobsServices = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock request and response objects
 export const mockRequest = {
@@ -66,18 +70,18 @@ export const mockJobData = {
 		meals: false,
 		boostedAt: null,
 		city: { id: 1, name: 'Tel Aviv' },
-		category: { 
-			id: 2, 
+		category: {
+			id: 2,
 			name: 'IT',
 			translations: [
 				{ lang: 'ru', name: 'IT' },
 				{ lang: 'en', name: 'Information Technology' },
 				{ lang: 'he', name: 'טכנולוגיית מידע' },
 				{ lang: 'ar', name: 'تكنولوجيا المعلومات' },
-			]
+			],
 		},
 	},
-	
+
 	updatedJob: {
 		id: 1,
 		title: 'Senior Software Engineer',
@@ -93,16 +97,16 @@ export const mockJobData = {
 		meals: true,
 		boostedAt: null,
 		city: { id: 1, name: 'Tel Aviv' },
-		category: { 
-			id: 2, 
+		category: {
+			id: 2,
 			name: 'IT',
 			translations: [
 				{ lang: 'ru', name: 'IT' },
 				{ lang: 'en', name: 'Information Technology' },
-			]
+			],
 		},
 	},
-	
+
 	boostedJob: {
 		id: 1,
 		title: 'Software Engineer',
@@ -118,16 +122,16 @@ export const mockJobData = {
 		meals: false,
 		boostedAt: '2024-01-01T00:00:00Z',
 		city: { id: 1, name: 'Tel Aviv' },
-		category: { 
-			id: 2, 
+		category: {
+			id: 2,
 			name: 'IT',
 			translations: [
 				{ lang: 'ru', name: 'IT' },
 				{ lang: 'en', name: 'Information Technology' },
-			]
+			],
 		},
 	},
-	
+
 	jobWithTranslations: {
 		id: 2,
 		title: 'Marketing Manager',
@@ -143,18 +147,18 @@ export const mockJobData = {
 		meals: false,
 		boostedAt: null,
 		city: { id: 3, name: 'Jerusalem' },
-		category: { 
-			id: 4, 
+		category: {
+			id: 4,
 			name: 'Marketing',
 			translations: [
 				{ lang: 'ru', name: 'Маркетинг' },
 				{ lang: 'en', name: 'Marketing' },
 				{ lang: 'he', name: 'שיווק' },
 				{ lang: 'ar', name: 'تسويق' },
-			]
+			],
 		},
 	},
-	
+
 	jobWithoutTranslations: {
 		id: 3,
 		title: 'Designer',
@@ -170,13 +174,13 @@ export const mockJobData = {
 		meals: true,
 		boostedAt: null,
 		city: { id: 5, name: 'Haifa' },
-		category: { 
-			id: 6, 
+		category: {
+			id: 6,
 			name: 'Design',
-			translations: []
+			translations: [],
 		},
 	},
-	
+
 	emptyJob: {},
 };
 
@@ -192,7 +196,7 @@ export const mockJobCreationData = {
 		phone: '123-456-7890',
 		imageUrl: 'http://example.com/image.jpg',
 	},
-	
+
 	jobDataWithStringNumbers: {
 		title: 'Marketing Manager',
 		description: 'Manage marketing campaigns.',
@@ -203,7 +207,7 @@ export const mockJobCreationData = {
 		phone: '098-765-4321',
 		imageUrl: 'http://example.com/marketing.jpg',
 	},
-	
+
 	jobDataWithNumericValues: {
 		title: 'Designer',
 		description: 'Create visual concepts.',
@@ -214,7 +218,7 @@ export const mockJobCreationData = {
 		phone: '111-222-3333',
 		imageUrl: 'http://example.com/design.jpg',
 	},
-	
+
 	invalidJobData: {
 		title: 'Invalid Job',
 		description: 'This is an invalid job description.',
@@ -225,7 +229,7 @@ export const mockJobCreationData = {
 		phone: '444-555-6666',
 		imageUrl: 'invalid-url',
 	},
-	
+
 	jobDataMissingFields: {
 		title: 'Missing Fields Job',
 		description: 'This job is missing some fields.',
@@ -234,7 +238,7 @@ export const mockJobCreationData = {
 		categoryId: '8',
 		// userId and phone are missing
 	},
-	
+
 	jobDataWithUpgradeRequired: {
 		title: 'Premium Job',
 		description: 'This job requires premium upgrade.',
@@ -252,17 +256,21 @@ export const mockServiceResponses = {
 	successCreateJobResponse: {
 		job: mockJobData.validJob,
 	},
-	
+
 	successUpdateJobResponse: {
 		updatedJob: mockJobData.updatedJob,
 	},
-	
+
 	successDeleteJobResponse: {
 		message: 'Job deleted successfully',
 	},
-	
+
 	successGetJobsResponse: {
-		jobs: [mockJobData.validJob, mockJobData.jobWithTranslations, mockJobData.jobWithoutTranslations],
+		jobs: [
+			mockJobData.validJob,
+			mockJobData.jobWithTranslations,
+			mockJobData.jobWithoutTranslations,
+		],
 		pagination: {
 			currentPage: 1,
 			totalPages: 1,
@@ -270,39 +278,39 @@ export const mockServiceResponses = {
 			itemsPerPage: 10,
 		},
 	},
-	
+
 	successBoostJobResponse: {
 		boostedJob: mockJobData.boostedJob,
 	},
-	
+
 	errorCreateJobResponse: {
 		error: 'Failed to create job',
 	},
-	
+
 	errorCreateJobWithErrorsResponse: {
 		errors: ['Title is required', 'Description is required'],
 	},
-	
+
 	errorUpdateJobResponse: {
 		error: 'Failed to update job',
 	},
-	
+
 	errorUpdateJobWithErrorsResponse: {
 		errors: ['Title is required', 'Salary must be a number'],
 	},
-	
+
 	errorDeleteJobResponse: {
 		error: 'Failed to delete job',
 	},
-	
+
 	errorGetJobsResponse: {
 		error: 'Failed to get jobs',
 	},
-	
+
 	errorBoostJobResponse: {
 		error: 'Failed to boost job',
 	},
-	
+
 	errorUpgradeRequiredResponse: {
 		error: 'Upgrade required to boost job',
 		upgradeRequired: true,
@@ -387,7 +395,7 @@ export const mockDataConversions = {
 		imageUrl: 'http://example.com/image.jpg',
 		errorMessage: 'Ошибка создания объявления',
 	},
-	
+
 	number: {
 		id: 1,
 		salary: 120000,
@@ -398,7 +406,7 @@ export const mockDataConversions = {
 		statusCode: 200,
 		errorStatusCode: 500,
 	},
-	
+
 	boolean: {
 		isValid: true,
 		isEmpty: false,
@@ -408,7 +416,7 @@ export const mockDataConversions = {
 		shuttle: true,
 		meals: false,
 	},
-	
+
 	object: {
 		job: mockJobData.validJob,
 		response: mockServiceResponses.successCreateJobResponse,
@@ -417,13 +425,13 @@ export const mockDataConversions = {
 		category: { id: 2, name: 'IT' },
 		pagination: { currentPage: 1, totalPages: 1 },
 	},
-	
+
 	array: {
 		jobs: [mockJobData.validJob, mockJobData.jobWithTranslations],
 		errors: [mockErrors.validationError, mockErrors.databaseError],
 		translations: mockJobData.validJob.category.translations,
 	},
-	
+
 	null: {
 		job: null,
 		city: null,
@@ -437,7 +445,7 @@ export const mockDataConversions = {
 export const mockQueryProcessingLogic = {
 	processQueryParameters: (query) => {
 		const { page, limit, category, city, salary, shuttle, meals } = query;
-		
+
 		return {
 			page: page ? parseInt(page) : 1,
 			limit: limit ? parseInt(limit) : 10,
@@ -448,33 +456,33 @@ export const mockQueryProcessingLogic = {
 			meals: meals === 'true',
 		};
 	},
-	
+
 	parsePage: (page) => {
 		return page ? parseInt(page) : 1;
 	},
-	
+
 	parseLimit: (limit) => {
 		return limit ? parseInt(limit) : 10;
 	},
-	
+
 	parseSalary: (salary) => {
 		return salary ? parseInt(salary) : undefined;
 	},
-	
+
 	parseBoolean: (value) => {
 		return value === 'true';
 	},
-	
+
 	validateQueryParameters: (query) => {
 		const { page, limit, salary } = query;
-		
+
 		if (page && isNaN(parseInt(page))) return false;
 		if (limit && isNaN(parseInt(limit))) return false;
 		if (salary && isNaN(parseInt(salary))) return false;
-		
+
 		return true;
 	},
-	
+
 	buildFilters: (query) => {
 		return mockQueryProcessingLogic.processQueryParameters(query);
 	},
@@ -493,15 +501,17 @@ export const mockTranslationProcessingLogic = {
 			}
 			return {
 				...job,
-				category: job.category ? { ...job.category, label: categoryLabel } : null,
+				category: job.category
+					? { ...job.category, label: categoryLabel }
+					: null,
 			};
 		});
 	},
-	
+
 	findTranslation: (translations, lang) => {
 		return translations?.find((t) => t.lang === lang);
 	},
-	
+
 	getCategoryLabel: (category, lang) => {
 		if (category?.translations?.length) {
 			const translation = category.translations.find((t) => t.lang === lang);
@@ -509,16 +519,19 @@ export const mockTranslationProcessingLogic = {
 		}
 		return category?.name;
 	},
-	
+
 	processCategoryTranslation: (category, lang) => {
-		const label = mockTranslationProcessingLogic.getCategoryLabel(category, lang);
+		const label = mockTranslationProcessingLogic.getCategoryLabel(
+			category,
+			lang,
+		);
 		return category ? { ...category, label } : null;
 	},
-	
+
 	validateLanguage: (lang) => {
 		return ['ru', 'en', 'he', 'ar'].includes(lang);
 	},
-	
+
 	getDefaultLanguage: () => {
 		return 'ru';
 	},
@@ -529,29 +542,29 @@ export const mockAuthenticationLogic = {
 	extractUserFromRequest: (req) => {
 		return req.user?.clerkUserId;
 	},
-	
+
 	validateAuthentication: (req) => {
 		return !!(req.user && req.user.clerkUserId && req.user.clerkUserId !== '');
 	},
-	
+
 	buildJobDataWithUser: (req) => {
 		return {
 			...req.body,
 			userId: req.user?.clerkUserId,
 		};
 	},
-	
+
 	buildUpdateDataWithUser: (req) => {
 		return {
 			...req.body,
 			userId: req.user?.clerkUserId,
 		};
 	},
-	
+
 	handleUnauthenticatedRequest: (res) => {
 		return res.status(401).json({ error: 'Authentication required' });
 	},
-	
+
 	logUserInfo: (req, operation) => {
 		console.log(`🔍 ${operation} controller - Authenticated user:`, req.user);
 	},
@@ -565,11 +578,11 @@ export const mockPaginationLogic = {
 			pagination,
 		};
 	},
-	
+
 	validatePagination: (pagination) => {
 		return !!(pagination && typeof pagination === 'object');
 	},
-	
+
 	processPaginationData: (pagination) => {
 		return {
 			currentPage: pagination.currentPage || 1,
@@ -584,7 +597,10 @@ export const mockPaginationLogic = {
 export const mockControllerLogic = {
 	processCreateJobRequest: async (req, res) => {
 		console.log('🔍 createJob controller - Request body:', req.body);
-		console.log('🔍 createJob controller - imageUrl in request:', req.body.imageUrl);
+		console.log(
+			'🔍 createJob controller - imageUrl in request:',
+			req.body.imageUrl,
+		);
 		console.log('🔍 createJob controller - Authenticated user:', req.user);
 
 		const jobData = {
@@ -600,10 +616,13 @@ export const mockControllerLogic = {
 		console.log('🔍 createJob controller - Job created:', result.job);
 		res.status(201).json(result.job);
 	},
-	
+
 	processUpdateJobRequest: async (req, res) => {
 		console.log('🔍 updateJob controller - Request body:', req.body);
-		console.log('🔍 updateJob controller - imageUrl in request:', req.body.imageUrl);
+		console.log(
+			'🔍 updateJob controller - imageUrl in request:',
+			req.body.imageUrl,
+		);
 		console.log('🔍 updateJob controller - Authenticated user:', req.user);
 
 		const updateData = {
@@ -611,7 +630,10 @@ export const mockControllerLogic = {
 			userId: req.user?.clerkUserId,
 		};
 
-		const result = await mockJobsServices.updateJobService(req.params.id, updateData);
+		const result = await mockJobsServices.updateJobService(
+			req.params.id,
+			updateData,
+		);
 		if (result.error) return res.status(400).json({ error: result.error });
 		if (result.errors)
 			return res.status(400).json({ success: false, errors: result.errors });
@@ -619,15 +641,18 @@ export const mockControllerLogic = {
 		console.log('🔍 updateJob controller - Job updated:', result.updatedJob);
 		res.status(200).json(result.updatedJob);
 	},
-	
+
 	processDeleteJobRequest: async (req, res) => {
 		console.log('🔍 deleteJob controller - Authenticated user:', req.user);
 
-		const result = await mockJobsServices.deleteJobService(req.params.id, req.user?.clerkUserId);
+		const result = await mockJobsServices.deleteJobService(
+			req.params.id,
+			req.user?.clerkUserId,
+		);
 		if (result.error) return res.status(400).json({ error: result.error });
 		res.status(200).json({ message: 'Объявление удалено' });
 	},
-	
+
 	processGetJobsRequest: async (req, res) => {
 		const lang = req.query.lang || 'ru';
 		const { page, limit, category, city, salary, shuttle, meals } = req.query;
@@ -655,7 +680,9 @@ export const mockControllerLogic = {
 			}
 			return {
 				...job,
-				category: job.category ? { ...job.category, label: categoryLabel } : null,
+				category: job.category
+					? { ...job.category, label: categoryLabel }
+					: null,
 			};
 		});
 
@@ -664,25 +691,25 @@ export const mockControllerLogic = {
 			pagination: result.pagination,
 		});
 	},
-	
+
 	processBoostJobRequest: async (req, res) => {
 		const result = await mockJobsServices.boostJobService(req.params.id);
 		if (result.error) return res.status(400).json({ error: result.error });
 		res.status(200).json(result.boostedJob);
 	},
-	
+
 	handleControllerError: (error, res, operation = 'operation') => {
 		console.error(`Ошибка ${operation}:`, error.message);
-		return res.status(500).json({ 
-			error: `Ошибка ${operation}`, 
-			details: error.message 
+		return res.status(500).json({
+			error: `Ошибка ${operation}`,
+			details: error.message,
 		});
 	},
-	
+
 	handleControllerSuccess: (data, res, statusCode = 200) => {
 		return res.status(statusCode).json(data);
 	},
-	
+
 	validateControllerInput: (req) => {
 		return !!(req && req.body && Object.keys(req.body).length > 0);
 	},
@@ -693,23 +720,23 @@ export const mockServiceIntegrationLogic = {
 	callCreateJobService: async (jobData) => {
 		return await mockJobsServices.createJobService(jobData);
 	},
-	
+
 	callUpdateJobService: async (id, updateData) => {
 		return await mockJobsServices.updateJobService(id, updateData);
 	},
-	
+
 	callDeleteJobService: async (id, userId) => {
 		return await mockJobsServices.deleteJobService(id, userId);
 	},
-	
+
 	callGetJobsService: async (filters) => {
 		return await mockJobsServices.getJobsService(filters);
 	},
-	
+
 	callBoostJobService: async (id) => {
 		return await mockJobsServices.boostJobService(id);
 	},
-	
+
 	handleServiceResponse: (result) => {
 		if (result.error) {
 			return {
@@ -728,18 +755,18 @@ export const mockServiceIntegrationLogic = {
 			data: result.job || result.updatedJob || result.boostedJob || result,
 		};
 	},
-	
+
 	handleServiceError: (error) => {
 		return {
 			success: false,
 			error: error.message,
 		};
 	},
-	
+
 	validateServiceResult: (result) => {
 		return result !== null && result !== undefined;
 	},
-	
+
 	processServiceResult: (result) => {
 		return result;
 	},
@@ -782,46 +809,46 @@ export const mockRequestResponseLogic = {
 			},
 		};
 	},
-	
+
 	buildResponse: () => {
 		return {
 			json: vi.fn(),
 			status: vi.fn().mockReturnThis(),
 		};
 	},
-	
+
 	handleSuccessResponse: (res, data, statusCode = 200) => {
 		res.status(statusCode).json(data);
 	},
-	
+
 	handleErrorResponse: (res, error, statusCode = 500) => {
 		res.status(statusCode).json({ error: error.message });
 	},
-	
+
 	handleValidationError: (res, errors, statusCode = 400) => {
 		res.status(statusCode).json({ success: false, errors });
 	},
-	
+
 	handleSingleError: (res, error, statusCode = 400) => {
 		res.status(statusCode).json({ error });
 	},
-	
+
 	validateRequest: (req) => {
 		return !!(req && req.body && Object.keys(req.body).length > 0);
 	},
-	
+
 	extractJobData: (req) => {
 		return req.body;
 	},
-	
+
 	extractUpdateData: (req) => {
 		return req.body;
 	},
-	
+
 	extractQueryParameters: (req) => {
 		return req.query;
 	},
-	
+
 	extractUserId: (req) => {
 		return req.user?.clerkUserId;
 	},

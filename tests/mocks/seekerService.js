@@ -20,8 +20,12 @@ export const mockNotificationService = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock city data
 export const mockCityData = {
@@ -63,9 +67,7 @@ export const mockCityData = {
 	cityWithPartialTranslation: {
 		id: 5,
 		name: 'Eilat',
-		translations: [
-			{ lang: 'ru', name: 'Эйлат' },
-		],
+		translations: [{ lang: 'ru', name: 'Эйлат' }],
 	},
 };
 
@@ -76,7 +78,8 @@ export const mockSeekerData = {
 		name: 'John Doe',
 		contact: 'john@example.com',
 		city: 'Tel Aviv',
-		description: 'Experienced software developer with 5 years of experience in web development.',
+		description:
+			'Experienced software developer with 5 years of experience in web development.',
 		gender: 'Male',
 		isDemanded: true,
 		facebook: 'https://facebook.com/johndoe',
@@ -92,13 +95,14 @@ export const mockSeekerData = {
 		isActive: true,
 		createdAt: new Date('2024-01-15T10:00:00Z'),
 	},
-	
+
 	anotherSeeker: {
 		id: 2,
 		name: 'Jane Smith',
 		contact: 'jane@example.com',
 		city: 'Jerusalem',
-		description: 'Marketing specialist with expertise in digital marketing and social media.',
+		description:
+			'Marketing specialist with expertise in digital marketing and social media.',
 		gender: 'Female',
 		isDemanded: false,
 		facebook: 'https://facebook.com/janesmith',
@@ -114,13 +118,14 @@ export const mockSeekerData = {
 		isActive: true,
 		createdAt: new Date('2024-01-14T14:30:00Z'),
 	},
-	
+
 	seekerWithSpecialChars: {
 		id: 3,
 		name: 'José García',
 		contact: 'jose@example.com',
 		city: 'Haifa',
-		description: 'Chef with international experience in fine dining restaurants.',
+		description:
+			'Chef with international experience in fine dining restaurants.',
 		gender: 'Male',
 		isDemanded: true,
 		facebook: null,
@@ -136,7 +141,7 @@ export const mockSeekerData = {
 		isActive: true,
 		createdAt: new Date('2024-01-13T09:15:00Z'),
 	},
-	
+
 	inactiveSeeker: {
 		id: 4,
 		name: 'Inactive User',
@@ -158,7 +163,7 @@ export const mockSeekerData = {
 		isActive: false,
 		createdAt: new Date('2024-01-12T16:45:00Z'),
 	},
-	
+
 	seekerWithMinimalData: {
 		id: 5,
 		name: 'Minimal User',
@@ -201,12 +206,13 @@ export const mockSeekerCreationData = {
 		note: 'Available immediately',
 		documentType: 'Work permit',
 	},
-	
+
 	seekerDataWithSpecialChars: {
 		name: 'José María',
 		contact: 'jose@example.com',
 		city: 'Jerusalem',
-		description: 'Chef with international experience.\nSpecializes in Mediterranean cuisine.',
+		description:
+			'Chef with international experience.\nSpecializes in Mediterranean cuisine.',
 		gender: 'Male',
 		isDemanded: false,
 		facebook: null,
@@ -219,7 +225,7 @@ export const mockSeekerCreationData = {
 		note: 'Flexible schedule',
 		documentType: 'Passport',
 	},
-	
+
 	seekerDataWithMinimalFields: {
 		name: 'Minimal Seeker',
 		contact: 'minimal@example.com',
@@ -227,7 +233,7 @@ export const mockSeekerCreationData = {
 		description: 'Minimal data.',
 		// Other fields are optional
 	},
-	
+
 	seekerDataWithEmptyArrays: {
 		name: 'Empty Arrays Seeker',
 		contact: 'empty@example.com',
@@ -246,7 +252,7 @@ export const mockQueryParameters = {
 		limit: 10,
 		lang: 'ru',
 	},
-	
+
 	queryWithFilters: {
 		page: 2,
 		limit: 5,
@@ -259,7 +265,7 @@ export const mockQueryParameters = {
 		isDemanded: 'true',
 		lang: 'en',
 	},
-	
+
 	queryWithStringFilters: {
 		page: 1,
 		limit: 20,
@@ -272,14 +278,14 @@ export const mockQueryParameters = {
 		isDemanded: 'false',
 		lang: 'he',
 	},
-	
+
 	queryWithArrayLanguages: {
 		page: 1,
 		limit: 15,
 		languages: ['English', 'Russian', 'Hebrew'],
 		lang: 'ru',
 	},
-	
+
 	queryWithEmptyFilters: {
 		page: 1,
 		limit: 10,
@@ -292,13 +298,13 @@ export const mockQueryParameters = {
 		isDemanded: '',
 		lang: 'en',
 	},
-	
+
 	queryWithInvalidPage: {
 		page: 'invalid',
 		limit: 'invalid',
 		lang: 'ru',
 	},
-	
+
 	queryWithLargePage: {
 		page: 1000,
 		limit: 100,
@@ -315,7 +321,7 @@ export const mockPaginationData = {
 		hasNextPage: true,
 		hasPrevPage: false,
 	},
-	
+
 	middlePage: {
 		currentPage: 3,
 		totalPages: 5,
@@ -323,7 +329,7 @@ export const mockPaginationData = {
 		hasNextPage: true,
 		hasPrevPage: true,
 	},
-	
+
 	lastPage: {
 		currentPage: 5,
 		totalPages: 5,
@@ -331,7 +337,7 @@ export const mockPaginationData = {
 		hasNextPage: false,
 		hasPrevPage: true,
 	},
-	
+
 	singlePage: {
 		currentPage: 1,
 		totalPages: 1,
@@ -339,7 +345,7 @@ export const mockPaginationData = {
 		hasNextPage: false,
 		hasPrevPage: false,
 	},
-	
+
 	emptyPage: {
 		currentPage: 1,
 		totalPages: 0,
@@ -354,44 +360,44 @@ export const mockWhereClauseData = {
 	basicWhereClause: {
 		isActive: true,
 	},
-	
+
 	whereClauseWithCity: {
 		isActive: true,
 		city: 'Tel Aviv',
 	},
-	
+
 	whereClauseWithCategory: {
 		isActive: true,
 		category: 'IT',
 	},
-	
+
 	whereClauseWithEmployment: {
 		isActive: true,
 		employment: 'Full-time',
 	},
-	
+
 	whereClauseWithDocumentType: {
 		isActive: true,
 		documentType: 'Work permit',
 	},
-	
+
 	whereClauseWithLanguages: {
 		isActive: true,
 		languages: {
 			hasSome: ['English', 'Hebrew'],
 		},
 	},
-	
+
 	whereClauseWithGender: {
 		isActive: true,
 		gender: 'Male',
 	},
-	
+
 	whereClauseWithIsDemanded: {
 		isActive: true,
 		isDemanded: true,
 	},
-	
+
 	whereClauseWithAllFilters: {
 		isActive: true,
 		city: 'Tel Aviv',
@@ -413,43 +419,43 @@ export const mockSlugGenerationData = {
 		description: 'Software developer',
 		expectedSlug: 'john-doe-software-developer',
 	},
-	
+
 	nameWithSpecialChars: {
 		name: 'José María García',
 		description: 'Chef with international experience',
 		expectedSlug: 'jos-mar-a-garc-a-chef-with-international-experience',
 	},
-	
+
 	nameWithNumbers: {
 		name: 'User123',
 		description: 'Test description',
 		expectedSlug: 'user123-test-description',
 	},
-	
+
 	nameWithMultipleLines: {
 		name: 'Multi Line',
 		description: 'First line\nSecond line\nThird line',
 		expectedSlug: 'multi-line-first-line-second-line-third-line',
 	},
-	
+
 	nameWithSpecialCharacters: {
 		name: 'Special!@#$%^&*()',
 		description: 'Description with symbols',
 		expectedSlug: 'special-description-with-symbols',
 	},
-	
+
 	nameWithSpaces: {
 		name: '  User  with  spaces  ',
 		description: '  Description  with  spaces  ',
 		expectedSlug: 'user-with-spaces-description-with-spaces',
 	},
-	
+
 	nameWithCyrillic: {
 		name: 'Иван Петров',
 		description: 'Разработчик программного обеспечения',
 		expectedSlug: 'иван-петров-разработчик-программного-обеспечения',
 	},
-	
+
 	nameWithHebrew: {
 		name: 'יוסי כהן',
 		description: 'מפתח תוכנה',
@@ -465,21 +471,21 @@ export const mockCityTranslationData = {
 		en: 'Tel Aviv',
 		ar: 'تل أبيب',
 	},
-	
+
 	jerusalemTranslations: {
 		ru: 'Иерусалим',
 		he: 'ירושלים',
 		en: 'Jerusalem',
 		ar: 'القدس',
 	},
-	
+
 	haifaTranslations: {
 		ru: 'Хайфа',
 		he: 'חיפה',
 		en: 'Haifa',
 		ar: 'حيفا',
 	},
-	
+
 	beershebaTranslations: {
 		ru: 'Беэр-Шева',
 		he: 'באר שבע',
@@ -559,17 +565,17 @@ export const mockServiceResponses = {
 		],
 		pagination: mockPaginationData.firstPage,
 	},
-	
+
 	createSeekerSuccess: mockSeekerData.validSeeker,
-	
+
 	getSeekerBySlugSuccess: mockSeekerData.validSeeker,
-	
+
 	getSeekerByIdSuccess: mockSeekerData.validSeeker,
-	
+
 	deleteSeekerSuccess: mockSeekerData.validSeeker,
-	
+
 	translateCityNameSuccess: 'Тель-Авив',
-	
+
 	generateSlugSuccess: 'john-doe-software-developer',
 };
 
@@ -586,7 +592,7 @@ export const mockDataConversions = {
 		documentType: 'Work permit',
 		slug: 'john-doe-software-developer',
 	},
-	
+
 	number: {
 		id: 1,
 		page: 1,
@@ -597,14 +603,14 @@ export const mockDataConversions = {
 		skip: 0,
 		take: 10,
 	},
-	
+
 	boolean: {
 		isActive: true,
 		isDemanded: true,
 		hasNextPage: true,
 		hasPrevPage: false,
 	},
-	
+
 	array: {
 		languages: ['English', 'Hebrew', 'Russian'],
 		translations: [
@@ -612,7 +618,7 @@ export const mockDataConversions = {
 			{ lang: 'he', name: 'תל אביב' },
 		],
 	},
-	
+
 	object: {
 		seeker: mockSeekerData.validSeeker,
 		city: mockCityData.telAviv,
@@ -625,35 +631,50 @@ export const mockDataConversions = {
 export const mockFilteringLogic = {
 	buildWhereClause: (filters) => {
 		const whereClause = { isActive: true };
-		
+
 		if (filters.city) whereClause.city = filters.city;
 		if (filters.category) whereClause.category = filters.category;
 		if (filters.employment) whereClause.employment = filters.employment;
 		if (filters.documentType) whereClause.documentType = filters.documentType;
-		if (filters.languages && Array.isArray(filters.languages) && filters.languages.length > 0) {
+		if (
+			filters.languages &&
+			Array.isArray(filters.languages) &&
+			filters.languages.length > 0
+		) {
 			whereClause.languages = { hasSome: filters.languages };
 		}
 		if (filters.gender) whereClause.gender = filters.gender;
 		if (filters.isDemanded !== undefined) {
-			whereClause.isDemanded = filters.isDemanded === 'true' || filters.isDemanded === true;
+			whereClause.isDemanded =
+				filters.isDemanded === 'true' || filters.isDemanded === true;
 		}
-		
+
 		return whereClause;
 	},
-	
+
 	applyFilters: (seekers, filters) => {
-		return seekers.filter(seeker => {
+		return seekers.filter((seeker) => {
 			if (filters.city && seeker.city !== filters.city) return false;
-			if (filters.category && seeker.category !== filters.category) return false;
-			if (filters.employment && seeker.employment !== filters.employment) return false;
-			if (filters.documentType && seeker.documentType !== filters.documentType) return false;
-			if (filters.languages && Array.isArray(filters.languages) && filters.languages.length > 0) {
-				const hasLanguage = filters.languages.some(lang => seeker.languages.includes(lang));
+			if (filters.category && seeker.category !== filters.category)
+				return false;
+			if (filters.employment && seeker.employment !== filters.employment)
+				return false;
+			if (filters.documentType && seeker.documentType !== filters.documentType)
+				return false;
+			if (
+				filters.languages &&
+				Array.isArray(filters.languages) &&
+				filters.languages.length > 0
+			) {
+				const hasLanguage = filters.languages.some((lang) =>
+					seeker.languages.includes(lang),
+				);
 				if (!hasLanguage) return false;
 			}
 			if (filters.gender && seeker.gender !== filters.gender) return false;
 			if (filters.isDemanded !== undefined) {
-				const isDemanded = filters.isDemanded === 'true' || filters.isDemanded === true;
+				const isDemanded =
+					filters.isDemanded === 'true' || filters.isDemanded === true;
 				if (seeker.isDemanded !== isDemanded) return false;
 			}
 			return true;
@@ -669,7 +690,7 @@ export const mockPaginationLogic = {
 		const totalPages = Math.ceil(totalCount / itemsPerPage);
 		const skip = (currentPage - 1) * itemsPerPage;
 		const take = itemsPerPage;
-		
+
 		return {
 			currentPage,
 			totalPages,
@@ -680,11 +701,11 @@ export const mockPaginationLogic = {
 			take,
 		};
 	},
-	
+
 	validatePagination: (page, limit) => {
 		const currentPage = parseInt(page);
 		const itemsPerPage = parseInt(limit);
-		
+
 		return {
 			page: isNaN(currentPage) || currentPage < 1 ? 1 : currentPage,
 			limit: isNaN(itemsPerPage) || itemsPerPage < 1 ? 10 : itemsPerPage,
@@ -700,11 +721,15 @@ export const mockSlugGenerationLogic = {
 			.replace(/[^a-zа-я0-9]+/gi, '-')
 			.replace(/^-+|-+$/g, '');
 	},
-	
+
 	validateSlug: (slug) => {
-		return typeof slug === 'string' && slug.length > 0 && /^[a-zа-я0-9-]+$/.test(slug);
+		return (
+			typeof slug === 'string' &&
+			slug.length > 0 &&
+			/^[a-zа-я0-9-]+$/.test(slug)
+		);
 	},
-	
+
 	normalizeSlug: (slug) => {
 		return slug
 			.toLowerCase()
@@ -724,27 +749,27 @@ export const mockCityTranslationLogic = {
 				en: 'Tel Aviv',
 				ar: 'تل أبيب',
 			},
-			'Jerusalem': {
+			Jerusalem: {
 				ru: 'Иерусалим',
 				he: 'ירושלים',
 				en: 'Jerusalem',
 				ar: 'القدس',
 			},
-			'Haifa': {
+			Haifa: {
 				ru: 'Хайфа',
 				he: 'חיפה',
 				en: 'Haifa',
 				ar: 'حيفا',
 			},
 		};
-		
+
 		return translations[cityName]?.[lang] || cityName;
 	},
-	
+
 	getAvailableLanguages: () => {
 		return ['ru', 'he', 'en', 'ar'];
 	},
-	
+
 	isValidLanguage: (lang) => {
 		return ['ru', 'he', 'en', 'ar'].includes(lang);
 	},
@@ -756,12 +781,12 @@ export const mockNotificationLogic = {
 		// Mock notification sending
 		return true;
 	},
-	
+
 	handleNotificationError: (error) => {
 		console.error('❌ Failed to send notification for new candidate:', error);
 		// Don't fail the seeker creation if notification fails
 	},
-	
+
 	validateSeekerForNotification: (seeker) => {
 		return !!(seeker && seeker.id && seeker.name && seeker.contact);
 	},

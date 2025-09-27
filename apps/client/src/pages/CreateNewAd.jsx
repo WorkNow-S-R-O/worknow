@@ -1,4 +1,4 @@
-import { JobForm } from '../components/index';
+import { JobForm } from '@/components/form';
 import { Helmet } from 'react-helmet-async';
 import { useIntlayer } from 'react-intlayer';
 

@@ -25,7 +25,8 @@ vi.mock('../apps/api/services/redisService.js', () => ({
 	},
 }));
 
-const redisService = (await import('../apps/api/services/redisService.js')).default;
+const redisService = (await import('../apps/api/services/redisService.js'))
+	.default;
 const {
 	cacheMiddleware,
 	rateLimitMiddleware,
@@ -42,7 +43,9 @@ const resetMocks = () => {
 };
 
 describe('cache middleware suite', () => {
-	const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+	const consoleErrorSpy = vi
+		.spyOn(console, 'error')
+		.mockImplementation(() => {});
 
 	beforeEach(() => {
 		resetMocks();
@@ -162,7 +165,9 @@ describe('cache middleware suite', () => {
 			const res = buildResponse();
 			const next = buildNext();
 
-			redisService.checkRateLimit.mockRejectedValueOnce(new Error('redis down'));
+			redisService.checkRateLimit.mockRejectedValueOnce(
+				new Error('redis down'),
+			);
 
 			const middleware = rateLimitMiddleware();
 			await middleware(req, res, next);

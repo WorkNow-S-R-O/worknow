@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from 'libs/utils';
+import { cva } from 'class-variance-authority';
+import { cn } from 'libs';
 
 const spinnerVariants = cva('relative block opacity-[0.65]', {
 	variants: {
@@ -16,15 +15,10 @@ const spinnerVariants = cva('relative block opacity-[0.65]', {
 	},
 });
 
-export interface SpinnerProps
-	extends React.HTMLAttributes<HTMLSpanElement>,
-		VariantProps<typeof spinnerVariants> {
-	loading?: boolean;
-	asChild?: boolean;
-}
-
-const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
-	({ className, size, loading = true, asChild = false, ...props }, ref) => {
+const Spinner = React.forwardRef((
+	{ className, size, loading = true, asChild = false, ...props },
+	ref,
+) => {
 		const Comp = asChild ? Slot : 'span';
 
 		const [bgColorClass, filteredClassName] = React.useMemo(() => {

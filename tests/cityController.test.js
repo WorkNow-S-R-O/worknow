@@ -29,7 +29,7 @@ describe('CityController', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetCityControllerMocks();
-		
+
 		// Mock console methods
 		console.error = vi.fn();
 	});
@@ -89,7 +89,7 @@ describe('CityController', () => {
 		it('should process cities with Russian translations', () => {
 			const cities = mockCityData.citiesWithTranslations;
 			const processed = mockCityProcessingLogic.processCities(cities, 'ru');
-			
+
 			expect(processed).toHaveLength(5);
 			expect(processed[0]).toEqual({ id: 1, name: 'Тель-Авив' });
 			expect(processed[1]).toEqual({ id: 2, name: 'Иерусалим' });
@@ -99,7 +99,7 @@ describe('CityController', () => {
 		it('should process cities with English translations', () => {
 			const cities = mockCityData.citiesWithTranslations;
 			const processed = mockCityProcessingLogic.processCities(cities, 'en');
-			
+
 			expect(processed).toHaveLength(5);
 			expect(processed[0]).toEqual({ id: 1, name: 'Tel Aviv' });
 			expect(processed[1]).toEqual({ id: 2, name: 'Jerusalem' });
@@ -109,7 +109,7 @@ describe('CityController', () => {
 		it('should process cities with Hebrew translations', () => {
 			const cities = mockCityData.citiesWithTranslations;
 			const processed = mockCityProcessingLogic.processCities(cities, 'he');
-			
+
 			expect(processed).toHaveLength(5);
 			expect(processed[0]).toEqual({ id: 1, name: 'תל אביב' });
 			expect(processed[1]).toEqual({ id: 2, name: 'ירושלים' });
@@ -119,7 +119,7 @@ describe('CityController', () => {
 		it('should process cities with Arabic translations', () => {
 			const cities = mockCityData.citiesWithTranslations;
 			const processed = mockCityProcessingLogic.processCities(cities, 'ar');
-			
+
 			expect(processed).toHaveLength(5);
 			expect(processed[0]).toEqual({ id: 1, name: 'تل أبيب' });
 			expect(processed[1]).toEqual({ id: 2, name: 'القدس' });
@@ -129,7 +129,7 @@ describe('CityController', () => {
 		it('should handle missing translations with fallback', () => {
 			const cities = mockCityData.citiesWithPartialTranslations;
 			const processed = mockCityProcessingLogic.processCities(cities, 'he');
-			
+
 			expect(processed).toHaveLength(2);
 			expect(processed[0]).toEqual({ id: 1, name: 'Tel Aviv' }); // Falls back to original name
 			expect(processed[1]).toEqual({ id: 2, name: 'ירושלים' }); // Has translation
@@ -138,7 +138,7 @@ describe('CityController', () => {
 		it('should handle cities with no translations', () => {
 			const cities = mockCityData.citiesWithNoTranslations;
 			const processed = mockCityProcessingLogic.processCities(cities, 'ru');
-			
+
 			expect(processed).toHaveLength(2);
 			expect(processed[0]).toEqual({ id: 1, name: 'Tel Aviv' }); // Falls back to original name
 			expect(processed[1]).toEqual({ id: 2, name: 'Jerusalem' }); // Falls back to original name
@@ -147,7 +147,7 @@ describe('CityController', () => {
 		it('should handle cities with null translations', () => {
 			const cities = mockCityData.citiesWithNullTranslations;
 			const processed = mockCityProcessingLogic.processCities(cities, 'ru');
-			
+
 			expect(processed).toHaveLength(2);
 			expect(processed[0]).toEqual({ id: 1, name: 'Tel Aviv' }); // Falls back to original name
 			expect(processed[1]).toEqual({ id: 2, name: 'Jerusalem' }); // Falls back to original name
@@ -155,31 +155,40 @@ describe('CityController', () => {
 
 		it('should find translation by language', () => {
 			const translations = mockCityData.singleCity.translations;
-			const russianTranslation = mockCityProcessingLogic.findTranslation(translations, 'ru');
-			const englishTranslation = mockCityProcessingLogic.findTranslation(translations, 'en');
-			
+			const russianTranslation = mockCityProcessingLogic.findTranslation(
+				translations,
+				'ru',
+			);
+			const englishTranslation = mockCityProcessingLogic.findTranslation(
+				translations,
+				'en',
+			);
+
 			expect(russianTranslation).toEqual({ lang: 'ru', name: 'Тель-Авив' });
 			expect(englishTranslation).toEqual({ lang: 'en', name: 'Tel Aviv' });
 		});
 
 		it('should return undefined for non-existent translation', () => {
 			const translations = mockCityData.singleCity.translations;
-			const nonExistentTranslation = mockCityProcessingLogic.findTranslation(translations, 'fr');
-			
+			const nonExistentTranslation = mockCityProcessingLogic.findTranslation(
+				translations,
+				'fr',
+			);
+
 			expect(nonExistentTranslation).toBeUndefined();
 		});
 
 		it('should get fallback name when translation is missing', () => {
 			const city = mockCityData.singleCity;
 			const fallbackName = mockCityProcessingLogic.getFallbackName(city);
-			
+
 			expect(fallbackName).toBe('Tel Aviv');
 		});
 
 		it('should build city response correctly', () => {
 			const cities = mockProcessedCityData.russianCities;
 			const response = mockCityProcessingLogic.buildCityResponse(cities);
-			
+
 			expect(response).toHaveLength(5);
 			expect(response[0]).toEqual({ id: 1, name: 'Тель-Авив' });
 			expect(response[1]).toEqual({ id: 2, name: 'Иерусалим' });
@@ -188,7 +197,7 @@ describe('CityController', () => {
 		it('should handle city processing errors', () => {
 			const error = mockErrors.translationError;
 			const result = mockCityProcessingLogic.handleCityError(error);
-			
+
 			expect(result).toEqual({
 				error: 'Ошибка сервера при получении городов',
 				details: error.message,
@@ -198,7 +207,7 @@ describe('CityController', () => {
 		it('should handle city processing success', () => {
 			const cities = mockProcessedCityData.russianCities;
 			const result = mockCityProcessingLogic.handleCitySuccess(cities);
-			
+
 			expect(result).toEqual(cities);
 		});
 
@@ -223,7 +232,7 @@ describe('CityController', () => {
 				{ id: 2, name: 'Jerusalem' },
 			];
 			const sorted = mockCityProcessingLogic.sortCities(unsortedCities);
-			
+
 			expect(sorted[0].name).toBe('Haifa');
 			expect(sorted[1].name).toBe('Jerusalem');
 			expect(sorted[2].name).toBe('Tel Aviv');
@@ -232,7 +241,7 @@ describe('CityController', () => {
 		it('should filter cities by name', () => {
 			const cities = mockCityData.citiesWithTranslations;
 			const filtered = mockCityProcessingLogic.filterCities(cities, 'Tel');
-			
+
 			expect(filtered).toHaveLength(1);
 			expect(filtered[0].name).toBe('Tel Aviv');
 		});
@@ -240,17 +249,21 @@ describe('CityController', () => {
 
 	describe('Service Integration Logic', () => {
 		it('should call city service with language parameter', async () => {
-			mockCityService.getCitiesService.mockResolvedValue(mockServiceResponses.successResponse);
-			
+			mockCityService.getCitiesService.mockResolvedValue(
+				mockServiceResponses.successResponse,
+			);
+
 			const result = await mockServiceIntegrationLogic.callCityService('ru');
-			
+
 			expect(mockCityService.getCitiesService).toHaveBeenCalledWith('ru');
 			expect(result).toEqual(mockServiceResponses.successResponse);
 		});
 
 		it('should handle service response with cities', () => {
-			const result = mockServiceIntegrationLogic.handleServiceResponse(mockServiceResponses.successResponse);
-			
+			const result = mockServiceIntegrationLogic.handleServiceResponse(
+				mockServiceResponses.successResponse,
+			);
+
 			expect(result).toEqual({
 				success: true,
 				cities: mockProcessedCityData.russianCities,
@@ -258,8 +271,10 @@ describe('CityController', () => {
 		});
 
 		it('should handle service response with error', () => {
-			const result = mockServiceIntegrationLogic.handleServiceResponse(mockServiceResponses.errorResponse);
-			
+			const result = mockServiceIntegrationLogic.handleServiceResponse(
+				mockServiceResponses.errorResponse,
+			);
+
 			expect(result).toEqual({
 				success: false,
 				error: 'Ошибка сервера при получении городов',
@@ -269,7 +284,7 @@ describe('CityController', () => {
 		it('should handle service errors', () => {
 			const error = mockErrors.cityServiceError;
 			const result = mockServiceIntegrationLogic.handleServiceError(error);
-			
+
 			expect(result).toEqual({
 				success: false,
 				error: error.message,
@@ -277,18 +292,30 @@ describe('CityController', () => {
 		});
 
 		it('should validate service result', () => {
-			expect(mockServiceIntegrationLogic.validateServiceResult(mockServiceResponses.successResponse)).toBe(true);
-			expect(mockServiceIntegrationLogic.validateServiceResult(null)).toBe(false);
-			expect(mockServiceIntegrationLogic.validateServiceResult('string')).toBe(true);
+			expect(
+				mockServiceIntegrationLogic.validateServiceResult(
+					mockServiceResponses.successResponse,
+				),
+			).toBe(true);
+			expect(mockServiceIntegrationLogic.validateServiceResult(null)).toBe(
+				false,
+			);
+			expect(mockServiceIntegrationLogic.validateServiceResult('string')).toBe(
+				true,
+			);
 		});
 
 		it('should process service result', () => {
-			const result = mockServiceIntegrationLogic.processServiceResult(mockServiceResponses.successResponse);
+			const result = mockServiceIntegrationLogic.processServiceResult(
+				mockServiceResponses.successResponse,
+			);
 			expect(result).toEqual(mockServiceResponses.successResponse);
 		});
 
 		it('should handle service success', () => {
-			const result = mockServiceIntegrationLogic.handleServiceSuccess(mockServiceResponses.successResponse);
+			const result = mockServiceIntegrationLogic.handleServiceSuccess(
+				mockServiceResponses.successResponse,
+			);
 			expect(result).toEqual(mockProcessedCityData.russianCities);
 		});
 	});
@@ -296,26 +323,29 @@ describe('CityController', () => {
 	describe('Request/Response Logic', () => {
 		it('should build request with default language', () => {
 			const request = mockRequestResponseLogic.buildRequest();
-			
+
 			expect(request.query.lang).toBe('ru');
 		});
 
 		it('should build request with custom language', () => {
 			const request = mockRequestResponseLogic.buildRequest({ lang: 'en' });
-			
+
 			expect(request.query.lang).toBe('en');
 		});
 
 		it('should build request with additional query parameters', () => {
-			const request = mockRequestResponseLogic.buildRequest({ lang: 'he', filter: 'test' });
-			
+			const request = mockRequestResponseLogic.buildRequest({
+				lang: 'he',
+				filter: 'test',
+			});
+
 			expect(request.query.lang).toBe('he');
 			expect(request.query.filter).toBe('test');
 		});
 
 		it('should build response object', () => {
 			const response = mockRequestResponseLogic.buildResponse();
-			
+
 			expect(response).toHaveProperty('json');
 			expect(response).toHaveProperty('status');
 			expect(typeof response.json).toBe('function');
@@ -325,9 +355,9 @@ describe('CityController', () => {
 		it('should handle success response with default status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const data = mockProcessedCityData.russianCities;
-			
+
 			mockRequestResponseLogic.handleSuccessResponse(res, data);
-			
+
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
@@ -335,9 +365,9 @@ describe('CityController', () => {
 		it('should handle success response with custom status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const data = mockProcessedCityData.russianCities;
-			
+
 			mockRequestResponseLogic.handleSuccessResponse(res, data, 201);
-			
+
 			expect(res.status).toHaveBeenCalledWith(201);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
@@ -345,9 +375,9 @@ describe('CityController', () => {
 		it('should handle error response with default status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const error = mockErrors.databaseError;
-			
+
 			mockRequestResponseLogic.handleErrorResponse(res, error);
-			
+
 			expect(res.status).toHaveBeenCalledWith(500);
 			expect(res.json).toHaveBeenCalledWith({ error: error.message });
 		});
@@ -355,9 +385,9 @@ describe('CityController', () => {
 		it('should handle error response with custom status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const error = mockErrors.permissionError;
-			
+
 			mockRequestResponseLogic.handleErrorResponse(res, error, 403);
-			
+
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith({ error: error.message });
 		});
@@ -365,23 +395,29 @@ describe('CityController', () => {
 		it('should validate request object', () => {
 			const validRequest = { query: { lang: 'ru' } };
 			const invalidRequest = { body: { lang: 'ru' } };
-			
+
 			expect(mockRequestResponseLogic.validateRequest(validRequest)).toBe(true);
-			expect(mockRequestResponseLogic.validateRequest(invalidRequest)).toBe(false);
+			expect(mockRequestResponseLogic.validateRequest(invalidRequest)).toBe(
+				false,
+			);
 		});
 
 		it('should extract language from request', () => {
 			const requestWithLang = { query: { lang: 'en' } };
 			const requestWithoutLang = { query: {} };
-			
-			expect(mockRequestResponseLogic.extractLanguage(requestWithLang)).toBe('en');
-			expect(mockRequestResponseLogic.extractLanguage(requestWithoutLang)).toBe('ru');
+
+			expect(mockRequestResponseLogic.extractLanguage(requestWithLang)).toBe(
+				'en',
+			);
+			expect(mockRequestResponseLogic.extractLanguage(requestWithoutLang)).toBe(
+				'ru',
+			);
 		});
 
 		it('should handle request errors', () => {
 			const error = mockErrors.validationError;
 			const result = mockRequestResponseLogic.handleRequestError(error);
-			
+
 			expect(result).toEqual({
 				error: 'Request processing failed',
 				details: error.message,
@@ -390,10 +426,13 @@ describe('CityController', () => {
 
 		it('should log errors correctly', () => {
 			const error = mockErrors.cityServiceError;
-			
+
 			mockRequestResponseLogic.logError(error);
-			
-			expect(console.error).toHaveBeenCalledWith('❌ Ошибка в getCitiesService:', error);
+
+			expect(console.error).toHaveBeenCalledWith(
+				'❌ Ошибка в getCitiesService:',
+				error,
+			);
 		});
 	});
 
@@ -401,37 +440,51 @@ describe('CityController', () => {
 		it('should process get cities request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest({ lang: 'ru' });
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockCityService.getCitiesService.mockResolvedValue(mockServiceResponses.successResponse);
-			
+
+			mockCityService.getCitiesService.mockResolvedValue(
+				mockServiceResponses.successResponse,
+			);
+
 			await mockControllerLogic.processGetCitiesRequest(req, res);
-			
+
 			expect(mockCityService.getCitiesService).toHaveBeenCalledWith('ru');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockProcessedCityData.russianCities);
+			expect(res.json).toHaveBeenCalledWith(
+				mockProcessedCityData.russianCities,
+			);
 		});
 
 		it('should process get cities request with error', async () => {
 			const req = mockRequestResponseLogic.buildRequest({ lang: 'ru' });
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockCityService.getCitiesService.mockResolvedValue(mockServiceResponses.errorResponse);
-			
+
+			mockCityService.getCitiesService.mockResolvedValue(
+				mockServiceResponses.errorResponse,
+			);
+
 			await mockControllerLogic.processGetCitiesRequest(req, res);
-			
+
 			expect(mockCityService.getCitiesService).toHaveBeenCalledWith('ru');
-			expect(console.error).toHaveBeenCalledWith('❌ Ошибка в getCitiesService:', 'Ошибка сервера при получении городов');
+			expect(console.error).toHaveBeenCalledWith(
+				'❌ Ошибка в getCitiesService:',
+				'Ошибка сервера при получении городов',
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Ошибка сервера при получении городов' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка сервера при получении городов',
+			});
 		});
 
 		it('should handle controller errors', () => {
 			const error = mockErrors.cityServiceError;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.handleControllerError(error, res);
-			
-			expect(console.error).toHaveBeenCalledWith('❌ Ошибка в getCitiesService:', error);
+
+			expect(console.error).toHaveBeenCalledWith(
+				'❌ Ошибка в getCitiesService:',
+				error,
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
 			expect(res.json).toHaveBeenCalledWith({ error: error.message });
 		});
@@ -439,9 +492,9 @@ describe('CityController', () => {
 		it('should handle controller success', () => {
 			const cities = mockProcessedCityData.russianCities;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.handleControllerSuccess(cities, res);
-			
+
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(cities);
 		});
@@ -449,30 +502,41 @@ describe('CityController', () => {
 		it('should validate controller input', () => {
 			const validRequest = { query: { lang: 'ru' } };
 			const invalidRequest = { body: { lang: 'ru' } };
-			
-			expect(mockControllerLogic.validateControllerInput(validRequest)).toBe(true);
-			expect(mockControllerLogic.validateControllerInput(invalidRequest)).toBe(false);
+
+			expect(mockControllerLogic.validateControllerInput(validRequest)).toBe(
+				true,
+			);
+			expect(mockControllerLogic.validateControllerInput(invalidRequest)).toBe(
+				false,
+			);
 		});
 
 		it('should process controller response with success', () => {
 			const result = mockServiceResponses.successResponse;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.processControllerResponse(result, res);
-			
+
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockProcessedCityData.russianCities);
+			expect(res.json).toHaveBeenCalledWith(
+				mockProcessedCityData.russianCities,
+			);
 		});
 
 		it('should process controller response with error', () => {
 			const result = mockServiceResponses.errorResponse;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.processControllerResponse(result, res);
-			
-			expect(console.error).toHaveBeenCalledWith('❌ Ошибка в getCitiesService:', 'Ошибка сервера при получении городов');
+
+			expect(console.error).toHaveBeenCalledWith(
+				'❌ Ошибка в getCitiesService:',
+				'Ошибка сервера при получении городов',
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Ошибка сервера при получении городов' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка сервера при получении городов',
+			});
 		});
 	});
 
@@ -661,7 +725,7 @@ describe('CityController', () => {
 			expect(errors).toHaveProperty('translationError');
 			expect(errors).toHaveProperty('queryError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -676,7 +740,7 @@ describe('CityController', () => {
 			expect(errorMessages).toHaveProperty('translationError');
 			expect(errorMessages).toHaveProperty('queryError');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -690,7 +754,7 @@ describe('CityController', () => {
 			expect(successMessages).toHaveProperty('operationCompleted');
 			expect(successMessages).toHaveProperty('citiesProcessed');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -703,7 +767,7 @@ describe('CityController', () => {
 			expect(consoleLogData).toHaveProperty('translationApplied');
 			expect(consoleLogData).toHaveProperty('fallbackUsed');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -764,7 +828,9 @@ describe('CityController', () => {
 
 			expect(typeof requestResponseLogic.buildRequest).toBe('function');
 			expect(typeof requestResponseLogic.buildResponse).toBe('function');
-			expect(typeof requestResponseLogic.handleSuccessResponse).toBe('function');
+			expect(typeof requestResponseLogic.handleSuccessResponse).toBe(
+				'function',
+			);
 			expect(typeof requestResponseLogic.handleErrorResponse).toBe('function');
 			expect(typeof requestResponseLogic.validateRequest).toBe('function');
 			expect(typeof requestResponseLogic.extractLanguage).toBe('function');

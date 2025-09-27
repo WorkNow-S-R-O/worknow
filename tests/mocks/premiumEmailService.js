@@ -25,8 +25,12 @@ export const mockProcessEnv = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock user data
 export const mockUserData = {
@@ -34,27 +38,27 @@ export const mockUserData = {
 		email: 'john.doe@example.com',
 		name: 'John Doe',
 	},
-	
+
 	userWithoutName: {
 		email: 'jane@example.com',
 		name: '',
 	},
-	
+
 	userWithNullName: {
 		email: 'smith@example.com',
 		name: null,
 	},
-	
+
 	userWithUndefinedName: {
 		email: 'anonymous@example.com',
 		name: undefined,
 	},
-	
+
 	userWithSpecialCharacters: {
 		email: 'olga&petr@example.com',
 		name: 'Ольга & Петр',
 	},
-	
+
 	userWithLongName: {
 		email: 'longname@example.com',
 		name: 'Александр Владимирович Козлов-Петров',
@@ -65,12 +69,12 @@ export const mockUserData = {
 export const mockEmailContent = {
 	premiumDeluxeSubject: '🎉 Добро пожаловать в Premium Deluxe! - WorkNow',
 	proSubject: '🚀 Добро пожаловать в Pro! - WorkNow',
-	
+
 	premiumDeluxeGreetingWithName: 'Дорогой John Doe,',
 	premiumDeluxeGreetingWithoutName: 'Дорогой пользователь,',
 	proGreetingWithName: 'Дорогой John Doe,',
 	proGreetingWithoutName: 'Дорогой пользователь,',
-	
+
 	premiumDeluxeHtmlTemplate: `
 		<!DOCTYPE html>
 		<html lang="ru">
@@ -236,7 +240,7 @@ export const mockEmailContent = {
 		</body>
 		</html>
 	`,
-	
+
 	proHtmlTemplate: `
 		<!DOCTYPE html>
 		<html lang="ru">
@@ -393,7 +397,7 @@ export const mockEmailContent = {
 		</body>
 		</html>
 	`,
-	
+
 	premiumDeluxeTextTemplate: `
 Добро пожаловать в Premium Deluxe!
 
@@ -430,7 +434,7 @@ export const mockEmailContent = {
 © 2025 WorkNow. Все права защищены.
 Это письмо отправлено автоматически, пожалуйста, не отвечайте на него.
 	`,
-	
+
 	proTextTemplate: `
 Добро пожаловать в Pro!
 
@@ -475,22 +479,22 @@ export const mockEmailResults = {
 		success: true,
 		messageId: 'resend-123456789',
 	},
-	
+
 	resendFailure: {
 		success: false,
 		error: 'Resend API error',
 	},
-	
+
 	gmailSuccess: {
 		success: true,
 		messageId: 'gmail-123456789',
 	},
-	
+
 	gmailFailure: {
 		success: false,
 		error: 'Gmail SMTP error',
 	},
-	
+
 	bothFailure: {
 		success: false,
 		error: 'Both Resend and Gmail failed',
@@ -507,7 +511,7 @@ export const mockResendResults = {
 		html: '<html>Test HTML</html>',
 		text: 'Test Text',
 	},
-	
+
 	failure: {
 		error: 'Resend API error',
 		message: 'Invalid API key',
@@ -537,9 +541,12 @@ export const mockErrorMessages = {
 
 // Mock success messages
 export const mockSuccessMessages = {
-	premiumDeluxeResendAttempt: '📧 Attempting to send Premium Deluxe welcome email via Resend...',
-	premiumDeluxeResendSuccess: '✅ Premium Deluxe welcome email sent via Resend:',
-	premiumDeluxeGmailAttempt: '📧 Attempting to send Premium Deluxe welcome email via Gmail...',
+	premiumDeluxeResendAttempt:
+		'📧 Attempting to send Premium Deluxe welcome email via Resend...',
+	premiumDeluxeResendSuccess:
+		'✅ Premium Deluxe welcome email sent via Resend:',
+	premiumDeluxeGmailAttempt:
+		'📧 Attempting to send Premium Deluxe welcome email via Gmail...',
 	premiumDeluxeGmailSuccess: '✅ Premium Deluxe welcome email sent via Gmail:',
 	proResendAttempt: '📧 Attempting to send Pro welcome email via Resend...',
 	proResendSuccess: '✅ Pro welcome email sent via Resend:',
@@ -549,9 +556,12 @@ export const mockSuccessMessages = {
 
 // Mock console log data
 export const mockConsoleLogData = {
-	premiumDeluxeResendAttempt: '📧 Attempting to send Premium Deluxe welcome email via Resend...',
-	premiumDeluxeResendSuccess: '✅ Premium Deluxe welcome email sent via Resend:',
-	premiumDeluxeGmailAttempt: '📧 Attempting to send Premium Deluxe welcome email via Gmail...',
+	premiumDeluxeResendAttempt:
+		'📧 Attempting to send Premium Deluxe welcome email via Resend...',
+	premiumDeluxeResendSuccess:
+		'✅ Premium Deluxe welcome email sent via Resend:',
+	premiumDeluxeGmailAttempt:
+		'📧 Attempting to send Premium Deluxe welcome email via Gmail...',
 	premiumDeluxeGmailSuccess: '✅ Premium Deluxe welcome email sent via Gmail:',
 	proResendAttempt: '📧 Attempting to send Pro welcome email via Resend...',
 	proResendSuccess: '✅ Pro welcome email sent via Resend:',
@@ -574,13 +584,14 @@ export const mockEmailGenerationLogic = {
 	generateGreeting: (userName) => {
 		return userName ? `Дорогой ${userName},` : 'Дорогой пользователь,';
 	},
-	
-	generatePremiumDeluxeSubject: () => '🎉 Добро пожаловать в Premium Deluxe! - WorkNow',
-	
+
+	generatePremiumDeluxeSubject: () =>
+		'🎉 Добро пожаловать в Premium Deluxe! - WorkNow',
+
 	generateProSubject: () => '🚀 Добро пожаловать в Pro! - WorkNow',
-	
+
 	generateMessageId: (provider) => `${provider}-${Date.now()}`,
-	
+
 	replaceGreeting: (template, greeting) => {
 		return template.replace(/\{\{greeting\}\}/g, greeting);
 	},
@@ -608,19 +619,19 @@ export const mockDataConversions = {
 		subject: '🎉 Добро пожаловать в Premium Deluxe! - WorkNow',
 		messageId: 'resend-123456789',
 	},
-	
+
 	number: {
 		timestamp: 1234567890,
 		messageIdSuffix: 123456789,
 	},
-	
+
 	boolean: {
 		success: true,
 		hasName: true,
 		hasResendKey: true,
 		isResendAvailable: true,
 	},
-	
+
 	object: {
 		emailResult: { success: true, messageId: 'resend-123456789' },
 		userData: { email: 'user@example.com', name: 'John Doe' },
@@ -631,34 +642,44 @@ export const mockDataConversions = {
 // Mock HTML generation logic
 export const mockHtmlGenerationLogic = {
 	generatePremiumDeluxeHtml: (greeting) => {
-		return mockEmailContent.premiumDeluxeHtmlTemplate.replace('{{greeting}}', greeting);
+		return mockEmailContent.premiumDeluxeHtmlTemplate.replace(
+			'{{greeting}}',
+			greeting,
+		);
 	},
-	
+
 	generateProHtml: (greeting) => {
 		return mockEmailContent.proHtmlTemplate.replace('{{greeting}}', greeting);
 	},
-	
+
 	generatePremiumDeluxeText: (greeting) => {
-		return mockEmailContent.premiumDeluxeTextTemplate.replace('{{greeting}}', greeting);
+		return mockEmailContent.premiumDeluxeTextTemplate.replace(
+			'{{greeting}}',
+			greeting,
+		);
 	},
-	
+
 	generateProText: (greeting) => {
 		return mockEmailContent.proTextTemplate.replace('{{greeting}}', greeting);
 	},
-	
+
 	validateHtmlStructure: (html) => {
-		return html.includes('<!DOCTYPE html>') && 
-			   html.includes('<html') && 
-			   html.includes('<head>') && 
-			   html.includes('<body') && 
-			   html.includes('WorkNow') &&
-			   html.includes('</html>');
+		return (
+			html.includes('<!DOCTYPE html>') &&
+			html.includes('<html') &&
+			html.includes('<head>') &&
+			html.includes('<body') &&
+			html.includes('WorkNow') &&
+			html.includes('</html>')
+		);
 	},
-	
+
 	validateTextStructure: (text) => {
-		return text.includes('WorkNow') && 
-			   text.includes('Добро пожаловать') &&
-			   text.includes('© 2025 WorkNow');
+		return (
+			text.includes('WorkNow') &&
+			text.includes('Добро пожаловать') &&
+			text.includes('© 2025 WorkNow')
+		);
 	},
 };
 
@@ -668,20 +689,22 @@ export const mockServiceResponses = {
 		success: true,
 		messageId: 'resend-123456789',
 	},
-	
+
 	proSuccess: {
 		success: true,
 		messageId: 'gmail-123456789',
 	},
-	
+
 	premiumDeluxeFailure: {
 		success: false,
-		error: 'Failed to send Premium Deluxe welcome email: Resend error - API error, Gmail error - SMTP error',
+		error:
+			'Failed to send Premium Deluxe welcome email: Resend error - API error, Gmail error - SMTP error',
 	},
-	
+
 	proFailure: {
 		success: false,
-		error: 'Failed to send Pro welcome email: Resend error - API error, Gmail error - SMTP error',
+		error:
+			'Failed to send Pro welcome email: Resend error - API error, Gmail error - SMTP error',
 	},
 };
 
@@ -693,13 +716,18 @@ export const mockResendInitializationLogic = {
 		}
 		return new mockResend.constructor();
 	},
-	
+
 	getResendWithoutKey: () => {
 		return null;
 	},
-	
+
 	validateApiKey: (apiKey) => {
-		return Boolean(apiKey && apiKey.length > 0 && apiKey !== 'null' && apiKey !== 'undefined');
+		return Boolean(
+			apiKey &&
+				apiKey.length > 0 &&
+				apiKey !== 'null' &&
+				apiKey !== 'undefined',
+		);
 	},
 };
 

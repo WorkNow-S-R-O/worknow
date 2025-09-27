@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 import Skeleton from 'react-loading-skeleton';
 import { useIntlayer } from 'react-intlayer';
-import ImageUpload from '../ui/ImageUpload';
+import { ImageUpload } from '@/components/ui';
 
 const EditJobFields = ({
 	register,

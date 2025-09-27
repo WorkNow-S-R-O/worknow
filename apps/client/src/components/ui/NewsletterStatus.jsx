@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import { useIntlayer } from 'react-intlayer';
 
-const NewsletterStatus = ({ 
-	isAlreadySubscribed, 
-	subscriberData, 
-	email, 
-	isMobile 
+const NewsletterStatus = ({
+	isAlreadySubscribed,
+	subscriberData,
+	email,
+	isMobile,
 }) => {
 	const content = useIntlayer('newsletterModal');
 

@@ -1,23 +1,23 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { Facebook } from 'react-bootstrap-icons';
 import axios from 'axios';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import '../css/seekers-table-mobile.css';
+import '../css/seekers-mobile.css';
+
 import { useUser } from '@clerk/clerk-react';
 import { useIntlayer } from 'react-intlayer';
 import { toast } from 'react-hot-toast';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Facebook } from 'react-bootstrap-icons';
 import { Helmet } from 'react-helmet-async';
-import PaginationControl from '../components/PaginationControl';
-import AddSeekerModal from '../components/form/AddSeekerModal';
-import SeekerFilterModal from '../components/ui/SeekerFilterModal';
-import useSeekerFilterStore from '../store/seekerFilterStore';
-import useSeekers from '../hooks/useSeekers';
-import { downloadSeekersCSV } from '../utils/csvExport';
-import CSVDownloadModal from '../components/CSVDownloadModal';
-import '../css/seekers-table-mobile.css';
-import '../css/seekers-mobile.css';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import { useLoadingProgress } from '../hooks/useLoadingProgress';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+
+import { CSVDownloadModal, PaginationControl } from '@/components';
+import { AddSeekerModal } from '@/components/form';
+import { SeekerFilterModal } from '@/components/ui';
+import { useLoadingProgress, useSeekers } from '@/hooks';
+import { useSeekerFilterStore } from '@/store';
+import { downloadSeekersCSV } from '@/utils';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -309,7 +309,7 @@ export default function Seekers() {
 	// CSV Download functionality
 	const handleCSVDownload = async (options = {}) => {
 		const { days, downloadAll } = options;
-		
+
 		await downloadSeekersCSV({
 			isPremium,
 			filters: downloadAll ? {} : { ...filters, days },
@@ -452,22 +452,29 @@ export default function Seekers() {
 							></i>
 							<span>{content.newsletter.value}</span>
 						</button>
-					<button
-						className={`btn d-flex align-items-center gap-2 seekers-btn ${isPremium ? 'btn-success' : 'btn-secondary'}`}
-						onClick={isPremium ? () => setShowCSVModal(true) : undefined}
-						disabled={!isPremium}
-						style={{
-							height: 'auto',
-							fontSize: '14px',
-							padding: '8px 12px',
-							minHeight: '40px',
-							whiteSpace: 'nowrap',
-						}}
-						title={isPremium ? content.downloadCSVTooltip.value : content.downloadCSVPremiumTooltip.value}
-					>
-						<i className="bi bi-file-earmark-spreadsheet" style={{ fontSize: '16px' }}></i>
-						<span>{content.downloadCSV.value}</span>
-					</button>
+						<button
+							className={`btn d-flex align-items-center gap-2 seekers-btn ${isPremium ? 'btn-success' : 'btn-secondary'}`}
+							onClick={isPremium ? () => setShowCSVModal(true) : undefined}
+							disabled={!isPremium}
+							style={{
+								height: 'auto',
+								fontSize: '14px',
+								padding: '8px 12px',
+								minHeight: '40px',
+								whiteSpace: 'nowrap',
+							}}
+							title={
+								isPremium
+									? content.downloadCSVTooltip.value
+									: content.downloadCSVPremiumTooltip.value
+							}
+						>
+							<i
+								className="bi bi-file-earmark-spreadsheet"
+								style={{ fontSize: '16px' }}
+							></i>
+							<span>{content.downloadCSV.value}</span>
+						</button>
 						{isAdmin && (
 							<button
 								className="btn btn-primary d-flex align-items-center gap-2 seekers-btn"

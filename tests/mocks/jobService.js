@@ -20,37 +20,37 @@ export const mockRedisService = {
 // Mock job filters
 export const mockJobFilters = {
 	noFilters: {},
-	
+
 	withCategory: {
 		category: '1',
 		page: 1,
 		limit: 20,
 	},
-	
+
 	withCity: {
 		city: '2',
 		page: 1,
 		limit: 20,
 	},
-	
+
 	withSalary: {
 		salary: '50',
 		page: 1,
 		limit: 20,
 	},
-	
+
 	withShuttle: {
 		shuttle: true,
 		page: 1,
 		limit: 20,
 	},
-	
+
 	withMeals: {
 		meals: true,
 		page: 1,
 		limit: 20,
 	},
-	
+
 	withAllFilters: {
 		category: '1',
 		city: '2',
@@ -60,17 +60,17 @@ export const mockJobFilters = {
 		page: 1,
 		limit: 20,
 	},
-	
+
 	withPagination: {
 		page: 2,
 		limit: 10,
 	},
-	
+
 	withCustomLimit: {
 		page: 1,
 		limit: 50,
 	},
-	
+
 	withInvalidFilters: {
 		category: 'invalid',
 		city: 'invalid',
@@ -119,7 +119,7 @@ export const mockJobData = {
 			],
 		},
 	},
-	
+
 	jobWithMinimalFields: {
 		id: 2,
 		title: 'Marketing Manager',
@@ -157,7 +157,7 @@ export const mockJobData = {
 			],
 		},
 	},
-	
+
 	jobWithHighSalary: {
 		id: 3,
 		title: 'Senior Developer',
@@ -195,7 +195,7 @@ export const mockJobData = {
 			],
 		},
 	},
-	
+
 	jobWithLowSalary: {
 		id: 4,
 		title: 'Junior Developer',
@@ -233,7 +233,7 @@ export const mockJobData = {
 			],
 		},
 	},
-	
+
 	jobWithSpecialSalary: {
 		id: 5,
 		title: 'Designer',
@@ -271,16 +271,16 @@ export const mockJobData = {
 			],
 		},
 	},
-	
+
 	nullJob: null,
 };
 
 // Mock job arrays for different scenarios
 export const mockJobArrays = {
 	emptyJobs: [],
-	
+
 	singleJob: [mockJobData.jobWithAllFields],
-	
+
 	multipleJobs: [
 		mockJobData.jobWithAllFields,
 		mockJobData.jobWithMinimalFields,
@@ -288,21 +288,21 @@ export const mockJobArrays = {
 		mockJobData.jobWithLowSalary,
 		mockJobData.jobWithSpecialSalary,
 	],
-	
+
 	jobsWithPremiumFirst: [
 		mockJobData.jobWithHighSalary, // Premium user
 		mockJobData.jobWithAllFields, // Premium user
 		mockJobData.jobWithMinimalFields, // Free user
 		mockJobData.jobWithLowSalary, // Free user
 	],
-	
+
 	jobsWithBoostedFirst: [
 		mockJobData.jobWithAllFields, // Has boostedAt
 		mockJobData.jobWithHighSalary, // Has boostedAt
 		mockJobData.jobWithMinimalFields, // No boostedAt
 		mockJobData.jobWithLowSalary, // No boostedAt
 	],
-	
+
 	jobsFilteredBySalary: [
 		mockJobData.jobWithHighSalary, // 150 шек/час
 		mockJobData.jobWithAllFields, // 120 шек/час
@@ -319,21 +319,21 @@ export const mockPaginationData = {
 		total: 100,
 		pages: 5,
 	},
-	
+
 	page2Limit10: {
 		page: 2,
 		limit: 10,
 		total: 100,
 		pages: 10,
 	},
-	
+
 	page3Limit50: {
 		page: 3,
 		limit: 50,
 		total: 100,
 		pages: 2,
 	},
-	
+
 	emptyResults: {
 		page: 1,
 		limit: 20,
@@ -348,16 +348,16 @@ export const mockRedisCacheData = {
 		jobs: mockJobArrays.multipleJobs,
 		pagination: mockPaginationData.page1Limit20,
 	},
-	
+
 	cachedJob: {
 		job: mockJobData.jobWithAllFields,
 	},
-	
+
 	cacheKeys: {
 		jobs: 'jobs:all:all:all:all:all:1:20',
 		jobById: 'job:1',
 	},
-	
+
 	cacheExpiration: {
 		jobs: 300, // 5 minutes
 		jobById: 600, // 10 minutes
@@ -373,7 +373,7 @@ export const mockSalaryFilteringData = {
 		invalid: 'invalid salary',
 		empty: '',
 	},
-	
+
 	salaryExtractions: {
 		singleNumber: 120,
 		range: 45,
@@ -381,7 +381,7 @@ export const mockSalaryFilteringData = {
 		invalid: null,
 		empty: null,
 	},
-	
+
 	filterResults: {
 		minSalary50: [
 			mockJobData.jobWithHighSalary, // 150
@@ -401,7 +401,7 @@ export const mockPrismaQueryOptions = {
 	count: {
 		where: {},
 	},
-	
+
 	findMany: {
 		where: {},
 		include: {
@@ -417,7 +417,7 @@ export const mockPrismaQueryOptions = {
 		skip: 0,
 		take: 20,
 	},
-	
+
 	findUnique: {
 		where: { id: 1 },
 		include: {
@@ -426,7 +426,7 @@ export const mockPrismaQueryOptions = {
 			category: { include: { translations: true } },
 		},
 	},
-	
+
 	create: {
 		data: {},
 		include: {
@@ -485,25 +485,25 @@ export const mockServiceResponses = {
 		jobs: mockJobArrays.multipleJobs,
 		pagination: mockPaginationData.page1Limit20,
 	},
-	
+
 	jobSuccess: {
 		job: mockJobData.jobWithAllFields,
 	},
-	
+
 	jobsError: {
 		error: mockErrorMessages.jobsError,
 		details: 'Database connection failed',
 	},
-	
+
 	jobError: {
 		error: mockErrorMessages.jobError,
 		details: 'Database connection failed',
 	},
-	
+
 	jobNotFound: {
 		error: mockErrorMessages.jobNotFound,
 	},
-	
+
 	createSuccess: mockJobData.jobWithAllFields,
 };
 
@@ -516,12 +516,12 @@ export const mockDataConversions = {
 		page: 1,
 		limit: 20,
 	},
-	
+
 	boolean: {
 		shuttle: true,
 		meals: false,
 	},
-	
+
 	string: {
 		title: 'Software Developer',
 		salary: '120 шек/час',
@@ -538,7 +538,7 @@ export const mockJobOrderingLogic = {
 			return 0;
 		});
 	},
-	
+
 	boostedFirst: (jobs) => {
 		return jobs.sort((a, b) => {
 			if (a.boostedAt && !b.boostedAt) return -1;
@@ -546,7 +546,7 @@ export const mockJobOrderingLogic = {
 			return 0;
 		});
 	},
-	
+
 	createdAtDesc: (jobs) => {
 		return jobs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 	},
@@ -558,7 +558,7 @@ export const mockSalaryExtractionLogic = {
 		const match = salaryString.match(/(\d+)/);
 		return match ? parseInt(match[1]) : null;
 	},
-	
+
 	filterBySalary: (jobs, minSalary) => {
 		return jobs.filter((job) => {
 			const salaryMatch = job.salary.match(/(\d+)/);

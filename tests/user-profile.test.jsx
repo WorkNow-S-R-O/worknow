@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import UserProfile from '../apps/client/src/components/UserProfile';
+import { UserProfile } from '@/components';
 
 // Mock axios - use global mock from setup.jsx
 import axios from 'axios';
@@ -16,14 +16,11 @@ vi.mock('react-hot-toast', () => ({
 
 // Mock react-router-dom
 const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async () => {
-	const actual = await vi.importActual('react-router-dom');
-	return {
-		...actual,
-		useParams: () => ({ clerkUserId: 'test-user-id' }),
-		useNavigate: () => mockNavigate,
-	};
-});
+vi.mock('react-router-dom', () => ({
+	BrowserRouter: ({ children }) => <div data-testid="router">{children}</div>,
+	useParams: () => ({ clerkUserId: 'test-user-id' }),
+	useNavigate: () => mockNavigate,
+}));
 
 // Mock Clerk
 vi.mock('@clerk/clerk-react', () => ({
@@ -54,7 +51,7 @@ vi.mock('react-intlayer', () => ({
 }));
 
 // Mock useLoadingProgress hook
-vi.mock('../apps/client/src/hooks/useLoadingProgress', () => ({
+vi.mock('@/hooks/useLoadingProgress', () => ({
 	useLoadingProgress: () => ({
 		startLoadingWithProgress: vi.fn(),
 		completeLoading: vi.fn(),
@@ -63,7 +60,7 @@ vi.mock('../apps/client/src/hooks/useLoadingProgress', () => ({
 }));
 
 // Mock JobCard component
-vi.mock('../apps/client/src/components/JobCard', () => ({
+vi.mock('@/components/JobCard', () => ({
 	default: ({ job }) => (
 		<div data-testid="job-card">
 			<h5>{job.title}</h5>
@@ -73,10 +70,12 @@ vi.mock('../apps/client/src/components/JobCard', () => ({
 }));
 
 // Mock PaginationControl component
-vi.mock('../apps/client/src/components/PaginationControl', () => ({
+vi.mock('@/components/PaginationControl', () => ({
 	default: ({ currentPage, totalPages, onPageChange }) => (
 		<div data-testid="pagination-control">
-			<span>Page {currentPage} of {totalPages}</span>
+			<span>
+				Page {currentPage} of {totalPages}
+			</span>
 			<button onClick={() => onPageChange(currentPage + 1)}>Next</button>
 		</div>
 	),
@@ -125,7 +124,7 @@ describe('UserProfile Component', () => {
 	beforeEach(async () => {
 		// Reset all mocks
 		vi.clearAllMocks();
-		
+
 		// Mock axios responses using the global mock
 		vi.mocked(axios.get).mockImplementation((url) => {
 			if (url.includes('/api/users/test-user-id')) {
@@ -141,7 +140,7 @@ describe('UserProfile Component', () => {
 	describe('Basic Functionality', () => {
 		it('renders the component', async () => {
 			renderWithRouter(<UserProfile />);
-			
+
 			// Wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');
@@ -151,7 +150,7 @@ describe('UserProfile Component', () => {
 
 		it('renders job cards when jobs exist', async () => {
 			renderWithRouter(<UserProfile />);
-			
+
 			// Wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');
@@ -169,9 +168,9 @@ describe('UserProfile Component', () => {
 				}
 				return Promise.resolve({ data: {} });
 			});
-			
+
 			renderWithRouter(<UserProfile />);
-			
+
 			// Wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');
@@ -181,7 +180,7 @@ describe('UserProfile Component', () => {
 
 		it('displays user profile information', async () => {
 			renderWithRouter(<UserProfile />);
-			
+
 			// Wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');
@@ -191,7 +190,7 @@ describe('UserProfile Component', () => {
 
 		it('handles pagination correctly', async () => {
 			renderWithRouter(<UserProfile />);
-			
+
 			// Wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');
@@ -203,20 +202,20 @@ describe('UserProfile Component', () => {
 	describe('API Integration', () => {
 		it('fetches user profile data on component mount', async () => {
 			renderWithRouter(<UserProfile />);
-			
+
 			await waitFor(() => {
 				expect(vi.mocked(axios.get)).toHaveBeenCalledWith(
-					expect.stringContaining('/api/users/test-user-id')
+					expect.stringContaining('/api/users/test-user-id'),
 				);
 			});
 		});
 
 		it('fetches user jobs on component mount', async () => {
 			renderWithRouter(<UserProfile />);
-			
+
 			await waitFor(() => {
 				expect(vi.mocked(axios.get)).toHaveBeenCalledWith(
-					expect.stringContaining('/api/users/user-jobs/test-user-id')
+					expect.stringContaining('/api/users/user-jobs/test-user-id'),
 				);
 			});
 		});
@@ -226,7 +225,7 @@ describe('UserProfile Component', () => {
 			vi.mocked(axios.get)
 				.mockResolvedValueOnce({ data: mockUserData }) // First call for profile
 				.mockResolvedValueOnce({ data: [] }); // Second call for jobs (empty array)
-			
+
 			// Just check that the component renders without crashing
 			expect(() => {
 				renderWithRouter(<UserProfile />);
@@ -237,7 +236,7 @@ describe('UserProfile Component', () => {
 	describe('SEO and Meta Tags', () => {
 		it('renders with proper SEO meta tags', async () => {
 			renderWithRouter(<UserProfile />);
-			
+
 			// Wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');
@@ -247,7 +246,7 @@ describe('UserProfile Component', () => {
 
 		it('generates proper page title', async () => {
 			renderWithRouter(<UserProfile />);
-			
+
 			// Wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');

@@ -76,21 +76,24 @@ export const mockPage = {
 export const mockJobData = {
 	validJob: {
 		title: 'Software Developer',
-		description: 'Looking for experienced developer. Salary 50 шек per hour. Call +972-50-123-4567',
+		description:
+			'Looking for experienced developer. Salary 50 шек per hour. Call +972-50-123-4567',
 		city: 'Tel Aviv',
 		phone: '+972-50-123-4567',
 		validatedPrice: 50,
 	},
 	jobWithValidPrice: {
 		title: 'Designer',
-		description: 'Looking for creative designer. Payment 45 ШЕК per hour. Contact +972-52-234-5678',
+		description:
+			'Looking for creative designer. Payment 45 ШЕК per hour. Contact +972-52-234-5678',
 		city: 'Jerusalem',
 		phone: '+972-52-234-5678',
 		validatedPrice: 45,
 	},
 	jobWithInvalidPrice: {
 		title: 'Manager',
-		description: 'Looking for project manager. Salary 500 shekels per hour. Call +972-54-345-6789',
+		description:
+			'Looking for project manager. Salary 500 shekels per hour. Call +972-54-345-6789',
 		city: 'Haifa',
 		phone: '+972-54-345-6789',
 		validatedPrice: null,
@@ -103,7 +106,8 @@ export const mockJobData = {
 	},
 	jobWithSpecialCharacters: {
 		title: 'Developer & Designer',
-		description: 'Looking for developer/designer hybrid. Payment 55 ₪ per hour. Call +972-55-456-7890',
+		description:
+			'Looking for developer/designer hybrid. Payment 55 ₪ per hour. Call +972-55-456-7890',
 		city: 'Ramat Gan',
 		phone: '+972-55-456-7890',
 		validatedPrice: 55,
@@ -111,21 +115,24 @@ export const mockJobData = {
 	jobList: [
 		{
 			title: 'Software Developer',
-			description: 'Looking for experienced developer. Salary 50 шек per hour. Call +972-50-123-4567',
+			description:
+				'Looking for experienced developer. Salary 50 шек per hour. Call +972-50-123-4567',
 			city: 'Tel Aviv',
 			phone: '+972-50-123-4567',
 			validatedPrice: 50,
 		},
 		{
 			title: 'Designer',
-			description: 'Looking for creative designer. Payment 45 ШЕК per hour. Contact +972-52-234-5678',
+			description:
+				'Looking for creative designer. Payment 45 ШЕК per hour. Contact +972-52-234-5678',
 			city: 'Jerusalem',
 			phone: '+972-52-234-5678',
 			validatedPrice: 45,
 		},
 		{
 			title: 'Manager',
-			description: 'Looking for project manager. Salary 60 shekel per hour. Call +972-54-345-6789',
+			description:
+				'Looking for project manager. Salary 60 shekel per hour. Call +972-54-345-6789',
 			city: 'Haifa',
 			phone: '+972-54-345-6789',
 			validatedPrice: 60,
@@ -135,7 +142,8 @@ export const mockJobData = {
 	singleJob: [
 		{
 			title: 'Single Job',
-			description: 'Just one job. Salary 45 шек per hour. Call +972-56-567-8901',
+			description:
+				'Just one job. Salary 45 шек per hour. Call +972-56-567-8901',
 			city: 'Eilat',
 			phone: '+972-56-567-8901',
 			validatedPrice: 45,
@@ -223,12 +231,30 @@ export const mockUserData = {
 		email: 'user@example.com',
 		firstName: 'John',
 		lastName: 'Doe',
-		imageUrl: 'https://ui-avatars.com/api/?name=JD&background=random&color=fff&size=128',
+		imageUrl:
+			'https://ui-avatars.com/api/?name=JD&background=random&color=fff&size=128',
 	},
 	hebrewNames: [
-		'Авраам', 'Ицхак', 'Яков', 'Моше', 'Шломо', 'Давид', 'Элиэзер', 'Менахем',
-		'Иехуда', 'Шимон', 'Сара', 'Рахель', 'Лея', 'Мириам', 'Хана', 'Батшева',
-		'Ада', 'Эстер', 'Тамар', 'Наоми'
+		'Авраам',
+		'Ицхак',
+		'Яков',
+		'Моше',
+		'Шломо',
+		'Давид',
+		'Элиэзер',
+		'Менахем',
+		'Иехуда',
+		'Шимон',
+		'Сара',
+		'Рахель',
+		'Лея',
+		'Мириам',
+		'Хана',
+		'Батшева',
+		'Ада',
+		'Эстер',
+		'Тамар',
+		'Наоми',
 	],
 };
 
@@ -236,21 +262,24 @@ export const mockUserData = {
 export const mockJobTemplates = [
 	{
 		title: 'Работник на склад',
-		description: 'Требуется работник на склад. Работа с 8:00 до 17:00. Оплата 45 шек в час. Звоните +972-50-123-4567',
+		description:
+			'Требуется работник на склад. Работа с 8:00 до 17:00. Оплата 45 шек в час. Звоните +972-50-123-4567',
 		city: 'Тель-Авив',
 		phone: '+972-50-123-4567',
 		validatedPrice: 45,
 	},
 	{
 		title: 'Водитель доставки',
-		description: 'Ищу водителя для доставки. Права категории B. Работа 6 дней в неделю. Оплата 50 шек в час. +972-52-234-5678',
+		description:
+			'Ищу водителя для доставки. Права категории B. Работа 6 дней в неделю. Оплата 50 шек в час. +972-52-234-5678',
 		city: 'Хайфа',
 		phone: '+972-52-234-5678',
 		validatedPrice: 50,
 	},
 	{
 		title: 'Уборщица',
-		description: 'Требуется уборщица в офис. Работа с 9:00 до 18:00. Оплата 40 шек в час. Звоните +972-54-345-6789',
+		description:
+			'Требуется уборщица в офис. Работа с 9:00 до 18:00. Оплата 40 шек в час. Звоните +972-54-345-6789',
 		city: 'Иерусалим',
 		phone: '+972-54-345-6789',
 		validatedPrice: 40,
@@ -267,7 +296,7 @@ export const mockAIServiceResponses = {
 	fallbackTitleGeneration: {
 		title: 'General Worker',
 		method: 'fallback',
-		confidence: 0.70,
+		confidence: 0.7,
 	},
 };
 
@@ -306,7 +335,8 @@ export const mockServiceResponses = {
 		email: 'user@example.com',
 		firstName: 'John',
 		lastName: 'Doe',
-		imageUrl: 'https://ui-avatars.com/api/?name=JD&background=random&color=fff&size=128',
+		imageUrl:
+			'https://ui-avatars.com/api/?name=JD&background=random&color=fff&size=128',
 	},
 	successfulCityLookup: mockCityData.existingCity,
 	successfulCategoryLookup: mockCategoryData.defaultCategory,
@@ -348,13 +378,14 @@ export const mockPriceExtractionLogic = {
 // Mock job validation logic
 export const mockJobValidationLogic = {
 	validateJobData: (job) => {
-		const descriptionPrice = mockPriceExtractionLogic.extractPriceFromDescription(job.description);
-		
+		const descriptionPrice =
+			mockPriceExtractionLogic.extractPriceFromDescription(job.description);
+
 		if (!descriptionPrice) {
 			job.validatedPrice = null;
 			return false;
 		}
-		
+
 		job.validatedPrice = descriptionPrice;
 		return true;
 	},
@@ -392,24 +423,28 @@ export const mockScrapingLogic = {
 export const mockAdditionalJobGenerationLogic = {
 	generateAdditionalJobs: (count) => {
 		const additionalJobs = [];
-		
+
 		for (let i = 0; i < count; i++) {
 			const template = mockJobTemplates[i % mockJobTemplates.length];
 			const city = mockCityData.cityList[i % mockCityData.cityList.length];
 			const phoneSuffix = String(i + 1000).padStart(4, '0');
-			
+
 			const job = {
 				title: template.title,
-				description: template.description.replace(/\+972-\d{2}-\d{3}-\d{4}/, `+972-50-${phoneSuffix}`),
+				description: template.description.replace(
+					/\+972-\d{2}-\d{3}-\d{4}/,
+					`+972-50-${phoneSuffix}`,
+				),
 				city: city.name,
 				phone: `+972-50-${phoneSuffix}`,
 				validatedPrice: template.validatedPrice,
-				categoryId: mockCategoryData.categoryMapping[template.title.toLowerCase()] || 58,
+				categoryId:
+					mockCategoryData.categoryMapping[template.title.toLowerCase()] || 58,
 			};
-			
+
 			additionalJobs.push(job);
 		}
-		
+
 		return additionalJobs;
 	},
 };
@@ -419,13 +454,13 @@ export const mockCategoryDeterminationLogic = {
 	determineCategoryFromTitle: (title) => {
 		const titleLower = title.toLowerCase();
 		const categoryMapping = mockCategoryData.categoryMapping;
-		
+
 		for (const [keyword, categoryId] of Object.entries(categoryMapping)) {
 			if (titleLower.includes(keyword)) {
 				return categoryId;
 			}
 		}
-		
+
 		return 58; // Разное
 	},
 };
@@ -523,10 +558,18 @@ mockPage.reload.mockResolvedValue();
 mockBrowser.close.mockResolvedValue();
 mockPrisma.job.deleteMany.mockResolvedValue({ count: 0 });
 mockPrisma.user.deleteMany.mockResolvedValue({ count: 0 });
-mockPrisma.job.create.mockResolvedValue(mockServiceResponses.successfulJobCreation);
-mockPrisma.user.create.mockResolvedValue(mockServiceResponses.successfulUserCreation);
-mockPrisma.city.findUnique.mockResolvedValue(mockServiceResponses.successfulCityLookup);
-mockPrisma.category.findUnique.mockResolvedValue(mockServiceResponses.successfulCategoryLookup);
+mockPrisma.job.create.mockResolvedValue(
+	mockServiceResponses.successfulJobCreation,
+);
+mockPrisma.user.create.mockResolvedValue(
+	mockServiceResponses.successfulUserCreation,
+);
+mockPrisma.city.findUnique.mockResolvedValue(
+	mockServiceResponses.successfulCityLookup,
+);
+mockPrisma.category.findUnique.mockResolvedValue(
+	mockServiceResponses.successfulCategoryLookup,
+);
 mockPrisma.$disconnect.mockResolvedValue();
 mockFaker.person.firstName.mockReturnValue('John');
 mockFaker.person.lastName.mockReturnValue('Doe');
@@ -534,4 +577,6 @@ mockFaker.internet.email.mockReturnValue('john.doe@example.com');
 mockFaker.string.uuid.mockReturnValue('12345678-1234-1234-1234-123456789012');
 mockFaker.number.int.mockReturnValue(45);
 mockFaker.helpers.arrayElement.mockReturnValue('Авраам');
-mockAIJobTitleService.fallbackTitleGeneration.mockResolvedValue(mockAIServiceResponses.successfulTitleGeneration);
+mockAIJobTitleService.fallbackTitleGeneration.mockResolvedValue(
+	mockAIServiceResponses.successfulTitleGeneration,
+);

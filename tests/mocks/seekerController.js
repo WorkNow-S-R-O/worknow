@@ -500,7 +500,8 @@ vi.mock('../../services/getUserByClerkService.js', () => ({
 }));
 
 vi.mock('../../services/candidateNotificationService.js', () => ({
-	checkAndSendNewCandidatesNotification: mockCheckAndSendNewCandidatesNotification,
+	checkAndSendNewCandidatesNotification:
+		mockCheckAndSendNewCandidatesNotification,
 }));
 
 // Mock console

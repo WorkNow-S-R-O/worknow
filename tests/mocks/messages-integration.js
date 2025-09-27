@@ -30,13 +30,13 @@ vi.mock('../../apps/api/utils/mailer.js', () => ({
 export const mockRequireAdmin = vi.fn((req, res, next) => {
 	// Check if user is admin (simplified for testing)
 	const isAdmin = req.headers['x-admin'] === 'true';
-	
+
 	if (!isAdmin) {
-		return res.status(403).json({ 
-			error: 'Доступ запрещен. Требуются права администратора.' 
+		return res.status(403).json({
+			error: 'Доступ запрещен. Требуются права администратора.',
 		});
 	}
-	
+
 	req.user = {
 		id: 'admin_123',
 		isAdmin: true,
@@ -194,5 +194,3 @@ export const resetMessagesMocks = () => {
 	mockRequireAdmin.mockClear();
 	vi.clearAllMocks();
 };
-
-

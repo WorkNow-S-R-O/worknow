@@ -9,7 +9,7 @@ import {
 const UserAuth = ({ isMobile = false }) => {
 	const content = useIntlayer('navbar');
 
-	const signInButtonClass = isMobile 
+	const signInButtonClass = isMobile
 		? 'btn btn-primary d-flex align-items-center justify-content-center'
 		: 'btn btn-primary d-flex align-items-center';
 

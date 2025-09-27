@@ -18,8 +18,12 @@ export const mockFetch = vi.fn();
 export const mockWebhook = vi.fn();
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock environment variables
 export const mockEnvVars = {
@@ -45,7 +49,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-15T10:00:00Z'),
 		updatedAt: new Date('2024-01-15T10:00:00Z'),
 	},
-	
+
 	premiumUser: {
 		id: 'premium456',
 		email: 'premium@example.com',
@@ -62,7 +66,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-10T09:30:00Z'),
 		updatedAt: new Date('2024-01-15T14:20:00Z'),
 	},
-	
+
 	newUser: {
 		id: 'new789',
 		email: 'new@example.com',
@@ -97,7 +101,7 @@ export const mockClerkApiResponses = {
 		created_at: 1640995200000,
 		updated_at: 1640995200000,
 	},
-	
+
 	premiumUserFetch: {
 		id: 'clerk_premium456',
 		email_addresses: [
@@ -112,7 +116,7 @@ export const mockClerkApiResponses = {
 		created_at: 1640995200000,
 		updated_at: 1640995200000,
 	},
-	
+
 	newUserFetch: {
 		id: 'clerk_new789',
 		email_addresses: [
@@ -127,7 +131,7 @@ export const mockClerkApiResponses = {
 		created_at: 1640995200000,
 		updated_at: 1640995200000,
 	},
-	
+
 	userWithMinimalData: {
 		id: 'clerk_minimal202',
 		email_addresses: [
@@ -192,7 +196,7 @@ export const mockJobData = {
 			},
 		},
 	],
-	
+
 	premiumUserJobs: [
 		{
 			id: 3,
@@ -236,7 +240,7 @@ export const mockWebhookData = {
 			image_url: 'https://example.com/new-avatar.jpg',
 		},
 	},
-	
+
 	userUpdated: {
 		type: 'user.updated',
 		data: {
@@ -252,7 +256,7 @@ export const mockWebhookData = {
 			image_url: 'https://example.com/updated-avatar.jpg',
 		},
 	},
-	
+
 	userDeleted: {
 		type: 'user.deleted',
 		data: {
@@ -268,13 +272,13 @@ export const mockWebhookHeaders = {
 		'svix-timestamp': '1640995200',
 		'svix-signature': 'v1,valid_signature_hash',
 	},
-	
+
 	missingHeaders: {
 		'svix-id': 'msg_123456789',
 		'svix-timestamp': '1640995200',
 		// Missing svix-signature
 	},
-	
+
 	invalidHeaders: {
 		'svix-id': '',
 		'svix-timestamp': '',
@@ -288,38 +292,38 @@ export const mockServiceResponses = {
 		success: true,
 		user: mockUserData.validUser,
 	},
-	
+
 	syncUserError: {
 		error: 'Failed to sync user',
 		details: 'Database connection failed',
 	},
-	
+
 	getUserByClerkIdSuccess: {
 		user: mockUserData.validUser,
 	},
-	
+
 	getUserByClerkIdNotFound: {
 		error: 'Пользователь не найден',
 	},
-	
+
 	getUserJobsSuccess: {
 		jobs: mockJobData.userJobs,
 		totalJobs: 2,
 		totalPages: 1,
 		currentPage: 1,
 	},
-	
+
 	getUserJobsWithPagination: {
 		jobs: mockJobData.userJobs.slice(0, 1),
 		totalJobs: 2,
 		totalPages: 2,
 		currentPage: 1,
 	},
-	
+
 	webhookSuccess: {
 		success: true,
 	},
-	
+
 	webhookError: {
 		error: 'Webhook verification failed',
 	},
@@ -372,7 +376,8 @@ export const mockConsoleLogData = {
 	userServiceStart: 'UserService - Starting sync for clerkUserId:',
 	userServiceKeyAvailable: 'UserService - CLERK_SECRET_KEY available:',
 	userServiceKeyLength: 'UserService - CLERK_SECRET_KEY length:',
-	userServiceUserNotFound: 'UserService - User not found in DB, fetching from Clerk...',
+	userServiceUserNotFound:
+		'UserService - User not found in DB, fetching from Clerk...',
 	userServiceApiCall: 'UserService - Making API call to Clerk with key:',
 	userServiceApiResponse: 'UserService - Clerk API response status:',
 	userServiceUserData: 'UserService - Clerk user data received:',
@@ -394,7 +399,7 @@ export const mockDataConversions = {
 		lastName: 'Doe',
 		imageUrl: 'https://example.com/avatar.jpg',
 	},
-	
+
 	number: {
 		page: 1,
 		limit: 5,
@@ -403,7 +408,7 @@ export const mockDataConversions = {
 		totalPages: 1,
 		currentPage: 1,
 	},
-	
+
 	boolean: {
 		success: true,
 		isPremium: false,
@@ -411,20 +416,20 @@ export const mockDataConversions = {
 		premiumDeluxe: false,
 		isAdmin: false,
 	},
-	
+
 	date: {
 		createdAt: new Date('2024-01-15T10:00:00Z'),
 		updatedAt: new Date('2024-01-15T10:00:00Z'),
 		premiumEndsAt: new Date('2025-12-31T23:59:59Z'),
 	},
-	
+
 	object: {
 		user: mockUserData.validUser,
 		jobs: mockJobData.userJobs,
 		response: mockServiceResponses.syncUserSuccess,
 		error: mockErrors.databaseError,
 	},
-	
+
 	null: {
 		firstName: null,
 		lastName: null,
@@ -439,11 +444,11 @@ export const mockUserSyncLogic = {
 	isValidClerkUserId: (clerkUserId) => {
 		return typeof clerkUserId === 'string' && clerkUserId.length > 0;
 	},
-	
+
 	isClerkSecretConfigured: (secretKey) => {
 		return typeof secretKey === 'string' && secretKey.length > 0;
 	},
-	
+
 	extractUserDataFromClerk: (clerkUser) => {
 		return {
 			clerkUserId: clerkUser.id,
@@ -453,7 +458,7 @@ export const mockUserSyncLogic = {
 			imageUrl: clerkUser.image_url || null,
 		};
 	},
-	
+
 	buildUpsertData: (clerkUser) => {
 		return {
 			where: { clerkUserId: clerkUser.id },
@@ -472,13 +477,13 @@ export const mockUserSyncLogic = {
 			},
 		};
 	},
-	
+
 	handleClerkApiError: (response) => {
 		return {
 			error: `Ошибка Clerk API: ${response.status} ${response.statusText}`,
 		};
 	},
-	
+
 	handleSyncError: (error) => {
 		return {
 			error: 'Failed to sync user',
@@ -490,9 +495,13 @@ export const mockUserSyncLogic = {
 // Mock webhook processing logic
 export const mockWebhookProcessingLogic = {
 	validateWebhookHeaders: (headers) => {
-		return !!(headers['svix-id'] && headers['svix-timestamp'] && headers['svix-signature']);
+		return !!(
+			headers['svix-id'] &&
+			headers['svix-timestamp'] &&
+			headers['svix-signature']
+		);
 	},
-	
+
 	extractWebhookData: (event) => {
 		return {
 			userId: event.data.id,
@@ -502,7 +511,7 @@ export const mockWebhookProcessingLogic = {
 			imageUrl: event.data.image_url,
 		};
 	},
-	
+
 	buildUserUpsertData: (webhookData) => {
 		return {
 			where: { clerkUserId: webhookData.userId },
@@ -521,7 +530,7 @@ export const mockWebhookProcessingLogic = {
 			},
 		};
 	},
-	
+
 	handleWebhookError: (error) => {
 		return {
 			error: 'Webhook verification failed',
@@ -537,7 +546,7 @@ export const mockJobRetrievalLogic = {
 		const skip = (page - 1) * limit;
 		return { page, limit, skip };
 	},
-	
+
 	buildJobQuery: (userId, skip, limit) => {
 		return {
 			where: { userId },
@@ -551,14 +560,14 @@ export const mockJobRetrievalLogic = {
 			orderBy: { createdAt: 'desc' },
 		};
 	},
-	
+
 	calculatePagination: (totalJobs, limit) => {
 		return {
 			totalJobs,
 			totalPages: Math.ceil(totalJobs / limit),
 		};
 	},
-	
+
 	handleJobRetrievalError: (error) => {
 		return {
 			error: 'Ошибка сервера',

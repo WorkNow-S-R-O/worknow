@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useImageUpload } from '../../contexts/ImageUploadContext.jsx';
-import { deleteJobImage } from 'libs/jobs';
+import { useImageUpload } from '@/contexts';
+import { deleteJobImage } from 'libs';
 import { toast } from 'react-hot-toast';
 import { useIntlayer } from 'react-intlayer';
 import { useAuth } from '@clerk/clerk-react';

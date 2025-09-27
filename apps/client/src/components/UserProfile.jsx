@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import { Helmet } from 'react-helmet-async';
@@ -8,9 +8,8 @@ import { useIntlayer } from 'react-intlayer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useUser } from '@clerk/clerk-react';
-import { useLoadingProgress } from '../hooks/useLoadingProgress';
-import JobCard from './JobCard';
-import PaginationControl from './PaginationControl';
+import { JobCard, PaginationControl } from '@/components';
+import { useLoadingProgress } from '@/hooks';
 
 const API_URL = import.meta.env.VITE_API_URL;
 

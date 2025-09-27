@@ -21,8 +21,12 @@ export const mockPrisma = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock request and response objects
 export const mockRequest = {
@@ -72,7 +76,7 @@ export const mockSubscriberData = {
 		onlyDemanded: false,
 		createdAt: '2024-01-01T00:00:00Z',
 	},
-	
+
 	subscriberWithoutName: {
 		id: 2,
 		email: 'anonymous@example.com',
@@ -90,7 +94,7 @@ export const mockSubscriberData = {
 		onlyDemanded: false,
 		createdAt: '2024-01-02T00:00:00Z',
 	},
-	
+
 	subscriberWithMinimalData: {
 		id: 3,
 		email: 'minimal@example.com',
@@ -108,7 +112,7 @@ export const mockSubscriberData = {
 		onlyDemanded: true,
 		createdAt: '2024-01-03T00:00:00Z',
 	},
-	
+
 	existingSubscriber: {
 		id: 4,
 		email: 'existing@example.com',
@@ -126,7 +130,7 @@ export const mockSubscriberData = {
 		onlyDemanded: false,
 		createdAt: '2024-01-04T00:00:00Z',
 	},
-	
+
 	inactiveSubscriber: {
 		id: 5,
 		email: 'inactive@example.com',
@@ -162,7 +166,7 @@ export const mockSubscriptionData = {
 		preferredDocumentTypes: ['Passport', 'ID'],
 		onlyDemanded: false,
 	},
-	
+
 	subscriptionDataWithoutName: {
 		email: 'anonymous@example.com',
 		firstName: null,
@@ -177,7 +181,7 @@ export const mockSubscriptionData = {
 		preferredDocumentTypes: [],
 		onlyDemanded: false,
 	},
-	
+
 	subscriptionDataWithMinimalPreferences: {
 		email: 'minimal@example.com',
 		firstName: 'Minimal',
@@ -192,14 +196,14 @@ export const mockSubscriptionData = {
 		preferredDocumentTypes: ['Passport'],
 		onlyDemanded: true,
 	},
-	
+
 	invalidSubscriptionData: {
 		// Missing required email field
 		firstName: 'Invalid',
 		lastName: 'User',
 		language: 'ru',
 	},
-	
+
 	subscriptionDataWithInvalidEmail: {
 		email: 'invalid-email',
 		firstName: 'Invalid',
@@ -213,19 +217,19 @@ export const mockVerificationData = {
 	validVerificationCode: '123456',
 	invalidVerificationCode: '000000',
 	expiredVerificationCode: '999999',
-	
+
 	verificationRequest: {
 		email: 'verify@example.com',
 		code: '123456',
 		subscriptionData: mockSubscriptionData.validSubscriptionData,
 	},
-	
+
 	verificationRequestWithInvalidCode: {
 		email: 'verify@example.com',
 		code: '000000',
 		subscriptionData: mockSubscriptionData.validSubscriptionData,
 	},
-	
+
 	verificationRequestMissingFields: {
 		email: 'verify@example.com',
 		// Missing code field
@@ -252,12 +256,12 @@ export const mockServiceResponses = {
 			onlyDemanded: false,
 		},
 	},
-	
+
 	successUnsubscribeResponse: {
 		success: true,
 		message: 'Successfully unsubscribed from newsletter',
 	},
-	
+
 	successGetSubscribersResponse: {
 		success: true,
 		subscribers: [
@@ -267,19 +271,19 @@ export const mockServiceResponses = {
 		],
 		total: 3,
 	},
-	
+
 	successCheckSubscriptionResponse: {
 		success: true,
 		isSubscribed: true,
 		subscriber: mockSubscriberData.validSubscriber,
 	},
-	
+
 	successCheckNotSubscribedResponse: {
 		success: true,
 		isSubscribed: false,
 		subscriber: null,
 	},
-	
+
 	successUpdatePreferencesResponse: {
 		success: true,
 		message: 'Newsletter preferences updated successfully',
@@ -297,14 +301,14 @@ export const mockServiceResponses = {
 			onlyDemanded: false,
 		},
 	},
-	
+
 	successSendVerificationCodeResponse: {
 		success: true,
 		message: 'Verification code sent to your email',
 		email: 'verify@example.com',
 		subscriptionData: mockSubscriptionData.validSubscriptionData,
 	},
-	
+
 	successVerifyCodeResponse: {
 		success: true,
 		message: 'Successfully subscribed to newsletter',
@@ -322,37 +326,37 @@ export const mockServiceResponses = {
 			onlyDemanded: false,
 		},
 	},
-	
+
 	errorEmailRequiredResponse: {
 		success: false,
 		message: 'Email is required',
 	},
-	
+
 	errorInvalidEmailResponse: {
 		success: false,
 		message: 'Invalid email format',
 	},
-	
+
 	errorAlreadySubscribedResponse: {
 		success: false,
 		message: 'This email is already subscribed to the newsletter',
 	},
-	
+
 	errorSubscriberNotFoundResponse: {
 		success: false,
 		message: 'Subscriber not found',
 	},
-	
+
 	errorVerificationCodeRequiredResponse: {
 		success: false,
 		message: 'Email and verification code are required',
 	},
-	
+
 	errorInvalidVerificationCodeResponse: {
 		success: false,
 		message: 'Invalid verification code',
 	},
-	
+
 	errorServerResponse: {
 		success: false,
 		message: 'Failed to subscribe to newsletter',
@@ -363,9 +367,13 @@ export const mockServiceResponses = {
 export const mockErrors = {
 	emailRequiredError: new Error('Email is required'),
 	invalidEmailError: new Error('Invalid email format'),
-	alreadySubscribedError: new Error('This email is already subscribed to the newsletter'),
+	alreadySubscribedError: new Error(
+		'This email is already subscribed to the newsletter',
+	),
 	subscriberNotFoundError: new Error('Subscriber not found'),
-	verificationCodeRequiredError: new Error('Email and verification code are required'),
+	verificationCodeRequiredError: new Error(
+		'Email and verification code are required',
+	),
 	invalidVerificationCodeError: new Error('Invalid verification code'),
 	databaseError: new Error('Database connection failed'),
 	emailSendingError: new Error('Failed to send email'),
@@ -386,17 +394,17 @@ export const mockPrismaErrors = {
 		code: 'P2002',
 		message: 'Unique constraint failed',
 	},
-	
+
 	p2025Error: {
 		code: 'P2025',
 		message: 'Record not found',
 	},
-	
+
 	p2003Error: {
 		code: 'P2003',
 		message: 'Foreign key constraint failed',
 	},
-	
+
 	p2014Error: {
 		code: 'P2014',
 		message: 'Required relation missing',
@@ -448,7 +456,8 @@ export const mockConsoleLogData = {
 	sendingVerificationCode: '📧 Sending verification code...',
 	verificationCodeSent: '✅ Verification code sent successfully',
 	verificationCodeSentTo: '✅ Verification code sent to:',
-	newsletterSubscriptionVerified: '✅ Newsletter subscription verified and completed:',
+	newsletterSubscriptionVerified:
+		'✅ Newsletter subscription verified and completed:',
 	newsletterSubscriptionError: '❌ Newsletter subscription error:',
 	newsletterUnsubscribeError: '❌ Newsletter unsubscribe error:',
 	errorGettingSubscribers: '❌ Error getting newsletter subscribers:',
@@ -470,7 +479,7 @@ export const mockDataConversions = {
 		verificationCode: '123456',
 		errorMessage: 'Failed to subscribe to newsletter',
 	},
-	
+
 	number: {
 		id: 1,
 		statusCode: 200,
@@ -480,7 +489,7 @@ export const mockDataConversions = {
 		notFoundStatusCode: 404,
 		badRequestStatusCode: 400,
 	},
-	
+
 	boolean: {
 		isValid: true,
 		isEmpty: false,
@@ -491,7 +500,7 @@ export const mockDataConversions = {
 		onlyDemanded: false,
 		valid: true,
 	},
-	
+
 	object: {
 		subscriber: mockSubscriberData.validSubscriber,
 		subscriptionData: mockSubscriptionData.validSubscriptionData,
@@ -499,9 +508,12 @@ export const mockDataConversions = {
 		error: mockErrors.databaseError,
 		preferences: {},
 	},
-	
+
 	array: {
-		subscribers: [mockSubscriberData.validSubscriber, mockSubscriberData.subscriberWithoutName],
+		subscribers: [
+			mockSubscriberData.validSubscriber,
+			mockSubscriberData.subscriberWithoutName,
+		],
 		preferredCities: ['Tel Aviv', 'Jerusalem'],
 		preferredCategories: ['IT', 'Marketing'],
 		preferredEmployment: ['Full-time', 'Part-time'],
@@ -509,7 +521,7 @@ export const mockDataConversions = {
 		preferredDocumentTypes: ['Passport', 'ID'],
 		errors: [mockErrors.emailRequiredError, mockErrors.databaseError],
 	},
-	
+
 	null: {
 		subscriber: null,
 		firstName: null,
@@ -531,7 +543,7 @@ export const mockValidationLogic = {
 		}
 		return { isValid: true };
 	},
-	
+
 	validateSubscriptionData: (data) => {
 		const { email, firstName, lastName, language } = data;
 		const emailValidation = mockValidationLogic.validateEmail(email);
@@ -540,7 +552,7 @@ export const mockValidationLogic = {
 		}
 		return { isValid: true };
 	},
-	
+
 	validateVerificationData: (data) => {
 		const { email, code } = data;
 		if (!email || !code) {
@@ -551,35 +563,48 @@ export const mockValidationLogic = {
 		}
 		return { isValid: true };
 	},
-	
+
 	validatePreferencesData: (data) => {
-		const { preferredCities, preferredCategories, preferredEmployment, preferredLanguages, preferredGender, preferredDocumentTypes, onlyDemanded } = data;
+		const {
+			preferredCities,
+			preferredCategories,
+			preferredEmployment,
+			preferredLanguages,
+			preferredGender,
+			preferredDocumentTypes,
+			onlyDemanded,
+		} = data;
 		return { isValid: true };
 	},
-	
+
 	validateEmailFormat: (email) => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		return emailRegex.test(email);
 	},
-	
+
 	validateEmailRequired: (email) => {
 		return !!(email && email.trim());
 	},
-	
+
 	validateVerificationCode: (code) => {
 		return !!(code && code.length === 6 && /^\d+$/.test(code));
 	},
-	
+
 	validateLanguage: (language) => {
 		return ['ru', 'en', 'he', 'ar'].includes(language);
 	},
-	
+
 	validateGender: (gender) => {
 		return !gender || ['Male', 'Female', 'Other'].includes(gender);
 	},
-	
+
 	validateEmployment: (employment) => {
-		return Array.isArray(employment) && employment.every(emp => ['Full-time', 'Part-time', 'Contract', 'Freelance'].includes(emp));
+		return (
+			Array.isArray(employment) &&
+			employment.every((emp) =>
+				['Full-time', 'Part-time', 'Contract', 'Freelance'].includes(emp),
+			)
+		);
 	},
 };
 
@@ -588,16 +613,16 @@ export const mockEmailProcessingLogic = {
 	processEmail: (email) => {
 		return email.trim().toLowerCase();
 	},
-	
+
 	validateEmailFormat: (email) => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		return emailRegex.test(email);
 	},
-	
+
 	formatEmailForStorage: (email) => {
 		return email.trim().toLowerCase();
 	},
-	
+
 	handleEmailError: (error) => {
 		console.error('❌ Email processing error:', error);
 		return {
@@ -605,7 +630,7 @@ export const mockEmailProcessingLogic = {
 			error: error.message,
 		};
 	},
-	
+
 	handleEmailSuccess: (email) => {
 		return {
 			success: true,
@@ -619,15 +644,15 @@ export const mockVerificationProcessingLogic = {
 	generateVerificationCode: () => {
 		return Math.floor(100000 + Math.random() * 900000).toString();
 	},
-	
+
 	processVerificationCode: (code) => {
 		return code.toString();
 	},
-	
+
 	validateVerificationCode: (code) => {
 		return !!(code && code.length === 6 && /^\d+$/.test(code));
 	},
-	
+
 	handleVerificationError: (error) => {
 		console.error('❌ Verification process error:', error);
 		return {
@@ -635,7 +660,7 @@ export const mockVerificationProcessingLogic = {
 			error: error.message,
 		};
 	},
-	
+
 	handleVerificationSuccess: (code) => {
 		return {
 			success: true,
@@ -647,7 +672,20 @@ export const mockVerificationProcessingLogic = {
 // Mock subscription processing logic
 export const mockSubscriptionProcessingLogic = {
 	processSubscriptionData: (data) => {
-		const { email, firstName, lastName, language, preferences, preferredCities, preferredCategories, preferredEmployment, preferredLanguages, preferredGender, preferredDocumentTypes, onlyDemanded } = data;
+		const {
+			email,
+			firstName,
+			lastName,
+			language,
+			preferences,
+			preferredCities,
+			preferredCategories,
+			preferredEmployment,
+			preferredLanguages,
+			preferredGender,
+			preferredDocumentTypes,
+			onlyDemanded,
+		} = data;
 		return {
 			email: email.trim().toLowerCase(),
 			firstName: firstName?.trim() || null,
@@ -663,7 +701,7 @@ export const mockSubscriptionProcessingLogic = {
 			onlyDemanded: onlyDemanded || false,
 		};
 	},
-	
+
 	processSubscriptionResponse: (subscriber) => {
 		return {
 			id: subscriber.id,
@@ -679,7 +717,7 @@ export const mockSubscriptionProcessingLogic = {
 			onlyDemanded: subscriber.onlyDemanded,
 		};
 	},
-	
+
 	handleSubscriptionError: (error) => {
 		console.error('❌ Subscription process error:', error);
 		return {
@@ -687,7 +725,7 @@ export const mockSubscriptionProcessingLogic = {
 			error: error.message,
 		};
 	},
-	
+
 	handleSubscriptionSuccess: (subscriber) => {
 		return {
 			success: true,
@@ -700,8 +738,21 @@ export const mockSubscriptionProcessingLogic = {
 export const mockControllerLogic = {
 	processSubscribeRequest: async (req, res) => {
 		try {
-			const { email, firstName, lastName, language = 'ru', preferences = {}, preferredCities = [], preferredCategories = [], preferredEmployment = [], preferredLanguages = [], preferredGender = null, preferredDocumentTypes = [], onlyDemanded = false } = req.body;
-			
+			const {
+				email,
+				firstName,
+				lastName,
+				language = 'ru',
+				preferences = {},
+				preferredCities = [],
+				preferredCategories = [],
+				preferredEmployment = [],
+				preferredLanguages = [],
+				preferredGender = null,
+				preferredDocumentTypes = [],
+				onlyDemanded = false,
+			} = req.body;
+
 			// Validate email
 			if (!email || !email.trim()) {
 				return res.status(400).json({
@@ -709,7 +760,7 @@ export const mockControllerLogic = {
 					message: 'Email is required',
 				});
 			}
-			
+
 			// Basic email validation
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 			if (!emailRegex.test(email)) {
@@ -718,19 +769,20 @@ export const mockControllerLogic = {
 					message: 'Invalid email format',
 				});
 			}
-			
+
 			// Check if already subscribed
-			const existingSubscriber = await mockPrisma.newsletterSubscriber.findUnique({
-				where: { email: email.trim().toLowerCase() },
-			});
-			
+			const existingSubscriber =
+				await mockPrisma.newsletterSubscriber.findUnique({
+					where: { email: email.trim().toLowerCase() },
+				});
+
 			if (existingSubscriber) {
 				return res.status(409).json({
 					success: false,
 					message: 'This email is already subscribed to the newsletter',
 				});
 			}
-			
+
 			// Create new subscriber
 			const subscriber = await mockPrisma.newsletterSubscriber.create({
 				data: {
@@ -749,16 +801,18 @@ export const mockControllerLogic = {
 					onlyDemanded,
 				},
 			});
-			
+
 			console.log('✅ New newsletter subscriber:', subscriber.email);
-			
+
 			// Send candidates to new subscriber
 			try {
-				await mockNewsletterServices.sendInitialCandidatesToNewSubscriber(subscriber);
+				await mockNewsletterServices.sendInitialCandidatesToNewSubscriber(
+					subscriber,
+				);
 			} catch (emailError) {
 				console.error('❌ Failed to send candidates email:', emailError);
 			}
-			
+
 			res.status(201).json({
 				success: true,
 				message: 'Successfully subscribed to newsletter',
@@ -784,35 +838,35 @@ export const mockControllerLogic = {
 			});
 		}
 	},
-	
+
 	processUnsubscribeRequest: async (req, res) => {
 		try {
 			const { email } = req.body;
-			
+
 			if (!email) {
 				return res.status(400).json({
 					success: false,
 					message: 'Email is required',
 				});
 			}
-			
+
 			const subscriber = await mockPrisma.newsletterSubscriber.findUnique({
 				where: { email: email.trim().toLowerCase() },
 			});
-			
+
 			if (!subscriber) {
 				return res.status(404).json({
 					success: false,
 					message: 'Subscriber not found',
 				});
 			}
-			
+
 			await mockPrisma.newsletterSubscriber.delete({
 				where: { id: subscriber.id },
 			});
-			
+
 			console.log('✅ Successfully deleted subscriber:', subscriber.email);
-			
+
 			res.json({
 				success: true,
 				message: 'Successfully unsubscribed from newsletter',
@@ -825,7 +879,7 @@ export const mockControllerLogic = {
 			});
 		}
 	},
-	
+
 	processGetSubscribersRequest: async (req, res) => {
 		try {
 			const subscribers = await mockPrisma.newsletterSubscriber.findMany({
@@ -839,7 +893,7 @@ export const mockControllerLogic = {
 					createdAt: true,
 				},
 			});
-			
+
 			res.json({
 				success: true,
 				subscribers,
@@ -853,18 +907,18 @@ export const mockControllerLogic = {
 			});
 		}
 	},
-	
+
 	processCheckSubscriptionRequest: async (req, res) => {
 		try {
 			const { email } = req.query;
-			
+
 			if (!email) {
 				return res.status(400).json({
 					success: false,
 					message: 'Email is required',
 				});
 			}
-			
+
 			const subscriber = await mockPrisma.newsletterSubscriber.findUnique({
 				where: { email: email.trim().toLowerCase() },
 				select: {
@@ -883,7 +937,7 @@ export const mockControllerLogic = {
 					onlyDemanded: true,
 				},
 			});
-			
+
 			if (subscriber) {
 				res.json({
 					success: true,
@@ -905,30 +959,38 @@ export const mockControllerLogic = {
 			});
 		}
 	},
-	
+
 	processUpdatePreferencesRequest: async (req, res) => {
 		try {
 			const { email } = req.params;
-			const { preferredCities = [], preferredCategories = [], preferredEmployment = [], preferredLanguages = [], preferredGender = null, preferredDocumentTypes = [], onlyDemanded = false } = req.body;
-			
+			const {
+				preferredCities = [],
+				preferredCategories = [],
+				preferredEmployment = [],
+				preferredLanguages = [],
+				preferredGender = null,
+				preferredDocumentTypes = [],
+				onlyDemanded = false,
+			} = req.body;
+
 			if (!email) {
 				return res.status(400).json({
 					success: false,
 					message: 'Email is required',
 				});
 			}
-			
+
 			const subscriber = await mockPrisma.newsletterSubscriber.findUnique({
 				where: { email: email.trim().toLowerCase() },
 			});
-			
+
 			if (!subscriber) {
 				return res.status(404).json({
 					success: false,
 					message: 'Subscriber not found',
 				});
 			}
-			
+
 			const updatedSubscriber = await mockPrisma.newsletterSubscriber.update({
 				where: { id: subscriber.id },
 				data: {
@@ -941,9 +1003,12 @@ export const mockControllerLogic = {
 					onlyDemanded,
 				},
 			});
-			
-			console.log('✅ Updated newsletter preferences for:', updatedSubscriber.email);
-			
+
+			console.log(
+				'✅ Updated newsletter preferences for:',
+				updatedSubscriber.email,
+			);
+
 			res.json({
 				success: true,
 				message: 'Newsletter preferences updated successfully',
@@ -969,11 +1034,24 @@ export const mockControllerLogic = {
 			});
 		}
 	},
-	
+
 	processSendVerificationCodeRequest: async (req, res) => {
 		try {
-			const { email, firstName, lastName, language = 'ru', preferences = {}, preferredCities = [], preferredCategories = [], preferredEmployment = [], preferredLanguages = [], preferredGender = null, preferredDocumentTypes = [], onlyDemanded = false } = req.body;
-			
+			const {
+				email,
+				firstName,
+				lastName,
+				language = 'ru',
+				preferences = {},
+				preferredCities = [],
+				preferredCategories = [],
+				preferredEmployment = [],
+				preferredLanguages = [],
+				preferredGender = null,
+				preferredDocumentTypes = [],
+				onlyDemanded = false,
+			} = req.body;
+
 			// Validate email
 			if (!email || !email.trim()) {
 				return res.status(400).json({
@@ -981,7 +1059,7 @@ export const mockControllerLogic = {
 					message: 'Email is required',
 				});
 			}
-			
+
 			// Basic email validation
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 			if (!emailRegex.test(email)) {
@@ -990,43 +1068,52 @@ export const mockControllerLogic = {
 					message: 'Invalid email format',
 				});
 			}
-			
+
 			// Check if already subscribed
-			const existingSubscriber = await mockPrisma.newsletterSubscriber.findFirst({
-				where: {
-					email: email.trim().toLowerCase(),
-					isActive: true,
-				},
-			});
-			
+			const existingSubscriber =
+				await mockPrisma.newsletterSubscriber.findFirst({
+					where: {
+						email: email.trim().toLowerCase(),
+						isActive: true,
+					},
+				});
+
 			if (existingSubscriber) {
 				return res.status(409).json({
 					success: false,
 					message: 'This email is already subscribed to the newsletter',
 				});
 			}
-			
+
 			// Generate verification code
-			const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+			const verificationCode = Math.floor(
+				100000 + Math.random() * 900000,
+			).toString();
 			console.log('🔢 Generated verification code:', verificationCode);
-			
+
 			try {
 				// Store verification code
 				console.log('💾 Storing verification code...');
-				await mockNewsletterServices.storeVerificationCode(email.trim().toLowerCase(), verificationCode);
+				await mockNewsletterServices.storeVerificationCode(
+					email.trim().toLowerCase(),
+					verificationCode,
+				);
 				console.log('✅ Verification code stored successfully');
-				
+
 				// Send verification code via SNS
 				console.log('📧 Sending verification code...');
-				await mockNewsletterServices.sendVerificationCode(email.trim().toLowerCase(), verificationCode);
+				await mockNewsletterServices.sendVerificationCode(
+					email.trim().toLowerCase(),
+					verificationCode,
+				);
 				console.log('✅ Verification code sent successfully');
 			} catch (error) {
 				console.error('❌ Error in verification process:', error);
 				throw error;
 			}
-			
+
 			console.log('✅ Verification code sent to:', email);
-			
+
 			res.json({
 				success: true,
 				message: 'Verification code sent to your email',
@@ -1054,28 +1141,31 @@ export const mockControllerLogic = {
 			});
 		}
 	},
-	
+
 	processVerifyCodeRequest: async (req, res) => {
 		try {
 			const { email, code, subscriptionData } = req.body;
-			
+
 			if (!email || !code) {
 				return res.status(400).json({
 					success: false,
 					message: 'Email and verification code are required',
 				});
 			}
-			
+
 			// Verify the code
-			const verificationResult = await mockNewsletterServices.verifyCode(email.trim().toLowerCase(), code);
-			
+			const verificationResult = await mockNewsletterServices.verifyCode(
+				email.trim().toLowerCase(),
+				code,
+			);
+
 			if (!verificationResult.valid) {
 				return res.status(400).json({
 					success: false,
 					message: verificationResult.message,
 				});
 			}
-			
+
 			// Create subscriber
 			const subscriber = await mockPrisma.newsletterSubscriber.create({
 				data: {
@@ -1090,20 +1180,26 @@ export const mockControllerLogic = {
 					preferredEmployment: subscriptionData?.preferredEmployment || [],
 					preferredLanguages: subscriptionData?.preferredLanguages || [],
 					preferredGender: subscriptionData?.preferredGender || null,
-					preferredDocumentTypes: subscriptionData?.preferredDocumentTypes || [],
+					preferredDocumentTypes:
+						subscriptionData?.preferredDocumentTypes || [],
 					onlyDemanded: subscriptionData?.onlyDemanded || false,
 				},
 			});
-			
-			console.log('✅ Newsletter subscription verified and completed:', subscriber.email);
-			
+
+			console.log(
+				'✅ Newsletter subscription verified and completed:',
+				subscriber.email,
+			);
+
 			// Send candidates to new subscriber
 			try {
-				await mockNewsletterServices.sendInitialCandidatesToNewSubscriber(subscriber);
+				await mockNewsletterServices.sendInitialCandidatesToNewSubscriber(
+					subscriber,
+				);
 			} catch (emailError) {
 				console.error('❌ Failed to send candidates email:', emailError);
 			}
-			
+
 			res.json({
 				success: true,
 				message: 'Successfully subscribed to newsletter',
@@ -1129,7 +1225,7 @@ export const mockControllerLogic = {
 			});
 		}
 	},
-	
+
 	handleControllerError: (error, res, operation = 'operation') => {
 		console.error(`❌ Error ${operation}:`, error);
 		return res.status(500).json({
@@ -1137,11 +1233,11 @@ export const mockControllerLogic = {
 			message: `Failed to ${operation}`,
 		});
 	},
-	
+
 	handleControllerSuccess: (data, res, statusCode = 200) => {
 		return res.status(statusCode).json(data);
 	},
-	
+
 	validateControllerInput: (req) => {
 		return !!(req && req.body && Object.keys(req.body).length > 0);
 	},
@@ -1150,21 +1246,23 @@ export const mockControllerLogic = {
 // Mock service integration logic
 export const mockServiceIntegrationLogic = {
 	callSendInitialCandidatesService: async (subscriber) => {
-		return await mockNewsletterServices.sendInitialCandidatesToNewSubscriber(subscriber);
+		return await mockNewsletterServices.sendInitialCandidatesToNewSubscriber(
+			subscriber,
+		);
 	},
-	
+
 	callSendVerificationCodeService: async (email, code) => {
 		return await mockNewsletterServices.sendVerificationCode(email, code);
 	},
-	
+
 	callStoreVerificationCodeService: async (email, code) => {
 		return await mockNewsletterServices.storeVerificationCode(email, code);
 	},
-	
+
 	callVerifyCodeService: async (email, code) => {
 		return await mockNewsletterServices.verifyCode(email, code);
 	},
-	
+
 	handleServiceResponse: (result) => {
 		if (result.error) {
 			return {
@@ -1177,18 +1275,18 @@ export const mockServiceIntegrationLogic = {
 			data: result,
 		};
 	},
-	
+
 	handleServiceError: (error) => {
 		return {
 			success: false,
 			error: error.message,
 		};
 	},
-	
+
 	validateServiceResult: (result) => {
 		return result !== null && result !== undefined;
 	},
-	
+
 	processServiceResult: (result) => {
 		return result;
 	},
@@ -1223,46 +1321,46 @@ export const mockRequestResponseLogic = {
 			},
 		};
 	},
-	
+
 	buildResponse: () => {
 		return {
 			json: vi.fn(),
 			status: vi.fn().mockReturnThis(),
 		};
 	},
-	
+
 	handleSuccessResponse: (res, data, statusCode = 200) => {
 		res.status(statusCode).json(data);
 	},
-	
+
 	handleErrorResponse: (res, error, statusCode = 500) => {
 		res.status(statusCode).json({ error: error.message });
 	},
-	
+
 	handleValidationError: (res, error, statusCode = 400) => {
 		res.status(statusCode).json({ error });
 	},
-	
+
 	handleNotFoundError: (res, error, statusCode = 404) => {
 		res.status(statusCode).json({ error });
 	},
-	
+
 	handleConflictError: (res, error, statusCode = 409) => {
 		res.status(statusCode).json({ error });
 	},
-	
+
 	validateRequest: (req) => {
 		return !!(req && (req.body || req.params || req.query));
 	},
-	
+
 	extractSubscriptionData: (req) => {
 		return req.body;
 	},
-	
+
 	extractQueryParameters: (req) => {
 		return req.query;
 	},
-	
+
 	extractParams: (req) => {
 		return req.params;
 	},

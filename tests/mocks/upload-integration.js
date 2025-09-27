@@ -38,13 +38,13 @@ vi.mock('../../apps/api/utils/upload.js', () => ({
 // Mock requireAuth middleware
 export const mockRequireAuth = vi.fn((req, res, next) => {
 	const authHeader = req.headers.authorization;
-	
+
 	if (!authHeader || !authHeader.startsWith('Bearer ')) {
 		return res.status(401).json({ error: 'No authorization token provided' });
 	}
-	
+
 	const token = authHeader.substring(7);
-	
+
 	if (token === 'valid-token') {
 		req.user = {
 			clerkUserId: 'clerk_123456789',
@@ -124,7 +124,7 @@ export const mockErrors = {
 export const resetUploadMocks = () => {
 	mockMulterUpload.single.mockClear();
 	mockRequireAuth.mockClear();
-	
+
 	// Reset multer mock to default behavior
 	mockMulterUpload.single.mockImplementation(() => (req, res, next) => {
 		req.file = {
@@ -135,6 +135,6 @@ export const resetUploadMocks = () => {
 		};
 		next();
 	});
-	
+
 	vi.clearAllMocks();
 };

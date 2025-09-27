@@ -33,18 +33,18 @@ describe('UserService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetUserServiceMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
-		
+
 		// Mock environment variables
 		process.env.CLERK_SECRET_KEY = mockEnvVars.CLERK_SECRET_KEY;
 		process.env.WEBHOOK_SECRET = mockEnvVars.WEBHOOK_SECRET;
-		
+
 		// Mock fetch globally
 		global.fetch = mockFetch;
-		
+
 		// Mock Webhook constructor
 		vi.mock('svix', () => ({
 			Webhook: mockWebhook,
@@ -107,7 +107,9 @@ describe('UserService', () => {
 		it('should handle premium user Clerk API responses', () => {
 			const clerkUser = mockClerkApiResponses.premiumUserFetch;
 			expect(clerkUser.id).toBe('clerk_premium456');
-			expect(clerkUser.email_addresses[0].email_address).toBe('premium@example.com');
+			expect(clerkUser.email_addresses[0].email_address).toBe(
+				'premium@example.com',
+			);
 			expect(clerkUser.first_name).toBe('Jane');
 			expect(clerkUser.last_name).toBe('Smith');
 		});
@@ -115,15 +117,18 @@ describe('UserService', () => {
 		it('should handle new user Clerk API responses', () => {
 			const clerkUser = mockClerkApiResponses.newUserFetch;
 			expect(clerkUser.id).toBe('clerk_new789');
-			expect(clerkUser.email_addresses[0].email_address).toBe('new@example.com');
+			expect(clerkUser.email_addresses[0].email_address).toBe(
+				'new@example.com',
+			);
 			expect(clerkUser.first_name).toBe('New');
 			expect(clerkUser.last_name).toBe('User');
 		});
 
 		it('should extract user data from Clerk response', () => {
 			const clerkUser = mockClerkApiResponses.successfulUserFetch;
-			const extractedData = mockUserSyncLogic.extractUserDataFromClerk(clerkUser);
-			
+			const extractedData =
+				mockUserSyncLogic.extractUserDataFromClerk(clerkUser);
+
 			expect(extractedData.clerkUserId).toBe('clerk_user123');
 			expect(extractedData.email).toBe('john@example.com');
 			expect(extractedData.firstName).toBe('John');
@@ -150,7 +155,9 @@ describe('UserService', () => {
 		});
 
 		it('should check Clerk secret configuration', () => {
-			expect(mockUserSyncLogic.isClerkSecretConfigured('sk_test_valid_key')).toBe(true);
+			expect(
+				mockUserSyncLogic.isClerkSecretConfigured('sk_test_valid_key'),
+			).toBe(true);
 			expect(mockUserSyncLogic.isClerkSecretConfigured('')).toBe(false);
 			expect(mockUserSyncLogic.isClerkSecretConfigured(null)).toBe(false);
 			expect(mockUserSyncLogic.isClerkSecretConfigured(undefined)).toBe(false);
@@ -159,7 +166,7 @@ describe('UserService', () => {
 		it('should build upsert data for user creation', () => {
 			const clerkUser = mockClerkApiResponses.successfulUserFetch;
 			const upsertData = mockUserSyncLogic.buildUpsertData(clerkUser);
-			
+
 			expect(upsertData).toHaveProperty('where');
 			expect(upsertData).toHaveProperty('update');
 			expect(upsertData).toHaveProperty('create');
@@ -180,15 +187,28 @@ describe('UserService', () => {
 
 	describe('Webhook Processing Logic', () => {
 		it('should validate webhook headers', () => {
-			expect(mockWebhookProcessingLogic.validateWebhookHeaders(mockWebhookHeaders.validHeaders)).toBe(true);
-			expect(mockWebhookProcessingLogic.validateWebhookHeaders(mockWebhookHeaders.missingHeaders)).toBe(false);
-			expect(mockWebhookProcessingLogic.validateWebhookHeaders(mockWebhookHeaders.invalidHeaders)).toBe(false);
+			expect(
+				mockWebhookProcessingLogic.validateWebhookHeaders(
+					mockWebhookHeaders.validHeaders,
+				),
+			).toBe(true);
+			expect(
+				mockWebhookProcessingLogic.validateWebhookHeaders(
+					mockWebhookHeaders.missingHeaders,
+				),
+			).toBe(false);
+			expect(
+				mockWebhookProcessingLogic.validateWebhookHeaders(
+					mockWebhookHeaders.invalidHeaders,
+				),
+			).toBe(false);
 		});
 
 		it('should extract webhook data', () => {
 			const event = mockWebhookData.userCreated;
-			const extractedData = mockWebhookProcessingLogic.extractWebhookData(event);
-			
+			const extractedData =
+				mockWebhookProcessingLogic.extractWebhookData(event);
+
 			expect(extractedData.userId).toBe('clerk_new789');
 			expect(extractedData.email).toBe('new@example.com');
 			expect(extractedData.firstName).toBe('New');
@@ -204,8 +224,9 @@ describe('UserService', () => {
 				lastName: 'User',
 				imageUrl: 'https://example.com/new-avatar.jpg',
 			};
-			const upsertData = mockWebhookProcessingLogic.buildUserUpsertData(webhookData);
-			
+			const upsertData =
+				mockWebhookProcessingLogic.buildUserUpsertData(webhookData);
+
 			expect(upsertData).toHaveProperty('where');
 			expect(upsertData).toHaveProperty('update');
 			expect(upsertData).toHaveProperty('create');
@@ -243,7 +264,7 @@ describe('UserService', () => {
 			const skip = 0;
 			const limit = 5;
 			const query = mockJobRetrievalLogic.buildJobQuery(userId, skip, limit);
-			
+
 			expect(query).toHaveProperty('where');
 			expect(query).toHaveProperty('include');
 			expect(query).toHaveProperty('skip');
@@ -505,7 +526,7 @@ describe('UserService', () => {
 			expect(errors).toHaveProperty('missingClerkId');
 			expect(errors).toHaveProperty('userNotFound');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -520,7 +541,7 @@ describe('UserService', () => {
 			expect(errorMessages).toHaveProperty('missingClerkId');
 			expect(errorMessages).toHaveProperty('userNotFound');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -534,7 +555,7 @@ describe('UserService', () => {
 			expect(successMessages).toHaveProperty('jobsRetrieved');
 			expect(successMessages).toHaveProperty('webhookProcessed');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -548,7 +569,7 @@ describe('UserService', () => {
 			expect(consoleLogData).toHaveProperty('userServiceApiCall');
 			expect(consoleLogData).toHaveProperty('userServiceUserCreated');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});

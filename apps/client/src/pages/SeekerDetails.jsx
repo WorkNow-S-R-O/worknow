@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { useIntlayer } from 'react-intlayer';
 import { Helmet } from 'react-helmet-async';
-import { useLoadingProgress } from '../hooks/useLoadingProgress';
-import { useTranslationHelpers } from '../utils/translationHelpers';
+import { useLoadingProgress } from '@/hooks';
+import { useTranslationHelpers } from '@/utils';
 import '../css/seeker-details-mobile.css';
 import '../css/ripple.css';
 

@@ -17,7 +17,7 @@ export const mockUserData = {
 		mixed: 'user_123abc456def',
 		long: 'user_very_long_clerk_user_id_string',
 	},
-	
+
 	invalidClerkUserIds: {
 		null: null,
 		undefined: undefined,
@@ -31,7 +31,7 @@ export const mockUserData = {
 		object: {},
 		array: [],
 	},
-	
+
 	userWithCompleteData: {
 		id: 'user-123',
 		email: 'john.doe@example.com',
@@ -48,7 +48,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-01T10:00:00Z'),
 		updatedAt: new Date('2024-01-01T12:00:00Z'),
 	},
-	
+
 	userWithMinimalData: {
 		id: 'user-456',
 		email: 'jane.smith@example.com',
@@ -65,7 +65,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-02T09:00:00Z'),
 		updatedAt: new Date('2024-01-02T11:00:00Z'),
 	},
-	
+
 	premiumUser: {
 		id: 'user-789',
 		email: 'premium.user@example.com',
@@ -82,7 +82,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-03T08:00:00Z'),
 		updatedAt: new Date('2024-01-03T10:00:00Z'),
 	},
-	
+
 	adminUser: {
 		id: 'user-admin',
 		email: 'admin@example.com',
@@ -99,7 +99,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-01T00:00:00Z'),
 		updatedAt: new Date('2024-01-01T00:00:00Z'),
 	},
-	
+
 	regularUser: {
 		id: 'user-regular',
 		email: 'regular@example.com',
@@ -116,7 +116,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-04T07:00:00Z'),
 		updatedAt: new Date('2024-01-04T09:00:00Z'),
 	},
-	
+
 	nullUser: null,
 };
 

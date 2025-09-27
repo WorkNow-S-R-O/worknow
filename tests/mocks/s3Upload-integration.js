@@ -94,13 +94,13 @@ vi.mock('../../apps/api/utils/telegram.js', () => ({
 // Mock authentication middleware
 export const mockRequireAuth = vi.fn((req, res, next) => {
 	const authHeader = req.headers.authorization;
-	
+
 	if (!authHeader || !authHeader.startsWith('Bearer ')) {
 		return res.status(401).json({ error: 'No authorization token provided' });
 	}
-	
+
 	const token = authHeader.substring(7);
-	
+
 	if (token === 'valid-token') {
 		req.user = {
 			clerkUserId: 'clerk_123456789',
@@ -218,7 +218,8 @@ export const mockS3ConfigStatus = {
 export const mockInvalidS3ConfigStatus = {
 	isValid: false,
 	missingVars: ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY'],
-	message: 'Missing S3 environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY',
+	message:
+		'Missing S3 environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY',
 };
 
 export const mockRekognitionConfigStatus = {
@@ -315,7 +316,7 @@ export const resetS3UploadMocks = () => {
 	mockUploadToS3WithModeration.mockClear();
 	mockDeleteFromS3.mockClear();
 	mockValidateS3Config.mockClear();
-	
+
 	// Reset multer mock to default behavior
 	mockMulterUpload.single.mockImplementation(() => (req, res, next) => {
 		req.file = {
@@ -326,6 +327,6 @@ export const resetS3UploadMocks = () => {
 		};
 		next();
 	});
-	
+
 	vi.clearAllMocks();
 };

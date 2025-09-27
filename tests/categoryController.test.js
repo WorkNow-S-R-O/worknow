@@ -29,7 +29,7 @@ describe('CategoryController', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetCategoryControllerMocks();
-		
+
 		// Mock console methods
 		console.error = vi.fn();
 	});
@@ -88,8 +88,11 @@ describe('CategoryController', () => {
 	describe('Translation Processing Logic', () => {
 		it('should process categories with Russian translations', () => {
 			const categories = mockCategoryData.categoriesWithTranslations;
-			const processed = mockCategoryProcessingLogic.processCategories(categories, 'ru');
-			
+			const processed = mockCategoryProcessingLogic.processCategories(
+				categories,
+				'ru',
+			);
+
 			expect(processed).toHaveLength(5);
 			expect(processed[0]).toEqual({ id: 1, label: 'IT' });
 			expect(processed[1]).toEqual({ id: 2, label: 'Маркетинг' });
@@ -98,8 +101,11 @@ describe('CategoryController', () => {
 
 		it('should process categories with English translations', () => {
 			const categories = mockCategoryData.categoriesWithTranslations;
-			const processed = mockCategoryProcessingLogic.processCategories(categories, 'en');
-			
+			const processed = mockCategoryProcessingLogic.processCategories(
+				categories,
+				'en',
+			);
+
 			expect(processed).toHaveLength(5);
 			expect(processed[0]).toEqual({ id: 1, label: 'Information Technology' });
 			expect(processed[1]).toEqual({ id: 2, label: 'Marketing' });
@@ -108,8 +114,11 @@ describe('CategoryController', () => {
 
 		it('should process categories with Hebrew translations', () => {
 			const categories = mockCategoryData.categoriesWithTranslations;
-			const processed = mockCategoryProcessingLogic.processCategories(categories, 'he');
-			
+			const processed = mockCategoryProcessingLogic.processCategories(
+				categories,
+				'he',
+			);
+
 			expect(processed).toHaveLength(5);
 			expect(processed[0]).toEqual({ id: 1, label: 'טכנולוגיית מידע' });
 			expect(processed[1]).toEqual({ id: 2, label: 'שיווק' });
@@ -118,8 +127,11 @@ describe('CategoryController', () => {
 
 		it('should process categories with Arabic translations', () => {
 			const categories = mockCategoryData.categoriesWithTranslations;
-			const processed = mockCategoryProcessingLogic.processCategories(categories, 'ar');
-			
+			const processed = mockCategoryProcessingLogic.processCategories(
+				categories,
+				'ar',
+			);
+
 			expect(processed).toHaveLength(5);
 			expect(processed[0]).toEqual({ id: 1, label: 'تكنولوجيا المعلومات' });
 			expect(processed[1]).toEqual({ id: 2, label: 'تسويق' });
@@ -128,8 +140,11 @@ describe('CategoryController', () => {
 
 		it('should handle missing translations with fallback', () => {
 			const categories = mockCategoryData.categoriesWithPartialTranslations;
-			const processed = mockCategoryProcessingLogic.processCategories(categories, 'he');
-			
+			const processed = mockCategoryProcessingLogic.processCategories(
+				categories,
+				'he',
+			);
+
 			expect(processed).toHaveLength(2);
 			expect(processed[0]).toEqual({ id: 1, label: 'IT' }); // Falls back to original name
 			expect(processed[1]).toEqual({ id: 2, label: 'שיווק' }); // Has translation
@@ -137,8 +152,11 @@ describe('CategoryController', () => {
 
 		it('should handle categories with no translations', () => {
 			const categories = mockCategoryData.categoriesWithNoTranslations;
-			const processed = mockCategoryProcessingLogic.processCategories(categories, 'ru');
-			
+			const processed = mockCategoryProcessingLogic.processCategories(
+				categories,
+				'ru',
+			);
+
 			expect(processed).toHaveLength(2);
 			expect(processed[0]).toEqual({ id: 1, label: 'IT' }); // Falls back to original name
 			expect(processed[1]).toEqual({ id: 2, label: 'Marketing' }); // Falls back to original name
@@ -146,8 +164,11 @@ describe('CategoryController', () => {
 
 		it('should handle categories with null translations', () => {
 			const categories = mockCategoryData.categoriesWithNullTranslations;
-			const processed = mockCategoryProcessingLogic.processCategories(categories, 'ru');
-			
+			const processed = mockCategoryProcessingLogic.processCategories(
+				categories,
+				'ru',
+			);
+
 			expect(processed).toHaveLength(2);
 			expect(processed[0]).toEqual({ id: 1, label: 'IT' }); // Falls back to original name
 			expect(processed[1]).toEqual({ id: 2, label: 'Marketing' }); // Falls back to original name
@@ -155,31 +176,43 @@ describe('CategoryController', () => {
 
 		it('should find translation by language', () => {
 			const translations = mockCategoryData.singleCategory.translations;
-			const russianTranslation = mockCategoryProcessingLogic.findTranslation(translations, 'ru');
-			const englishTranslation = mockCategoryProcessingLogic.findTranslation(translations, 'en');
-			
+			const russianTranslation = mockCategoryProcessingLogic.findTranslation(
+				translations,
+				'ru',
+			);
+			const englishTranslation = mockCategoryProcessingLogic.findTranslation(
+				translations,
+				'en',
+			);
+
 			expect(russianTranslation).toEqual({ lang: 'ru', name: 'IT' });
-			expect(englishTranslation).toEqual({ lang: 'en', name: 'Information Technology' });
+			expect(englishTranslation).toEqual({
+				lang: 'en',
+				name: 'Information Technology',
+			});
 		});
 
 		it('should return null for non-existent translation', () => {
 			const translations = mockCategoryData.singleCategory.translations;
-			const nonExistentTranslation = mockCategoryProcessingLogic.findTranslation(translations, 'fr');
-			
+			const nonExistentTranslation =
+				mockCategoryProcessingLogic.findTranslation(translations, 'fr');
+
 			expect(nonExistentTranslation).toBeUndefined();
 		});
 
 		it('should get fallback name when translation is missing', () => {
 			const category = mockCategoryData.singleCategory;
-			const fallbackName = mockCategoryProcessingLogic.getFallbackName(category);
-			
+			const fallbackName =
+				mockCategoryProcessingLogic.getFallbackName(category);
+
 			expect(fallbackName).toBe('IT');
 		});
 
 		it('should build category response correctly', () => {
 			const categories = mockProcessedCategoryData.russianCategories;
-			const response = mockCategoryProcessingLogic.buildCategoryResponse(categories);
-			
+			const response =
+				mockCategoryProcessingLogic.buildCategoryResponse(categories);
+
 			expect(response).toHaveLength(5);
 			expect(response[0]).toEqual({ id: 1, label: 'IT' });
 			expect(response[1]).toEqual({ id: 2, label: 'Маркетинг' });
@@ -188,7 +221,7 @@ describe('CategoryController', () => {
 		it('should handle category processing errors', () => {
 			const error = mockErrors.translationError;
 			const result = mockCategoryProcessingLogic.handleCategoryError(error);
-			
+
 			expect(result).toEqual({
 				error: 'Ошибка при получении категорий',
 				details: error.message,
@@ -197,8 +230,9 @@ describe('CategoryController', () => {
 
 		it('should handle category processing success', () => {
 			const categories = mockProcessedCategoryData.russianCategories;
-			const result = mockCategoryProcessingLogic.handleCategorySuccess(categories);
-			
+			const result =
+				mockCategoryProcessingLogic.handleCategorySuccess(categories);
+
 			expect(result).toEqual(categories);
 		});
 
@@ -208,7 +242,9 @@ describe('CategoryController', () => {
 			expect(mockCategoryProcessingLogic.validateLanguage('he')).toBe(true);
 			expect(mockCategoryProcessingLogic.validateLanguage('ar')).toBe(true);
 			expect(mockCategoryProcessingLogic.validateLanguage('fr')).toBe(false);
-			expect(mockCategoryProcessingLogic.validateLanguage('invalid')).toBe(false);
+			expect(mockCategoryProcessingLogic.validateLanguage('invalid')).toBe(
+				false,
+			);
 		});
 
 		it('should get default language', () => {
@@ -222,8 +258,9 @@ describe('CategoryController', () => {
 				{ id: 1, name: 'IT' },
 				{ id: 2, name: 'Marketing' },
 			];
-			const sorted = mockCategoryProcessingLogic.sortCategories(unsortedCategories);
-			
+			const sorted =
+				mockCategoryProcessingLogic.sortCategories(unsortedCategories);
+
 			expect(sorted[0].name).toBe('IT');
 			expect(sorted[1].name).toBe('Marketing');
 			expect(sorted[2].name).toBe('Sales');
@@ -231,8 +268,11 @@ describe('CategoryController', () => {
 
 		it('should filter categories by name', () => {
 			const categories = mockCategoryData.categoriesWithTranslations;
-			const filtered = mockCategoryProcessingLogic.filterCategories(categories, 'IT');
-			
+			const filtered = mockCategoryProcessingLogic.filterCategories(
+				categories,
+				'IT',
+			);
+
 			expect(filtered).toHaveLength(1);
 			expect(filtered[0].name).toBe('IT');
 		});
@@ -241,7 +281,7 @@ describe('CategoryController', () => {
 	describe('Database Operations Logic', () => {
 		it('should build correct category query', () => {
 			const query = mockDatabaseOperationsLogic.buildCategoryQuery();
-			
+
 			expect(query).toEqual({
 				orderBy: { name: 'asc' },
 				include: { translations: true },
@@ -251,12 +291,17 @@ describe('CategoryController', () => {
 		it('should execute category query', async () => {
 			const mockPrismaInstance = {
 				category: {
-					findMany: vi.fn().mockResolvedValue(mockCategoryData.categoriesWithTranslations),
+					findMany: vi
+						.fn()
+						.mockResolvedValue(mockCategoryData.categoriesWithTranslations),
 				},
 			};
-			
-			const result = await mockDatabaseOperationsLogic.executeCategoryQuery(mockPrismaInstance);
-			
+
+			const result =
+				await mockDatabaseOperationsLogic.executeCategoryQuery(
+					mockPrismaInstance,
+				);
+
 			expect(result).toEqual(mockCategoryData.categoriesWithTranslations);
 			expect(mockPrismaInstance.category.findMany).toHaveBeenCalledWith({
 				orderBy: { name: 'asc' },
@@ -267,7 +312,7 @@ describe('CategoryController', () => {
 		it('should handle database errors', () => {
 			const error = mockErrors.databaseError;
 			const result = mockDatabaseOperationsLogic.handleDatabaseError(error);
-			
+
 			expect(result).toEqual({
 				error: 'Ошибка при получении категорий',
 				details: error.message,
@@ -276,20 +321,31 @@ describe('CategoryController', () => {
 
 		it('should handle database success', () => {
 			const categories = mockCategoryData.categoriesWithTranslations;
-			const result = mockDatabaseOperationsLogic.handleDatabaseSuccess(categories);
-			
+			const result =
+				mockDatabaseOperationsLogic.handleDatabaseSuccess(categories);
+
 			expect(result).toEqual(categories);
 		});
 
 		it('should validate database result', () => {
-			expect(mockDatabaseOperationsLogic.validateDatabaseResult(mockCategoryData.categoriesWithTranslations)).toBe(true);
+			expect(
+				mockDatabaseOperationsLogic.validateDatabaseResult(
+					mockCategoryData.categoriesWithTranslations,
+				),
+			).toBe(true);
 			expect(mockDatabaseOperationsLogic.validateDatabaseResult([])).toBe(true);
-			expect(mockDatabaseOperationsLogic.validateDatabaseResult(null)).toBe(false);
-			expect(mockDatabaseOperationsLogic.validateDatabaseResult('string')).toBe(false);
+			expect(mockDatabaseOperationsLogic.validateDatabaseResult(null)).toBe(
+				false,
+			);
+			expect(mockDatabaseOperationsLogic.validateDatabaseResult('string')).toBe(
+				false,
+			);
 		});
 
 		it('should process database result', () => {
-			const result = mockDatabaseOperationsLogic.processDatabaseResult(mockCategoryData.categoriesWithTranslations);
+			const result = mockDatabaseOperationsLogic.processDatabaseResult(
+				mockCategoryData.categoriesWithTranslations,
+			);
 			expect(result).toEqual(mockCategoryData.categoriesWithTranslations);
 		});
 	});
@@ -298,41 +354,41 @@ describe('CategoryController', () => {
 		it('should apply translation correctly', () => {
 			const category = mockCategoryData.singleCategory;
 			const result = mockTranslationLogic.applyTranslation(category, 'ru');
-			
+
 			expect(result).toEqual({ id: 1, label: 'IT' });
 		});
 
 		it('should apply English translation', () => {
 			const category = mockCategoryData.singleCategory;
 			const result = mockTranslationLogic.applyTranslation(category, 'en');
-			
+
 			expect(result).toEqual({ id: 1, label: 'Information Technology' });
 		});
 
 		it('should apply Hebrew translation', () => {
 			const category = mockCategoryData.singleCategory;
 			const result = mockTranslationLogic.applyTranslation(category, 'he');
-			
+
 			expect(result).toEqual({ id: 1, label: 'טכנולוגיית מידע' });
 		});
 
 		it('should apply Arabic translation', () => {
 			const category = mockCategoryData.singleCategory;
 			const result = mockTranslationLogic.applyTranslation(category, 'ar');
-			
+
 			expect(result).toEqual({ id: 1, label: 'تكنولوجيا المعلومات' });
 		});
 
 		it('should fallback to original name when translation is missing', () => {
 			const category = mockCategoryData.singleCategory;
 			const result = mockTranslationLogic.applyTranslation(category, 'fr');
-			
+
 			expect(result).toEqual({ id: 1, label: 'IT' });
 		});
 
 		it('should check if translation exists', () => {
 			const category = mockCategoryData.singleCategory;
-			
+
 			expect(mockTranslationLogic.hasTranslation(category, 'ru')).toBe(true);
 			expect(mockTranslationLogic.hasTranslation(category, 'en')).toBe(true);
 			expect(mockTranslationLogic.hasTranslation(category, 'fr')).toBe(false);
@@ -340,23 +396,34 @@ describe('CategoryController', () => {
 
 		it('should get translation by language', () => {
 			const translations = mockCategoryData.singleCategory.translations;
-			
-			expect(mockTranslationLogic.getTranslation(translations, 'ru')).toEqual({ lang: 'ru', name: 'IT' });
-			expect(mockTranslationLogic.getTranslation(translations, 'en')).toEqual({ lang: 'en', name: 'Information Technology' });
-			expect(mockTranslationLogic.getTranslation(translations, 'fr')).toBeUndefined();
+
+			expect(mockTranslationLogic.getTranslation(translations, 'ru')).toEqual({
+				lang: 'ru',
+				name: 'IT',
+			});
+			expect(mockTranslationLogic.getTranslation(translations, 'en')).toEqual({
+				lang: 'en',
+				name: 'Information Technology',
+			});
+			expect(
+				mockTranslationLogic.getTranslation(translations, 'fr'),
+			).toBeUndefined();
 		});
 
 		it('should get fallback translation', () => {
 			const category = mockCategoryData.singleCategory;
 			const fallback = mockTranslationLogic.getFallbackTranslation(category);
-			
+
 			expect(fallback).toBe('IT');
 		});
 
 		it('should process multiple translations', () => {
 			const categories = mockCategoryData.categoriesWithTranslations;
-			const processed = mockTranslationLogic.processTranslations(categories, 'ru');
-			
+			const processed = mockTranslationLogic.processTranslations(
+				categories,
+				'ru',
+			);
+
 			expect(processed).toHaveLength(5);
 			expect(processed[0]).toEqual({ id: 1, label: 'IT' });
 			expect(processed[1]).toEqual({ id: 2, label: 'Маркетинг' });
@@ -372,14 +439,14 @@ describe('CategoryController', () => {
 
 		it('should get supported languages', () => {
 			const languages = mockTranslationLogic.getSupportedLanguages();
-			
+
 			expect(languages).toEqual(['ru', 'en', 'he', 'ar']);
 		});
 
 		it('should handle translation errors', () => {
 			const error = mockErrors.translationError;
 			const result = mockTranslationLogic.handleTranslationError(error);
-			
+
 			expect(result).toEqual({
 				error: 'Translation processing failed',
 				details: error.message,
@@ -390,26 +457,29 @@ describe('CategoryController', () => {
 	describe('Request/Response Logic', () => {
 		it('should build request with default language', () => {
 			const request = mockRequestResponseLogic.buildRequest();
-			
+
 			expect(request.query.lang).toBe('ru');
 		});
 
 		it('should build request with custom language', () => {
 			const request = mockRequestResponseLogic.buildRequest({ lang: 'en' });
-			
+
 			expect(request.query.lang).toBe('en');
 		});
 
 		it('should build request with additional query parameters', () => {
-			const request = mockRequestResponseLogic.buildRequest({ lang: 'he', filter: 'test' });
-			
+			const request = mockRequestResponseLogic.buildRequest({
+				lang: 'he',
+				filter: 'test',
+			});
+
 			expect(request.query.lang).toBe('he');
 			expect(request.query.filter).toBe('test');
 		});
 
 		it('should build response object', () => {
 			const response = mockRequestResponseLogic.buildResponse();
-			
+
 			expect(response).toHaveProperty('json');
 			expect(response).toHaveProperty('status');
 			expect(typeof response.json).toBe('function');
@@ -419,18 +489,18 @@ describe('CategoryController', () => {
 		it('should handle success response', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const data = mockProcessedCategoryData.russianCategories;
-			
+
 			mockRequestResponseLogic.handleSuccessResponse(res, data);
-			
+
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
 
 		it('should handle error response with default status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const error = mockErrors.databaseError;
-			
+
 			mockRequestResponseLogic.handleErrorResponse(res, error);
-			
+
 			expect(res.status).toHaveBeenCalledWith(500);
 			expect(res.json).toHaveBeenCalledWith({ error: error.message });
 		});
@@ -438,9 +508,9 @@ describe('CategoryController', () => {
 		it('should handle error response with custom status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const error = mockErrors.permissionError;
-			
+
 			mockRequestResponseLogic.handleErrorResponse(res, error, 403);
-			
+
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith({ error: error.message });
 		});
@@ -448,23 +518,29 @@ describe('CategoryController', () => {
 		it('should validate request object', () => {
 			const validRequest = { query: { lang: 'ru' } };
 			const invalidRequest = { body: { lang: 'ru' } };
-			
+
 			expect(mockRequestResponseLogic.validateRequest(validRequest)).toBe(true);
-			expect(mockRequestResponseLogic.validateRequest(invalidRequest)).toBe(false);
+			expect(mockRequestResponseLogic.validateRequest(invalidRequest)).toBe(
+				false,
+			);
 		});
 
 		it('should extract language from request', () => {
 			const requestWithLang = { query: { lang: 'en' } };
 			const requestWithoutLang = { query: {} };
-			
-			expect(mockRequestResponseLogic.extractLanguage(requestWithLang)).toBe('en');
-			expect(mockRequestResponseLogic.extractLanguage(requestWithoutLang)).toBe('ru');
+
+			expect(mockRequestResponseLogic.extractLanguage(requestWithLang)).toBe(
+				'en',
+			);
+			expect(mockRequestResponseLogic.extractLanguage(requestWithoutLang)).toBe(
+				'ru',
+			);
 		});
 
 		it('should handle request errors', () => {
 			const error = mockErrors.validationError;
 			const result = mockRequestResponseLogic.handleRequestError(error);
-			
+
 			expect(result).toEqual({
 				error: 'Request processing failed',
 				details: error.message,
@@ -634,7 +710,7 @@ describe('CategoryController', () => {
 			expect(errors).toHaveProperty('translationError');
 			expect(errors).toHaveProperty('queryError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -648,7 +724,7 @@ describe('CategoryController', () => {
 			expect(errorMessages).toHaveProperty('translationError');
 			expect(errorMessages).toHaveProperty('queryError');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -661,7 +737,7 @@ describe('CategoryController', () => {
 			expect(successMessages).toHaveProperty('fallbackUsed');
 			expect(successMessages).toHaveProperty('operationCompleted');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -674,7 +750,7 @@ describe('CategoryController', () => {
 			expect(consoleLogData).toHaveProperty('translationApplied');
 			expect(consoleLogData).toHaveProperty('fallbackUsed');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -752,7 +828,9 @@ describe('CategoryController', () => {
 
 			expect(typeof requestResponseLogic.buildRequest).toBe('function');
 			expect(typeof requestResponseLogic.buildResponse).toBe('function');
-			expect(typeof requestResponseLogic.handleSuccessResponse).toBe('function');
+			expect(typeof requestResponseLogic.handleSuccessResponse).toBe(
+				'function',
+			);
 			expect(typeof requestResponseLogic.handleErrorResponse).toBe('function');
 			expect(typeof requestResponseLogic.validateRequest).toBe('function');
 			expect(typeof requestResponseLogic.extractLanguage).toBe('function');

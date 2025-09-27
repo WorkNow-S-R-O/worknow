@@ -37,14 +37,14 @@ describe('Users Integration Tests', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console methods to avoid noise in tests
 		console.log = vi.fn();
 		console.error = vi.fn();
-		
+
 		// Set environment variables for webhook tests
 		process.env.WEBHOOK_SECRET = 'test-webhook-secret';
-		
+
 		// Reset all mocks
 		resetUsersMocks();
 	});
@@ -59,7 +59,9 @@ describe('Users Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should sync user successfully', async () => {
 				// Arrange
-				mockSyncUserService.mockResolvedValue(mockServiceResponses.syncUserSuccess);
+				mockSyncUserService.mockResolvedValue(
+					mockServiceResponses.syncUserSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -76,7 +78,9 @@ describe('Users Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should handle service errors', async () => {
 				// Arrange
-				mockSyncUserService.mockResolvedValue({ error: mockErrors.syncUserError });
+				mockSyncUserService.mockResolvedValue({
+					error: mockErrors.syncUserError,
+				});
 
 				// Act
 				const response = await request(app)
@@ -90,7 +94,9 @@ describe('Users Integration Tests', () => {
 
 			it('should handle missing clerkUserId', async () => {
 				// Arrange
-				mockSyncUserService.mockResolvedValue({ error: 'Missing Clerk user ID' });
+				mockSyncUserService.mockResolvedValue({
+					error: 'Missing Clerk user ID',
+				});
 
 				// Act
 				const response = await request(app)
@@ -108,7 +114,9 @@ describe('Users Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should get user by clerk ID', async () => {
 				// Arrange
-				mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.getUserByClerkIdSuccess);
+				mockGetUserByClerkIdService.mockResolvedValue(
+					mockServiceResponses.getUserByClerkIdSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -117,14 +125,18 @@ describe('Users Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toEqual(mockUserData);
-				expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('clerk_123456789');
+				expect(mockGetUserByClerkIdService).toHaveBeenCalledWith(
+					'clerk_123456789',
+				);
 			});
 		});
 
 		describe('Error Handling', () => {
 			it('should return 404 when user not found', async () => {
 				// Arrange
-				mockGetUserByClerkIdService.mockResolvedValue({ error: mockErrors.getUserByClerkIdError });
+				mockGetUserByClerkIdService.mockResolvedValue({
+					error: mockErrors.getUserByClerkIdError,
+				});
 
 				// Act
 				const response = await request(app)
@@ -132,7 +144,9 @@ describe('Users Integration Tests', () => {
 					.expect(404);
 
 				// Assert
-				expect(response.body).toEqual({ error: mockErrors.getUserByClerkIdError });
+				expect(response.body).toEqual({
+					error: mockErrors.getUserByClerkIdError,
+				});
 			});
 		});
 	});
@@ -141,7 +155,9 @@ describe('Users Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should get user jobs with default pagination', async () => {
 				// Arrange
-				mockGetUserJobsService.mockResolvedValue(mockServiceResponses.getUserJobsSuccess);
+				mockGetUserJobsService.mockResolvedValue(
+					mockServiceResponses.getUserJobsSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -150,12 +166,17 @@ describe('Users Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toEqual(mockJobsResponse);
-				expect(mockGetUserJobsService).toHaveBeenCalledWith('clerk_123456789', {});
+				expect(mockGetUserJobsService).toHaveBeenCalledWith(
+					'clerk_123456789',
+					{},
+				);
 			});
 
 			it('should get user jobs with query parameters', async () => {
 				// Arrange
-				mockGetUserJobsService.mockResolvedValue(mockServiceResponses.getUserJobsSuccess);
+				mockGetUserJobsService.mockResolvedValue(
+					mockServiceResponses.getUserJobsSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -163,7 +184,9 @@ describe('Users Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body.jobs[0].category.label).toBe('Information Technology');
+				expect(response.body.jobs[0].category.label).toBe(
+					'Information Technology',
+				);
 				expect(mockGetUserJobsService).toHaveBeenCalledWith('clerk_123456789', {
 					page: '2',
 					limit: '10',
@@ -175,15 +198,19 @@ describe('Users Integration Tests', () => {
 				// Arrange
 				const jobsWithTranslation = {
 					...mockJobsResponse,
-					jobs: [{
-						...mockJobData,
-						category: {
-							...mockJobData.category,
-							label: 'Information Technology', // Translated name
+					jobs: [
+						{
+							...mockJobData,
+							category: {
+								...mockJobData.category,
+								label: 'Information Technology', // Translated name
+							},
 						},
-					}],
+					],
 				};
-				mockGetUserJobsService.mockResolvedValue(mockServiceResponses.getUserJobsSuccess);
+				mockGetUserJobsService.mockResolvedValue(
+					mockServiceResponses.getUserJobsSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -191,14 +218,18 @@ describe('Users Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body.jobs[0].category.label).toBe('Information Technology');
+				expect(response.body.jobs[0].category.label).toBe(
+					'Information Technology',
+				);
 			});
 		});
 
 		describe('Error Handling', () => {
 			it('should handle service errors', async () => {
 				// Arrange
-				mockGetUserJobsService.mockResolvedValue({ error: mockErrors.getUserJobsError });
+				mockGetUserJobsService.mockResolvedValue({
+					error: mockErrors.getUserJobsError,
+				});
 
 				// Act
 				const response = await request(app)
@@ -215,7 +246,9 @@ describe('Users Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should handle clerk webhook successfully', async () => {
 				// Arrange
-				mockSyncUserService.mockResolvedValue(mockServiceResponses.syncUserSuccess);
+				mockSyncUserService.mockResolvedValue(
+					mockServiceResponses.syncUserSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -228,7 +261,9 @@ describe('Users Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toEqual(mockServiceResponses.clerkWebhookSuccess);
-				expect(mockSyncUserService).toHaveBeenCalledWith({ id: 'clerk_123456789' });
+				expect(mockSyncUserService).toHaveBeenCalledWith({
+					id: 'clerk_123456789',
+				});
 			});
 		});
 
@@ -267,7 +302,9 @@ describe('Users Integration Tests', () => {
 
 			it('should handle webhook verification failure', async () => {
 				// Arrange
-				mockSyncUserService.mockRejectedValue(new Error('Webhook verification failed'));
+				mockSyncUserService.mockRejectedValue(
+					new Error('Webhook verification failed'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -290,37 +327,31 @@ describe('Users Integration Tests', () => {
 	describe('HTTP Method Validation', () => {
 		it('should reject GET requests for POST endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.get('/api/users/sync-user')
-				.expect(404);
+			await request(app).get('/api/users/sync-user').expect(404);
 		});
 
 		it('should reject POST requests for GET endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.post('/api/users/clerk_123456789')
-				.expect(404);
+			await request(app).post('/api/users/clerk_123456789').expect(404);
 		});
 
 		it('should reject PUT requests', async () => {
 			// Act & Assert
-			await request(app)
-				.put('/api/users/clerk_123456789')
-				.expect(404);
+			await request(app).put('/api/users/clerk_123456789').expect(404);
 		});
 
 		it('should reject DELETE requests', async () => {
 			// Act & Assert
-			await request(app)
-				.delete('/api/users/clerk_123456789')
-				.expect(404);
+			await request(app).delete('/api/users/clerk_123456789').expect(404);
 		});
 	});
 
 	describe('Response Format Validation', () => {
 		it('should return valid JSON responses', async () => {
 			// Arrange
-			mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.getUserByClerkIdSuccess);
+			mockGetUserByClerkIdService.mockResolvedValue(
+				mockServiceResponses.getUserByClerkIdSuccess,
+			);
 
 			// Act
 			const response = await request(app)

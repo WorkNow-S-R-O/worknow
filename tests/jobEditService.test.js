@@ -34,7 +34,9 @@ describe('jobEditService', () => {
 			const { fetchJob } = await importService();
 			const result = await fetchJob(mockJobId);
 
-			expect(axios.get).toHaveBeenCalledWith(`${mockApiUrl}/api/jobs/${mockJobId}`);
+			expect(axios.get).toHaveBeenCalledWith(
+				`${mockApiUrl}/api/jobs/${mockJobId}`,
+			);
 			expect(result).toEqual(mockJobResponse);
 		});
 
@@ -50,7 +52,9 @@ describe('jobEditService', () => {
 
 	describe('updateJob', () => {
 		it('sends the payload and returns the updated job data', async () => {
-			axios.put.mockResolvedValueOnce(createAxiosResponse(mockUpdatedJobResponse));
+			axios.put.mockResolvedValueOnce(
+				createAxiosResponse(mockUpdatedJobResponse),
+			);
 
 			const { updateJob } = await importService();
 			const result = await updateJob(mockJobId, mockUpdatePayload);

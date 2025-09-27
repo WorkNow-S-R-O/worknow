@@ -1,19 +1,19 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { Modal, Button } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 import { Trash, PencilSquare, SortUp } from 'react-bootstrap-icons';
 import Skeleton from 'react-loading-skeleton';
 import { useIntlayer, useLocale } from 'react-intlayer';
 import { format } from 'date-fns';
 import { ru, enUS, he, ar } from 'date-fns/locale';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { useLoadingProgress } from '../hooks/useLoadingProgress';
-import { useTranslationHelpers } from '../utils/translationHelpers';
+import { PaginationControl } from '@/components';
+import { useLoadingProgress } from '@/hooks';
+import { useTranslationHelpers } from '@/utils';
 import { ImageModal } from './ui';
-import PaginationControl from './PaginationControl';
 
 const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
 
@@ -497,7 +497,6 @@ const UserJobs = () => {
 												)}
 											</div>
 										)}
-
 									</div>
 									{/* Buttons area - always at the bottom */}
 									<div

@@ -43,9 +43,7 @@ const NewsletterHeader = ({ onClose, isMobile }) => {
 					fontSize: '16px',
 				}}
 			></button>
-			<h5 className="mb-4 font-size-10">
-				{content.newsletterTitle.value}
-			</h5>
+			<h5 className="mb-4 font-size-10">{content.newsletterTitle.value}</h5>
 		</>
 	);
 };

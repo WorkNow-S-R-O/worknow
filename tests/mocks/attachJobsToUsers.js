@@ -352,4 +352,6 @@ Object.assign(console, mockConsole);
 mockFaker.phone.number.mockReturnValue('+972 123-456-789');
 mockCreateFakeUser.mockResolvedValue(mockUserData.newFakeUser);
 mockPrisma.user.findFirst.mockResolvedValue(mockUserData.existingFakeUser);
-mockPrisma.job.create.mockResolvedValue(mockCreatedJobData.successfulJobCreation);
+mockPrisma.job.create.mockResolvedValue(
+	mockCreatedJobData.successfulJobCreation,
+);

@@ -95,4 +95,3 @@ export const resetHealthMocks = () => {
 	mockRedisService.close.mockClear();
 	vi.clearAllMocks();
 };
-

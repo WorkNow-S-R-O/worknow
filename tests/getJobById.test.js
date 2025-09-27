@@ -19,7 +19,7 @@ describe('GetJobByIdService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetGetJobByIdMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
@@ -35,7 +35,7 @@ describe('GetJobByIdService', () => {
 		it('should accept valid numeric string IDs', () => {
 			const validIds = ['123', '456', '789', '1', '999999'];
 
-			validIds.forEach(id => {
+			validIds.forEach((id) => {
 				const isValid = id && !isNaN(id);
 				expect(isValid).toBe(true);
 			});
@@ -44,7 +44,7 @@ describe('GetJobByIdService', () => {
 		it('should accept valid numeric IDs', () => {
 			const validIds = [123, 456, 789, 1, 999999];
 
-			validIds.forEach(id => {
+			validIds.forEach((id) => {
 				const isValid = id && !isNaN(id);
 				expect(isValid).toBe(true);
 			});
@@ -71,7 +71,7 @@ describe('GetJobByIdService', () => {
 		it('should reject non-numeric string IDs', () => {
 			const invalidIds = ['abc', 'def', 'xyz', 'hello'];
 
-			invalidIds.forEach(id => {
+			invalidIds.forEach((id) => {
 				const isValid = id && !isNaN(id);
 				expect(isValid).toBe(false);
 			});
@@ -305,10 +305,18 @@ describe('GetJobByIdService', () => {
 				}
 			};
 
-			expect(() => handleInvalidId(null)).toThrow('ID вакансии не передан или имеет неверный формат');
-			expect(() => handleInvalidId(undefined)).toThrow('ID вакансии не передан или имеет неверный формат');
-			expect(() => handleInvalidId('')).toThrow('ID вакансии не передан или имеет неверный формат');
-			expect(() => handleInvalidId('abc')).toThrow('ID вакансии не передан или имеет неверный формат');
+			expect(() => handleInvalidId(null)).toThrow(
+				'ID вакансии не передан или имеет неверный формат',
+			);
+			expect(() => handleInvalidId(undefined)).toThrow(
+				'ID вакансии не передан или имеет неверный формат',
+			);
+			expect(() => handleInvalidId('')).toThrow(
+				'ID вакансии не передан или имеет неверный формат',
+			);
+			expect(() => handleInvalidId('abc')).toThrow(
+				'ID вакансии не передан или имеет неверный формат',
+			);
 		});
 
 		it('should handle job not found errors', () => {
@@ -344,7 +352,10 @@ describe('GetJobByIdService', () => {
 			const error = new Error('Test error');
 			handleError(error);
 
-			expect(console.error).toHaveBeenCalledWith('Ошибка в getJobByIdService:', error);
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка в getJobByIdService:',
+				error,
+			);
 		});
 	});
 
@@ -362,12 +373,15 @@ describe('GetJobByIdService', () => {
 			const job = mockJobData.jobWithImage;
 			logJobInfo(job);
 
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobByIdService - Job with imageUrl:', {
-				id: 123,
-				title: 'Software Developer Position',
-				imageUrl: 'https://example.com/image.jpg',
-				hasImageUrl: true,
-			});
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobByIdService - Job with imageUrl:',
+				{
+					id: 123,
+					title: 'Software Developer Position',
+					imageUrl: 'https://example.com/image.jpg',
+					hasImageUrl: true,
+				},
+			);
 		});
 
 		it('should log job information without image URL', () => {
@@ -383,12 +397,15 @@ describe('GetJobByIdService', () => {
 			const job = mockJobData.jobWithoutImage;
 			logJobInfo(job);
 
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobByIdService - Job with imageUrl:', {
-				id: 456,
-				title: 'Marketing Manager Position',
-				imageUrl: null,
-				hasImageUrl: false,
-			});
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobByIdService - Job with imageUrl:',
+				{
+					id: 456,
+					title: 'Marketing Manager Position',
+					imageUrl: null,
+					hasImageUrl: false,
+				},
+			);
 		});
 
 		it('should log job information with empty image URL', () => {
@@ -404,12 +421,15 @@ describe('GetJobByIdService', () => {
 			const job = mockJobData.jobWithEmptyImageUrl;
 			logJobInfo(job);
 
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobByIdService - Job with imageUrl:', {
-				id: 789,
-				title: 'Designer Position',
-				imageUrl: '',
-				hasImageUrl: false,
-			});
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobByIdService - Job with imageUrl:',
+				{
+					id: 789,
+					title: 'Designer Position',
+					imageUrl: '',
+					hasImageUrl: false,
+				},
+			);
 		});
 
 		it('should correctly determine hasImageUrl boolean', () => {
@@ -569,7 +589,9 @@ describe('GetJobByIdService', () => {
 			expect(notFoundError).toBeInstanceOf(Error);
 
 			expect(prismaError.message).toBe('Database connection failed');
-			expect(validationError.message).toBe('ID вакансии не передан или имеет неверный формат');
+			expect(validationError.message).toBe(
+				'ID вакансии не передан или имеет неверный формат',
+			);
 			expect(notFoundError.message).toBe('Объявление не найдено');
 		});
 	});

@@ -22,26 +22,27 @@ describe('CandidateNotificationService', () => {
 			const testCases = [
 				{
 					subscriber: { firstName: 'John', lastName: 'Doe' },
-					expectedName: 'John Doe'
+					expectedName: 'John Doe',
 				},
 				{
 					subscriber: { firstName: 'John' },
-					expectedName: 'John'
+					expectedName: 'John',
 				},
 				{
 					subscriber: { lastName: 'Doe' },
-					expectedName: 'Doe'
+					expectedName: 'Doe',
 				},
 				{
 					subscriber: {},
-					expectedName: 'пользователь'
-				}
+					expectedName: 'пользователь',
+				},
 			];
 
 			testCases.forEach(({ subscriber, expectedName }) => {
-				const subscriberName = subscriber.firstName && subscriber.lastName
-					? `${subscriber.firstName} ${subscriber.lastName}`
-					: subscriber.firstName || subscriber.lastName || 'пользователь';
+				const subscriberName =
+					subscriber.firstName && subscriber.lastName
+						? `${subscriber.firstName} ${subscriber.lastName}`
+						: subscriber.firstName || subscriber.lastName || 'пользователь';
 
 				expect(subscriberName).toBe(expectedName);
 			});
@@ -57,7 +58,7 @@ describe('CandidateNotificationService', () => {
 						employment: 'полная',
 						category: 'строительство',
 						languages: ['русский', 'иврит'],
-						description: 'Опытный строитель'
+						description: 'Опытный строитель',
 					},
 					expected: {
 						name: 'Иван Петров',
@@ -66,8 +67,8 @@ describe('CandidateNotificationService', () => {
 						employment: 'полная',
 						category: 'строительство',
 						languages: 'русский, иврит',
-						description: 'Опытный строитель'
-					}
+						description: 'Опытный строитель',
+					},
 				},
 				{
 					candidate: {
@@ -81,9 +82,9 @@ describe('CandidateNotificationService', () => {
 						employment: 'Не указана',
 						category: 'Не указана',
 						languages: 'Не указаны',
-						description: 'Описание не указано'
-					}
-				}
+						description: 'Описание не указано',
+					},
+				},
 			];
 
 			testCases.forEach(({ candidate, expected }) => {
@@ -93,8 +94,10 @@ describe('CandidateNotificationService', () => {
 					city: candidate.city || 'Не указан',
 					employment: candidate.employment || 'Не указана',
 					category: candidate.category || 'Не указана',
-					languages: candidate.languages ? candidate.languages.join(', ') : 'Не указаны',
-					description: candidate.description || 'Описание не указано'
+					languages: candidate.languages
+						? candidate.languages.join(', ')
+						: 'Не указаны',
+					description: candidate.description || 'Описание не указано',
 				};
 
 				expect(processedCandidate).toEqual(expected);
@@ -107,16 +110,17 @@ describe('CandidateNotificationService', () => {
 			const candidates = [
 				{ city: 'Тель-Авив', name: 'Иван' },
 				{ city: 'Иерусалим', name: 'Мария' },
-				{ city: 'Хайфа', name: 'Алексей' }
+				{ city: 'Хайфа', name: 'Алексей' },
 			];
 
 			const preferredCities = ['Тель-Авив'];
 
 			const filteredCandidates = candidates.filter((candidate) =>
-				preferredCities.some((city) =>
-					candidate.city &&
-					candidate.city.toLowerCase().includes(city.toLowerCase())
-				)
+				preferredCities.some(
+					(city) =>
+						candidate.city &&
+						candidate.city.toLowerCase().includes(city.toLowerCase()),
+				),
 			);
 
 			expect(filteredCandidates).toHaveLength(1);
@@ -127,47 +131,54 @@ describe('CandidateNotificationService', () => {
 			const candidates = [
 				{ category: 'строительство', name: 'Иван' },
 				{ category: 'уборка', name: 'Мария' },
-				{ category: 'грузчик', name: 'Алексей' }
+				{ category: 'грузчик', name: 'Алексей' },
 			];
 
 			const preferredCategories = ['строительство', 'уборка'];
 
 			const filteredCandidates = candidates.filter((candidate) =>
-				preferredCategories.some((category) =>
-					candidate.category &&
-					candidate.category.toLowerCase().includes(category.toLowerCase())
-				)
+				preferredCategories.some(
+					(category) =>
+						candidate.category &&
+						candidate.category.toLowerCase().includes(category.toLowerCase()),
+				),
 			);
 
 			expect(filteredCandidates).toHaveLength(2);
-			expect(filteredCandidates.map(c => c.name)).toEqual(['Иван', 'Мария']);
+			expect(filteredCandidates.map((c) => c.name)).toEqual(['Иван', 'Мария']);
 		});
 
 		it('should filter candidates by employment correctly', () => {
 			const candidates = [
 				{ employment: 'полная', name: 'Иван' },
 				{ employment: 'частичная', name: 'Мария' },
-				{ employment: 'полная', name: 'Алексей' }
+				{ employment: 'полная', name: 'Алексей' },
 			];
 
 			const preferredEmployment = ['полная'];
 
 			const filteredCandidates = candidates.filter((candidate) =>
-				preferredEmployment.some((employment) =>
-					candidate.employment &&
-					candidate.employment.toLowerCase().includes(employment.toLowerCase())
-				)
+				preferredEmployment.some(
+					(employment) =>
+						candidate.employment &&
+						candidate.employment
+							.toLowerCase()
+							.includes(employment.toLowerCase()),
+				),
 			);
 
 			expect(filteredCandidates).toHaveLength(2);
-			expect(filteredCandidates.map(c => c.name)).toEqual(['Иван', 'Алексей']);
+			expect(filteredCandidates.map((c) => c.name)).toEqual([
+				'Иван',
+				'Алексей',
+			]);
 		});
 
 		it('should filter candidates by languages correctly', () => {
 			const candidates = [
 				{ languages: ['русский', 'иврит'], name: 'Иван' },
 				{ languages: ['русский', 'английский'], name: 'Мария' },
-				{ languages: ['иврит'], name: 'Алексей' }
+				{ languages: ['иврит'], name: 'Алексей' },
 			];
 
 			const preferredLanguages = ['иврит'];
@@ -177,20 +188,23 @@ describe('CandidateNotificationService', () => {
 					candidate.languages &&
 					candidate.languages.some((lang) =>
 						preferredLanguages.some((prefLang) =>
-							lang.toLowerCase().includes(prefLang.toLowerCase())
-						)
-					)
+							lang.toLowerCase().includes(prefLang.toLowerCase()),
+						),
+					),
 			);
 
 			expect(filteredCandidates).toHaveLength(2);
-			expect(filteredCandidates.map(c => c.name)).toEqual(['Иван', 'Алексей']);
+			expect(filteredCandidates.map((c) => c.name)).toEqual([
+				'Иван',
+				'Алексей',
+			]);
 		});
 
 		it('should filter candidates by gender correctly', () => {
 			const candidates = [
 				{ gender: 'мужчина', name: 'Иван' },
 				{ gender: 'женщина', name: 'Мария' },
-				{ gender: 'мужчина', name: 'Алексей' }
+				{ gender: 'мужчина', name: 'Алексей' },
 			];
 
 			const preferredGender = 'мужчина';
@@ -198,18 +212,21 @@ describe('CandidateNotificationService', () => {
 			const filteredCandidates = candidates.filter(
 				(candidate) =>
 					candidate.gender &&
-					candidate.gender.toLowerCase() === preferredGender.toLowerCase()
+					candidate.gender.toLowerCase() === preferredGender.toLowerCase(),
 			);
 
 			expect(filteredCandidates).toHaveLength(2);
-			expect(filteredCandidates.map(c => c.name)).toEqual(['Иван', 'Алексей']);
+			expect(filteredCandidates.map((c) => c.name)).toEqual([
+				'Иван',
+				'Алексей',
+			]);
 		});
 
 		it('should filter candidates by document types correctly', () => {
 			const candidates = [
 				{ documents: 'виза б1', name: 'Иван' },
 				{ documents: 'виза б2', name: 'Мария' },
-				{ documents: 'теудат зехут', name: 'Алексей' }
+				{ documents: 'теудат зехут', name: 'Алексей' },
 			];
 
 			const preferredDocumentTypes = ['виза б1', 'виза б2'];
@@ -218,19 +235,19 @@ describe('CandidateNotificationService', () => {
 				(candidate) =>
 					candidate.documents &&
 					preferredDocumentTypes.some((docType) =>
-						candidate.documents.toLowerCase().includes(docType.toLowerCase())
-					)
+						candidate.documents.toLowerCase().includes(docType.toLowerCase()),
+					),
 			);
 
 			expect(filteredCandidates).toHaveLength(2);
-			expect(filteredCandidates.map(c => c.name)).toEqual(['Иван', 'Мария']);
+			expect(filteredCandidates.map((c) => c.name)).toEqual(['Иван', 'Мария']);
 		});
 
 		it('should filter candidates by demanded status correctly', () => {
 			const candidates = [
 				{ isDemanded: true, name: 'Иван' },
 				{ isDemanded: false, name: 'Мария' },
-				{ isDemanded: true, name: 'Алексей' }
+				{ isDemanded: true, name: 'Алексей' },
 			];
 
 			const onlyDemanded = true;
@@ -240,7 +257,10 @@ describe('CandidateNotificationService', () => {
 				: candidates;
 
 			expect(filteredCandidates).toHaveLength(2);
-			expect(filteredCandidates.map(c => c.name)).toEqual(['Иван', 'Алексей']);
+			expect(filteredCandidates.map((c) => c.name)).toEqual([
+				'Иван',
+				'Алексей',
+			]);
 		});
 	});
 
@@ -254,7 +274,7 @@ describe('CandidateNotificationService', () => {
 				{ count: 7, isRecent: true, shouldSend: false },
 				{ count: 3, isRecent: false, shouldSend: false },
 				{ count: 6, isRecent: false, shouldSend: false },
-				{ count: 0, isRecent: true, shouldSend: false }
+				{ count: 0, isRecent: true, shouldSend: false },
 			];
 
 			testCases.forEach(({ count, isRecent, shouldSend }) => {
@@ -271,7 +291,10 @@ describe('CandidateNotificationService', () => {
 				{ createdAt: new Date(now.getTime() - 2 * 60 * 1000), isRecent: true }, // 2 minutes ago
 				{ createdAt: new Date(now.getTime() - 4 * 60 * 1000), isRecent: true }, // 4 minutes ago
 				{ createdAt: fiveMinutesAgo, isRecent: false }, // exactly 5 minutes ago
-				{ createdAt: new Date(now.getTime() - 10 * 60 * 1000), isRecent: false }, // 10 minutes ago
+				{
+					createdAt: new Date(now.getTime() - 10 * 60 * 1000),
+					isRecent: false,
+				}, // 10 minutes ago
 			];
 
 			testCases.forEach(({ createdAt, isRecent }) => {
@@ -284,7 +307,7 @@ describe('CandidateNotificationService', () => {
 	describe('Error Handling Tests', () => {
 		it('should handle missing candidate data gracefully', () => {
 			const incompleteCandidate = {
-				name: 'Test Candidate'
+				name: 'Test Candidate',
 				// Missing all other fields
 			};
 
@@ -317,7 +340,7 @@ describe('CandidateNotificationService', () => {
 				{ value: null, expected: 'Не указано' },
 				{ value: undefined, expected: 'Не указано' },
 				{ value: '', expected: 'Не указано' },
-				{ value: 'Valid Value', expected: 'Valid Value' }
+				{ value: 'Valid Value', expected: 'Valid Value' },
 			];
 
 			testCases.forEach(({ value, expected }) => {

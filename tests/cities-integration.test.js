@@ -32,10 +32,10 @@ describe('Cities Integration Tests', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console.error to avoid noise in tests
 		console.error = vi.fn();
-		
+
 		// Reset all mocks
 		resetCitiesMocks();
 	});
@@ -49,12 +49,12 @@ describe('Cities Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should return cities with Russian translations by default', async () => {
 				// Arrange
-				mockGetCitiesService.mockResolvedValue(mockServiceResponses.successRussian);
+				mockGetCitiesService.mockResolvedValue(
+					mockServiceResponses.successRussian,
+				);
 
 				// Act
-				const response = await request(app)
-					.get('/api/cities')
-					.expect(200);
+				const response = await request(app).get('/api/cities').expect(200);
 
 				// Assert
 				expect(response.body).toHaveLength(5);
@@ -70,7 +70,9 @@ describe('Cities Integration Tests', () => {
 
 			it('should return cities with English translations when lang=en', async () => {
 				// Arrange
-				mockGetCitiesService.mockResolvedValue(mockServiceResponses.successEnglish);
+				mockGetCitiesService.mockResolvedValue(
+					mockServiceResponses.successEnglish,
+				);
 
 				// Act
 				const response = await request(app)
@@ -91,7 +93,9 @@ describe('Cities Integration Tests', () => {
 
 			it('should return cities with Hebrew translations when lang=he', async () => {
 				// Arrange
-				mockGetCitiesService.mockResolvedValue(mockServiceResponses.successHebrew);
+				mockGetCitiesService.mockResolvedValue(
+					mockServiceResponses.successHebrew,
+				);
 
 				// Act
 				const response = await request(app)
@@ -112,7 +116,9 @@ describe('Cities Integration Tests', () => {
 
 			it('should return cities with Arabic translations when lang=ar', async () => {
 				// Arrange
-				mockGetCitiesService.mockResolvedValue(mockServiceResponses.successArabic);
+				mockGetCitiesService.mockResolvedValue(
+					mockServiceResponses.successArabic,
+				);
 
 				// Act
 				const response = await request(app)
@@ -136,9 +142,7 @@ describe('Cities Integration Tests', () => {
 				mockGetCitiesService.mockResolvedValue(mockServiceResponses.empty);
 
 				// Act
-				const response = await request(app)
-					.get('/api/cities')
-					.expect(200);
+				const response = await request(app).get('/api/cities').expect(200);
 
 				// Assert
 				expect(response.body).toEqual([]);
@@ -147,7 +151,9 @@ describe('Cities Integration Tests', () => {
 
 			it('should handle additional query parameters gracefully', async () => {
 				// Arrange
-				mockGetCitiesService.mockResolvedValue(mockServiceResponses.successEnglish);
+				mockGetCitiesService.mockResolvedValue(
+					mockServiceResponses.successEnglish,
+				);
 
 				// Act
 				const response = await request(app)
@@ -161,7 +167,9 @@ describe('Cities Integration Tests', () => {
 
 			it('should handle unsupported language parameter gracefully', async () => {
 				// Arrange
-				mockGetCitiesService.mockResolvedValue(mockServiceResponses.successRussian);
+				mockGetCitiesService.mockResolvedValue(
+					mockServiceResponses.successRussian,
+				);
 
 				// Act
 				const response = await request(app)
@@ -180,15 +188,16 @@ describe('Cities Integration Tests', () => {
 				mockGetCitiesService.mockResolvedValue(mockServiceResponses.error);
 
 				// Act
-				const response = await request(app)
-					.get('/api/cities')
-					.expect(500);
+				const response = await request(app).get('/api/cities').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
 					error: 'Ошибка сервера при получении городов',
 				});
-				expect(console.error).toHaveBeenCalledWith('❌ Ошибка в getCitiesService:', 'Ошибка сервера при получении городов');
+				expect(console.error).toHaveBeenCalledWith(
+					'❌ Ошибка в getCitiesService:',
+					'Ошибка сервера при получении городов',
+				);
 			});
 
 			it('should handle service errors with custom error message', async () => {
@@ -205,7 +214,10 @@ describe('Cities Integration Tests', () => {
 				expect(response.body).toEqual({
 					error: 'Custom service error',
 				});
-				expect(console.error).toHaveBeenCalledWith('❌ Ошибка в getCitiesService:', 'Custom service error');
+				expect(console.error).toHaveBeenCalledWith(
+					'❌ Ошибка в getCitiesService:',
+					'Custom service error',
+				);
 			});
 
 			it('should handle service promise rejection', async () => {
@@ -214,9 +226,7 @@ describe('Cities Integration Tests', () => {
 				mockGetCitiesService.mockRejectedValue(serviceError);
 
 				// Act
-				const response = await request(app)
-					.get('/api/cities')
-					.expect(500);
+				const response = await request(app).get('/api/cities').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -230,9 +240,7 @@ describe('Cities Integration Tests', () => {
 				mockGetCitiesService.mockRejectedValue(unexpectedError);
 
 				// Act
-				const response = await request(app)
-					.get('/api/cities')
-					.expect(500);
+				const response = await request(app).get('/api/cities').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
@@ -302,12 +310,12 @@ describe('Cities Integration Tests', () => {
 		describe('Performance and Caching', () => {
 			it('should call service only once per request', async () => {
 				// Arrange
-				mockGetCitiesService.mockResolvedValue(mockServiceResponses.successEnglish);
+				mockGetCitiesService.mockResolvedValue(
+					mockServiceResponses.successEnglish,
+				);
 
 				// Act
-				await request(app)
-					.get('/api/cities?lang=en')
-					.expect(200);
+				await request(app).get('/api/cities?lang=en').expect(200);
 
 				// Assert
 				expect(mockGetCitiesService).toHaveBeenCalledTimes(1);
@@ -315,7 +323,9 @@ describe('Cities Integration Tests', () => {
 
 			it('should handle concurrent requests correctly', async () => {
 				// Arrange
-				mockGetCitiesService.mockResolvedValue(mockServiceResponses.successRussian);
+				mockGetCitiesService.mockResolvedValue(
+					mockServiceResponses.successRussian,
+				);
 
 				// Act - Make multiple concurrent requests
 				const promises = [
@@ -341,37 +351,31 @@ describe('Cities Integration Tests', () => {
 		describe('HTTP Method Validation', () => {
 			it('should reject POST requests', async () => {
 				// Act & Assert
-				await request(app)
-					.post('/api/cities')
-					.expect(404); // Express will return 404 for unhandled routes
+				await request(app).post('/api/cities').expect(404); // Express will return 404 for unhandled routes
 			});
 
 			it('should reject PUT requests', async () => {
 				// Act & Assert
-				await request(app)
-					.put('/api/cities')
-					.expect(404);
+				await request(app).put('/api/cities').expect(404);
 			});
 
 			it('should reject DELETE requests', async () => {
 				// Act & Assert
-				await request(app)
-					.delete('/api/cities')
-					.expect(404);
+				await request(app).delete('/api/cities').expect(404);
 			});
 
 			it('should reject PATCH requests', async () => {
 				// Act & Assert
-				await request(app)
-					.patch('/api/cities')
-					.expect(404);
+				await request(app).patch('/api/cities').expect(404);
 			});
 		});
 
 		describe('Response Format Validation', () => {
 			it('should return valid JSON response', async () => {
 				// Arrange
-				mockGetCitiesService.mockResolvedValue(mockServiceResponses.successRussian);
+				mockGetCitiesService.mockResolvedValue(
+					mockServiceResponses.successRussian,
+				);
 
 				// Act
 				const response = await request(app)
@@ -381,7 +385,7 @@ describe('Cities Integration Tests', () => {
 
 				// Assert
 				expect(Array.isArray(response.body)).toBe(true);
-				response.body.forEach(city => {
+				response.body.forEach((city) => {
 					expect(city).toHaveProperty('id');
 					expect(city).toHaveProperty('name');
 					expect(typeof city.id).toBe('number');
@@ -391,7 +395,9 @@ describe('Cities Integration Tests', () => {
 
 			it('should maintain consistent response structure', async () => {
 				// Arrange
-				mockGetCitiesService.mockResolvedValue(mockServiceResponses.successEnglish);
+				mockGetCitiesService.mockResolvedValue(
+					mockServiceResponses.successEnglish,
+				);
 
 				// Act
 				const response = await request(app)
@@ -448,7 +454,10 @@ describe('Cities Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toHaveLength(5);
-				expect(response.body[0]).toEqual({ id: 1, label: 'Information Technology' });
+				expect(response.body[0]).toEqual({
+					id: 1,
+					label: 'Information Technology',
+				});
 			});
 
 			it('should handle categories endpoint errors', async () => {

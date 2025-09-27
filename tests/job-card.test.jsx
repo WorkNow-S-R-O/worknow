@@ -1,19 +1,15 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
-import JobCard from '../apps/client/src/components/JobCard';
+import { JobCard } from '@/components';
 
 // Mock the useNavigate hook
 const mockNavigate = vi.fn();
 
-// Mock react-router-dom
-vi.mock('react-router-dom', async () => {
-	const actual = await vi.importActual('react-router-dom');
-	return {
-		...actual,
-		useNavigate: () => mockNavigate,
-	};
-});
+vi.mock('react-router-dom', () => ({
+	BrowserRouter: ({ children }) => <div data-testid="router">{children}</div>,
+	useNavigate: () => mockNavigate,
+}));
 
 // Mock the useFetchCities hook
 const mockCities = [
@@ -22,7 +18,7 @@ const mockCities = [
 	{ id: 3, name: 'Haifa', value: 3, label: 'Haifa' },
 ];
 
-vi.mock('../apps/client/src/hooks/useFetchCities', () => ({
+vi.mock('@/hooks/useFetchCities', () => ({
 	default: () => ({
 		cities: mockCities,
 		loading: false,
@@ -37,7 +33,7 @@ const mockCategories = [
 	{ id: 3, name: 'Warehouse', value: 3, label: 'Warehouse' },
 ];
 
-vi.mock('../apps/client/src/hooks/useFetchCategories', () => ({
+vi.mock('@/hooks/useFetchCategories', () => ({
 	default: () => ({
 		categories: mockCategories,
 		loading: false,

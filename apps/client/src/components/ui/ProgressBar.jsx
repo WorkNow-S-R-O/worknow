@@ -1,4 +1,4 @@
-import { useLoading } from '../../contexts/LoadingContext';
+import { useLoading } from '@/contexts';
 import { useEffect, useState } from 'react';
 
 const ProgressBar = () => {

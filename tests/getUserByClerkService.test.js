@@ -18,7 +18,7 @@ describe('GetUserByClerkService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetGetUserByClerkMocks();
-		
+
 		// Mock console methods
 		console.error = vi.fn();
 	});
@@ -32,7 +32,7 @@ describe('GetUserByClerkService', () => {
 		it('should accept valid clerk user IDs', () => {
 			const validIds = Object.values(mockUserData.validClerkUserIds);
 
-			validIds.forEach(id => {
+			validIds.forEach((id) => {
 				expect(typeof id).toBe('string');
 				expect(id.length).toBeGreaterThan(0);
 				expect(id.trim()).toBe(id); // No leading/trailing whitespace
@@ -260,8 +260,10 @@ describe('GetUserByClerkService', () => {
 			};
 
 			const dbError = mockPrismaError;
-			
-			expect(() => handleDatabaseError(dbError)).toThrow('Ошибка получения данных пользователя');
+
+			expect(() => handleDatabaseError(dbError)).toThrow(
+				'Ошибка получения данных пользователя',
+			);
 		});
 
 		it('should log error message before throwing', () => {
@@ -271,9 +273,14 @@ describe('GetUserByClerkService', () => {
 			};
 
 			const error = new Error('Test error message');
-			
-			expect(() => handleError(error)).toThrow('Ошибка получения данных пользователя');
-			expect(console.error).toHaveBeenCalledWith('Ошибка в getUserByClerkIdService:', 'Test error message');
+
+			expect(() => handleError(error)).toThrow(
+				'Ошибка получения данных пользователя',
+			);
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка в getUserByClerkIdService:',
+				'Test error message',
+			);
 		});
 
 		it('should handle user not found scenarios', () => {
@@ -284,15 +291,25 @@ describe('GetUserByClerkService', () => {
 
 		it('should handle validation errors', () => {
 			const handleValidationError = (clerkUserId) => {
-				if (!clerkUserId || typeof clerkUserId !== 'string' || clerkUserId.trim() === '') {
+				if (
+					!clerkUserId ||
+					typeof clerkUserId !== 'string' ||
+					clerkUserId.trim() === ''
+				) {
 					throw new Error('Invalid clerkUserId format');
 				}
 				return clerkUserId;
 			};
 
-			expect(() => handleValidationError(null)).toThrow('Invalid clerkUserId format');
-			expect(() => handleValidationError('')).toThrow('Invalid clerkUserId format');
-			expect(() => handleValidationError('   ')).toThrow('Invalid clerkUserId format');
+			expect(() => handleValidationError(null)).toThrow(
+				'Invalid clerkUserId format',
+			);
+			expect(() => handleValidationError('')).toThrow(
+				'Invalid clerkUserId format',
+			);
+			expect(() => handleValidationError('   ')).toThrow(
+				'Invalid clerkUserId format',
+			);
 		});
 	});
 
@@ -305,7 +322,10 @@ describe('GetUserByClerkService', () => {
 			const error = new Error('Database connection failed');
 			logError(error);
 
-			expect(console.error).toHaveBeenCalledWith('Ошибка в getUserByClerkIdService:', 'Database connection failed');
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка в getUserByClerkIdService:',
+				'Database connection failed',
+			);
 		});
 
 		it('should log service error message correctly', () => {
@@ -420,7 +440,7 @@ describe('GetUserByClerkService', () => {
 				mockUserData.regularUser,
 			];
 
-			users.forEach(user => {
+			users.forEach((user) => {
 				expect(user.email).toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 			});
 		});
@@ -540,9 +560,13 @@ describe('GetUserByClerkService', () => {
 			expect(typeof consoleData.errorDetails).toBe('string');
 			expect(typeof consoleData.serviceError).toBe('string');
 
-			expect(consoleData.errorMessage).toBe('Ошибка в getUserByClerkIdService:');
+			expect(consoleData.errorMessage).toBe(
+				'Ошибка в getUserByClerkIdService:',
+			);
 			expect(consoleData.errorDetails).toBe('Database connection failed');
-			expect(consoleData.serviceError).toBe('Ошибка получения данных пользователя');
+			expect(consoleData.serviceError).toBe(
+				'Ошибка получения данных пользователя',
+			);
 		});
 	});
 });

@@ -206,7 +206,9 @@ describe('UsersController', () => {
 
 		it('should validate job category translation correctly', async () => {
 			const job = mockJobData.jobWithTranslation;
-			const translation = job.category.translations.find(t => t.lang === 'ru');
+			const translation = job.category.translations.find(
+				(t) => t.lang === 'ru',
+			);
 			expect(translation).toBeDefined();
 			expect(translation.name).toBe('IT');
 		});
@@ -222,7 +224,8 @@ describe('UsersController', () => {
 
 		it('should call getUserByClerkIdService correctly', async () => {
 			const clerkUserId = 'user_123';
-			const result = await mockUserServiceLogic.getUserByClerkIdService(clerkUserId);
+			const result =
+				await mockUserServiceLogic.getUserByClerkIdService(clerkUserId);
 			expect(result).toBeDefined();
 			expect(result.user).toBeDefined();
 		});
@@ -230,7 +233,10 @@ describe('UsersController', () => {
 		it('should call getUserJobsService correctly', async () => {
 			const clerkUserId = 'user_123';
 			const query = { page: 1, limit: 10 };
-			const result = await mockUserServiceLogic.getUserJobsService(clerkUserId, query);
+			const result = await mockUserServiceLogic.getUserJobsService(
+				clerkUserId,
+				query,
+			);
 			expect(result).toBeDefined();
 			expect(result.jobs).toBeDefined();
 		});
@@ -348,25 +354,33 @@ describe('UsersController', () => {
 	describe('Category Translation Logic', () => {
 		it('should translate category to Russian', async () => {
 			const job = mockJobData.jobWithTranslation;
-			const translation = job.category.translations.find(t => t.lang === 'ru');
+			const translation = job.category.translations.find(
+				(t) => t.lang === 'ru',
+			);
 			expect(translation.name).toBe('IT');
 		});
 
 		it('should translate category to English', async () => {
 			const job = mockJobData.jobWithTranslation;
-			const translation = job.category.translations.find(t => t.lang === 'en');
+			const translation = job.category.translations.find(
+				(t) => t.lang === 'en',
+			);
 			expect(translation.name).toBe('Information Technology');
 		});
 
 		it('should translate category to Hebrew', async () => {
 			const job = mockJobData.jobWithTranslation;
-			const translation = job.category.translations.find(t => t.lang === 'he');
+			const translation = job.category.translations.find(
+				(t) => t.lang === 'he',
+			);
 			expect(translation.name).toBe('טכנולוגיית מידע');
 		});
 
 		it('should translate category to Arabic', async () => {
 			const job = mockJobData.jobWithTranslation;
-			const translation = job.category.translations.find(t => t.lang === 'ar');
+			const translation = job.category.translations.find(
+				(t) => t.lang === 'ar',
+			);
 			expect(translation.name).toBe('تكنولوجيا المعلومات');
 		});
 
@@ -387,15 +401,19 @@ describe('UsersController', () => {
 				mockWebhookData.validWebhookPayload,
 				{},
 				{},
-				mockHeaders.validSvixHeaders
+				mockHeaders.validSvixHeaders,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockSyncUserService.mockResolvedValue(mockServiceResponses.successfulSync);
+			mockSyncUserService.mockResolvedValue(
+				mockServiceResponses.successfulSync,
+			);
 
 			await mockControllerLogic.processClerkWebhook(req, res);
 
-			expect(mockSyncUserService).toHaveBeenCalledWith(mockWebhookData.validWebhookPayload);
+			expect(mockSyncUserService).toHaveBeenCalledWith(
+				mockWebhookData.validWebhookPayload,
+			);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith({ success: true });
 		});
@@ -409,14 +427,16 @@ describe('UsersController', () => {
 				mockWebhookData.validWebhookPayload,
 				{},
 				{},
-				mockHeaders.validSvixHeaders
+				mockHeaders.validSvixHeaders,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			await mockControllerLogic.processClerkWebhook(req, res);
 
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Missing Clerk Webhook Secret' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Missing Clerk Webhook Secret',
+			});
 
 			// Restore webhook secret
 			process.env.WEBHOOK_SECRET = originalSecret;
@@ -427,7 +447,7 @@ describe('UsersController', () => {
 				mockWebhookData.validWebhookPayload,
 				{},
 				{},
-				mockHeaders.emptyHeaders
+				mockHeaders.emptyHeaders,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
@@ -442,15 +462,19 @@ describe('UsersController', () => {
 				mockWebhookData.invalidWebhookPayload,
 				{},
 				{},
-				mockHeaders.validSvixHeaders
+				mockHeaders.validSvixHeaders,
 			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockSyncUserService.mockRejectedValue(mockErrors.webhookVerificationFailed);
+			mockSyncUserService.mockRejectedValue(
+				mockErrors.webhookVerificationFailed,
+			);
 
 			await mockControllerLogic.processClerkWebhook(req, res);
 
-			expect(mockSyncUserService).toHaveBeenCalledWith(mockWebhookData.invalidWebhookPayload);
+			expect(mockSyncUserService).toHaveBeenCalledWith(
+				mockWebhookData.invalidWebhookPayload,
+			);
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Webhook verification failed',
@@ -459,20 +483,28 @@ describe('UsersController', () => {
 		});
 
 		it('should process syncUser request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest({ clerkUserId: 'user_123' });
+			const req = mockRequestResponseLogic.buildRequest({
+				clerkUserId: 'user_123',
+			});
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockSyncUserService.mockResolvedValue(mockServiceResponses.successfulSync);
+			mockSyncUserService.mockResolvedValue(
+				mockServiceResponses.successfulSync,
+			);
 
 			await mockControllerLogic.processSyncUser(req, res);
 
 			expect(mockSyncUserService).toHaveBeenCalledWith('user_123');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulSync);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulSync,
+			);
 		});
 
 		it('should process syncUser request with error', async () => {
-			const req = mockRequestResponseLogic.buildRequest({ clerkUserId: 'error_user' });
+			const req = mockRequestResponseLogic.buildRequest({
+				clerkUserId: 'error_user',
+			});
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockSyncUserService.mockResolvedValue(mockServiceResponses.syncError);
@@ -485,40 +517,62 @@ describe('UsersController', () => {
 		});
 
 		it('should process getUserByClerkId request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'user_123' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'user_123' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.successfulUserLookup);
+			mockGetUserByClerkIdService.mockResolvedValue(
+				mockServiceResponses.successfulUserLookup,
+			);
 
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
 			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('user_123');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulUserLookup.user);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulUserLookup.user,
+			);
 		});
 
 		it('should process getUserByClerkId request with user not found', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'nonexistent_user' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'nonexistent_user' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.userNotFound);
+			mockGetUserByClerkIdService.mockResolvedValue(
+				mockServiceResponses.userNotFound,
+			);
 
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
-			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('nonexistent_user');
+			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith(
+				'nonexistent_user',
+			);
 			expect(res.status).toHaveBeenCalledWith(404);
 			expect(res.json).toHaveBeenCalledWith({ error: 'User not found' });
 		});
 
 		it('should process getUserJobs request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'user_123' }, { lang: 'ru' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'user_123' },
+				{ lang: 'ru' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserJobsService.mockResolvedValue(mockServiceResponses.successfulJobsLookup);
+			mockGetUserJobsService.mockResolvedValue(
+				mockServiceResponses.successfulJobsLookup,
+			);
 
 			await mockControllerLogic.processGetUserJobs(req, res);
 
-			expect(mockGetUserJobsService).toHaveBeenCalledWith('user_123', { lang: 'ru' });
+			expect(mockGetUserJobsService).toHaveBeenCalledWith('user_123', {
+				lang: 'ru',
+			});
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith({
 				...mockServiceResponses.successfulJobsLookup,
@@ -527,10 +581,15 @@ describe('UsersController', () => {
 		});
 
 		it('should process getUserJobs request with default language', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'user_123' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'user_123' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserJobsService.mockResolvedValue(mockServiceResponses.successfulJobsLookup);
+			mockGetUserJobsService.mockResolvedValue(
+				mockServiceResponses.successfulJobsLookup,
+			);
 
 			await mockControllerLogic.processGetUserJobs(req, res);
 
@@ -539,7 +598,10 @@ describe('UsersController', () => {
 		});
 
 		it('should process getUserJobs request with error', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'error_user' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'error_user' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockGetUserJobsService.mockResolvedValue(mockServiceResponses.jobsError);
@@ -548,11 +610,16 @@ describe('UsersController', () => {
 
 			expect(mockGetUserJobsService).toHaveBeenCalledWith('error_user', {});
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Failed to get user jobs' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Failed to get user jobs',
+			});
 		});
 
 		it('should handle controller errors', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'error_user' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'error_user' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockGetUserByClerkIdService.mockRejectedValue(mockErrors.serviceError);
@@ -564,23 +631,36 @@ describe('UsersController', () => {
 		});
 
 		it('should handle controller success', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'user_123' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'user_123' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.successfulUserLookup);
+			mockGetUserByClerkIdService.mockResolvedValue(
+				mockServiceResponses.successfulUserLookup,
+			);
 
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulUserLookup.user);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulUserLookup.user,
+			);
 		});
 
 		it('should validate controller input', async () => {
-			const validRequest = mockRequestResponseLogic.buildRequest({ clerkUserId: 'user_123' });
+			const validRequest = mockRequestResponseLogic.buildRequest({
+				clerkUserId: 'user_123',
+			});
 			const invalidRequest = mockRequestResponseLogic.buildRequest({}, {}, {});
 
-			expect(mockRequestResponseLogic.validateControllerInput(validRequest)).toBe(true);
-			expect(mockRequestResponseLogic.validateControllerInput(invalidRequest)).toBe(true);
+			expect(
+				mockRequestResponseLogic.validateControllerInput(validRequest),
+			).toBe(true);
+			expect(
+				mockRequestResponseLogic.validateControllerInput(invalidRequest),
+			).toBe(true);
 		});
 	});
 });

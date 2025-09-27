@@ -7,8 +7,7 @@
   "ignoreCommitPattern": "^(chore|docs|style|refactor|test):",
   "sortCommits": "date",
   "includeBranch": [
-    "master",
-    "main"
+    "master"
   ],
   "packageFile": "package.json"
 }

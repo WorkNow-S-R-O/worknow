@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { useTranslationHelpers } from '../apps/client/src/utils/translationHelpers';
-import { cn, showToastError, showToastSuccess } from '../libs/utils';
+import { useTranslationHelpers } from '@/utils';
+import { cn, showToastError, showToastSuccess } from '../libs';
 
 // Mock react-intlayer
 vi.mock('react-intlayer', () => ({

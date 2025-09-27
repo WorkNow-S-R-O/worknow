@@ -50,11 +50,11 @@ describe('Payments Integration Tests', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console methods to avoid noise in tests
 		console.log = vi.fn();
 		console.error = vi.fn();
-		
+
 		// Reset all mocks
 		resetPaymentsMocks();
 	});
@@ -73,8 +73,12 @@ describe('Payments Integration Tests', () => {
 					clerkUserId: 'clerk_123456789',
 				};
 				mockPrismaInstance.user.findUnique.mockResolvedValue(mockUserData);
-				mockStripeInstance.prices.retrieve.mockResolvedValue(mockStripePriceData);
-				mockStripeInstance.checkout.sessions.create.mockResolvedValue(mockStripeCheckoutSessionData);
+				mockStripeInstance.prices.retrieve.mockResolvedValue(
+					mockStripePriceData,
+				);
+				mockStripeInstance.checkout.sessions.create.mockResolvedValue(
+					mockStripeCheckoutSessionData,
+				);
 
 				// Act
 				const response = await request(app)
@@ -83,12 +87,18 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.createCheckoutSessionSuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.createCheckoutSessionSuccess,
+				);
 				expect(mockPrismaInstance.user.findUnique).toHaveBeenCalledWith({
 					where: { clerkUserId: 'clerk_123456789' },
 				});
-				expect(mockStripeInstance.prices.retrieve).toHaveBeenCalledWith(mockPriceIds.pro);
-				expect(mockStripeInstance.checkout.sessions.create).toHaveBeenCalledWith({
+				expect(mockStripeInstance.prices.retrieve).toHaveBeenCalledWith(
+					mockPriceIds.pro,
+				);
+				expect(
+					mockStripeInstance.checkout.sessions.create,
+				).toHaveBeenCalledWith({
 					payment_method_types: ['card'],
 					mode: 'subscription',
 					customer_email: mockUserData.email,
@@ -98,9 +108,13 @@ describe('Payments Integration Tests', () => {
 							quantity: 1,
 						},
 					],
-					success_url: 'https://worknow.co.il/success?session_id={CHECKOUT_SESSION_ID}',
+					success_url:
+						'https://worknow.co.il/success?session_id={CHECKOUT_SESSION_ID}',
 					cancel_url: 'https://worknow.co.il/cancel',
-					metadata: { clerkUserId: 'clerk_123456789', priceId: mockPriceIds.pro },
+					metadata: {
+						clerkUserId: 'clerk_123456789',
+						priceId: mockPriceIds.pro,
+					},
 				});
 			});
 
@@ -111,8 +125,12 @@ describe('Payments Integration Tests', () => {
 					priceId: mockPriceIds.premiumDeluxe1,
 				};
 				mockPrismaInstance.user.findUnique.mockResolvedValue(mockUserData);
-				mockStripeInstance.prices.retrieve.mockResolvedValue(mockStripePriceData);
-				mockStripeInstance.checkout.sessions.create.mockResolvedValue(mockStripeCheckoutSessionData);
+				mockStripeInstance.prices.retrieve.mockResolvedValue(
+					mockStripePriceData,
+				);
+				mockStripeInstance.checkout.sessions.create.mockResolvedValue(
+					mockStripeCheckoutSessionData,
+				);
 
 				// Act
 				const response = await request(app)
@@ -121,9 +139,15 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.createCheckoutSessionSuccess);
-				expect(mockStripeInstance.prices.retrieve).toHaveBeenCalledWith(mockPriceIds.premiumDeluxe1);
-				expect(mockStripeInstance.checkout.sessions.create).toHaveBeenCalledWith({
+				expect(response.body).toEqual(
+					mockServiceResponses.createCheckoutSessionSuccess,
+				);
+				expect(mockStripeInstance.prices.retrieve).toHaveBeenCalledWith(
+					mockPriceIds.premiumDeluxe1,
+				);
+				expect(
+					mockStripeInstance.checkout.sessions.create,
+				).toHaveBeenCalledWith({
 					payment_method_types: ['card'],
 					mode: 'subscription',
 					customer_email: mockUserData.email,
@@ -133,9 +157,13 @@ describe('Payments Integration Tests', () => {
 							quantity: 1,
 						},
 					],
-					success_url: 'https://worknow.co.il/success?session_id={CHECKOUT_SESSION_ID}',
+					success_url:
+						'https://worknow.co.il/success?session_id={CHECKOUT_SESSION_ID}',
 					cancel_url: 'https://worknow.co.il/cancel',
-					metadata: { clerkUserId: 'clerk_123456789', priceId: mockPriceIds.premiumDeluxe1 },
+					metadata: {
+						clerkUserId: 'clerk_123456789',
+						priceId: mockPriceIds.premiumDeluxe1,
+					},
 				});
 			});
 
@@ -149,7 +177,9 @@ describe('Payments Integration Tests', () => {
 				mockStripeInstance.prices.retrieve
 					.mockRejectedValueOnce(new Error('Invalid price ID'))
 					.mockResolvedValueOnce(mockStripePriceData);
-				mockStripeInstance.checkout.sessions.create.mockResolvedValue(mockStripeCheckoutSessionData);
+				mockStripeInstance.checkout.sessions.create.mockResolvedValue(
+					mockStripeCheckoutSessionData,
+				);
 
 				// Act
 				const response = await request(app)
@@ -158,8 +188,12 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.createCheckoutSessionSuccess);
-				expect(mockStripeInstance.prices.retrieve).toHaveBeenCalledWith(mockPriceIds.invalid);
+				expect(response.body).toEqual(
+					mockServiceResponses.createCheckoutSessionSuccess,
+				);
+				expect(mockStripeInstance.prices.retrieve).toHaveBeenCalledWith(
+					mockPriceIds.invalid,
+				);
 				// Note: The controller falls back internally, so it doesn't call retrieve again
 			});
 		});
@@ -216,16 +250,23 @@ describe('Payments Integration Tests', () => {
 			it('should handle Stripe checkout session creation error', async () => {
 				// Arrange
 				mockPrismaInstance.user.findUnique.mockResolvedValue(mockUserData);
-				mockStripeInstance.prices.retrieve.mockResolvedValue(mockStripePriceData);
+				mockStripeInstance.prices.retrieve.mockResolvedValue(
+					mockStripePriceData,
+				);
 				const stripeError = new Error('Invalid price ID');
 				stripeError.type = 'StripeInvalidRequestError';
 				stripeError.message = 'Invalid price ID';
-				mockStripeInstance.checkout.sessions.create.mockRejectedValue(stripeError);
+				mockStripeInstance.checkout.sessions.create.mockRejectedValue(
+					stripeError,
+				);
 
 				// Act
 				const response = await request(app)
 					.post('/api/payments/create-checkout-session')
-					.send({ clerkUserId: 'clerk_123456789', priceId: mockPriceIds.invalid })
+					.send({
+						clerkUserId: 'clerk_123456789',
+						priceId: mockPriceIds.invalid,
+					})
 					.expect(400);
 
 				// Assert
@@ -237,8 +278,12 @@ describe('Payments Integration Tests', () => {
 			it('should handle general Stripe errors', async () => {
 				// Arrange
 				mockPrismaInstance.user.findUnique.mockResolvedValue(mockUserData);
-				mockStripeInstance.prices.retrieve.mockResolvedValue(mockStripePriceData);
-				mockStripeInstance.checkout.sessions.create.mockRejectedValue(new Error('Stripe error'));
+				mockStripeInstance.prices.retrieve.mockResolvedValue(
+					mockStripePriceData,
+				);
+				mockStripeInstance.checkout.sessions.create.mockRejectedValue(
+					new Error('Stripe error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -268,7 +313,9 @@ describe('Payments Integration Tests', () => {
 						priceId: mockPriceIds.pro,
 					},
 				};
-				mockStripeInstance.checkout.sessions.retrieve.mockResolvedValue(mockSessionData);
+				mockStripeInstance.checkout.sessions.retrieve.mockResolvedValue(
+					mockSessionData,
+				);
 				mockPrismaInstance.user.update.mockResolvedValue(mockPremiumUserData);
 				mockSendTelegramNotification.mockResolvedValue();
 				mockPrismaInstance.message.create.mockResolvedValue({});
@@ -285,8 +332,12 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.activatePremiumSuccess);
-				expect(mockStripeInstance.checkout.sessions.retrieve).toHaveBeenCalledWith('cs_test_123456789');
+				expect(response.body).toEqual(
+					mockServiceResponses.activatePremiumSuccess,
+				);
+				expect(
+					mockStripeInstance.checkout.sessions.retrieve,
+				).toHaveBeenCalledWith('cs_test_123456789');
 				expect(mockPrismaInstance.user.update).toHaveBeenCalledWith({
 					where: { clerkUserId: 'clerk_123456789' },
 					data: {
@@ -298,7 +349,10 @@ describe('Payments Integration Tests', () => {
 					},
 					include: { jobs: { include: { city: true } } },
 				});
-				expect(mockSendTelegramNotification).toHaveBeenCalledWith(mockPremiumUserData, mockPremiumUserData.jobs);
+				expect(mockSendTelegramNotification).toHaveBeenCalledWith(
+					mockPremiumUserData,
+					mockPremiumUserData.jobs,
+				);
 				expect(mockPrismaInstance.message.create).toHaveBeenCalled();
 				expect(mockSendProWelcomeEmail).toHaveBeenCalled();
 				// Note: fetch might not be called in test environment due to mocking issues
@@ -317,11 +371,17 @@ describe('Payments Integration Tests', () => {
 						priceId: mockPriceIds.premiumDeluxe1,
 					},
 				};
-				mockStripeInstance.checkout.sessions.retrieve.mockResolvedValue(mockSessionData);
-				mockPrismaInstance.user.update.mockResolvedValue(mockPremiumDeluxeUserData);
+				mockStripeInstance.checkout.sessions.retrieve.mockResolvedValue(
+					mockSessionData,
+				);
+				mockPrismaInstance.user.update.mockResolvedValue(
+					mockPremiumDeluxeUserData,
+				);
 				mockSendTelegramNotification.mockResolvedValue();
 				mockPrismaInstance.message.create.mockResolvedValue({});
-				mockSendPremiumDeluxeWelcomeEmail.mockResolvedValue(mockEmailResponses.success);
+				mockSendPremiumDeluxeWelcomeEmail.mockResolvedValue(
+					mockEmailResponses.success,
+				);
 				mockFetch.mockResolvedValue({
 					ok: true,
 					json: () => Promise.resolve(mockClerkResponses.success),
@@ -334,7 +394,9 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.activatePremiumSuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.activatePremiumSuccess,
+				);
 				expect(mockPrismaInstance.user.update).toHaveBeenCalledWith({
 					where: { clerkUserId: 'clerk_123456789' },
 					data: {
@@ -346,7 +408,10 @@ describe('Payments Integration Tests', () => {
 					},
 					include: { jobs: { include: { city: true } } },
 				});
-				expect(mockSendTelegramNotification).toHaveBeenCalledWith(mockPremiumDeluxeUserData, mockPremiumDeluxeUserData.jobs);
+				expect(mockSendTelegramNotification).toHaveBeenCalledWith(
+					mockPremiumDeluxeUserData,
+					mockPremiumDeluxeUserData.jobs,
+				);
 				expect(mockPrismaInstance.message.create).toHaveBeenCalled();
 				expect(mockSendPremiumDeluxeWelcomeEmail).toHaveBeenCalled();
 				// Note: fetch might not be called in test environment due to mocking issues
@@ -365,11 +430,15 @@ describe('Payments Integration Tests', () => {
 						priceId: mockPriceIds.pro,
 					},
 				};
-				mockStripeInstance.checkout.sessions.retrieve.mockResolvedValue(mockSessionData);
+				mockStripeInstance.checkout.sessions.retrieve.mockResolvedValue(
+					mockSessionData,
+				);
 				mockPrismaInstance.user.update.mockResolvedValue(mockPremiumUserData);
 				mockSendTelegramNotification.mockResolvedValue();
 				mockPrismaInstance.message.create.mockResolvedValue({});
-				mockSendProWelcomeEmail.mockRejectedValue(new Error('Email service down'));
+				mockSendProWelcomeEmail.mockRejectedValue(
+					new Error('Email service down'),
+				);
 				mockFetch.mockResolvedValue({
 					ok: true,
 					json: () => Promise.resolve(mockClerkResponses.success),
@@ -382,7 +451,9 @@ describe('Payments Integration Tests', () => {
 					.expect(200); // Should still succeed even if email fails
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.activatePremiumSuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.activatePremiumSuccess,
+				);
 				expect(mockSendProWelcomeEmail).toHaveBeenCalled();
 			});
 		});
@@ -397,7 +468,9 @@ describe('Payments Integration Tests', () => {
 					...mockStripeCheckoutSessionData,
 					payment_status: 'unpaid',
 				};
-				mockStripeInstance.checkout.sessions.retrieve.mockResolvedValue(mockSessionData);
+				mockStripeInstance.checkout.sessions.retrieve.mockResolvedValue(
+					mockSessionData,
+				);
 
 				// Act
 				const response = await request(app)
@@ -406,12 +479,16 @@ describe('Payments Integration Tests', () => {
 					.expect(400);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.activatePremiumFailed);
+				expect(response.body).toEqual(
+					mockServiceResponses.activatePremiumFailed,
+				);
 			});
 
 			it('should handle Stripe session retrieval error', async () => {
 				// Arrange
-				mockStripeInstance.checkout.sessions.retrieve.mockRejectedValue(new Error('Stripe error'));
+				mockStripeInstance.checkout.sessions.retrieve.mockRejectedValue(
+					new Error('Stripe error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -434,8 +511,12 @@ describe('Payments Integration Tests', () => {
 						priceId: mockPriceIds.pro,
 					},
 				};
-				mockStripeInstance.checkout.sessions.retrieve.mockResolvedValue(mockSessionData);
-				mockPrismaInstance.user.update.mockRejectedValue(new Error('Database error'));
+				mockStripeInstance.checkout.sessions.retrieve.mockResolvedValue(
+					mockSessionData,
+				);
+				mockPrismaInstance.user.update.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -471,7 +552,9 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.addPaymentHistorySuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.addPaymentHistorySuccess,
+				);
 				expect(mockPrismaInstance.payment.create).toHaveBeenCalledWith({
 					data: {
 						clerkUserId: 'clerk_123456789',
@@ -487,7 +570,9 @@ describe('Payments Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should handle database errors', async () => {
 				// Arrange
-				mockPrismaInstance.payment.create.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.payment.create.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -513,7 +598,9 @@ describe('Payments Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should get payment history', async () => {
 				// Arrange
-				mockPrismaInstance.payment.findMany.mockResolvedValue(mockPaymentHistory);
+				mockPrismaInstance.payment.findMany.mockResolvedValue(
+					mockPaymentHistory,
+				);
 
 				// Act
 				const response = await request(app)
@@ -521,7 +608,9 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.getPaymentHistorySuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.getPaymentHistorySuccess,
+				);
 				expect(mockPrismaInstance.payment.findMany).toHaveBeenCalledWith({
 					where: { clerkUserId: 'clerk_123456789' },
 					orderBy: { date: 'desc' },
@@ -557,7 +646,9 @@ describe('Payments Integration Tests', () => {
 
 			it('should handle database errors', async () => {
 				// Arrange
-				mockPrismaInstance.payment.findMany.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.payment.findMany.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -580,7 +671,9 @@ describe('Payments Integration Tests', () => {
 					...mockUserData,
 					stripeCustomerId: 'cus_123456789',
 				};
-				mockPrismaInstance.user.findUnique.mockResolvedValue(userWithCustomerId);
+				mockPrismaInstance.user.findUnique.mockResolvedValue(
+					userWithCustomerId,
+				);
 				mockStripeInstance.invoices.list.mockResolvedValue({
 					data: [mockStripeInvoiceData],
 				});
@@ -591,7 +684,9 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.getStripePaymentHistorySuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.getStripePaymentHistorySuccess,
+				);
 				expect(mockPrismaInstance.user.findUnique).toHaveBeenCalledWith({
 					where: { clerkUserId: 'clerk_123456789' },
 				});
@@ -618,7 +713,9 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.getStripePaymentHistorySuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.getStripePaymentHistorySuccess,
+				);
 				expect(mockStripeInstance.customers.list).toHaveBeenCalledWith({
 					email: mockUserData.email,
 					limit: 1,
@@ -650,18 +747,24 @@ describe('Payments Integration Tests', () => {
 					...mockUserData,
 					stripeCustomerId: 'cus_123456789',
 				};
-				mockPrismaInstance.user.findUnique.mockResolvedValue(userWithCustomerId);
+				mockPrismaInstance.user.findUnique.mockResolvedValue(
+					userWithCustomerId,
+				);
 				mockStripeInstance.invoices.list.mockResolvedValue({
 					data: [mockStripeInvoiceData],
 				});
 
 				// Act
 				const response = await request(app)
-					.get('/api/payments/stripe-history?clerkUserId=clerk_123456789&limit=5')
+					.get(
+						'/api/payments/stripe-history?clerkUserId=clerk_123456789&limit=5',
+					)
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.getStripePaymentHistorySuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.getStripePaymentHistorySuccess,
+				);
 				expect(mockStripeInstance.invoices.list).toHaveBeenCalledWith({
 					customer: 'cus_123456789',
 					limit: 5,
@@ -692,8 +795,12 @@ describe('Payments Integration Tests', () => {
 					...mockUserData,
 					stripeCustomerId: 'cus_123456789',
 				};
-				mockPrismaInstance.user.findUnique.mockResolvedValue(userWithCustomerId);
-				mockStripeInstance.invoices.list.mockRejectedValue(new Error('Stripe API error'));
+				mockPrismaInstance.user.findUnique.mockResolvedValue(
+					userWithCustomerId,
+				);
+				mockStripeInstance.invoices.list.mockRejectedValue(
+					new Error('Stripe API error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -715,7 +822,9 @@ describe('Payments Integration Tests', () => {
 				const requestData = {
 					clerkUserId: 'clerk_123456789',
 				};
-				mockPrismaInstance.user.findUnique.mockResolvedValue(mockPremiumUserData);
+				mockPrismaInstance.user.findUnique.mockResolvedValue(
+					mockPremiumUserData,
+				);
 				mockStripeInstance.subscriptions.update.mockResolvedValue({});
 				mockPrismaInstance.user.update.mockResolvedValue({
 					...mockPremiumUserData,
@@ -729,10 +838,15 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.cancelAutoRenewalSuccess);
-				expect(mockStripeInstance.subscriptions.update).toHaveBeenCalledWith('sub_123456789', {
-					cancel_at_period_end: true,
-				});
+				expect(response.body).toEqual(
+					mockServiceResponses.cancelAutoRenewalSuccess,
+				);
+				expect(mockStripeInstance.subscriptions.update).toHaveBeenCalledWith(
+					'sub_123456789',
+					{
+						cancel_at_period_end: true,
+					},
+				);
 				expect(mockPrismaInstance.user.update).toHaveBeenCalledWith({
 					where: { clerkUserId: 'clerk_123456789' },
 					data: { isAutoRenewal: false },
@@ -762,7 +876,9 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.cancelAutoRenewalNoStripeSuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.cancelAutoRenewalNoStripeSuccess,
+				);
 				expect(mockStripeInstance.subscriptions.update).not.toHaveBeenCalled();
 				expect(mockPrismaInstance.user.update).toHaveBeenCalledWith({
 					where: { clerkUserId: 'clerk_123456789' },
@@ -806,8 +922,12 @@ describe('Payments Integration Tests', () => {
 
 			it('should handle Stripe API errors', async () => {
 				// Arrange
-				mockPrismaInstance.user.findUnique.mockResolvedValue(mockPremiumUserData);
-				mockStripeInstance.subscriptions.update.mockRejectedValue(new Error('Stripe API error'));
+				mockPrismaInstance.user.findUnique.mockResolvedValue(
+					mockPremiumUserData,
+				);
+				mockStripeInstance.subscriptions.update.mockRejectedValue(
+					new Error('Stripe API error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -843,7 +963,9 @@ describe('Payments Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.renewAutoRenewalSuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.renewAutoRenewalSuccess,
+				);
 				expect(mockPrismaInstance.user.findUnique).toHaveBeenCalledWith({
 					where: { clerkUserId: 'clerk_123456789' },
 				});
@@ -873,7 +995,9 @@ describe('Payments Integration Tests', () => {
 
 			it('should handle auto-renewal already enabled', async () => {
 				// Arrange
-				mockPrismaInstance.user.findUnique.mockResolvedValue(mockPremiumUserData);
+				mockPrismaInstance.user.findUnique.mockResolvedValue(
+					mockPremiumUserData,
+				);
 
 				// Act
 				const response = await request(app)
@@ -890,7 +1014,9 @@ describe('Payments Integration Tests', () => {
 			it('should handle database errors', async () => {
 				// Arrange
 				mockPrismaInstance.user.findUnique.mockResolvedValue(mockUserData);
-				mockPrismaInstance.user.update.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.user.update.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -949,21 +1075,21 @@ describe('Payments Integration Tests', () => {
 	describe('Performance and Caching', () => {
 		it('should handle concurrent checkout session creation', async () => {
 			// Arrange
-			mockPrismaInstance.user.findUnique.mockImplementation(() => 
-				Promise.resolve(mockUserData)
+			mockPrismaInstance.user.findUnique.mockImplementation(() =>
+				Promise.resolve(mockUserData),
 			);
-			mockStripeInstance.prices.retrieve.mockImplementation(() => 
-				Promise.resolve(mockStripePriceData)
+			mockStripeInstance.prices.retrieve.mockImplementation(() =>
+				Promise.resolve(mockStripePriceData),
 			);
-			mockStripeInstance.checkout.sessions.create.mockImplementation(() => 
-				Promise.resolve(mockStripeCheckoutSessionData)
+			mockStripeInstance.checkout.sessions.create.mockImplementation(() =>
+				Promise.resolve(mockStripeCheckoutSessionData),
 			);
 
 			// Act - Make multiple concurrent requests
 			const promises = Array.from({ length: 3 }).map((_, index) =>
 				request(app)
 					.post('/api/payments/create-checkout-session')
-					.send({ clerkUserId: `clerk_${index}` })
+					.send({ clerkUserId: `clerk_${index}` }),
 			);
 
 			const responses = await Promise.all(promises);
@@ -977,14 +1103,13 @@ describe('Payments Integration Tests', () => {
 
 		it('should handle concurrent payment history requests', async () => {
 			// Arrange
-			mockPrismaInstance.payment.findMany.mockImplementation(() => 
-				Promise.resolve(mockPaymentHistory)
+			mockPrismaInstance.payment.findMany.mockImplementation(() =>
+				Promise.resolve(mockPaymentHistory),
 			);
 
 			// Act - Make multiple concurrent requests
 			const promises = Array.from({ length: 2 }).map((_, index) =>
-				request(app)
-					.get(`/api/payments/history?clerkUserId=clerk_${index}`)
+				request(app).get(`/api/payments/history?clerkUserId=clerk_${index}`),
 			);
 
 			const responses = await Promise.all(promises);

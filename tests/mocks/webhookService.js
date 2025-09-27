@@ -9,8 +9,12 @@ export const mockPrisma = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock webhook event data
 export const mockWebhookEvents = {
@@ -29,7 +33,7 @@ export const mockWebhookEvents = {
 			image_url: 'https://example.com/new-avatar.jpg',
 		},
 	},
-	
+
 	userUpdated: {
 		type: 'user.updated',
 		data: {
@@ -45,14 +49,14 @@ export const mockWebhookEvents = {
 			image_url: 'https://example.com/updated-avatar.jpg',
 		},
 	},
-	
+
 	userDeleted: {
 		type: 'user.deleted',
 		data: {
 			id: 'clerk_deleted101',
 		},
 	},
-	
+
 	userWithMinimalData: {
 		type: 'user.created',
 		data: {
@@ -68,7 +72,7 @@ export const mockWebhookEvents = {
 			image_url: null,
 		},
 	},
-	
+
 	userWithNoEmail: {
 		type: 'user.created',
 		data: {
@@ -79,7 +83,7 @@ export const mockWebhookEvents = {
 			image_url: 'https://example.com/noemail-avatar.jpg',
 		},
 	},
-	
+
 	userWithEmptyEmail: {
 		type: 'user.created',
 		data: {
@@ -95,7 +99,7 @@ export const mockWebhookEvents = {
 			image_url: 'https://example.com/emptyemail-avatar.jpg',
 		},
 	},
-	
+
 	invalidEvent: {
 		type: 'invalid.event',
 		data: {
@@ -111,7 +115,7 @@ export const mockWebhookEvents = {
 			image_url: 'https://example.com/invalid-avatar.jpg',
 		},
 	},
-	
+
 	eventWithMissingData: {
 		type: 'user.created',
 		data: {
@@ -139,7 +143,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-15T10:00:00Z'),
 		updatedAt: new Date('2024-01-15T10:00:00Z'),
 	},
-	
+
 	newUser: {
 		id: 'new789',
 		email: 'new@example.com',
@@ -156,7 +160,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-20T12:00:00Z'),
 		updatedAt: new Date('2024-01-20T12:00:00Z'),
 	},
-	
+
 	updatedUser: {
 		id: 'user123',
 		email: 'john.updated@example.com',
@@ -173,7 +177,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-15T10:00:00Z'),
 		updatedAt: new Date('2024-01-20T15:30:00Z'),
 	},
-	
+
 	minimalUser: {
 		id: 'minimal202',
 		email: 'minimal@example.com',
@@ -197,27 +201,27 @@ export const mockServiceResponses = {
 	webhookSuccess: {
 		success: true,
 	},
-	
+
 	webhookError: {
 		error: 'Ошибка обработки вебхука',
 		details: 'Database connection failed',
 	},
-	
+
 	webhookProcessingError: {
 		error: 'Ошибка обработки вебхука',
 		details: 'Invalid webhook event',
 	},
-	
+
 	webhookDatabaseError: {
 		error: 'Ошибка обработки вебхука',
 		details: 'Database operation failed',
 	},
-	
+
 	webhookUpsertError: {
 		error: 'Ошибка обработки вебхука',
 		details: 'User upsert failed',
 	},
-	
+
 	webhookDeleteError: {
 		error: 'Ошибка обработки вебхука',
 		details: 'User deletion failed',
@@ -284,13 +288,13 @@ export const mockDataConversions = {
 		imageUrl: 'https://example.com/avatar.jpg',
 		eventType: 'user.created',
 	},
-	
+
 	number: {
 		userId: 123,
 		emailId: 456,
 		timestamp: 1640995200000,
 	},
-	
+
 	boolean: {
 		success: true,
 		isPremium: false,
@@ -298,20 +302,20 @@ export const mockDataConversions = {
 		premiumDeluxe: false,
 		isAdmin: false,
 	},
-	
+
 	date: {
 		createdAt: new Date('2024-01-15T10:00:00Z'),
 		updatedAt: new Date('2024-01-15T10:00:00Z'),
 		premiumEndsAt: new Date('2025-12-31T23:59:59Z'),
 	},
-	
+
 	object: {
 		user: mockUserData.validUser,
 		response: mockServiceResponses.webhookSuccess,
 		error: mockErrors.databaseError,
 		event: mockWebhookEvents.userCreated,
 	},
-	
+
 	null: {
 		firstName: null,
 		lastName: null,
@@ -326,23 +330,23 @@ export const mockWebhookProcessingLogic = {
 	isValidEventType: (eventType) => {
 		return ['user.created', 'user.updated', 'user.deleted'].includes(eventType);
 	},
-	
+
 	isUserCreationEvent: (eventType) => {
 		return eventType === 'user.created';
 	},
-	
+
 	isUserUpdateEvent: (eventType) => {
 		return eventType === 'user.updated';
 	},
-	
+
 	isUserDeletionEvent: (eventType) => {
 		return eventType === 'user.deleted';
 	},
-	
+
 	extractUserId: (eventData) => {
 		return eventData.id;
 	},
-	
+
 	extractUserData: (eventData) => {
 		return {
 			email: eventData.email_addresses?.[0]?.email_address,
@@ -351,7 +355,7 @@ export const mockWebhookProcessingLogic = {
 			imageUrl: eventData.image_url,
 		};
 	},
-	
+
 	buildUpsertData: (userId, userData) => {
 		return {
 			where: { clerkUserId: userId },
@@ -370,28 +374,28 @@ export const mockWebhookProcessingLogic = {
 			},
 		};
 	},
-	
+
 	buildDeleteData: (userId) => {
 		return {
 			where: { clerkUserId: userId },
 		};
 	},
-	
+
 	handleWebhookError: (error) => {
 		return {
 			error: 'Ошибка обработки вебхука',
 			details: error.message,
 		};
 	},
-	
+
 	handleWebhookSuccess: () => {
 		return { success: true };
 	},
-	
+
 	validateEventData: (eventData) => {
 		return !!(eventData && eventData.id);
 	},
-	
+
 	validateUserData: (userData) => {
 		return !!(userData && userData.email);
 	},
@@ -417,28 +421,28 @@ export const mockDatabaseOperationsLogic = {
 			},
 		};
 	},
-	
+
 	buildUserDeleteOperation: (userId) => {
 		return {
 			where: { clerkUserId: userId },
 		};
 	},
-	
+
 	handleDatabaseError: (error) => {
 		return {
 			error: 'Ошибка обработки вебхука',
 			details: error.message,
 		};
 	},
-	
+
 	handleDatabaseSuccess: () => {
 		return { success: true };
 	},
-	
+
 	validateDatabaseResult: (result) => {
 		return !!(result && typeof result === 'object');
 	},
-	
+
 	processDatabaseResult: (result) => {
 		return result;
 	},
@@ -454,14 +458,14 @@ export const mockEventProcessingLogic = {
 			lastName: eventData.last_name,
 			imageUrl: eventData.image_url,
 		};
-		
+
 		return {
 			operation: 'upsert',
 			userId,
 			userData,
 		};
 	},
-	
+
 	processUserUpdateEvent: async (eventData) => {
 		const userId = eventData.id;
 		const userData = {
@@ -470,30 +474,30 @@ export const mockEventProcessingLogic = {
 			lastName: eventData.last_name,
 			imageUrl: eventData.image_url,
 		};
-		
+
 		return {
 			operation: 'upsert',
 			userId,
 			userData,
 		};
 	},
-	
+
 	processUserDeletionEvent: async (eventData) => {
 		const userId = eventData.id;
-		
+
 		return {
 			operation: 'delete',
 			userId,
 		};
 	},
-	
+
 	processUnknownEvent: async (eventData) => {
 		return {
 			operation: 'unknown',
 			eventData,
 		};
 	},
-	
+
 	handleEventProcessingError: (error) => {
 		return {
 			error: 'Ошибка обработки вебхука',
@@ -507,23 +511,27 @@ export const mockValidationLogic = {
 	validateWebhookEvent: (event) => {
 		return !!(event && event.type && event.data);
 	},
-	
+
 	validateEventType: (eventType) => {
 		return ['user.created', 'user.updated', 'user.deleted'].includes(eventType);
 	},
-	
+
 	validateEventData: (eventData) => {
 		return !!(eventData && eventData.id);
 	},
-	
+
 	validateUserData: (userData) => {
 		return !!(userData && userData.email);
 	},
-	
+
 	validateEmailAddress: (emailAddresses) => {
-		return !!(emailAddresses && emailAddresses.length > 0 && emailAddresses[0].email_address);
+		return !!(
+			emailAddresses &&
+			emailAddresses.length > 0 &&
+			emailAddresses[0].email_address
+		);
 	},
-	
+
 	handleValidationError: (error) => {
 		return {
 			error: 'Ошибка обработки вебхука',

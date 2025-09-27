@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import UserJobs from '../apps/client/src/components/UserJobs';
+import { UserJobs } from '@/components';
 
 // Mock axios - use global mock from setup.jsx
 import axios from 'axios';
@@ -16,13 +16,10 @@ vi.mock('react-hot-toast', () => ({
 
 // Mock react-router-dom
 const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async () => {
-	const actual = await vi.importActual('react-router-dom');
-	return {
-		...actual,
-		useNavigate: () => mockNavigate,
-	};
-});
+vi.mock('react-router-dom', () => ({
+	BrowserRouter: ({ children }) => <div data-testid="router">{children}</div>,
+	useNavigate: () => mockNavigate,
+}));
 
 // Mock Clerk
 vi.mock('@clerk/clerk-react', () => ({
@@ -71,7 +68,9 @@ vi.mock('react-intlayer', () => ({
 		boostReady: { value: 'Ready' },
 		boostTitle: { value: 'Boost advertisement' },
 		confirmDelete: { value: 'Confirm deletion' },
-		confirmDeleteText: { value: 'Are you sure you want to delete this advertisement?' },
+		confirmDeleteText: {
+			value: 'Are you sure you want to delete this advertisement?',
+		},
 		cancel: { value: 'Cancel' },
 		delete: { value: 'Delete' },
 	}),
@@ -79,7 +78,7 @@ vi.mock('react-intlayer', () => ({
 }));
 
 // Mock useTranslationHelpers
-vi.mock('../apps/client/src/utils/translationHelpers', () => ({
+vi.mock('@/utils/translationHelpers', () => ({
 	useTranslationHelpers: () => ({
 		getCityLabel: (cityName) => cityName,
 	}),
@@ -98,7 +97,7 @@ vi.mock('date-fns/locale', () => ({
 }));
 
 // Mock useLoadingProgress
-vi.mock('../apps/client/src/hooks/useLoadingProgress', () => ({
+vi.mock('@/hooks/useLoadingProgress', () => ({
 	useLoadingProgress: () => ({
 		startLoadingWithProgress: vi.fn(),
 		completeLoading: vi.fn(),
@@ -106,7 +105,7 @@ vi.mock('../apps/client/src/hooks/useLoadingProgress', () => ({
 }));
 
 // Mock PaginationControl component
-vi.mock('../apps/client/src/components/PaginationControl', () => ({
+vi.mock('@/components/PaginationControl', () => ({
 	default: ({ currentPage, totalPages, onPageChange }) => (
 		<div data-testid="pagination-control">
 			<span data-testid="current-page">{currentPage}</span>
@@ -165,7 +164,7 @@ describe('UserJobs Component', () => {
 	beforeEach(async () => {
 		// Reset all mocks
 		vi.clearAllMocks();
-		
+
 		// Mock axios responses using the global mock
 		vi.mocked(axios.get).mockResolvedValue({ data: mockJobsData });
 		vi.mocked(axios.delete).mockResolvedValue({ data: {} });
@@ -175,7 +174,7 @@ describe('UserJobs Component', () => {
 	describe('Basic Functionality', () => {
 		it('renders the component title', async () => {
 			renderWithRouter(<UserJobs />);
-			
+
 			await waitFor(() => {
 				expect(screen.getByText('My Advertisements')).toBeInTheDocument();
 			});
@@ -183,7 +182,7 @@ describe('UserJobs Component', () => {
 
 		it('renders job cards when jobs exist', async () => {
 			renderWithRouter(<UserJobs />);
-			
+
 			// Just wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');
@@ -193,9 +192,9 @@ describe('UserJobs Component', () => {
 
 		it('renders empty state when no jobs exist', async () => {
 			vi.mocked(axios.get).mockResolvedValue({ data: mockEmptyJobsData });
-			
+
 			renderWithRouter(<UserJobs />);
-			
+
 			// Just wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');
@@ -205,7 +204,7 @@ describe('UserJobs Component', () => {
 
 		it('displays job details correctly', async () => {
 			renderWithRouter(<UserJobs />);
-			
+
 			// Just wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');
@@ -215,7 +214,7 @@ describe('UserJobs Component', () => {
 
 		it('displays shuttle and meals information', async () => {
 			renderWithRouter(<UserJobs />);
-			
+
 			// Just wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');
@@ -227,19 +226,19 @@ describe('UserJobs Component', () => {
 	describe('API Integration', () => {
 		it('fetches user jobs on component mount', async () => {
 			renderWithRouter(<UserJobs />);
-			
+
 			await waitFor(() => {
 				expect(vi.mocked(axios.get)).toHaveBeenCalledWith(
-					'http://localhost:3001/api/users/user-jobs/test-user-id?page=1&limit=5&lang=en'
+					'http://localhost:3001/api/users/user-jobs/test-user-id?page=1&limit=5&lang=en',
 				);
 			});
 		});
 
 		it('handles API errors gracefully', async () => {
 			vi.mocked(axios.get).mockRejectedValue(new Error('API Error'));
-			
+
 			renderWithRouter(<UserJobs />);
-			
+
 			// Just wait for the component to render and check for skeletons (loading state)
 			await waitFor(() => {
 				const skeletons = screen.queryAllByTestId('skeleton');

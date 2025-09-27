@@ -40,12 +40,12 @@ describe('AIJobTitleService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		vi.clearAllMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
 		console.warn = vi.fn();
-		
+
 		// Set up environment variables
 		process.env.OPENAI_API_KEY = 'test-api-key';
 	});
@@ -55,7 +55,7 @@ describe('AIJobTitleService', () => {
 		console.log = originalConsoleLog;
 		console.error = originalConsoleError;
 		console.warn = originalConsoleWarn;
-		
+
 		// Clean up environment
 		delete process.env.OPENAI_API_KEY;
 	});
@@ -67,12 +67,18 @@ describe('AIJobTitleService', () => {
 				const prompt = AIJobTitleService.buildPrompt(description);
 
 				expect(prompt).toContain(description);
-				expect(prompt).toContain('Generate a concise, professional job title in Russian');
+				expect(prompt).toContain(
+					'Generate a concise, professional job title in Russian',
+				);
 			});
 
 			it('should build prompt with context', () => {
 				const description = 'Ищем повара для работы в ресторане';
-				const context = { city: 'Tel Aviv', salary: '50', requirements: 'опыт работы' };
+				const context = {
+					city: 'Tel Aviv',
+					salary: '50',
+					requirements: 'опыт работы',
+				};
 				const prompt = AIJobTitleService.buildPrompt(description, context);
 
 				expect(prompt).toContain(description);
@@ -87,10 +93,16 @@ describe('AIJobTitleService', () => {
 				const testCases = [
 					{ description: 'Ищем повара для кухни', expected: 'Повар' },
 					{ description: 'Нужен уборщик для офиса', expected: 'Уборщик' },
-					{ description: 'Требуется официант в ресторан', expected: 'Официант' },
+					{
+						description: 'Требуется официант в ресторан',
+						expected: 'Официант',
+					},
 					{ description: 'Ищем грузчика на склад', expected: 'Грузчик' },
 					{ description: 'Нужен водитель для доставки', expected: 'Водитель' },
-					{ description: 'Требуется продавец в магазин', expected: 'Продавец-консультант' },
+					{
+						description: 'Требуется продавец в магазин',
+						expected: 'Продавец-консультант',
+					},
 					{ description: 'Ищем кассира на кассу', expected: 'Кассир' },
 					{ description: 'Нужен строитель на стройку', expected: 'Строитель' },
 					{ description: 'Требуется электрик', expected: 'Электрик' },
@@ -123,7 +135,8 @@ describe('AIJobTitleService', () => {
 			});
 
 			it('should include analysis in result', () => {
-				const description = 'Ищем повара с опытом работы в ресторане в Тель-Авиве, зарплата 50 шек/час';
+				const description =
+					'Ищем повара с опытом работы в ресторане в Тель-Авиве, зарплата 50 шек/час';
 				const result = AIJobTitleService.fallbackTitleGeneration(description);
 
 				expect(result.analysis).toEqual({
@@ -140,9 +153,12 @@ describe('AIJobTitleService', () => {
 			it('should calculate confidence based on keyword matching', () => {
 				const title = 'Повар в ресторане';
 				const description = 'Ищем повара для работы в ресторане';
-				
-				const confidence = AIJobTitleService.calculateAIConfidence(title, description);
-				
+
+				const confidence = AIJobTitleService.calculateAIConfidence(
+					title,
+					description,
+				);
+
 				expect(confidence).toBeGreaterThan(0.5);
 				expect(confidence).toBeLessThanOrEqual(1);
 			});
@@ -150,15 +166,20 @@ describe('AIJobTitleService', () => {
 			it('should return 0 for empty inputs', () => {
 				expect(AIJobTitleService.calculateAIConfidence('', '')).toBe(0);
 				expect(AIJobTitleService.calculateAIConfidence(null, null)).toBe(0);
-				expect(AIJobTitleService.calculateAIConfidence(undefined, undefined)).toBe(0);
+				expect(
+					AIJobTitleService.calculateAIConfidence(undefined, undefined),
+				).toBe(0);
 			});
 
 			it('should reduce confidence for generic titles', () => {
 				const title = 'Общая вакансия';
 				const description = 'Ищем работника';
-				
-				const confidence = AIJobTitleService.calculateAIConfidence(title, description);
-				
+
+				const confidence = AIJobTitleService.calculateAIConfidence(
+					title,
+					description,
+				);
+
 				expect(confidence).toBeLessThan(0.5);
 			});
 		});
@@ -168,16 +189,16 @@ describe('AIJobTitleService', () => {
 				const testCases = [
 					{
 						description: 'Требуется опыт работы\nЗарплата 50 шек',
-						expected: 'опыт работы'
+						expected: 'опыт работы',
 					},
 					{
 						description: 'Требования: знание иврита\nРабота в офисе',
-						expected: 'знание иврита'
+						expected: 'знание иврита',
 					},
 					{
 						description: 'Обязательно наличие документов\nПолная занятость',
-						expected: 'наличие документов'
-					}
+						expected: 'наличие документов',
+					},
 				];
 
 				testCases.forEach(({ description, expected }) => {
@@ -196,17 +217,27 @@ describe('AIJobTitleService', () => {
 		describe('Analysis Helper Functions', () => {
 			describe('hasSpecificKeywords', () => {
 				it('should detect specific job keywords', () => {
-					const keywords = ['повар', 'официант', 'грузчик', 'водитель', 'продавец'];
-					
-					keywords.forEach(keyword => {
+					const keywords = [
+						'повар',
+						'официант',
+						'грузчик',
+						'водитель',
+						'продавец',
+					];
+
+					keywords.forEach((keyword) => {
 						const description = `Ищем ${keyword} для работы`;
-						expect(AIJobTitleService.hasSpecificKeywords(description)).toBe(true);
+						expect(AIJobTitleService.hasSpecificKeywords(description)).toBe(
+							true,
+						);
 					});
 				});
 
 				it('should return false for generic descriptions', () => {
 					const description = 'Ищем работника для непонятной работы';
-					expect(AIJobTitleService.hasSpecificKeywords(description)).toBe(false);
+					expect(AIJobTitleService.hasSpecificKeywords(description)).toBe(
+						false,
+					);
 				});
 			});
 
@@ -215,10 +246,10 @@ describe('AIJobTitleService', () => {
 					const testCases = [
 						'Работа в Тель-Авиве',
 						'На склад в Иерусалиме',
-						'В офисе Хайфы'
+						'В офисе Хайфы',
 					];
 
-					testCases.forEach(description => {
+					testCases.forEach((description) => {
 						expect(AIJobTitleService.hasLocation(description)).toBe(true);
 					});
 				});
@@ -234,10 +265,10 @@ describe('AIJobTitleService', () => {
 					const testCases = [
 						'Зарплата 50 шек/час',
 						'50 ₪ в час',
-						'50 ILS за час'
+						'50 ILS за час',
 					];
 
-					testCases.forEach(description => {
+					testCases.forEach((description) => {
 						expect(AIJobTitleService.hasSalary(description)).toBe(true);
 					});
 				});
@@ -253,17 +284,21 @@ describe('AIJobTitleService', () => {
 					const testCases = [
 						'Требуется знание иврита',
 						'Обязательно английский язык',
-						'Нужен русский язык'
+						'Нужен русский язык',
 					];
 
-					testCases.forEach(description => {
-						expect(AIJobTitleService.hasLanguageRequirement(description)).toBe(true);
+					testCases.forEach((description) => {
+						expect(AIJobTitleService.hasLanguageRequirement(description)).toBe(
+							true,
+						);
 					});
 				});
 
 				it('should return false when no language requirements', () => {
 					const description = 'Работа без языковых требований';
-					expect(AIJobTitleService.hasLanguageRequirement(description)).toBe(false);
+					expect(AIJobTitleService.hasLanguageRequirement(description)).toBe(
+						false,
+					);
 				});
 			});
 
@@ -272,18 +307,22 @@ describe('AIJobTitleService', () => {
 					const testCases = [
 						'Требуется опыт работы',
 						'Нужен опытный работник',
-						'Обязательно опыт работы в сфере'
+						'Обязательно опыт работы в сфере',
 					];
 
-					testCases.forEach(description => {
-						expect(AIJobTitleService.hasExperienceRequirement(description)).toBe(true);
+					testCases.forEach((description) => {
+						expect(
+							AIJobTitleService.hasExperienceRequirement(description),
+						).toBe(true);
 					});
 				});
 
-			it('should return false when no experience requirements', () => {
-				const description = 'Работа без требований к стажу';
-				expect(AIJobTitleService.hasExperienceRequirement(description)).toBe(false);
-			});
+				it('should return false when no experience requirements', () => {
+					const description = 'Работа без требований к стажу';
+					expect(AIJobTitleService.hasExperienceRequirement(description)).toBe(
+						false,
+					);
+				});
 			});
 		});
 	});
@@ -297,7 +336,9 @@ describe('AIJobTitleService', () => {
 
 			expect(result.method).toBe('rule-based');
 			expect(result.title).toBe('Повар');
-			expect(console.warn).toHaveBeenCalledWith('⚠️ OpenAI API key not found. Using fallback method.');
+			expect(console.warn).toHaveBeenCalledWith(
+				'⚠️ OpenAI API key not found. Using fallback method.',
+			);
 		});
 	});
 });

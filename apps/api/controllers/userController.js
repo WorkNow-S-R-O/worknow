@@ -13,11 +13,9 @@ export const getUserByClerkId = async (req, res) => {
 		res.status(200).json(user);
 	} catch (error) {
 		console.error('Ошибка получения данных пользователя:', error.message);
-		res
-			.status(500)
-			.json({
-				error: 'Ошибка получения данных пользователя',
-				details: error.message,
-			});
+		res.status(500).json({
+			error: 'Ошибка получения данных пользователя',
+			details: error.message,
+		});
 	}
 };

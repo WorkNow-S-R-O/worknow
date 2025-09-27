@@ -36,7 +36,7 @@ describe('SeekerService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetSeekerServiceMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
@@ -51,15 +51,26 @@ describe('SeekerService', () => {
 	describe('City Translation Logic', () => {
 		it('should translate city names correctly', async () => {
 			const translations = mockCityTranslationData.telAvivTranslations;
-			
-			expect(await mockCityTranslationLogic.translateCityName('Tel Aviv', 'ru')).toBe(translations.ru);
-			expect(await mockCityTranslationLogic.translateCityName('Tel Aviv', 'he')).toBe(translations.he);
-			expect(await mockCityTranslationLogic.translateCityName('Tel Aviv', 'en')).toBe(translations.en);
-			expect(await mockCityTranslationLogic.translateCityName('Tel Aviv', 'ar')).toBe(translations.ar);
+
+			expect(
+				await mockCityTranslationLogic.translateCityName('Tel Aviv', 'ru'),
+			).toBe(translations.ru);
+			expect(
+				await mockCityTranslationLogic.translateCityName('Tel Aviv', 'he'),
+			).toBe(translations.he);
+			expect(
+				await mockCityTranslationLogic.translateCityName('Tel Aviv', 'en'),
+			).toBe(translations.en);
+			expect(
+				await mockCityTranslationLogic.translateCityName('Tel Aviv', 'ar'),
+			).toBe(translations.ar);
 		});
 
 		it('should return original name when translation not found', async () => {
-			const result = await mockCityTranslationLogic.translateCityName('Unknown City', 'ru');
+			const result = await mockCityTranslationLogic.translateCityName(
+				'Unknown City',
+				'ru',
+			);
 			expect(result).toBe('Unknown City');
 		});
 
@@ -80,25 +91,37 @@ describe('SeekerService', () => {
 	describe('Slug Generation Logic', () => {
 		it('should generate basic slug', () => {
 			const data = mockSlugGenerationData.basicName;
-			const result = mockSlugGenerationLogic.generateSlug(data.name, data.description);
+			const result = mockSlugGenerationLogic.generateSlug(
+				data.name,
+				data.description,
+			);
 			expect(result).toBe(data.expectedSlug);
 		});
 
 		it('should handle special characters', () => {
 			const data = mockSlugGenerationData.nameWithSpecialChars;
-			const result = mockSlugGenerationLogic.generateSlug(data.name, data.description);
+			const result = mockSlugGenerationLogic.generateSlug(
+				data.name,
+				data.description,
+			);
 			expect(result).toBe(data.expectedSlug);
 		});
 
 		it('should handle multiple lines', () => {
 			const data = mockSlugGenerationData.nameWithMultipleLines;
-			const result = mockSlugGenerationLogic.generateSlug(data.name, data.description);
+			const result = mockSlugGenerationLogic.generateSlug(
+				data.name,
+				data.description,
+			);
 			expect(result).toBe(data.expectedSlug);
 		});
 
 		it('should handle Cyrillic characters', () => {
 			const data = mockSlugGenerationData.nameWithCyrillic;
-			const result = mockSlugGenerationLogic.generateSlug(data.name, data.description);
+			const result = mockSlugGenerationLogic.generateSlug(
+				data.name,
+				data.description,
+			);
 			expect(result).toBe(data.expectedSlug);
 		});
 
@@ -148,7 +171,10 @@ describe('SeekerService', () => {
 		});
 
 		it('should apply filters to seekers', () => {
-			const seekers = [mockSeekerData.validSeeker, mockSeekerData.anotherSeeker];
+			const seekers = [
+				mockSeekerData.validSeeker,
+				mockSeekerData.anotherSeeker,
+			];
 			const filters = { city: 'Tel Aviv' };
 			const result = mockFilteringLogic.applyFilters(seekers, filters);
 			expect(result).toHaveLength(1);
@@ -197,7 +223,10 @@ describe('SeekerService', () => {
 		});
 
 		it('should validate pagination parameters', () => {
-			const result = mockPaginationLogic.validatePagination('invalid', 'invalid');
+			const result = mockPaginationLogic.validatePagination(
+				'invalid',
+				'invalid',
+			);
 			expect(result).toEqual({ page: 1, limit: 10 });
 		});
 
@@ -210,20 +239,33 @@ describe('SeekerService', () => {
 
 	describe('Notification Logic', () => {
 		it('should send notification successfully', async () => {
-			const result = await mockNotificationLogic.sendNotification(mockSeekerData.validSeeker);
+			const result = await mockNotificationLogic.sendNotification(
+				mockSeekerData.validSeeker,
+			);
 			expect(result).toBe(true);
 		});
 
 		it('should handle notification errors', () => {
 			const error = new Error('Notification failed');
 			mockNotificationLogic.handleNotificationError(error);
-			expect(console.error).toHaveBeenCalledWith('❌ Failed to send notification for new candidate:', error);
+			expect(console.error).toHaveBeenCalledWith(
+				'❌ Failed to send notification for new candidate:',
+				error,
+			);
 		});
 
 		it('should validate seeker for notification', () => {
-			expect(mockNotificationLogic.validateSeekerForNotification(mockSeekerData.validSeeker)).toBe(true);
-			expect(mockNotificationLogic.validateSeekerForNotification(null)).toBe(false);
-			expect(mockNotificationLogic.validateSeekerForNotification({})).toBe(false);
+			expect(
+				mockNotificationLogic.validateSeekerForNotification(
+					mockSeekerData.validSeeker,
+				),
+			).toBe(true);
+			expect(mockNotificationLogic.validateSeekerForNotification(null)).toBe(
+				false,
+			);
+			expect(mockNotificationLogic.validateSeekerForNotification({})).toBe(
+				false,
+			);
 		});
 	});
 
@@ -452,7 +494,7 @@ describe('SeekerService', () => {
 			expect(errors).toHaveProperty('invalidId');
 			expect(errors).toHaveProperty('notificationError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -467,7 +509,7 @@ describe('SeekerService', () => {
 			expect(errorMessages).toHaveProperty('invalidId');
 			expect(errorMessages).toHaveProperty('notificationError');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -482,7 +524,7 @@ describe('SeekerService', () => {
 			expect(successMessages).toHaveProperty('cityTranslated');
 			expect(successMessages).toHaveProperty('slugGenerated');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -496,7 +538,7 @@ describe('SeekerService', () => {
 			expect(consoleLogData).toHaveProperty('seekersRetrieved');
 			expect(consoleLogData).toHaveProperty('notificationFailed');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -563,7 +605,9 @@ describe('SeekerService', () => {
 			expect(notificationLogic).toHaveProperty('validateSeekerForNotification');
 			expect(typeof notificationLogic.sendNotification).toBe('function');
 			expect(typeof notificationLogic.handleNotificationError).toBe('function');
-			expect(typeof notificationLogic.validateSeekerForNotification).toBe('function');
+			expect(typeof notificationLogic.validateSeekerForNotification).toBe(
+				'function',
+			);
 		});
 	});
 });

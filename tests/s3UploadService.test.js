@@ -38,7 +38,7 @@ describe('S3UploadService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetS3UploadServiceMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
@@ -243,34 +243,68 @@ describe('S3UploadService', () => {
 			expect(mockFileTypeValidationLogic.isImageFile('image/png')).toBe(true);
 			expect(mockFileTypeValidationLogic.isImageFile('image/gif')).toBe(true);
 			expect(mockFileTypeValidationLogic.isImageFile('image/webp')).toBe(true);
-			expect(mockFileTypeValidationLogic.isImageFile('application/pdf')).toBe(false);
+			expect(mockFileTypeValidationLogic.isImageFile('application/pdf')).toBe(
+				false,
+			);
 			expect(mockFileTypeValidationLogic.isImageFile('text/plain')).toBe(false);
 		});
 
 		it('should validate specific image types', () => {
-			expect(mockFileTypeValidationLogic.isValidImageType('image/jpeg')).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidImageType('image/jpg')).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidImageType('image/png')).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidImageType('image/gif')).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidImageType('image/webp')).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidImageType('image/bmp')).toBe(false);
-			expect(mockFileTypeValidationLogic.isValidImageType('image/tiff')).toBe(false);
+			expect(mockFileTypeValidationLogic.isValidImageType('image/jpeg')).toBe(
+				true,
+			);
+			expect(mockFileTypeValidationLogic.isValidImageType('image/jpg')).toBe(
+				true,
+			);
+			expect(mockFileTypeValidationLogic.isValidImageType('image/png')).toBe(
+				true,
+			);
+			expect(mockFileTypeValidationLogic.isValidImageType('image/gif')).toBe(
+				true,
+			);
+			expect(mockFileTypeValidationLogic.isValidImageType('image/webp')).toBe(
+				true,
+			);
+			expect(mockFileTypeValidationLogic.isValidImageType('image/bmp')).toBe(
+				false,
+			);
+			expect(mockFileTypeValidationLogic.isValidImageType('image/tiff')).toBe(
+				false,
+			);
 		});
 
 		it('should validate file extensions', () => {
-			expect(mockFileTypeValidationLogic.isValidFileExtension('test.jpg')).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidFileExtension('test.jpeg')).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidFileExtension('test.png')).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidFileExtension('test.gif')).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidFileExtension('test.webp')).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidFileExtension('test.bmp')).toBe(false);
-			expect(mockFileTypeValidationLogic.isValidFileExtension('test.pdf')).toBe(false);
+			expect(mockFileTypeValidationLogic.isValidFileExtension('test.jpg')).toBe(
+				true,
+			);
+			expect(
+				mockFileTypeValidationLogic.isValidFileExtension('test.jpeg'),
+			).toBe(true);
+			expect(mockFileTypeValidationLogic.isValidFileExtension('test.png')).toBe(
+				true,
+			);
+			expect(mockFileTypeValidationLogic.isValidFileExtension('test.gif')).toBe(
+				true,
+			);
+			expect(
+				mockFileTypeValidationLogic.isValidFileExtension('test.webp'),
+			).toBe(true);
+			expect(mockFileTypeValidationLogic.isValidFileExtension('test.bmp')).toBe(
+				false,
+			);
+			expect(mockFileTypeValidationLogic.isValidFileExtension('test.pdf')).toBe(
+				false,
+			);
 		});
 
 		it('should validate file sizes', () => {
 			expect(mockFileTypeValidationLogic.isValidFileSize(1024000)).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidFileSize(5 * 1024 * 1024)).toBe(true);
-			expect(mockFileTypeValidationLogic.isValidFileSize(6 * 1024 * 1024)).toBe(false);
+			expect(mockFileTypeValidationLogic.isValidFileSize(5 * 1024 * 1024)).toBe(
+				true,
+			);
+			expect(mockFileTypeValidationLogic.isValidFileSize(6 * 1024 * 1024)).toBe(
+				false,
+			);
 			expect(mockFileTypeValidationLogic.isValidFileSize(0)).toBe(true);
 		});
 
@@ -280,10 +314,18 @@ describe('S3UploadService', () => {
 			const largeFile = mockFileData.largeImageFile;
 			const invalidExtensionFile = mockFileData.invalidFileExtension;
 
-			expect(mockFileTypeValidationLogic.validateFile(validFile).isValid).toBe(true);
-			expect(mockFileTypeValidationLogic.validateFile(invalidFile).isValid).toBe(false);
-			expect(mockFileTypeValidationLogic.validateFile(largeFile).isValid).toBe(false);
-			expect(mockFileTypeValidationLogic.validateFile(invalidExtensionFile).isValid).toBe(false);
+			expect(mockFileTypeValidationLogic.validateFile(validFile).isValid).toBe(
+				true,
+			);
+			expect(
+				mockFileTypeValidationLogic.validateFile(invalidFile).isValid,
+			).toBe(false);
+			expect(mockFileTypeValidationLogic.validateFile(largeFile).isValid).toBe(
+				false,
+			);
+			expect(
+				mockFileTypeValidationLogic.validateFile(invalidExtensionFile).isValid,
+			).toBe(false);
 		});
 
 		it('should handle null file validation', () => {
@@ -403,7 +445,9 @@ describe('S3UploadService', () => {
 			expect(result).toHaveProperty('size');
 			expect(result).toHaveProperty('mimetype');
 			expect(result.success).toBe(true);
-			expect(result.imageUrl).toBe('https://s3.amazonaws.com/bucket/jobs/image1.jpg');
+			expect(result.imageUrl).toBe(
+				'https://s3.amazonaws.com/bucket/jobs/image1.jpg',
+			);
 		});
 
 		it('should handle content rejected upload', () => {
@@ -543,7 +587,9 @@ describe('S3UploadService', () => {
 			const error = mockErrors.contentRejected;
 
 			expect(error).toBeInstanceOf(Error);
-			expect(error.message).toContain('Image content violates community guidelines');
+			expect(error.message).toContain(
+				'Image content violates community guidelines',
+			);
 		});
 
 		it('should handle upload failed error', () => {
@@ -616,14 +662,18 @@ describe('S3UploadService', () => {
 			const logMessage = mockConsoleLogData.s3NotConfigured;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('⚠️ S3UploadService: S3 configuration is incomplete');
+			expect(logMessage).toContain(
+				'⚠️ S3UploadService: S3 configuration is incomplete',
+			);
 		});
 
 		it('should log setup guide warning', () => {
 			const logMessage = mockConsoleLogData.setupGuide;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('📖 See SETUP_GUIDE.md for configuration instructions');
+			expect(logMessage).toContain(
+				'📖 See SETUP_GUIDE.md for configuration instructions',
+			);
 		});
 
 		it('should log upload failed error', () => {
@@ -644,7 +694,9 @@ describe('S3UploadService', () => {
 			const logMessage = mockConsoleLogData.updateJobImageFailed;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('❌ S3UploadService: Update job image failed:');
+			expect(logMessage).toContain(
+				'❌ S3UploadService: Update job image failed:',
+			);
 		});
 
 		it('should log delete image failed error', () => {
@@ -665,21 +717,27 @@ describe('S3UploadService', () => {
 			const logMessage = mockConsoleLogData.cleanupFailed;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('❌ S3UploadService: Failed to cleanup image:');
+			expect(logMessage).toContain(
+				'❌ S3UploadService: Failed to cleanup image:',
+			);
 		});
 
 		it('should log cleanup new image failed error', () => {
 			const logMessage = mockConsoleLogData.cleanupNewImageFailed;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('❌ S3UploadService: Failed to cleanup new image:');
+			expect(logMessage).toContain(
+				'❌ S3UploadService: Failed to cleanup new image:',
+			);
 		});
 
 		it('should log image deletion failed warning', () => {
 			const logMessage = mockConsoleLogData.imageDeletionFailed;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('⚠️ S3UploadService: Image deletion failed or image not found');
+			expect(logMessage).toContain(
+				'⚠️ S3UploadService: Image deletion failed or image not found',
+			);
 		});
 
 		it('should log success messages', () => {
@@ -692,7 +750,7 @@ describe('S3UploadService', () => {
 				mockConsoleLogData.jobAndImageDeleted,
 			];
 
-			successMessages.forEach(message => {
+			successMessages.forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -779,7 +837,9 @@ describe('S3UploadService', () => {
 			expect(result).toHaveProperty('isValid');
 			expect(result).toHaveProperty('errors');
 			expect(result.isValid).toBe(false);
-			expect(result.errors).toContain('Invalid file extension. Allowed: jpg, jpeg, png, gif, webp');
+			expect(result.errors).toContain(
+				'Invalid file extension. Allowed: jpg, jpeg, png, gif, webp',
+			);
 		});
 
 		it('should return multiple errors validation result', () => {
@@ -932,7 +992,7 @@ describe('S3UploadService', () => {
 			expect(errors).toHaveProperty('invalidFileType');
 			expect(errors).toHaveProperty('fileSizeExceeded');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -947,7 +1007,7 @@ describe('S3UploadService', () => {
 			expect(errorMessages).toHaveProperty('invalidFileType');
 			expect(errorMessages).toHaveProperty('fileSizeExceeded');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -963,7 +1023,7 @@ describe('S3UploadService', () => {
 			expect(successMessages).toHaveProperty('jobDeleted');
 			expect(successMessages).toHaveProperty('s3Configured');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -978,7 +1038,7 @@ describe('S3UploadService', () => {
 			expect(consoleLogData).toHaveProperty('createJobFailed');
 			expect(consoleLogData).toHaveProperty('updateJobImageFailed');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});

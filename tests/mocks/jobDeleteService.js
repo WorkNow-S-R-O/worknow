@@ -32,7 +32,7 @@ export const mockJobData = {
 			premiumDeluxe: false,
 		},
 	},
-	
+
 	jobWithoutImage: {
 		id: 2,
 		title: 'Marketing Manager',
@@ -54,7 +54,7 @@ export const mockJobData = {
 			premiumDeluxe: false,
 		},
 	},
-	
+
 	jobWithUndefinedImage: {
 		id: 3,
 		title: 'Designer',
@@ -76,7 +76,7 @@ export const mockJobData = {
 			premiumDeluxe: true,
 		},
 	},
-	
+
 	jobWithEmptyImage: {
 		id: 4,
 		title: 'Manager',
@@ -98,7 +98,7 @@ export const mockJobData = {
 			premiumDeluxe: false,
 		},
 	},
-	
+
 	jobOwnedByDifferentUser: {
 		id: 5,
 		title: 'Unauthorized Job',
@@ -120,7 +120,7 @@ export const mockJobData = {
 			premiumDeluxe: false,
 		},
 	},
-	
+
 	nullJob: null,
 };
 
@@ -132,7 +132,7 @@ export const mockUserIds = {
 		premium: 'clerk_user789',
 		premiumDeluxe: 'clerk_user101',
 	},
-	
+
 	invalidUserIds: {
 		null: null,
 		undefined: undefined,
@@ -152,7 +152,7 @@ export const mockJobIds = {
 		number: 1,
 		largeNumber: 999999,
 	},
-	
+
 	invalidIds: {
 		null: null,
 		undefined: undefined,
@@ -248,22 +248,23 @@ export const mockSuccessMessages = {
 
 // Mock console logging data
 export const mockConsoleLogData = {
-	s3DeletionWarning: '⚠️ deleteJobService - Failed to delete image from S3, but continuing with job deletion',
+	s3DeletionWarning:
+		'⚠️ deleteJobService - Failed to delete image from S3, but continuing with job deletion',
 	s3DeletionError: '❌ deleteJobService - Error deleting image from S3:',
 };
 
 // Mock service responses
 export const mockServiceResponses = {
 	success: {},
-	
+
 	jobNotFound: {
 		error: mockErrorMessages.jobNotFound,
 	},
-	
+
 	unauthorized: {
 		error: mockErrorMessages.unauthorized,
 	},
-	
+
 	deleteError: {
 		error: mockErrorMessages.deleteError,
 		details: 'Database connection failed',
@@ -276,11 +277,11 @@ export const mockPrismaQueryOptions = {
 		where: { id: 1 },
 		include: { user: true },
 	},
-	
+
 	delete: {
 		where: { id: 1 },
 	},
-	
+
 	findMany: {
 		where: { userId: 'user123' },
 		include: { city: true },
@@ -292,12 +293,12 @@ export const mockDataConversions = {
 	parseInt: {
 		jobId: 1,
 	},
-	
+
 	boolean: {
 		hasImage: true,
 		noImage: false,
 	},
-	
+
 	string: {
 		imageUrl: 'https://s3.amazonaws.com/bucket/job-image.jpg',
 		emptyImageUrl: '',
@@ -309,7 +310,7 @@ export const mockAuthorizationLogic = {
 	checkOwnership: (jobUserId, requestUserId) => {
 		return jobUserId === requestUserId;
 	},
-	
+
 	isAuthorized: (job, userId) => {
 		return job.user.clerkUserId === userId;
 	},

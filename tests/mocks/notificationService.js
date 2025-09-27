@@ -11,8 +11,12 @@ export const mockPrisma = {
 export const mockSendEmail = vi.fn();
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock user data
 export const mockUserData = {
@@ -23,7 +27,7 @@ export const mockUserData = {
 		lastName: 'Doe',
 		clerkUserId: 'clerk_user1',
 	},
-	
+
 	userWithFirstNameOnly: {
 		id: 'user2',
 		email: 'jane@example.com',
@@ -31,7 +35,7 @@ export const mockUserData = {
 		lastName: null,
 		clerkUserId: 'clerk_user2',
 	},
-	
+
 	userWithLastNameOnly: {
 		id: 'user3',
 		email: 'smith@example.com',
@@ -39,7 +43,7 @@ export const mockUserData = {
 		lastName: 'Smith',
 		clerkUserId: 'clerk_user3',
 	},
-	
+
 	userWithNoName: {
 		id: 'user4',
 		email: 'anonymous@example.com',
@@ -47,7 +51,7 @@ export const mockUserData = {
 		lastName: null,
 		clerkUserId: 'clerk_user4',
 	},
-	
+
 	userWithEmptyName: {
 		id: 'user5',
 		email: 'empty@example.com',
@@ -76,7 +80,7 @@ export const mockSeekerData = {
 		announcement: 'Ищу работу в IT-компании',
 		documentType: 'Паспорт',
 	},
-	
+
 	seekerWithMinimalFields: {
 		id: 2,
 		name: 'Мария Сидорова',
@@ -94,7 +98,7 @@ export const mockSeekerData = {
 		announcement: null,
 		documentType: null,
 	},
-	
+
 	seekerWithPartialFields: {
 		id: 3,
 		name: 'Александр Козлов',
@@ -112,12 +116,13 @@ export const mockSeekerData = {
 		announcement: 'Ищу работу в маркетинговом агентстве',
 		documentType: 'Паспорт',
 	},
-	
+
 	seekerWithSpecialCharacters: {
 		id: 4,
 		name: 'Ольга & Петр',
 		city: 'Беэр-Шева',
-		description: 'Семейная пара ищет работу. Ольга - бухгалтер, Петр - водитель.',
+		description:
+			'Семейная пара ищет работу. Ольга - бухгалтер, Петр - водитель.',
 		category: 'Бухгалтерия',
 		employment: 'Полная занятость',
 		languages: ['Русский'],
@@ -130,12 +135,13 @@ export const mockSeekerData = {
 		announcement: 'Ищем работу в одном городе',
 		documentType: 'Паспорт',
 	},
-	
+
 	seekerWithLongDescription: {
 		id: 5,
 		name: 'Елена Васильева',
 		city: 'Нетания',
-		description: 'Опытный менеджер по продажам с большим опытом работы в различных отраслях. Имею опыт работы с клиентами, ведения переговоров, заключения сделок. Готова к работе в команде и самостоятельной работе. Стрессоустойчива, коммуникабельна, ответственная.',
+		description:
+			'Опытный менеджер по продажам с большим опытом работы в различных отраслях. Имею опыт работы с клиентами, ведения переговоров, заключения сделок. Готова к работе в команде и самостоятельной работе. Стрессоустойчива, коммуникабельна, ответственная.',
 		category: 'Продажи',
 		employment: 'Полная занятость',
 		languages: ['Русский', 'Английский', 'Иврит', 'Арабский'],
@@ -153,9 +159,9 @@ export const mockSeekerData = {
 // Mock user arrays
 export const mockUserArrays = {
 	emptyUsers: [],
-	
+
 	singleUser: [mockUserData.userWithFullName],
-	
+
 	multipleUsers: [
 		mockUserData.userWithFullName,
 		mockUserData.userWithFirstNameOnly,
@@ -163,13 +169,13 @@ export const mockUserArrays = {
 		mockUserData.userWithNoName,
 		mockUserData.userWithEmptyName,
 	],
-	
+
 	usersWithNames: [
 		mockUserData.userWithFullName,
 		mockUserData.userWithFirstNameOnly,
 		mockUserData.userWithLastNameOnly,
 	],
-	
+
 	usersWithoutNames: [
 		mockUserData.userWithNoName,
 		mockUserData.userWithEmptyName,
@@ -179,9 +185,9 @@ export const mockUserArrays = {
 // Mock seeker arrays
 export const mockSeekerArrays = {
 	emptySeekers: [],
-	
+
 	singleSeeker: [mockSeekerData.seekerWithAllFields],
-	
+
 	multipleSeekers: [
 		mockSeekerData.seekerWithAllFields,
 		mockSeekerData.seekerWithMinimalFields,
@@ -189,24 +195,22 @@ export const mockSeekerArrays = {
 		mockSeekerData.seekerWithSpecialCharacters,
 		mockSeekerData.seekerWithLongDescription,
 	],
-	
+
 	seekersWithAllFields: [
 		mockSeekerData.seekerWithAllFields,
 		mockSeekerData.seekerWithPartialFields,
 		mockSeekerData.seekerWithSpecialCharacters,
 		mockSeekerData.seekerWithLongDescription,
 	],
-	
-	seekersWithMinimalFields: [
-		mockSeekerData.seekerWithMinimalFields,
-	],
-	
+
+	seekersWithMinimalFields: [mockSeekerData.seekerWithMinimalFields],
+
 	demandedSeekers: [
 		mockSeekerData.seekerWithAllFields,
 		mockSeekerData.seekerWithSpecialCharacters,
 		mockSeekerData.seekerWithLongDescription,
 	],
-	
+
 	nonDemandedSeekers: [
 		mockSeekerData.seekerWithMinimalFields,
 		mockSeekerData.seekerWithPartialFields,
@@ -216,7 +220,7 @@ export const mockSeekerArrays = {
 // Mock email content
 export const mockEmailContent = {
 	subject: 'Новые соискатели на WorkNow - 1 новых кандидатов',
-	
+
 	htmlTemplate: `
     <!DOCTYPE html>
     <html>
@@ -267,7 +271,7 @@ export const mockEmailContent = {
     </body>
     </html>
   `,
-	
+
 	htmlWithMultipleSeekers: `
     <!DOCTYPE html>
     <html>
@@ -339,30 +343,76 @@ export const mockEmailResults = {
 		success: true,
 		email: 'john.doe@example.com',
 	},
-	
+
 	failedEmail: {
 		success: false,
 		email: 'failed@example.com',
 		error: 'SMTP connection failed',
 	},
-	
+
 	mixedResults: [
-		{ status: 'fulfilled', value: { success: true, email: 'user1@example.com' } },
-		{ status: 'fulfilled', value: { success: true, email: 'user2@example.com' } },
-		{ status: 'rejected', reason: { success: false, email: 'user3@example.com', error: 'SMTP error' } },
-		{ status: 'fulfilled', value: { success: true, email: 'user4@example.com' } },
+		{
+			status: 'fulfilled',
+			value: { success: true, email: 'user1@example.com' },
+		},
+		{
+			status: 'fulfilled',
+			value: { success: true, email: 'user2@example.com' },
+		},
+		{
+			status: 'rejected',
+			reason: {
+				success: false,
+				email: 'user3@example.com',
+				error: 'SMTP error',
+			},
+		},
+		{
+			status: 'fulfilled',
+			value: { success: true, email: 'user4@example.com' },
+		},
 	],
-	
+
 	allSuccessful: [
-		{ status: 'fulfilled', value: { success: true, email: 'user1@example.com' } },
-		{ status: 'fulfilled', value: { success: true, email: 'user2@example.com' } },
-		{ status: 'fulfilled', value: { success: true, email: 'user3@example.com' } },
+		{
+			status: 'fulfilled',
+			value: { success: true, email: 'user1@example.com' },
+		},
+		{
+			status: 'fulfilled',
+			value: { success: true, email: 'user2@example.com' },
+		},
+		{
+			status: 'fulfilled',
+			value: { success: true, email: 'user3@example.com' },
+		},
 	],
-	
+
 	allFailed: [
-		{ status: 'rejected', reason: { success: false, email: 'user1@example.com', error: 'SMTP error' } },
-		{ status: 'rejected', reason: { success: false, email: 'user2@example.com', error: 'SMTP error' } },
-		{ status: 'rejected', reason: { success: false, email: 'user3@example.com', error: 'SMTP error' } },
+		{
+			status: 'rejected',
+			reason: {
+				success: false,
+				email: 'user1@example.com',
+				error: 'SMTP error',
+			},
+		},
+		{
+			status: 'rejected',
+			reason: {
+				success: false,
+				email: 'user2@example.com',
+				error: 'SMTP error',
+			},
+		},
+		{
+			status: 'rejected',
+			reason: {
+				success: false,
+				email: 'user3@example.com',
+				error: 'SMTP error',
+			},
+		},
 	],
 };
 
@@ -374,21 +424,21 @@ export const mockServiceResponses = {
 		failed: 0,
 		newCandidates: 1,
 	},
-	
+
 	partialSuccessNotification: {
 		totalUsers: 4,
 		successful: 3,
 		failed: 1,
 		newCandidates: 2,
 	},
-	
+
 	failedNotification: {
 		totalUsers: 2,
 		successful: 0,
 		failed: 2,
 		newCandidates: 1,
 	},
-	
+
 	noUsersNotification: {
 		totalUsers: 0,
 		successful: 0,
@@ -462,37 +512,41 @@ export const mockEnvironmentVariables = {
 
 // Mock email generation logic
 export const mockEmailGenerationLogic = {
-	generateSubject: (seekerCount) => `Новые соискатели на WorkNow - ${seekerCount} новых кандидатов`,
-	
+	generateSubject: (seekerCount) =>
+		`Новые соискатели на WorkNow - ${seekerCount} новых кандидатов`,
+
 	generateCandidateList: (seekers) => {
-		return seekers.map(seeker => {
-			let html = `
+		return seekers
+			.map((seeker) => {
+				let html = `
 				<div style="margin-bottom: 20px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9;">
 					<h3 style="margin: 0 0 10px 0; color: #1976d2;">${seeker.name}</h3>
 					<p style="margin: 5px 0; color: #666;"><strong>Город:</strong> ${seeker.city}</p>
 					<p style="margin: 5px 0; color: #666;"><strong>Описание:</strong> ${seeker.description}</p>`;
-			
-			if (seeker.category) {
-				html += `<p style="margin: 5px 0; color: #666;"><strong>Категория:</strong> ${seeker.category}</p>`;
-			}
-			
-			if (seeker.employment) {
-				html += `<p style="margin: 5px 0; color: #666;"><strong>Тип занятости:</strong> ${seeker.employment}</p>`;
-			}
-			
-			if (seeker.languages && seeker.languages.length > 0) {
-				html += `<p style="margin: 5px 0; color: #666;"><strong>Языки:</strong> ${seeker.languages.join(', ')}</p>`;
-			}
-			
-			if (seeker.isDemanded) {
-				html += '<p style="margin: 5px 0; color: #ff6b35; font-weight: bold;">⭐ Востребованный кандидат</p>';
-			}
-			
-			html += '</div>';
-			return html;
-		}).join('');
+
+				if (seeker.category) {
+					html += `<p style="margin: 5px 0; color: #666;"><strong>Категория:</strong> ${seeker.category}</p>`;
+				}
+
+				if (seeker.employment) {
+					html += `<p style="margin: 5px 0; color: #666;"><strong>Тип занятости:</strong> ${seeker.employment}</p>`;
+				}
+
+				if (seeker.languages && seeker.languages.length > 0) {
+					html += `<p style="margin: 5px 0; color: #666;"><strong>Языки:</strong> ${seeker.languages.join(', ')}</p>`;
+				}
+
+				if (seeker.isDemanded) {
+					html +=
+						'<p style="margin: 5px 0; color: #ff6b35; font-weight: bold;">⭐ Востребованный кандидат</p>';
+				}
+
+				html += '</div>';
+				return html;
+			})
+			.join('');
 	},
-	
+
 	generateUserName: (user) => {
 		if (user.firstName && user.lastName) {
 			return `${user.firstName} ${user.lastName}`;
@@ -505,7 +559,7 @@ export const mockEmailGenerationLogic = {
 		}
 		return 'Пользователь';
 	},
-	
+
 	replaceUserName: (html, userName) => {
 		return html.replace('{{userName}}', userName);
 	},
@@ -534,14 +588,14 @@ export const mockDataConversions = {
 		city: 'Тель-Авив',
 		description: 'Опытный разработчик',
 	},
-	
+
 	number: {
 		seekerCount: 1,
 		userCount: 3,
 		successfulCount: 3,
 		failedCount: 0,
 	},
-	
+
 	boolean: {
 		isDemanded: true,
 		success: true,
@@ -549,7 +603,7 @@ export const mockDataConversions = {
 		hasEmployment: true,
 		hasLanguages: true,
 	},
-	
+
 	array: {
 		languages: ['Русский', 'Английский', 'Иврит'],
 		seekers: [mockSeekerData.seekerWithAllFields],
@@ -566,27 +620,28 @@ export const mockHtmlGenerationLogic = {
 				<h3 style="margin: 0 0 10px 0; color: #1976d2;">${seeker.name}</h3>
 				<p style="margin: 5px 0; color: #666;"><strong>Город:</strong> ${seeker.city}</p>
 				<p style="margin: 5px 0; color: #666;"><strong>Описание:</strong> ${seeker.description}</p>`;
-		
+
 		if (seeker.category) {
 			html += `<p style="margin: 5px 0; color: #666;"><strong>Категория:</strong> ${seeker.category}</p>`;
 		}
-		
+
 		if (seeker.employment) {
 			html += `<p style="margin: 5px 0; color: #666;"><strong>Тип занятости:</strong> ${seeker.employment}</p>`;
 		}
-		
+
 		if (seeker.languages && seeker.languages.length > 0) {
 			html += `<p style="margin: 5px 0; color: #666;"><strong>Языки:</strong> ${seeker.languages.join(', ')}</p>`;
 		}
-		
+
 		if (seeker.isDemanded) {
-			html += '<p style="margin: 5px 0; color: #ff6b35; font-weight: bold;">⭐ Востребованный кандидат</p>';
+			html +=
+				'<p style="margin: 5px 0; color: #ff6b35; font-weight: bold;">⭐ Востребованный кандидат</p>';
 		}
-		
+
 		html += '</div>';
 		return html;
 	},
-	
+
 	generateEmailTemplate: (seekerCount, candidatesList) => {
 		return `
 			<!DOCTYPE html>

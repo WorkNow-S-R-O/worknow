@@ -11,8 +11,12 @@ export const mockPrisma = {
 export const mockFetch = vi.fn();
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock environment variables
 export const mockEnvVars = {
@@ -39,7 +43,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-15T10:00:00Z'),
 		updatedAt: new Date('2024-01-15T10:00:00Z'),
 	},
-	
+
 	premiumUser: {
 		id: 'premium456',
 		email: 'premium@example.com',
@@ -56,7 +60,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-10T09:30:00Z'),
 		updatedAt: new Date('2024-01-15T14:20:00Z'),
 	},
-	
+
 	newUser: {
 		id: 'new789',
 		email: 'new@example.com',
@@ -73,7 +77,7 @@ export const mockUserData = {
 		createdAt: new Date('2024-01-20T12:00:00Z'),
 		updatedAt: new Date('2024-01-20T12:00:00Z'),
 	},
-	
+
 	userWithMinimalData: {
 		id: 'minimal202',
 		email: 'minimal@example.com',
@@ -108,7 +112,7 @@ export const mockClerkApiResponses = {
 		created_at: 1640995200000,
 		updated_at: 1640995200000,
 	},
-	
+
 	premiumUserFetch: {
 		id: 'clerk_premium456',
 		email_addresses: [
@@ -123,7 +127,7 @@ export const mockClerkApiResponses = {
 		created_at: 1640995200000,
 		updated_at: 1640995200000,
 	},
-	
+
 	newUserFetch: {
 		id: 'clerk_new789',
 		email_addresses: [
@@ -138,7 +142,7 @@ export const mockClerkApiResponses = {
 		created_at: 1640995200000,
 		updated_at: 1640995200000,
 	},
-	
+
 	userWithMinimalData: {
 		id: 'clerk_minimal202',
 		email_addresses: [
@@ -153,7 +157,7 @@ export const mockClerkApiResponses = {
 		created_at: 1640995200000,
 		updated_at: 1640995200000,
 	},
-	
+
 	userWithNoEmail: {
 		id: 'clerk_noemail303',
 		email_addresses: [],
@@ -163,7 +167,7 @@ export const mockClerkApiResponses = {
 		created_at: 1640995200000,
 		updated_at: 1640995200000,
 	},
-	
+
 	userWithEmptyEmail: {
 		id: 'clerk_emptyemail404',
 		email_addresses: [
@@ -189,7 +193,7 @@ export const mockFetchResponses = {
 		json: vi.fn().mockResolvedValue(mockClerkApiResponses.successfulUserFetch),
 		text: vi.fn().mockResolvedValue('Success'),
 	},
-	
+
 	premiumUserResponse: {
 		ok: true,
 		status: 200,
@@ -197,7 +201,7 @@ export const mockFetchResponses = {
 		json: vi.fn().mockResolvedValue(mockClerkApiResponses.premiumUserFetch),
 		text: vi.fn().mockResolvedValue('Success'),
 	},
-	
+
 	newUserResponse: {
 		ok: true,
 		status: 200,
@@ -205,7 +209,7 @@ export const mockFetchResponses = {
 		json: vi.fn().mockResolvedValue(mockClerkApiResponses.newUserFetch),
 		text: vi.fn().mockResolvedValue('Success'),
 	},
-	
+
 	minimalDataResponse: {
 		ok: true,
 		status: 200,
@@ -213,7 +217,7 @@ export const mockFetchResponses = {
 		json: vi.fn().mockResolvedValue(mockClerkApiResponses.userWithMinimalData),
 		text: vi.fn().mockResolvedValue('Success'),
 	},
-	
+
 	notFoundResponse: {
 		ok: false,
 		status: 404,
@@ -221,7 +225,7 @@ export const mockFetchResponses = {
 		json: vi.fn().mockResolvedValue({ error: 'User not found' }),
 		text: vi.fn().mockResolvedValue('User not found'),
 	},
-	
+
 	unauthorizedResponse: {
 		ok: false,
 		status: 401,
@@ -229,7 +233,7 @@ export const mockFetchResponses = {
 		json: vi.fn().mockResolvedValue({ error: 'Unauthorized' }),
 		text: vi.fn().mockResolvedValue('Unauthorized'),
 	},
-	
+
 	serverErrorResponse: {
 		ok: false,
 		status: 500,
@@ -237,7 +241,7 @@ export const mockFetchResponses = {
 		json: vi.fn().mockResolvedValue({ error: 'Internal Server Error' }),
 		text: vi.fn().mockResolvedValue('Internal Server Error'),
 	},
-	
+
 	networkErrorResponse: {
 		ok: false,
 		status: 0,
@@ -253,25 +257,25 @@ export const mockServiceResponses = {
 		success: true,
 		user: mockUserData.validUser,
 	},
-	
+
 	syncUserError: {
 		error: 'Failed to sync user',
 		details: 'Database connection failed',
 	},
-	
+
 	syncUserClerkApiError: {
 		error: 'Ошибка Clerk API: 404 Not Found',
 	},
-	
+
 	syncUserMissingKeyError: {
 		error: 'Clerk secret key is not configured',
 	},
-	
+
 	syncUserNetworkError: {
 		error: 'Failed to sync user',
 		details: 'Network Error',
 	},
-	
+
 	syncUserDatabaseError: {
 		error: 'Failed to sync user',
 		details: 'Database connection failed',
@@ -324,7 +328,8 @@ export const mockSuccessMessages = {
 export const mockConsoleLogData = {
 	userSyncServiceStart: 'UserSyncService - Starting sync for clerkUserId:',
 	userSyncServiceKeyAvailable: 'UserSyncService - CLERK_SECRET_KEY available:',
-	userSyncServiceFetchingData: 'UserSyncService - Fetching user data from Clerk API...',
+	userSyncServiceFetchingData:
+		'UserSyncService - Fetching user data from Clerk API...',
 	userSyncServiceApiResponse: 'UserSyncService - Clerk API response status:',
 	userSyncServiceUserData: 'UserSyncService - Clerk user data received:',
 	userSyncServiceUpserting: 'UserSyncService - Upserting user in database...',
@@ -344,14 +349,14 @@ export const mockDataConversions = {
 		imageUrl: 'https://example.com/avatar.jpg',
 		clerkSecretKey: 'sk_test_mock_clerk_secret_key_123456789',
 	},
-	
+
 	number: {
 		status: 200,
 		statusCode: 200,
 		createdAt: 1640995200000,
 		updatedAt: 1640995200000,
 	},
-	
+
 	boolean: {
 		success: true,
 		isPremium: false,
@@ -360,20 +365,20 @@ export const mockDataConversions = {
 		isAdmin: false,
 		responseOk: true,
 	},
-	
+
 	date: {
 		createdAt: new Date('2024-01-15T10:00:00Z'),
 		updatedAt: new Date('2024-01-15T10:00:00Z'),
 		premiumEndsAt: new Date('2025-12-31T23:59:59Z'),
 	},
-	
+
 	object: {
 		user: mockUserData.validUser,
 		response: mockServiceResponses.syncUserSuccess,
 		error: mockErrors.databaseError,
 		clerkUser: mockClerkApiResponses.successfulUserFetch,
 	},
-	
+
 	null: {
 		firstName: null,
 		lastName: null,
@@ -389,11 +394,11 @@ export const mockUserSyncLogic = {
 	isValidClerkUserId: (clerkUserId) => {
 		return typeof clerkUserId === 'string' && clerkUserId.length > 0;
 	},
-	
+
 	isClerkSecretConfigured: (secretKey) => {
 		return typeof secretKey === 'string' && secretKey.length > 0;
 	},
-	
+
 	extractUserDataFromClerk: (clerkUser) => {
 		return {
 			clerkUserId: clerkUser.id,
@@ -403,7 +408,7 @@ export const mockUserSyncLogic = {
 			imageUrl: clerkUser.image_url || null,
 		};
 	},
-	
+
 	buildUpsertData: (clerkUserId, clerkUser) => {
 		return {
 			where: { clerkUserId },
@@ -422,41 +427,41 @@ export const mockUserSyncLogic = {
 			},
 		};
 	},
-	
+
 	handleClerkApiError: (response) => {
 		return {
 			error: `Ошибка Clerk API: ${response.status} ${response.statusText}`,
 		};
 	},
-	
+
 	handleSyncError: (error) => {
 		return {
 			error: 'Failed to sync user',
 			details: error.message,
 		};
 	},
-	
+
 	handleMissingClerkSecret: () => {
 		return {
 			error: 'Clerk secret key is not configured',
 		};
 	},
-	
+
 	buildClerkApiUrl: (clerkUserId) => {
 		return `https://api.clerk.com/v1/users/${clerkUserId}`;
 	},
-	
+
 	buildClerkApiHeaders: (secretKey) => {
 		return {
 			Authorization: `Bearer ${secretKey}`,
 			'Content-Type': 'application/json',
 		};
 	},
-	
+
 	validateClerkApiResponse: (response) => {
 		return response.ok;
 	},
-	
+
 	processClerkUserData: (clerkUser) => {
 		return {
 			id: clerkUser.id,
@@ -470,13 +475,17 @@ export const mockUserSyncLogic = {
 // Mock environment variable logic
 export const mockEnvVarLogic = {
 	isClerkSecretAvailable: (secretKey) => {
-		return !!(secretKey && typeof secretKey === 'string' && secretKey.length > 0);
+		return !!(
+			secretKey &&
+			typeof secretKey === 'string' &&
+			secretKey.length > 0
+		);
 	},
-	
+
 	getClerkSecretKey: () => {
 		return process.env.CLERK_SECRET_KEY;
 	},
-	
+
 	validateEnvironmentVariables: () => {
 		const clerkSecretKey = process.env.CLERK_SECRET_KEY;
 		return {
@@ -484,7 +493,7 @@ export const mockEnvVarLogic = {
 			clerkSecretKeyLength: clerkSecretKey ? clerkSecretKey.length : 0,
 		};
 	},
-	
+
 	handleMissingEnvironmentVariable: (varName) => {
 		return {
 			error: `${varName} is not configured`,
@@ -512,18 +521,18 @@ export const mockDatabaseOperationsLogic = {
 			},
 		};
 	},
-	
+
 	handleDatabaseError: (error) => {
 		return {
 			error: 'Failed to sync user',
 			details: error.message,
 		};
 	},
-	
+
 	validateDatabaseResult: (result) => {
 		return !!(result && typeof result === 'object' && result.id);
 	},
-	
+
 	processDatabaseResult: (user) => {
 		return {
 			success: true,
@@ -545,7 +554,7 @@ export const mockApiIntegrationLogic = {
 			},
 		};
 	},
-	
+
 	handleApiResponse: async (response) => {
 		if (!response.ok) {
 			const errorText = await response.text();
@@ -554,22 +563,22 @@ export const mockApiIntegrationLogic = {
 				details: errorText,
 			};
 		}
-		
+
 		const data = await response.json();
 		return { success: true, data };
 	},
-	
+
 	handleApiError: (error) => {
 		return {
 			error: 'Failed to sync user',
 			details: error.message,
 		};
 	},
-	
+
 	validateApiResponse: (response) => {
 		return !!(response && typeof response === 'object');
 	},
-	
+
 	processApiData: (data) => {
 		return {
 			id: data.id,

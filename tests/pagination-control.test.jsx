@@ -16,7 +16,7 @@ describe('PaginationControl Component', () => {
 					currentPage={1}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Check for pagination list structure
@@ -30,7 +30,7 @@ describe('PaginationControl Component', () => {
 					currentPage={2}
 					totalPages={3}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			expect(screen.getByText('1')).toBeInTheDocument();
@@ -44,7 +44,7 @@ describe('PaginationControl Component', () => {
 					currentPage={5}
 					totalPages={20}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Should show 5 pages around current page (3, 4, 5, 6, 7)
@@ -61,7 +61,7 @@ describe('PaginationControl Component', () => {
 					currentPage={3}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// The active class is on the list item, not the text element
@@ -77,7 +77,7 @@ describe('PaginationControl Component', () => {
 					currentPage={1}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Disabled buttons become spans, so we check for the disabled class on the list item
@@ -91,7 +91,7 @@ describe('PaginationControl Component', () => {
 					currentPage={3}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			const prevButton = screen.getByRole('button', { name: /previous/i });
@@ -104,7 +104,7 @@ describe('PaginationControl Component', () => {
 					currentPage={5}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Disabled buttons become spans, so we check for the disabled class on the list item
@@ -118,7 +118,7 @@ describe('PaginationControl Component', () => {
 					currentPage={3}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			const nextButton = screen.getByRole('button', { name: /next/i });
@@ -133,7 +133,7 @@ describe('PaginationControl Component', () => {
 					currentPage={2}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			const pageButton = screen.getByText('3');
@@ -148,7 +148,7 @@ describe('PaginationControl Component', () => {
 					currentPage={3}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			const prevButton = screen.getByRole('button', { name: /previous/i });
@@ -163,7 +163,7 @@ describe('PaginationControl Component', () => {
 					currentPage={3}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			const nextButton = screen.getByRole('button', { name: /next/i });
@@ -178,7 +178,7 @@ describe('PaginationControl Component', () => {
 					currentPage={1}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Disabled buttons are spans, so we can't click them
@@ -194,7 +194,7 @@ describe('PaginationControl Component', () => {
 					currentPage={5}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Disabled buttons are spans, so we can't click them
@@ -212,7 +212,7 @@ describe('PaginationControl Component', () => {
 					currentPage={2}
 					totalPages={4}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			expect(screen.getByText('1')).toBeInTheDocument();
@@ -227,7 +227,7 @@ describe('PaginationControl Component', () => {
 					currentPage={10}
 					totalPages={20}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Should show pages 8, 9, 10, 11, 12
@@ -244,7 +244,7 @@ describe('PaginationControl Component', () => {
 					currentPage={2}
 					totalPages={20}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Should show pages 1, 2, 3, 4, 5
@@ -261,7 +261,7 @@ describe('PaginationControl Component', () => {
 					currentPage={19}
 					totalPages={20}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Should show pages 16, 17, 18, 19, 20
@@ -278,7 +278,7 @@ describe('PaginationControl Component', () => {
 					currentPage={1}
 					totalPages={1}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			expect(screen.getByText('1')).toBeInTheDocument();
@@ -297,7 +297,7 @@ describe('PaginationControl Component', () => {
 					currentPage={1}
 					totalPages={0}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Should not crash and should render the component
@@ -311,7 +311,7 @@ describe('PaginationControl Component', () => {
 					currentPage={10}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Should show all pages
@@ -325,7 +325,7 @@ describe('PaginationControl Component', () => {
 					currentPage={0}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Should show all pages
@@ -341,7 +341,7 @@ describe('PaginationControl Component', () => {
 					currentPage={2}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			// Check for pagination list structure
@@ -355,10 +355,12 @@ describe('PaginationControl Component', () => {
 					currentPage={2}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
-			expect(screen.getByRole('button', { name: /previous/i })).toBeInTheDocument();
+			expect(
+				screen.getByRole('button', { name: /previous/i }),
+			).toBeInTheDocument();
 			expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
 		});
 
@@ -368,7 +370,7 @@ describe('PaginationControl Component', () => {
 					currentPage={2}
 					totalPages={5}
 					onPageChange={mockOnPageChange}
-				/>
+				/>,
 			);
 
 			const pageButtons = screen.getAllByRole('button');

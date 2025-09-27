@@ -152,7 +152,8 @@ describe('UserSyncController', () => {
 	describe('User Sync Service Integration Logic', () => {
 		it('should call syncUserService correctly', async () => {
 			const clerkUserId = 'user_123';
-			const result = await mockUserSyncServiceLogic.syncUserService(clerkUserId);
+			const result =
+				await mockUserSyncServiceLogic.syncUserService(clerkUserId);
 			expect(result).toBeDefined();
 			expect(result.success).toBe(true);
 			expect(result.user).toBeDefined();
@@ -204,9 +205,12 @@ describe('UserSyncController', () => {
 		});
 
 		it('should return different user types correctly', async () => {
-			const regularUser = await mockUserSyncServiceLogic.syncUserService('user_123');
-			const premiumUser = await mockUserSyncServiceLogic.syncUserService('user_456');
-			const adminUser = await mockUserSyncServiceLogic.syncUserService('user_admin');
+			const regularUser =
+				await mockUserSyncServiceLogic.syncUserService('user_123');
+			const premiumUser =
+				await mockUserSyncServiceLogic.syncUserService('user_456');
+			const adminUser =
+				await mockUserSyncServiceLogic.syncUserService('user_admin');
 
 			expect(regularUser.user.isPremium).toBe(false);
 			expect(premiumUser.user.isPremium).toBe(true);
@@ -337,46 +341,66 @@ describe('UserSyncController', () => {
 
 	describe('Controller Logic', () => {
 		it('should process syncUser request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.validSyncRequest);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.validSyncRequest,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockSyncUserService.mockResolvedValue(mockServiceResponses.successfulSync);
+			mockSyncUserService.mockResolvedValue(
+				mockServiceResponses.successfulSync,
+			);
 
 			await mockControllerLogic.processSyncUser(req, res);
 
 			expect(mockSyncUserService).toHaveBeenCalledWith('user_123');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulSync);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulSync,
+			);
 		});
 
 		it('should process syncUser request with premium user', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.premiumSyncRequest);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.premiumSyncRequest,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockSyncUserService.mockResolvedValue(mockServiceResponses.successfulPremiumSync);
+			mockSyncUserService.mockResolvedValue(
+				mockServiceResponses.successfulPremiumSync,
+			);
 
 			await mockControllerLogic.processSyncUser(req, res);
 
 			expect(mockSyncUserService).toHaveBeenCalledWith('user_456');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulPremiumSync);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulPremiumSync,
+			);
 		});
 
 		it('should process syncUser request with admin user', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.adminSyncRequest);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.adminSyncRequest,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockSyncUserService.mockResolvedValue(mockServiceResponses.successfulAdminSync);
+			mockSyncUserService.mockResolvedValue(
+				mockServiceResponses.successfulAdminSync,
+			);
 
 			await mockControllerLogic.processSyncUser(req, res);
 
 			expect(mockSyncUserService).toHaveBeenCalledWith('user_admin');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulAdminSync);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulAdminSync,
+			);
 		});
 
 		it('should process syncUser request with missing clerkUserId', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.missingClerkUserId);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.missingClerkUserId,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			await mockControllerLogic.processSyncUser(req, res);
@@ -387,7 +411,9 @@ describe('UserSyncController', () => {
 		});
 
 		it('should process syncUser request with empty clerkUserId', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.emptyClerkUserId);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.emptyClerkUserId,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			await mockControllerLogic.processSyncUser(req, res);
@@ -398,7 +424,9 @@ describe('UserSyncController', () => {
 		});
 
 		it('should process syncUser request with null clerkUserId', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.nullClerkUserId);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.nullClerkUserId,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			await mockControllerLogic.processSyncUser(req, res);
@@ -409,7 +437,9 @@ describe('UserSyncController', () => {
 		});
 
 		it('should process syncUser request with undefined clerkUserId', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.undefinedClerkUserId);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.undefinedClerkUserId,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			await mockControllerLogic.processSyncUser(req, res);
@@ -420,7 +450,9 @@ describe('UserSyncController', () => {
 		});
 
 		it('should process syncUser request with sync service error', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.validSyncRequest);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.validSyncRequest,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockSyncUserService.mockResolvedValue(mockServiceResponses.syncError);
@@ -429,11 +461,15 @@ describe('UserSyncController', () => {
 
 			expect(mockSyncUserService).toHaveBeenCalledWith('user_123');
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'User sync service failed' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'User sync service failed',
+			});
 		});
 
 		it('should process syncUser request with database error', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.validSyncRequest);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.validSyncRequest,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockSyncUserService.mockResolvedValue(mockServiceResponses.databaseError);
@@ -442,11 +478,15 @@ describe('UserSyncController', () => {
 
 			expect(mockSyncUserService).toHaveBeenCalledWith('user_123');
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Database connection failed' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Database connection failed',
+			});
 		});
 
 		it('should process syncUser request with Clerk API error', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.validSyncRequest);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.validSyncRequest,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockSyncUserService.mockResolvedValue(mockServiceResponses.clerkApiError);
@@ -459,20 +499,28 @@ describe('UserSyncController', () => {
 		});
 
 		it('should process syncUser request with validation error', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.validSyncRequest);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.validSyncRequest,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockSyncUserService.mockResolvedValue(mockServiceResponses.validationError);
+			mockSyncUserService.mockResolvedValue(
+				mockServiceResponses.validationError,
+			);
 
 			await mockControllerLogic.processSyncUser(req, res);
 
 			expect(mockSyncUserService).toHaveBeenCalledWith('user_123');
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Invalid clerkUserId format' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Invalid clerkUserId format',
+			});
 		});
 
 		it('should process syncUser request with user not found error', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.validSyncRequest);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.validSyncRequest,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockSyncUserService.mockResolvedValue(mockServiceResponses.userNotFound);
@@ -481,11 +529,15 @@ describe('UserSyncController', () => {
 
 			expect(mockSyncUserService).toHaveBeenCalledWith('user_123');
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'User not found in Clerk' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'User not found in Clerk',
+			});
 		});
 
 		it('should handle controller errors', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.missingClerkUserId);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.missingClerkUserId,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			await mockControllerLogic.processSyncUser(req, res);
@@ -495,23 +547,37 @@ describe('UserSyncController', () => {
 		});
 
 		it('should handle controller success', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockRequestData.validSyncRequest);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockRequestData.validSyncRequest,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockSyncUserService.mockResolvedValue(mockServiceResponses.successfulSync);
+			mockSyncUserService.mockResolvedValue(
+				mockServiceResponses.successfulSync,
+			);
 
 			await mockControllerLogic.processSyncUser(req, res);
 
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulSync);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulSync,
+			);
 		});
 
 		it('should validate controller input', async () => {
-			const validRequest = mockRequestResponseLogic.buildRequest(mockRequestData.validSyncRequest);
-			const invalidRequest = mockRequestResponseLogic.buildRequest(mockRequestData.missingClerkUserId);
+			const validRequest = mockRequestResponseLogic.buildRequest(
+				mockRequestData.validSyncRequest,
+			);
+			const invalidRequest = mockRequestResponseLogic.buildRequest(
+				mockRequestData.missingClerkUserId,
+			);
 
-			expect(mockRequestResponseLogic.validateControllerInput(validRequest)).toBe(true);
-			expect(mockRequestResponseLogic.validateControllerInput(invalidRequest)).toBe(false);
+			expect(
+				mockRequestResponseLogic.validateControllerInput(validRequest),
+			).toBe(true);
+			expect(
+				mockRequestResponseLogic.validateControllerInput(invalidRequest),
+			).toBe(false);
 		});
 	});
 });

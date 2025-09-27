@@ -70,7 +70,12 @@ describe('SeekerController', () => {
 
 		it('should handle seeker with multiple languages', async () => {
 			const seeker = mockSeekerData.seekerWithMultipleLanguages;
-			expect(seeker.languages).toEqual(['Arabic', 'Hebrew', 'English', 'French']);
+			expect(seeker.languages).toEqual([
+				'Arabic',
+				'Hebrew',
+				'English',
+				'French',
+			]);
 			expect(seeker.nativeLanguage).toBe('Arabic');
 		});
 
@@ -230,21 +235,25 @@ describe('SeekerController', () => {
 	describe('User Service Integration Logic', () => {
 		it('should call getUserByClerkIdService correctly', async () => {
 			const clerkUserId = 'user_123';
-			const result = await mockUserServiceLogic.getUserByClerkIdService(clerkUserId);
+			const result =
+				await mockUserServiceLogic.getUserByClerkIdService(clerkUserId);
 			expect(result).toBeDefined();
 			expect(result.clerkUserId).toBe('user_123');
 		});
 
 		it('should handle user not found', async () => {
 			const clerkUserId = 'nonexistent_user';
-			const result = await mockUserServiceLogic.getUserByClerkIdService(clerkUserId);
+			const result =
+				await mockUserServiceLogic.getUserByClerkIdService(clerkUserId);
 			expect(result).toBeDefined();
 			expect(result.clerkUserId).toBe('user_123'); // Returns regular user as fallback
 		});
 
 		it('should identify premium users correctly', async () => {
-			const premiumUser = await mockUserServiceLogic.getUserByClerkIdService('user_456');
-			const regularUser = await mockUserServiceLogic.getUserByClerkIdService('user_123');
+			const premiumUser =
+				await mockUserServiceLogic.getUserByClerkIdService('user_456');
+			const regularUser =
+				await mockUserServiceLogic.getUserByClerkIdService('user_123');
 			expect(premiumUser.isPremium).toBe(true);
 			expect(regularUser.isPremium).toBe(false);
 		});
@@ -252,7 +261,8 @@ describe('SeekerController', () => {
 
 	describe('Candidate Notification Integration Logic', () => {
 		it('should call checkAndSendNewCandidatesNotification correctly', async () => {
-			const result = await mockCandidateNotificationLogic.checkAndSendNewCandidatesNotification();
+			const result =
+				await mockCandidateNotificationLogic.checkAndSendNewCandidatesNotification();
 			expect(result).toBeDefined();
 			expect(result.success).toBe(true);
 			expect(result.sent).toBe(5);
@@ -260,26 +270,36 @@ describe('SeekerController', () => {
 
 		it('should handle notification errors gracefully', async () => {
 			// Simulate notification error
-			const originalLogic = mockCandidateNotificationLogic.checkAndSendNewCandidatesNotification;
-			mockCandidateNotificationLogic.checkAndSendNewCandidatesNotification = vi.fn().mockRejectedValue(mockErrors.notificationError);
-			
+			const originalLogic =
+				mockCandidateNotificationLogic.checkAndSendNewCandidatesNotification;
+			mockCandidateNotificationLogic.checkAndSendNewCandidatesNotification = vi
+				.fn()
+				.mockRejectedValue(mockErrors.notificationError);
+
 			try {
 				await mockCandidateNotificationLogic.checkAndSendNewCandidatesNotification();
 			} catch (error) {
 				expect(error).toBe(mockErrors.notificationError);
 			}
-			
+
 			// Restore original logic
-			mockCandidateNotificationLogic.checkAndSendNewCandidatesNotification = originalLogic;
+			mockCandidateNotificationLogic.checkAndSendNewCandidatesNotification =
+				originalLogic;
 		});
 	});
 
 	describe('Controller Logic', () => {
 		it('should process getSeekers request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, {}, { page: 1, limit: 10 });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{},
+				{ page: 1, limit: 10 },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetAllSeekers.mockResolvedValue(mockServiceResponses.successfulSeekerList);
+			mockGetAllSeekers.mockResolvedValue(
+				mockServiceResponses.successfulSeekerList,
+			);
 
 			await mockControllerLogic.processGetSeekers(req, res);
 
@@ -288,17 +308,25 @@ describe('SeekerController', () => {
 				limit: 10,
 				lang: 'ru',
 			});
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulSeekerList);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulSeekerList,
+			);
 		});
 
 		it('should process getSeekers request with languages array', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, {}, { 
-				languages: ['Hebrew', 'English'],
-				lang: 'he'
-			});
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{},
+				{
+					languages: ['Hebrew', 'English'],
+					lang: 'he',
+				},
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetAllSeekers.mockResolvedValue(mockServiceResponses.successfulSeekerList);
+			mockGetAllSeekers.mockResolvedValue(
+				mockServiceResponses.successfulSeekerList,
+			);
 
 			await mockControllerLogic.processGetSeekers(req, res);
 
@@ -309,13 +337,19 @@ describe('SeekerController', () => {
 		});
 
 		it('should process getSeekers request with single language', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, {}, { 
-				languages: 'Hebrew',
-				lang: 'he'
-			});
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{},
+				{
+					languages: 'Hebrew',
+					lang: 'he',
+				},
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetAllSeekers.mockResolvedValue(mockServiceResponses.successfulSeekerList);
+			mockGetAllSeekers.mockResolvedValue(
+				mockServiceResponses.successfulSeekerList,
+			);
 
 			await mockControllerLogic.processGetSeekers(req, res);
 
@@ -333,72 +367,114 @@ describe('SeekerController', () => {
 
 			await mockControllerLogic.processGetSeekers(req, res);
 
-			expect(console.error).toHaveBeenCalledWith('❌ Error getting seekers:', mockErrors.databaseError);
+			expect(console.error).toHaveBeenCalledWith(
+				'❌ Error getting seekers:',
+				mockErrors.databaseError,
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Ошибка получения соискателей' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка получения соискателей',
+			});
 		});
 
 		it('should process addSeeker request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockSeekerCreationData.validSeekerData);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockSeekerCreationData.validSeekerData,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockCreateSeeker.mockResolvedValue(mockServiceResponses.successfulSeekerCreation);
-			mockCheckAndSendNewCandidatesNotification.mockResolvedValue(mockServiceResponses.successfulNotification);
+			mockCreateSeeker.mockResolvedValue(
+				mockServiceResponses.successfulSeekerCreation,
+			);
+			mockCheckAndSendNewCandidatesNotification.mockResolvedValue(
+				mockServiceResponses.successfulNotification,
+			);
 
 			await mockControllerLogic.processAddSeeker(req, res);
 
-			expect(mockCreateSeeker).toHaveBeenCalledWith(mockSeekerCreationData.validSeekerData);
+			expect(mockCreateSeeker).toHaveBeenCalledWith(
+				mockSeekerCreationData.validSeekerData,
+			);
 			expect(mockCheckAndSendNewCandidatesNotification).toHaveBeenCalled();
 			expect(res.status).toHaveBeenCalledWith(201);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulSeekerCreation);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulSeekerCreation,
+			);
 		});
 
 		it('should process addSeeker request with notification error', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockSeekerCreationData.validSeekerData);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockSeekerCreationData.validSeekerData,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockCreateSeeker.mockResolvedValue(mockServiceResponses.successfulSeekerCreation);
-			mockCheckAndSendNewCandidatesNotification.mockRejectedValue(mockErrors.notificationError);
+			mockCreateSeeker.mockResolvedValue(
+				mockServiceResponses.successfulSeekerCreation,
+			);
+			mockCheckAndSendNewCandidatesNotification.mockRejectedValue(
+				mockErrors.notificationError,
+			);
 
 			await mockControllerLogic.processAddSeeker(req, res);
 
-			expect(mockCreateSeeker).toHaveBeenCalledWith(mockSeekerCreationData.validSeekerData);
+			expect(mockCreateSeeker).toHaveBeenCalledWith(
+				mockSeekerCreationData.validSeekerData,
+			);
 			expect(mockCheckAndSendNewCandidatesNotification).toHaveBeenCalled();
 			expect(console.error).toHaveBeenCalledWith(
 				'❌ Error triggering notification after adding candidate:',
-				mockErrors.notificationError
+				mockErrors.notificationError,
 			);
 			expect(res.status).toHaveBeenCalledWith(201);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulSeekerCreation);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulSeekerCreation,
+			);
 		});
 
 		it('should process addSeeker request with error', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockSeekerCreationData.validSeekerData);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockSeekerCreationData.validSeekerData,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockCreateSeeker.mockRejectedValue(mockErrors.validationError);
 
 			await mockControllerLogic.processAddSeeker(req, res);
 
-			expect(console.error).toHaveBeenCalledWith('Ошибка при добавлении соискателя:', mockErrors.validationError);
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка при добавлении соискателя:',
+				mockErrors.validationError,
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Ошибка добавления соискателя' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка добавления соискателя',
+			});
 		});
 
 		it('should process getSeekerBySlug request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { slug: 'john-doe' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ slug: 'john-doe' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetSeekerBySlug.mockResolvedValue(mockServiceResponses.successfulSeekerBySlug);
+			mockGetSeekerBySlug.mockResolvedValue(
+				mockServiceResponses.successfulSeekerBySlug,
+			);
 
 			await mockControllerLogic.processGetSeekerBySlug(req, res);
 
 			expect(mockGetSeekerBySlug).toHaveBeenCalledWith('john-doe');
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulSeekerBySlug);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulSeekerBySlug,
+			);
 		});
 
 		it('should process getSeekerBySlug request with seeker not found', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { slug: 'invalid-slug' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ slug: 'invalid-slug' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockGetSeekerBySlug.mockResolvedValue(null);
@@ -411,7 +487,10 @@ describe('SeekerController', () => {
 		});
 
 		it('should process getSeekerBySlug request with error', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { slug: 'john-doe' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ slug: 'john-doe' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockGetSeekerBySlug.mockRejectedValue(mockErrors.databaseError);
@@ -419,14 +498,18 @@ describe('SeekerController', () => {
 			await mockControllerLogic.processGetSeekerBySlug(req, res);
 
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Ошибка получения соискателя' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка получения соискателя',
+			});
 		});
 
 		it('should process deleteSeeker request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest({}, { id: '1' });
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockDeleteSeeker.mockResolvedValue(mockServiceResponses.successfulDeletion);
+			mockDeleteSeeker.mockResolvedValue(
+				mockServiceResponses.successfulDeletion,
+			);
 
 			await mockControllerLogic.processDeleteSeeker(req, res);
 
@@ -443,23 +526,31 @@ describe('SeekerController', () => {
 			await mockControllerLogic.processDeleteSeeker(req, res);
 
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Ошибка удаления соискателя' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка удаления соискателя',
+			});
 		});
 
 		it('should process getSeekerById request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { id: '1' }, { clerkUserId: 'user_456' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ id: '1' },
+				{ clerkUserId: 'user_456' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetSeekerById.mockResolvedValue(mockServiceResponses.successfulSeekerById);
+			mockGetSeekerById.mockResolvedValue(
+				mockServiceResponses.successfulSeekerById,
+			);
 			mockGetUserByClerkIdService.mockResolvedValue(mockUserData.premiumUser);
 
 			await mockControllerLogic.processGetSeekerById(req, res);
 
 			expect(mockGetSeekerById).toHaveBeenCalledWith(1);
 			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('user_456');
-			expect(res.json).toHaveBeenCalledWith({ 
-				...mockServiceResponses.successfulSeekerById, 
-				isPremium: true 
+			expect(res.json).toHaveBeenCalledWith({
+				...mockServiceResponses.successfulSeekerById,
+				isPremium: true,
 			});
 		});
 
@@ -490,15 +581,17 @@ describe('SeekerController', () => {
 			const req = mockRequestResponseLogic.buildRequest({}, { id: '1' });
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetSeekerById.mockResolvedValue(mockServiceResponses.successfulSeekerById);
+			mockGetSeekerById.mockResolvedValue(
+				mockServiceResponses.successfulSeekerById,
+			);
 
 			await mockControllerLogic.processGetSeekerById(req, res);
 
 			expect(mockGetSeekerById).toHaveBeenCalledWith(1);
 			expect(mockGetUserByClerkIdService).not.toHaveBeenCalled();
-			expect(res.json).toHaveBeenCalledWith({ 
-				...mockServiceResponses.successfulSeekerById, 
-				isPremium: false 
+			expect(res.json).toHaveBeenCalledWith({
+				...mockServiceResponses.successfulSeekerById,
+				isPremium: false,
 			});
 		});
 
@@ -510,9 +603,14 @@ describe('SeekerController', () => {
 
 			await mockControllerLogic.processGetSeekerById(req, res);
 
-			expect(console.error).toHaveBeenCalledWith('Ошибка получения соискателя по id:', mockErrors.databaseError);
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка получения соискателя по id:',
+				mockErrors.databaseError,
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Ошибка получения соискателя' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка получения соискателя',
+			});
 		});
 
 		it('should handle controller errors', async () => {
@@ -524,26 +622,38 @@ describe('SeekerController', () => {
 			await mockControllerLogic.processGetSeekers(req, res);
 
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Ошибка получения соискателей' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка получения соискателей',
+			});
 		});
 
 		it('should handle controller success', async () => {
 			const req = mockRequestResponseLogic.buildRequest({}, {}, {});
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetAllSeekers.mockResolvedValue(mockServiceResponses.successfulSeekerList);
+			mockGetAllSeekers.mockResolvedValue(
+				mockServiceResponses.successfulSeekerList,
+			);
 
 			await mockControllerLogic.processGetSeekers(req, res);
 
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulSeekerList);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulSeekerList,
+			);
 		});
 
 		it('should validate controller input', async () => {
-			const validRequest = mockRequestResponseLogic.buildRequest({ name: 'test' });
+			const validRequest = mockRequestResponseLogic.buildRequest({
+				name: 'test',
+			});
 			const invalidRequest = mockRequestResponseLogic.buildRequest({}, {}, {});
 
-			expect(mockRequestResponseLogic.validateControllerInput(validRequest)).toBe(true);
-			expect(mockRequestResponseLogic.validateControllerInput(invalidRequest)).toBe(true);
+			expect(
+				mockRequestResponseLogic.validateControllerInput(validRequest),
+			).toBe(true);
+			expect(
+				mockRequestResponseLogic.validateControllerInput(invalidRequest),
+			).toBe(true);
 		});
 	});
 });

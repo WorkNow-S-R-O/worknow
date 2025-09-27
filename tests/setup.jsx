@@ -1,7 +1,45 @@
 /* eslint-disable no-undef */
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
-import PropTypes from 'prop-types';
+const NodeUint8Array = globalThis.__NODE_UINT8_ARRAY__ || Uint8Array;
+const NodeTextEncoder = globalThis.__NODE_TEXT_ENCODER__ || globalThis.TextEncoder;
+const NodeTextDecoder = globalThis.__NODE_TEXT_DECODER__ || globalThis.TextDecoder;
+
+if (NodeTextEncoder) {
+	Object.defineProperty(globalThis, 'TextEncoder', {
+		value: NodeTextEncoder,
+		configurable: true,
+		writable: true,
+	});
+}
+
+if (NodeTextDecoder) {
+	Object.defineProperty(globalThis, 'TextDecoder', {
+		value: NodeTextDecoder,
+		configurable: true,
+		writable: true,
+	});
+}
+
+if (NodeUint8Array) {
+	Object.defineProperty(globalThis, 'Uint8Array', {
+		value: NodeUint8Array,
+		configurable: true,
+		writable: true,
+	});
+}
+
+const originalEncode = NodeTextEncoder?.prototype?.encode;
+if (originalEncode) {
+	NodeTextEncoder.prototype.encode = function patchedEncode(...args) {
+		const bytes = originalEncode.apply(this, args);
+		return bytes instanceof NodeUint8Array
+			? bytes
+			: NodeUint8Array ? new NodeUint8Array(bytes) : bytes;
+	};
+}
+
+const originalProcess = process;
 
 // Mock environment variables
 vi.stubEnv('VITE_API_URL', 'http://localhost:3001');
@@ -17,8 +55,17 @@ vi.stubEnv('RESEND_API_KEY', 're_test_resend_key');
 // Mock process.exit to prevent actual exit
 const mockProcessExit = vi.fn();
 vi.stubGlobal('process', {
-	...process,
+	...originalProcess,
 	exit: mockProcessExit,
+	listeners: (...args) => originalProcess.listeners(...args),
+	removeListener: (...args) => originalProcess.removeListener(...args),
+	addListener: (...args) => originalProcess.addListener(...args),
+	on: (...args) => originalProcess.on(...args),
+	off: (...args) =>
+		originalProcess.off ? originalProcess.off(...args) : undefined,
+	once: (...args) =>
+		originalProcess.once ? originalProcess.once(...args) : undefined,
+	removeAllListeners: (...args) => originalProcess.removeAllListeners(...args),
 });
 
 // Mock window.matchMedia
@@ -87,34 +134,6 @@ vi.mock('axios', () => ({
 		},
 	},
 }));
-
-// Mock react-router-dom
-vi.mock('react-router-dom', async () => {
-	const actual = await vi.importActual('react-router-dom');
-
-	const MockLink = ({ children, to, ...props }) => {
-		const Link = actual.Link;
-		return Link ? (
-			Link({ children, to, ...props })
-		) : (
-			<a href={to} {...props}>
-				{children}
-			</a>
-		);
-	};
-
-	MockLink.propTypes = {
-		children: PropTypes.node.isRequired,
-		to: PropTypes.string.isRequired,
-	};
-
-	return {
-		...actual,
-		useNavigate: () => vi.fn(),
-		useLocation: () => ({ pathname: '/', search: '', hash: '', state: null }),
-		Link: MockLink,
-	};
-});
 
 // Mock @clerk/clerk-react
 vi.mock('@clerk/clerk-react', () => ({

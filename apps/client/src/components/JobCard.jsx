@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { useIntlayer } from 'react-intlayer';
 import { useState } from 'react';
-import useFetchCities from '../hooks/useFetchCities';
-import useFetchCategories from '../hooks/useFetchCategories';
+import { useIntlayer } from 'react-intlayer';
+import { useFetchCategories, useFetchCities } from '@/hooks';
+import { useNavigate } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { ImageModal } from './ui';
@@ -15,8 +14,6 @@ const JobCard = ({ job }) => {
 	const { categories, loading: categoriesLoading } = useFetchCategories();
 	const [showImageModal, setShowImageModal] = useState(false);
 	const [imageLoading, setImageLoading] = useState(true);
-
-	// Получаем название города на нужном языке
 	let cityLabel = null;
 	if (job.cityId && Array.isArray(cities)) {
 		const city = cities.find(
@@ -25,7 +22,6 @@ const JobCard = ({ job }) => {
 		cityLabel = city?.label || city?.name || null;
 	}
 
-	// Получаем название категории на нужном языке
 	let categoryLabel = null;
 	if (job.categoryId && Array.isArray(categories)) {
 		const category = categories.find(
@@ -173,7 +169,9 @@ const JobCard = ({ job }) => {
 					onHide={handleCloseModal}
 					imageUrl={job.imageUrl}
 					imageAlt={job.title}
-					onImageError={() => {null}}
+					onImageError={() => {
+						null;
+					}}
 				/>
 			)}
 		</>

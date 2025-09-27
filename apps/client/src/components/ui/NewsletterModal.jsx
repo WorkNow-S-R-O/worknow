@@ -145,9 +145,7 @@ const NewsletterModal = ({ open, onClose }) => {
 
 			// Fetch cities and categories for filter options
 			Promise.all([
-				fetch(`${API_URL}/api/cities?lang=${locale}`).then((res) =>
-					res.json(),
-				),
+				fetch(`${API_URL}/api/cities?lang=${locale}`).then((res) => res.json()),
 				fetch(`${API_URL}/api/categories?lang=${locale}`).then((res) =>
 					res.json(),
 				),
@@ -313,7 +311,9 @@ const NewsletterModal = ({ open, onClose }) => {
 		if (checked) {
 			setSelectedEmployment([...selectedEmployment, option.value]);
 		} else {
-			setSelectedEmployment(selectedEmployment.filter((emp) => emp !== option.value));
+			setSelectedEmployment(
+				selectedEmployment.filter((emp) => emp !== option.value),
+			);
 		}
 	};
 
@@ -321,7 +321,9 @@ const NewsletterModal = ({ open, onClose }) => {
 		if (checked) {
 			setSelectedDocumentTypes([...selectedDocumentTypes, option.value]);
 		} else {
-			setSelectedDocumentTypes(selectedDocumentTypes.filter((doc) => doc !== option.value));
+			setSelectedDocumentTypes(
+				selectedDocumentTypes.filter((doc) => doc !== option.value),
+			);
 		}
 	};
 
@@ -329,7 +331,9 @@ const NewsletterModal = ({ open, onClose }) => {
 		if (checked) {
 			setSelectedLanguages([...selectedLanguages, languageValue]);
 		} else {
-			setSelectedLanguages(selectedLanguages.filter((lang) => lang !== languageValue));
+			setSelectedLanguages(
+				selectedLanguages.filter((lang) => lang !== languageValue),
+			);
 		}
 	};
 

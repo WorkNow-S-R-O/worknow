@@ -18,7 +18,7 @@ export const mockJobData = {
 		userId: 'user-123',
 		phone: '+972-50-123-4567',
 	},
-	
+
 	jobDataWithStringNumbers: {
 		title: 'Marketing Manager',
 		description: 'Marketing position in Tel Aviv',
@@ -28,7 +28,7 @@ export const mockJobData = {
 		userId: 'user-456',
 		phone: '+972-52-987-6543',
 	},
-	
+
 	jobDataWithNumericValues: {
 		title: 'Designer',
 		description: 'UI/UX Designer position',
@@ -38,7 +38,7 @@ export const mockJobData = {
 		userId: 'user-789',
 		phone: '+972-54-555-1234',
 	},
-	
+
 	invalidJobData: {
 		title: '',
 		description: '',
@@ -48,7 +48,7 @@ export const mockJobData = {
 		userId: '',
 		phone: '',
 	},
-	
+
 	jobDataMissingFields: {
 		title: 'Incomplete Job',
 		// Missing required fields

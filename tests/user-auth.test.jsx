@@ -13,7 +13,9 @@ vi.mock('react-intlayer', () => ({
 vi.mock('@clerk/clerk-react', () => ({
 	SignedIn: ({ children }) => <div data-testid="signed-in">{children}</div>,
 	SignedOut: ({ children }) => <div data-testid="signed-out">{children}</div>,
-	SignInButton: ({ children }) => <button data-testid="sign-in-button">{children}</button>,
+	SignInButton: ({ children }) => (
+		<button data-testid="sign-in-button">{children}</button>
+	),
 	UserButton: () => <div data-testid="user-button">User Button</div>,
 }));
 
@@ -53,7 +55,10 @@ describe('UserAuth Component', () => {
 		it('renders person icon', () => {
 			render(<UserAuth />);
 
-			const icon = screen.getByText('Sign In').closest('span').querySelector('i');
+			const icon = screen
+				.getByText('Sign In')
+				.closest('span')
+				.querySelector('i');
 			expect(icon).toHaveClass('bi', 'bi-person-circle', 'me-2');
 		});
 	});
@@ -66,7 +71,12 @@ describe('UserAuth Component', () => {
 			expect(container).toHaveClass('d-flex', 'ml-5');
 
 			const signInSpan = screen.getByText('Sign In').closest('span');
-			expect(signInSpan).toHaveClass('btn', 'btn-primary', 'd-flex', 'align-items-center');
+			expect(signInSpan).toHaveClass(
+				'btn',
+				'btn-primary',
+				'd-flex',
+				'align-items-center',
+			);
 			expect(signInSpan).not.toHaveClass('justify-content-center');
 		});
 
@@ -77,7 +87,13 @@ describe('UserAuth Component', () => {
 			expect(container).not.toHaveClass('d-flex', 'ml-5');
 
 			const signInSpan = screen.getByText('Sign In').closest('span');
-			expect(signInSpan).toHaveClass('btn', 'btn-primary', 'd-flex', 'align-items-center', 'justify-content-center');
+			expect(signInSpan).toHaveClass(
+				'btn',
+				'btn-primary',
+				'd-flex',
+				'align-items-center',
+				'justify-content-center',
+			);
 		});
 
 		it('handles isMobile prop correctly', () => {
@@ -121,20 +137,34 @@ describe('UserAuth Component', () => {
 			render(<UserAuth />);
 
 			const signInSpan = screen.getByText('Sign In').closest('span');
-			expect(signInSpan).toHaveClass('btn', 'btn-primary', 'd-flex', 'align-items-center');
+			expect(signInSpan).toHaveClass(
+				'btn',
+				'btn-primary',
+				'd-flex',
+				'align-items-center',
+			);
 		});
 
 		it('has proper button styling for mobile', () => {
 			render(<UserAuth isMobile={true} />);
 
 			const signInSpan = screen.getByText('Sign In').closest('span');
-			expect(signInSpan).toHaveClass('btn', 'btn-primary', 'd-flex', 'align-items-center', 'justify-content-center');
+			expect(signInSpan).toHaveClass(
+				'btn',
+				'btn-primary',
+				'd-flex',
+				'align-items-center',
+				'justify-content-center',
+			);
 		});
 
 		it('contains person icon', () => {
 			render(<UserAuth />);
 
-			const icon = screen.getByText('Sign In').closest('span').querySelector('i');
+			const icon = screen
+				.getByText('Sign In')
+				.closest('span')
+				.querySelector('i');
 			expect(icon).toHaveClass('bi-person-circle');
 		});
 
@@ -159,7 +189,7 @@ describe('UserAuth Component', () => {
 
 			const signedInWrapper = screen.getByTestId('signed-in');
 			const userButton = screen.getByTestId('user-button');
-			
+
 			expect(signedInWrapper).toContainElement(userButton);
 		});
 	});
@@ -227,7 +257,10 @@ describe('UserAuth Component', () => {
 		it('applies icon margin classes', () => {
 			render(<UserAuth />);
 
-			const icon = screen.getByText('Sign In').closest('span').querySelector('i');
+			const icon = screen
+				.getByText('Sign In')
+				.closest('span')
+				.querySelector('i');
 			expect(icon).toHaveClass('me-2');
 		});
 	});
@@ -257,9 +290,9 @@ describe('UserAuth Component', () => {
 			const { unmount } = render(<UserAuth />);
 
 			expect(screen.getByTestId('signed-out')).toBeInTheDocument();
-			
+
 			unmount();
-			
+
 			expect(screen.queryByTestId('signed-out')).not.toBeInTheDocument();
 		});
 
@@ -287,7 +320,10 @@ describe('UserAuth Component', () => {
 		it('has proper icon structure', () => {
 			render(<UserAuth />);
 
-			const icon = screen.getByText('Sign In').closest('span').querySelector('i');
+			const icon = screen
+				.getByText('Sign In')
+				.closest('span')
+				.querySelector('i');
 			expect(icon).toHaveClass('bi-person-circle');
 		});
 
@@ -298,4 +334,3 @@ describe('UserAuth Component', () => {
 		});
 	});
 });
-    

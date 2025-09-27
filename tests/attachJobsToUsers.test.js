@@ -170,7 +170,7 @@ describe('AttachJobsToUsers', () => {
 				'Test Job',
 				50000,
 				'Test Description',
-				'Test City'
+				'Test City',
 			);
 			expect(jobData.title).toBe('Test Job');
 			expect(jobData.salary).toBe(50000);
@@ -183,7 +183,7 @@ describe('AttachJobsToUsers', () => {
 		it('should validate job data correctly', async () => {
 			const validJob = mockJobData.validJob;
 			const invalidJob = { title: '', salary: null, description: '', city: '' };
-			
+
 			expect(mockRequestResponseLogic.validateJobData(validJob)).toBe(true);
 			expect(mockRequestResponseLogic.validateJobData(invalidJob)).toBe(false);
 		});
@@ -191,7 +191,7 @@ describe('AttachJobsToUsers', () => {
 		it('should validate user existence correctly', async () => {
 			const existingUser = mockUserData.existingFakeUser;
 			const nonExistingUser = null;
-			
+
 			expect(existingUser).toBeTruthy();
 			expect(nonExistingUser).toBeFalsy();
 		});
@@ -199,7 +199,7 @@ describe('AttachJobsToUsers', () => {
 		it('should validate city data correctly', async () => {
 			const validCity = mockCityData.existingCity;
 			const invalidCity = { id: null, name: '' };
-			
+
 			expect(validCity.id).toBeTruthy();
 			expect(validCity.name).toBeTruthy();
 			expect(invalidCity.id).toBeFalsy();
@@ -216,7 +216,7 @@ describe('AttachJobsToUsers', () => {
 				user: { connect: { id: 'user_123' } },
 				createdAt: new Date(),
 			};
-			
+
 			expect(validJobData.title).toBeTruthy();
 			expect(validJobData.salary).toBeTruthy();
 			expect(validJobData.description).toBeTruthy();
@@ -232,15 +232,17 @@ describe('AttachJobsToUsers', () => {
 			const where = { clerkUserId: { startsWith: 'user_' } };
 			const include = { jobs: true };
 			const orderBy = { jobs: { _count: 'asc' } };
-			
-			mockPrisma.user.findFirst.mockResolvedValue(mockUserData.existingFakeUser);
-			
+
+			mockPrisma.user.findFirst.mockResolvedValue(
+				mockUserData.existingFakeUser,
+			);
+
 			const result = await mockPrisma.user.findFirst({
 				where,
 				orderBy,
 				include,
 			});
-			
+
 			expect(mockPrisma.user.findFirst).toHaveBeenCalledWith({
 				where,
 				orderBy,
@@ -259,28 +261,30 @@ describe('AttachJobsToUsers', () => {
 				user: { connect: { id: 'user_123' } },
 				createdAt: new Date(),
 			};
-			
-			mockPrisma.job.create.mockResolvedValue(mockCreatedJobData.successfulJobCreation);
-			
+
+			mockPrisma.job.create.mockResolvedValue(
+				mockCreatedJobData.successfulJobCreation,
+			);
+
 			const result = await mockPrisma.job.create({ data: jobData });
-			
+
 			expect(mockPrisma.job.create).toHaveBeenCalledWith({ data: jobData });
 			expect(result).toBe(mockCreatedJobData.successfulJobCreation);
 		});
 
 		it('should handle user not found', async () => {
 			mockPrisma.user.findFirst.mockResolvedValue(null);
-			
+
 			const result = await mockPrisma.user.findFirst({
 				where: { clerkUserId: { startsWith: 'user_' } },
 			});
-			
+
 			expect(result).toBeNull();
 		});
 
 		it('should handle job creation errors', async () => {
 			mockPrisma.job.create.mockRejectedValue(mockErrors.jobCreationError);
-			
+
 			try {
 				await mockPrisma.job.create({
 					data: {
@@ -298,16 +302,16 @@ describe('AttachJobsToUsers', () => {
 	describe('Fake User Creation Logic', () => {
 		it('should call createFakeUser correctly', async () => {
 			mockCreateFakeUser.mockResolvedValue(mockUserData.newFakeUser);
-			
+
 			const result = await mockCreateFakeUser();
-			
+
 			expect(mockCreateFakeUser).toHaveBeenCalled();
 			expect(result).toBe(mockUserData.newFakeUser);
 		});
 
 		it('should handle fake user creation errors', async () => {
 			mockCreateFakeUser.mockRejectedValue(mockErrors.fakeUserCreationError);
-			
+
 			try {
 				await mockCreateFakeUser();
 			} catch (error) {
@@ -320,9 +324,9 @@ describe('AttachJobsToUsers', () => {
 		it('should generate phone number correctly', async () => {
 			const phoneNumber = '+972 123-456-789';
 			mockFaker.phone.number.mockReturnValue(phoneNumber);
-			
+
 			const result = mockFaker.phone.number('+972 ###-###-####');
-			
+
 			expect(mockFaker.phone.number).toHaveBeenCalledWith('+972 ###-###-####');
 			expect(result).toBe(phoneNumber);
 		});
@@ -331,8 +335,10 @@ describe('AttachJobsToUsers', () => {
 			mockFaker.phone.number.mockImplementation(() => {
 				throw new Error('Faker error');
 			});
-			
-			expect(() => mockFaker.phone.number('+972 ###-###-####')).toThrow('Faker error');
+
+			expect(() => mockFaker.phone.number('+972 ###-###-####')).toThrow(
+				'Faker error',
+			);
 		});
 	});
 
@@ -343,33 +349,35 @@ describe('AttachJobsToUsers', () => {
 				mockUserData.userWithJobs, // 1 job
 				mockUserData.userWithMultipleJobs, // 2 jobs
 			];
-			
+
 			// Mock findFirst to return user with least jobs
-			mockPrisma.user.findFirst.mockResolvedValue(mockUserData.existingFakeUser);
-			
+			mockPrisma.user.findFirst.mockResolvedValue(
+				mockUserData.existingFakeUser,
+			);
+
 			const result = await mockPrisma.user.findFirst({
 				where: { clerkUserId: { startsWith: 'user_' } },
 				orderBy: { jobs: { _count: 'asc' } },
 				include: { jobs: true },
 			});
-			
+
 			expect(result.jobs.length).toBe(0);
 		});
 
 		it('should create new user when no users found', async () => {
 			mockPrisma.user.findFirst.mockResolvedValue(null);
 			mockCreateFakeUser.mockResolvedValue(mockUserData.newFakeUser);
-			
+
 			let fakeUser = await mockPrisma.user.findFirst({
 				where: { clerkUserId: { startsWith: 'user_' } },
 				orderBy: { jobs: { _count: 'asc' } },
 				include: { jobs: true },
 			});
-			
+
 			if (!fakeUser) {
 				fakeUser = await mockCreateFakeUser();
 			}
-			
+
 			expect(fakeUser).toBe(mockUserData.newFakeUser);
 		});
 	});
@@ -410,12 +418,15 @@ describe('AttachJobsToUsers', () => {
 		it('should log error messages correctly', async () => {
 			const jobTitle = 'Test Job';
 			const errorMessage = 'Test error message';
-			
-			console.error(`❌ Ошибка при привязке вакансии "${jobTitle}":`, errorMessage);
-			
+
+			console.error(
+				`❌ Ошибка при привязке вакансии "${jobTitle}":`,
+				errorMessage,
+			);
+
 			expect(console.error).toHaveBeenCalledWith(
 				`❌ Ошибка при привязке вакансии "${jobTitle}":`,
-				errorMessage
+				errorMessage,
 			);
 		});
 
@@ -425,11 +436,11 @@ describe('AttachJobsToUsers', () => {
 				mockErrors.jobCreationError,
 				mockErrors.fakeUserCreationError,
 			];
-			
+
 			errors.forEach((error, index) => {
 				console.error(`Error ${index}:`, error.message);
 			});
-			
+
 			expect(console.error).toHaveBeenCalledTimes(errors.length);
 		});
 	});
@@ -437,45 +448,55 @@ describe('AttachJobsToUsers', () => {
 	describe('Controller Logic', () => {
 		it('should process assignJobsToFakeUsers successfully', async () => {
 			const jobs = mockJobData.jobList;
-			
-			mockPrisma.user.findFirst.mockResolvedValue(mockUserData.existingFakeUser);
-			mockPrisma.job.create.mockResolvedValue(mockCreatedJobData.successfulJobCreation);
-			
+
+			mockPrisma.user.findFirst.mockResolvedValue(
+				mockUserData.existingFakeUser,
+			);
+			mockPrisma.job.create.mockResolvedValue(
+				mockCreatedJobData.successfulJobCreation,
+			);
+
 			await mockControllerLogic.processAssignJobsToFakeUsers(jobs);
-			
+
 			expect(mockPrisma.user.findFirst).toHaveBeenCalledTimes(jobs.length);
 			expect(mockPrisma.job.create).toHaveBeenCalledTimes(jobs.length);
 		});
 
 		it('should process assignJobsToFakeUsers with empty job list', async () => {
 			const jobs = mockJobData.emptyJobList;
-			
+
 			await mockControllerLogic.processAssignJobsToFakeUsers(jobs);
-			
+
 			expect(mockPrisma.user.findFirst).not.toHaveBeenCalled();
 			expect(mockPrisma.job.create).not.toHaveBeenCalled();
 		});
 
 		it('should process assignJobsToFakeUsers with single job', async () => {
 			const jobs = mockJobData.singleJob;
-			
-			mockPrisma.user.findFirst.mockResolvedValue(mockUserData.existingFakeUser);
-			mockPrisma.job.create.mockResolvedValue(mockCreatedJobData.successfulJobCreation);
-			
+
+			mockPrisma.user.findFirst.mockResolvedValue(
+				mockUserData.existingFakeUser,
+			);
+			mockPrisma.job.create.mockResolvedValue(
+				mockCreatedJobData.successfulJobCreation,
+			);
+
 			await mockControllerLogic.processAssignJobsToFakeUsers(jobs);
-			
+
 			expect(mockPrisma.user.findFirst).toHaveBeenCalledTimes(1);
 			expect(mockPrisma.job.create).toHaveBeenCalledTimes(1);
 		});
 
 		it('should handle job processing errors gracefully', async () => {
 			const jobs = mockJobData.jobList;
-			
-			mockPrisma.user.findFirst.mockResolvedValue(mockUserData.existingFakeUser);
+
+			mockPrisma.user.findFirst.mockResolvedValue(
+				mockUserData.existingFakeUser,
+			);
 			mockPrisma.job.create.mockRejectedValue(mockErrors.jobCreationError);
-			
+
 			await mockControllerLogic.processAssignJobsToFakeUsers(jobs);
-			
+
 			expect(mockPrisma.user.findFirst).toHaveBeenCalledTimes(jobs.length);
 			expect(mockPrisma.job.create).toHaveBeenCalledTimes(jobs.length);
 			expect(console.error).toHaveBeenCalledTimes(jobs.length);
@@ -483,13 +504,15 @@ describe('AttachJobsToUsers', () => {
 
 		it('should create new fake user when none found', async () => {
 			const jobs = mockJobData.singleJob;
-			
+
 			mockPrisma.user.findFirst.mockResolvedValue(null);
 			mockCreateFakeUser.mockResolvedValue(mockUserData.newFakeUser);
-			mockPrisma.job.create.mockResolvedValue(mockCreatedJobData.successfulJobCreation);
-			
+			mockPrisma.job.create.mockResolvedValue(
+				mockCreatedJobData.successfulJobCreation,
+			);
+
 			await mockControllerLogic.processAssignJobsToFakeUsers(jobs);
-			
+
 			expect(mockPrisma.user.findFirst).toHaveBeenCalledTimes(1);
 			expect(mockCreateFakeUser).toHaveBeenCalledTimes(1);
 			expect(mockPrisma.job.create).toHaveBeenCalledTimes(1);
@@ -497,12 +520,12 @@ describe('AttachJobsToUsers', () => {
 
 		it('should handle fake user creation errors', async () => {
 			const jobs = mockJobData.singleJob;
-			
+
 			mockPrisma.user.findFirst.mockResolvedValue(null);
 			mockCreateFakeUser.mockRejectedValue(mockErrors.fakeUserCreationError);
-			
+
 			await mockControllerLogic.processAssignJobsToFakeUsers(jobs);
-			
+
 			expect(mockPrisma.user.findFirst).toHaveBeenCalledTimes(1);
 			expect(mockCreateFakeUser).toHaveBeenCalledTimes(1);
 			expect(console.error).toHaveBeenCalledTimes(1);
@@ -510,20 +533,20 @@ describe('AttachJobsToUsers', () => {
 
 		it('should handle mixed success and error scenarios', async () => {
 			const jobs = mockJobData.jobList;
-			
+
 			// First job succeeds, second fails, third succeeds
 			mockPrisma.user.findFirst
 				.mockResolvedValueOnce(mockUserData.existingFakeUser)
 				.mockResolvedValueOnce(mockUserData.existingFakeUser)
 				.mockResolvedValueOnce(mockUserData.existingFakeUser);
-			
+
 			mockPrisma.job.create
 				.mockResolvedValueOnce(mockCreatedJobData.successfulJobCreation)
 				.mockRejectedValueOnce(mockErrors.jobCreationError)
 				.mockResolvedValueOnce(mockCreatedJobData.successfulJobCreation);
-			
+
 			await mockControllerLogic.processAssignJobsToFakeUsers(jobs);
-			
+
 			expect(mockPrisma.user.findFirst).toHaveBeenCalledTimes(3);
 			expect(mockPrisma.job.create).toHaveBeenCalledTimes(3);
 			expect(console.error).toHaveBeenCalledTimes(1);
@@ -532,7 +555,7 @@ describe('AttachJobsToUsers', () => {
 		it('should validate controller input', async () => {
 			const validJobs = mockJobData.jobList;
 			const invalidJobs = null;
-			
+
 			expect(Array.isArray(validJobs)).toBe(true);
 			expect(Array.isArray(invalidJobs)).toBe(false);
 		});

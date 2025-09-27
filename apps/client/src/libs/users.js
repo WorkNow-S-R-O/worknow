@@ -1,7 +1,6 @@
 import prisma from './prisma';
-import { User } from '@prisma/client';
 
-export async function createUser(data: User) {
+export async function createUser(data) {
 	try {
 		const user = await prisma.user.create({ data });
 		return { user };
@@ -10,13 +9,7 @@ export async function createUser(data: User) {
 	}
 }
 
-export async function getUserById({
-	id,
-	clerkUserId,
-}: {
-	id?: string;
-	clerkUserId?: string;
-}) {
+export async function getUserById({ id, clerkUserId }) {
 	try {
 		if (!id && !clerkUserId) {
 			throw new Error('id or clerkUserId is required');
@@ -31,7 +24,7 @@ export async function getUserById({
 	}
 }
 
-export async function UpdateUser(id: string, data: Partial<User>) {
+export async function UpdateUser(id, data) {
 	try {
 		const user = await prisma.user.update({
 			where: { id },

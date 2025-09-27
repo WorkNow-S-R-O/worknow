@@ -36,7 +36,7 @@ describe('MessagesController', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetMessagesControllerMocks();
-		
+
 		// Mock console methods
 		console.error = vi.fn();
 		console.log = vi.fn();
@@ -115,37 +115,61 @@ describe('MessagesController', () => {
 		it('should validate create message data correctly', () => {
 			const validData = mockMessageCreationData.validMessageData;
 			const invalidData = mockMessageCreationData.invalidMessageData;
-			
-			expect(mockValidationLogic.validateCreateMessageData(validData).isValid).toBe(true);
-			expect(mockValidationLogic.validateCreateMessageData(invalidData).isValid).toBe(false);
-			expect(mockValidationLogic.validateCreateMessageData(invalidData).error).toBe('clerkUserId, title и body обязательны');
+
+			expect(
+				mockValidationLogic.validateCreateMessageData(validData).isValid,
+			).toBe(true);
+			expect(
+				mockValidationLogic.validateCreateMessageData(invalidData).isValid,
+			).toBe(false);
+			expect(
+				mockValidationLogic.validateCreateMessageData(invalidData).error,
+			).toBe('clerkUserId, title и body обязательны');
 		});
 
 		it('should validate get user messages data correctly', () => {
 			const validQuery = { clerkUserId: 'user123' };
 			const invalidQuery = {};
-			
-			expect(mockValidationLogic.validateGetUserMessagesData(validQuery).isValid).toBe(true);
-			expect(mockValidationLogic.validateGetUserMessagesData(invalidQuery).isValid).toBe(false);
-			expect(mockValidationLogic.validateGetUserMessagesData(invalidQuery).error).toBe('clerkUserId обязателен');
+
+			expect(
+				mockValidationLogic.validateGetUserMessagesData(validQuery).isValid,
+			).toBe(true);
+			expect(
+				mockValidationLogic.validateGetUserMessagesData(invalidQuery).isValid,
+			).toBe(false);
+			expect(
+				mockValidationLogic.validateGetUserMessagesData(invalidQuery).error,
+			).toBe('clerkUserId обязателен');
 		});
 
 		it('should validate broadcast data correctly', () => {
 			const validData = mockBroadcastData.validBroadcastData;
 			const invalidData = mockBroadcastData.invalidBroadcastData;
-			
-			expect(mockValidationLogic.validateBroadcastData(validData).isValid).toBe(true);
-			expect(mockValidationLogic.validateBroadcastData(invalidData).isValid).toBe(false);
-			expect(mockValidationLogic.validateBroadcastData(invalidData).error).toBe('title и body обязательны');
+
+			expect(mockValidationLogic.validateBroadcastData(validData).isValid).toBe(
+				true,
+			);
+			expect(
+				mockValidationLogic.validateBroadcastData(invalidData).isValid,
+			).toBe(false);
+			expect(mockValidationLogic.validateBroadcastData(invalidData).error).toBe(
+				'title и body обязательны',
+			);
 		});
 
 		it('should validate delete message data correctly', () => {
 			const validParams = { id: 'msg123' };
 			const invalidParams = {};
-			
-			expect(mockValidationLogic.validateDeleteMessageData(validParams).isValid).toBe(true);
-			expect(mockValidationLogic.validateDeleteMessageData(invalidParams).isValid).toBe(false);
-			expect(mockValidationLogic.validateDeleteMessageData(invalidParams).error).toBe('Message ID is required');
+
+			expect(
+				mockValidationLogic.validateDeleteMessageData(validParams).isValid,
+			).toBe(true);
+			expect(
+				mockValidationLogic.validateDeleteMessageData(invalidParams).isValid,
+			).toBe(false);
+			expect(
+				mockValidationLogic.validateDeleteMessageData(invalidParams).error,
+			).toBe('Message ID is required');
 		});
 
 		it('should validate message ID correctly', () => {
@@ -191,32 +215,45 @@ describe('MessagesController', () => {
 			const title = 'Test Title';
 			const body = 'Test Body';
 			const result = mockEmailProcessingLogic.processEmailContent(title, body);
-			
+
 			expect(result).toBe('<h2>Test Title</h2><p>Test Body</p>');
 		});
 
 		it('should process HTML email content correctly', () => {
 			const title = 'HTML Title';
 			const body = '<p>HTML Body</p>';
-			const result = mockEmailProcessingLogic.processHtmlEmailContent(title, body);
-			
+			const result = mockEmailProcessingLogic.processHtmlEmailContent(
+				title,
+				body,
+			);
+
 			expect(result).toBe('<h2>HTML Title</h2><p><p>HTML Body</p></p>');
 		});
 
 		it('should validate email content correctly', () => {
-			expect(mockEmailProcessingLogic.validateEmailContent('Valid content')).toBe(true);
+			expect(
+				mockEmailProcessingLogic.validateEmailContent('Valid content'),
+			).toBe(true);
 			expect(mockEmailProcessingLogic.validateEmailContent('')).toBe(false);
 			expect(mockEmailProcessingLogic.validateEmailContent(null)).toBe(false);
 		});
 
 		it('should format email subject correctly', () => {
-			expect(mockEmailProcessingLogic.formatEmailSubject('Test Subject')).toBe('Test Subject');
-			expect(mockEmailProcessingLogic.formatEmailSubject('')).toBe('No Subject');
-			expect(mockEmailProcessingLogic.formatEmailSubject(null)).toBe('No Subject');
+			expect(mockEmailProcessingLogic.formatEmailSubject('Test Subject')).toBe(
+				'Test Subject',
+			);
+			expect(mockEmailProcessingLogic.formatEmailSubject('')).toBe(
+				'No Subject',
+			);
+			expect(mockEmailProcessingLogic.formatEmailSubject(null)).toBe(
+				'No Subject',
+			);
 		});
 
 		it('should format email body correctly', () => {
-			expect(mockEmailProcessingLogic.formatEmailBody('Test Body')).toBe('Test Body');
+			expect(mockEmailProcessingLogic.formatEmailBody('Test Body')).toBe(
+				'Test Body',
+			);
 			expect(mockEmailProcessingLogic.formatEmailBody('')).toBe('No Content');
 			expect(mockEmailProcessingLogic.formatEmailBody(null)).toBe('No Content');
 		});
@@ -224,7 +261,7 @@ describe('MessagesController', () => {
 		it('should handle email error correctly', () => {
 			const error = mockErrors.emailError;
 			const result = mockEmailProcessingLogic.handleEmailError(error);
-			
+
 			expect(result.success).toBe(false);
 			expect(result.error).toBe(error.message);
 		});
@@ -232,7 +269,7 @@ describe('MessagesController', () => {
 		it('should handle email success correctly', () => {
 			const email = 'user@example.com';
 			const result = mockEmailProcessingLogic.handleEmailSuccess(email);
-			
+
 			expect(result.success).toBe(true);
 			expect(result.email).toBe(email);
 		});
@@ -242,10 +279,12 @@ describe('MessagesController', () => {
 		it('should process broadcast users correctly', () => {
 			const specificUsers = ['user123', 'user456'];
 			const allUsers = [];
-			
-			const specificResult = mockBroadcastProcessingLogic.processBroadcastUsers(specificUsers);
-			const allResult = mockBroadcastProcessingLogic.processBroadcastUsers(allUsers);
-			
+
+			const specificResult =
+				mockBroadcastProcessingLogic.processBroadcastUsers(specificUsers);
+			const allResult =
+				mockBroadcastProcessingLogic.processBroadcastUsers(allUsers);
+
 			expect(specificResult.specificUsers).toBe(true);
 			expect(specificResult.userIds).toEqual(specificUsers);
 			expect(allResult.specificUsers).toBe(false);
@@ -255,8 +294,11 @@ describe('MessagesController', () => {
 		it('should process broadcast message correctly', () => {
 			const title = 'Broadcast Title';
 			const body = 'Broadcast Body';
-			const result = mockBroadcastProcessingLogic.processBroadcastMessage(title, body);
-			
+			const result = mockBroadcastProcessingLogic.processBroadcastMessage(
+				title,
+				body,
+			);
+
 			expect(result.title).toBe(title);
 			expect(result.body).toBe(body);
 			expect(result.type).toBe('admin');
@@ -265,7 +307,7 @@ describe('MessagesController', () => {
 		it('should handle broadcast error correctly', () => {
 			const error = mockErrors.broadcastError;
 			const result = mockBroadcastProcessingLogic.handleBroadcastError(error);
-			
+
 			expect(result.success).toBe(false);
 			expect(result.error).toBe(error.message);
 		});
@@ -273,7 +315,7 @@ describe('MessagesController', () => {
 		it('should handle broadcast success correctly', () => {
 			const count = 5;
 			const result = mockBroadcastProcessingLogic.handleBroadcastSuccess(count);
-			
+
 			expect(result.success).toBe(true);
 			expect(result.count).toBe(count);
 		});
@@ -281,9 +323,13 @@ describe('MessagesController', () => {
 		it('should validate broadcast data correctly', () => {
 			const validData = mockBroadcastData.validBroadcastData;
 			const invalidData = mockBroadcastData.invalidBroadcastData;
-			
-			expect(mockBroadcastProcessingLogic.validateBroadcastData(validData).isValid).toBe(true);
-			expect(mockBroadcastProcessingLogic.validateBroadcastData(invalidData).isValid).toBe(false);
+
+			expect(
+				mockBroadcastProcessingLogic.validateBroadcastData(validData).isValid,
+			).toBe(true);
+			expect(
+				mockBroadcastProcessingLogic.validateBroadcastData(invalidData).isValid,
+			).toBe(false);
 		});
 	});
 
@@ -291,13 +337,13 @@ describe('MessagesController', () => {
 		it('should process createMessage request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockPrisma.message.create.mockResolvedValue(mockMessageData.validMessage);
 			mockPrisma.user.findUnique.mockResolvedValue(mockUserData.validUser);
 			mockSendEmail.mockResolvedValue(true);
-			
+
 			await mockControllerLogic.processCreateMessageRequest(req, res);
-			
+
 			expect(mockPrisma.message.create).toHaveBeenCalledWith({
 				data: {
 					clerkUserId: 'user123',
@@ -313,7 +359,7 @@ describe('MessagesController', () => {
 			expect(mockSendEmail).toHaveBeenCalledWith(
 				'user@example.com',
 				'Test Message',
-				'<h2>Test Message</h2><p>This is a test message body.</p>'
+				'<h2>Test Message</h2><p>This is a test message body.</p>',
 			);
 			expect(res.json).toHaveBeenCalledWith({
 				success: true,
@@ -328,9 +374,9 @@ describe('MessagesController', () => {
 				body: 'This is a test message body.',
 			});
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			await mockControllerLogic.processCreateMessageRequest(req, res);
-			
+
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'clerkUserId, title и body обязательны',
@@ -340,12 +386,15 @@ describe('MessagesController', () => {
 		it('should process createMessage request with database error', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockPrisma.message.create.mockRejectedValue(mockErrors.databaseError);
-			
+
 			await mockControllerLogic.processCreateMessageRequest(req, res);
-			
-			expect(console.error).toHaveBeenCalledWith('Ошибка создания сообщения:', mockErrors.databaseError);
+
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка создания сообщения:',
+				mockErrors.databaseError,
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Ошибка создания сообщения',
@@ -355,14 +404,14 @@ describe('MessagesController', () => {
 		it('should process getUserMessages request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockPrisma.message.findMany.mockResolvedValue([
 				mockMessageData.validMessage,
 				mockMessageData.adminMessage,
 			]);
-			
+
 			await mockControllerLogic.processGetUserMessagesRequest(req, res);
-			
+
 			expect(mockPrisma.message.findMany).toHaveBeenCalledWith({
 				where: { clerkUserId: 'user123' },
 				orderBy: { createdAt: 'desc' },
@@ -373,11 +422,15 @@ describe('MessagesController', () => {
 		});
 
 		it('should process getUserMessages request with missing clerkUserId', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, {}, { clerkUserId: '' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{},
+				{ clerkUserId: '' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			await mockControllerLogic.processGetUserMessagesRequest(req, res);
-			
+
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'clerkUserId обязателен',
@@ -387,11 +440,11 @@ describe('MessagesController', () => {
 		it('should process markMessageRead request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockPrisma.message.update.mockResolvedValue(mockMessageData.readMessage);
-			
+
 			await mockControllerLogic.processMarkMessageReadRequest(req, res);
-			
+
 			expect(mockPrisma.message.update).toHaveBeenCalledWith({
 				where: { id: 'msg123' },
 				data: { isRead: true },
@@ -403,18 +456,20 @@ describe('MessagesController', () => {
 		});
 
 		it('should process broadcastMessage request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockBroadcastData.validBroadcastData);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockBroadcastData.validBroadcastData,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockPrisma.user.findMany.mockResolvedValue([
 				mockUserData.validUser,
 				mockUserData.premiumUser,
 			]);
 			mockPrisma.message.create.mockResolvedValue(mockMessageData.validMessage);
 			mockSendEmail.mockResolvedValue(true);
-			
+
 			await mockControllerLogic.processBroadcastMessageRequest(req, res);
-			
+
 			expect(mockPrisma.user.findMany).toHaveBeenCalledWith({
 				where: { clerkUserId: { in: ['user123', 'user456', 'user789'] } },
 			});
@@ -425,9 +480,11 @@ describe('MessagesController', () => {
 		});
 
 		it('should process broadcastMessage request to all users', async () => {
-			const req = mockRequestResponseLogic.buildRequest(mockBroadcastData.broadcastToAllUsers);
+			const req = mockRequestResponseLogic.buildRequest(
+				mockBroadcastData.broadcastToAllUsers,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockPrisma.user.findMany.mockResolvedValue([
 				mockUserData.validUser,
 				mockUserData.premiumUser,
@@ -435,9 +492,9 @@ describe('MessagesController', () => {
 			]);
 			mockPrisma.message.create.mockResolvedValue(mockMessageData.validMessage);
 			mockSendEmail.mockResolvedValue(true);
-			
+
 			await mockControllerLogic.processBroadcastMessageRequest(req, res);
-			
+
 			expect(mockPrisma.user.findMany).toHaveBeenCalledWith();
 			expect(res.json).toHaveBeenCalledWith({
 				success: true,
@@ -448,13 +505,18 @@ describe('MessagesController', () => {
 		it('should process deleteMessage request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockPrisma.message.findUnique.mockResolvedValue(mockMessageData.validMessage);
+
+			mockPrisma.message.findUnique.mockResolvedValue(
+				mockMessageData.validMessage,
+			);
 			mockPrisma.message.delete.mockResolvedValue(mockMessageData.validMessage);
-			
+
 			await mockControllerLogic.processDeleteMessageRequest(req, res);
-			
-			expect(console.log).toHaveBeenCalledWith('Attempting to delete message with ID:', 'msg123');
+
+			expect(console.log).toHaveBeenCalledWith(
+				'Attempting to delete message with ID:',
+				'msg123',
+			);
 			expect(mockPrisma.message.findUnique).toHaveBeenCalledWith({
 				where: { id: 'msg123' },
 			});
@@ -462,7 +524,10 @@ describe('MessagesController', () => {
 			expect(mockPrisma.message.delete).toHaveBeenCalledWith({
 				where: { id: 'msg123' },
 			});
-			expect(console.log).toHaveBeenCalledWith('Message deleted successfully:', mockMessageData.validMessage.id);
+			expect(console.log).toHaveBeenCalledWith(
+				'Message deleted successfully:',
+				mockMessageData.validMessage.id,
+			);
 			expect(res.json).toHaveBeenCalledWith({
 				success: true,
 				message: 'Сообщение удалено',
@@ -472,9 +537,9 @@ describe('MessagesController', () => {
 		it('should process deleteMessage request with missing ID', async () => {
 			const req = mockRequestResponseLogic.buildRequest({}, { id: '' });
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			await mockControllerLogic.processDeleteMessageRequest(req, res);
-			
+
 			expect(console.log).toHaveBeenCalledWith('No message ID provided');
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({
@@ -485,12 +550,15 @@ describe('MessagesController', () => {
 		it('should process deleteMessage request with message not found', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockPrisma.message.findUnique.mockResolvedValue(null);
-			
+
 			await mockControllerLogic.processDeleteMessageRequest(req, res);
-			
-			expect(console.log).toHaveBeenCalledWith('Message not found for ID:', 'msg123');
+
+			expect(console.log).toHaveBeenCalledWith(
+				'Message not found for ID:',
+				'msg123',
+			);
 			expect(res.status).toHaveBeenCalledWith(404);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Сообщение не найдено',
@@ -500,13 +568,18 @@ describe('MessagesController', () => {
 		it('should process deleteMessage request with Prisma P2025 error', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockPrisma.message.findUnique.mockResolvedValue(mockMessageData.validMessage);
+
+			mockPrisma.message.findUnique.mockResolvedValue(
+				mockMessageData.validMessage,
+			);
 			mockPrisma.message.delete.mockRejectedValue(mockPrismaErrors.p2025Error);
-			
+
 			await mockControllerLogic.processDeleteMessageRequest(req, res);
-			
-			expect(console.error).toHaveBeenCalledWith('Error in deleteMessage:', mockPrismaErrors.p2025Error);
+
+			expect(console.error).toHaveBeenCalledWith(
+				'Error in deleteMessage:',
+				mockPrismaErrors.p2025Error,
+			);
 			expect(res.status).toHaveBeenCalledWith(404);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Сообщение не найдено',
@@ -516,13 +589,18 @@ describe('MessagesController', () => {
 		it('should process deleteMessage request with Prisma P2002 error', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockPrisma.message.findUnique.mockResolvedValue(mockMessageData.validMessage);
+
+			mockPrisma.message.findUnique.mockResolvedValue(
+				mockMessageData.validMessage,
+			);
 			mockPrisma.message.delete.mockRejectedValue(mockPrismaErrors.p2002Error);
-			
+
 			await mockControllerLogic.processDeleteMessageRequest(req, res);
-			
-			expect(console.error).toHaveBeenCalledWith('Error in deleteMessage:', mockPrismaErrors.p2002Error);
+
+			expect(console.error).toHaveBeenCalledWith(
+				'Error in deleteMessage:',
+				mockPrismaErrors.p2002Error,
+			);
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Invalid message ID format',
@@ -532,10 +610,17 @@ describe('MessagesController', () => {
 		it('should handle controller errors', () => {
 			const error = mockErrors.databaseError;
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockControllerLogic.handleControllerError(error, res, 'создания сообщения');
-			
-			expect(console.error).toHaveBeenCalledWith('Ошибка создания сообщения:', 'Database connection failed');
+
+			mockControllerLogic.handleControllerError(
+				error,
+				res,
+				'создания сообщения',
+			);
+
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка создания сообщения:',
+				'Database connection failed',
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Ошибка создания сообщения',
@@ -546,9 +631,9 @@ describe('MessagesController', () => {
 		it('should handle controller success', () => {
 			const data = mockMessageData.validMessage;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.handleControllerSuccess(data, res);
-			
+
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
@@ -556,19 +641,27 @@ describe('MessagesController', () => {
 		it('should handle controller success with custom status code', () => {
 			const data = mockServiceResponses.successCreateMessageResponse;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.handleControllerSuccess(data, res, 201);
-			
+
 			expect(res.status).toHaveBeenCalledWith(201);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
 
 		it('should validate controller input', () => {
-			const validRequest = { body: { title: 'Test Message' }, params: {}, query: {} };
+			const validRequest = {
+				body: { title: 'Test Message' },
+				params: {},
+				query: {},
+			};
 			const invalidRequest = { body: {} };
-			
-			expect(mockControllerLogic.validateControllerInput(validRequest)).toBe(true);
-			expect(mockControllerLogic.validateControllerInput(invalidRequest)).toBe(false);
+
+			expect(mockControllerLogic.validateControllerInput(validRequest)).toBe(
+				true,
+			);
+			expect(mockControllerLogic.validateControllerInput(invalidRequest)).toBe(
+				false,
+			);
 		});
 	});
 });

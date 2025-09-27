@@ -28,7 +28,7 @@ describe('JobCreateService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetJobCreateMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
@@ -114,7 +114,9 @@ describe('JobCreateService', () => {
 			const result = validateTitle('Software Developer');
 
 			expect(result).toBe(false);
-			expect(mockValidationFunctions.containsBadWords).toHaveBeenCalledWith('Software Developer');
+			expect(mockValidationFunctions.containsBadWords).toHaveBeenCalledWith(
+				'Software Developer',
+			);
 		});
 
 		it('should validate description for bad words', () => {
@@ -123,10 +125,14 @@ describe('JobCreateService', () => {
 			};
 
 			mockValidationFunctions.containsBadWords.mockReturnValue(false);
-			const result = validateDescription('Develop and maintain software applications.');
+			const result = validateDescription(
+				'Develop and maintain software applications.',
+			);
 
 			expect(result).toBe(false);
-			expect(mockValidationFunctions.containsBadWords).toHaveBeenCalledWith('Develop and maintain software applications.');
+			expect(mockValidationFunctions.containsBadWords).toHaveBeenCalledWith(
+				'Develop and maintain software applications.',
+			);
 		});
 
 		it('should validate title for links', () => {
@@ -138,7 +144,9 @@ describe('JobCreateService', () => {
 			const result = validateTitle('Software Developer');
 
 			expect(result).toBe(false);
-			expect(mockValidationFunctions.containsLinks).toHaveBeenCalledWith('Software Developer');
+			expect(mockValidationFunctions.containsLinks).toHaveBeenCalledWith(
+				'Software Developer',
+			);
 		});
 
 		it('should validate description for links', () => {
@@ -147,16 +155,20 @@ describe('JobCreateService', () => {
 			};
 
 			mockValidationFunctions.containsLinks.mockReturnValue(false);
-			const result = validateDescription('Develop and maintain software applications.');
+			const result = validateDescription(
+				'Develop and maintain software applications.',
+			);
 
 			expect(result).toBe(false);
-			expect(mockValidationFunctions.containsLinks).toHaveBeenCalledWith('Develop and maintain software applications.');
+			expect(mockValidationFunctions.containsLinks).toHaveBeenCalledWith(
+				'Develop and maintain software applications.',
+			);
 		});
 
 		it('should collect validation errors', () => {
 			const collectValidationErrors = (title, description) => {
 				const errors = [];
-				
+
 				if (mockValidationFunctions.containsBadWords(title)) {
 					errors.push(mockErrorMessages.badWordsTitle);
 				}
@@ -169,7 +181,7 @@ describe('JobCreateService', () => {
 				if (mockValidationFunctions.containsLinks(description)) {
 					errors.push(mockErrorMessages.linksDescription);
 				}
-				
+
 				return errors;
 			};
 
@@ -324,12 +336,18 @@ describe('JobCreateService', () => {
 			const compareJobs = (existingJob, newJob) => {
 				const titleSimilarity = mockStringSimilarity.highSimilarity;
 				const descriptionSimilarity = mockStringSimilarity.highSimilarity;
-				
+
 				return titleSimilarity > 0.9 && descriptionSimilarity > 0.9;
 			};
 
-			const existingJob = { title: 'Software Developer', description: 'Develop software' };
-			const newJob = { title: 'Software Developer', description: 'Develop software' };
+			const existingJob = {
+				title: 'Software Developer',
+				description: 'Develop software',
+			};
+			const newJob = {
+				title: 'Software Developer',
+				description: 'Develop software',
+			};
 
 			const isDuplicate = compareJobs(existingJob, newJob);
 
@@ -356,7 +374,9 @@ describe('JobCreateService', () => {
 
 		it('should determine max jobs for free user', () => {
 			const determineMaxJobs = (isPremium) => {
-				return isPremium ? mockJobLimits.MAX_JOBS_PREMIUM_USER : mockJobLimits.MAX_JOBS_FREE_USER;
+				return isPremium
+					? mockJobLimits.MAX_JOBS_PREMIUM_USER
+					: mockJobLimits.MAX_JOBS_FREE_USER;
 			};
 
 			expect(determineMaxJobs(false)).toBe(5);
@@ -491,7 +511,10 @@ describe('JobCreateService', () => {
 
 			const sendNotification = async (user, job) => {
 				if (user.isPremium) {
-					await mockTelegramNotification.sendNewJobNotificationToTelegram(user, job);
+					await mockTelegramNotification.sendNewJobNotificationToTelegram(
+						user,
+						job,
+					);
 				}
 			};
 
@@ -504,7 +527,10 @@ describe('JobCreateService', () => {
 
 			const sendNotification = async (user, job) => {
 				if (user.isPremium) {
-					await mockTelegramNotification.sendNewJobNotificationToTelegram(user, job);
+					await mockTelegramNotification.sendNewJobNotificationToTelegram(
+						user,
+						job,
+					);
 				}
 			};
 
@@ -517,7 +543,10 @@ describe('JobCreateService', () => {
 
 			const sendNotification = async (user, job) => {
 				if (user.isPremium || user.premiumDeluxe) {
-					await mockTelegramNotification.sendNewJobNotificationToTelegram(user, job);
+					await mockTelegramNotification.sendNewJobNotificationToTelegram(
+						user,
+						job,
+					);
 				}
 			};
 
@@ -528,7 +557,10 @@ describe('JobCreateService', () => {
 	describe('Console Logging Tests', () => {
 		it('should log job creation with imageUrl', () => {
 			const logJobCreation = (imageUrl) => {
-				console.log('🔍 createJobService - Creating job with imageUrl:', imageUrl);
+				console.log(
+					'🔍 createJobService - Creating job with imageUrl:',
+					imageUrl,
+				);
 			};
 
 			const imageUrl = 'https://example.com/job-image.jpg';
@@ -597,7 +629,9 @@ describe('JobCreateService', () => {
 			const result = handleDuplicateJob();
 
 			expect(result).toHaveProperty('error');
-			expect(result.error).toBe('Ваше объявление похоже на уже существующее. Измените заголовок или описание.');
+			expect(result.error).toBe(
+				'Ваше объявление похоже на уже существующее. Измените заголовок или описание.',
+			);
 		});
 
 		it('should handle free user limit error', () => {
@@ -674,7 +708,9 @@ describe('JobCreateService', () => {
 			const result = mockServiceResponses.duplicateJob;
 
 			expect(result).toHaveProperty('error');
-			expect(result.error).toBe('Ваше объявление похоже на уже существующее. Измените заголовок или описание.');
+			expect(result.error).toBe(
+				'Ваше объявление похоже на уже существующее. Измените заголовок или описание.',
+			);
 		});
 
 		it('should return free user limit response', () => {
@@ -785,7 +821,7 @@ describe('JobCreateService', () => {
 			expect(Array.isArray(existingJobs)).toBe(true);
 			expect(existingJobs).toHaveLength(2);
 
-			existingJobs.forEach(job => {
+			existingJobs.forEach((job) => {
 				expect(job).toHaveProperty('title');
 				expect(job).toHaveProperty('description');
 				expect(typeof job.title).toBe('string');
@@ -869,9 +905,13 @@ describe('JobCreateService', () => {
 		it('should have valid mock Telegram notification', () => {
 			const telegramNotification = mockTelegramNotification;
 
-			expect(telegramNotification).toHaveProperty('sendNewJobNotificationToTelegram');
+			expect(telegramNotification).toHaveProperty(
+				'sendNewJobNotificationToTelegram',
+			);
 
-			expect(typeof telegramNotification.sendNewJobNotificationToTelegram).toBe('function');
+			expect(typeof telegramNotification.sendNewJobNotificationToTelegram).toBe(
+				'function',
+			);
 		});
 
 		it('should have valid mock errors', () => {
@@ -884,7 +924,7 @@ describe('JobCreateService', () => {
 			expect(errors).toHaveProperty('permissionError');
 			expect(errors).toHaveProperty('networkError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -903,7 +943,7 @@ describe('JobCreateService', () => {
 			expect(errorMessages).toHaveProperty('linksTitle');
 			expect(errorMessages).toHaveProperty('linksDescription');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});

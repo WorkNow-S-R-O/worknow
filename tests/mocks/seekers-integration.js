@@ -42,7 +42,8 @@ vi.mock('../../apps/api/services/getUserByClerkService.js', () => ({
 }));
 
 vi.mock('../../apps/api/services/candidateNotificationService.js', () => ({
-	checkAndSendNewCandidatesNotification: mockCheckAndSendNewCandidatesNotification,
+	checkAndSendNewCandidatesNotification:
+		mockCheckAndSendNewCandidatesNotification,
 }));
 
 vi.mock('../../apps/api/services/notificationService.js', () => ({
@@ -126,8 +127,6 @@ export const resetSeekersMocks = () => {
 	mockGetUserByClerkIdService.mockClear();
 	mockCheckAndSendNewCandidatesNotification.mockClear();
 	mockSendSingleCandidateNotification.mockClear();
-	
+
 	vi.clearAllMocks();
 };
-
-

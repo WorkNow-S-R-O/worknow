@@ -3,7 +3,7 @@ import Select from 'react-select';
 import Skeleton from 'react-loading-skeleton';
 import { useIntlayer } from 'react-intlayer';
 import { useState } from 'react';
-import ImageUpload from '../ui/ImageUpload';
+import { ImageUpload } from '@/components/ui';
 
 export const JobFormFields = ({
 	register,

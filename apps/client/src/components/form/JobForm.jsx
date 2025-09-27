@@ -1,17 +1,23 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { jobSchema } from './JobFormSchema';
-import useFetchCities from '../../hooks/useFetchCities';
-import useFetchCategories from '../../hooks/useFetchCategories';
-import { createJob, createJobWithImage } from 'libs/jobs';
-import { showToastError, showToastSuccess } from 'libs/utils';
-import JobFormFields from './JobFormFields';
 import { useIntlayer } from 'react-intlayer';
-import { useLoadingProgress } from '../../hooks/useLoadingProgress';
+
+import { JobFormFields, jobSchema } from '@/components/form';
+import {
+	useFetchCategories,
+	useFetchCities,
+	useLoadingProgress,
+} from '@/hooks';
+import {
+	createJob,
+	createJobWithImage,
+	showToastError,
+	showToastSuccess,
+} from '@/libs';
 
 const JobForm = ({ onJobCreated }) => {
 	const { user } = useUser();

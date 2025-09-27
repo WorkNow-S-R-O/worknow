@@ -72,11 +72,9 @@ export const createCheckoutSession = async (req, res) => {
 			error.type === 'StripeInvalidRequestError' &&
 			error.message.includes('price')
 		) {
-			res
-				.status(400)
-				.json({
-					error: `Неверный price ID: ${priceId}. Пожалуйста, обратитесь к администратору.`,
-				});
+			res.status(400).json({
+				error: `Неверный price ID: ${priceId}. Пожалуйста, обратитесь к администратору.`,
+			});
 		} else {
 			res.status(500).json({ error: 'Ошибка при создании сессии' });
 		}

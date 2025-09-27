@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import {
+	render,
+	screen,
+	fireEvent,
+	waitFor,
+	act,
+} from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import NewsletterModal from '../apps/client/src/components/ui/NewsletterModal';
@@ -137,7 +143,7 @@ describe('NewsletterModal Component', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockWindowWidth(1024); // Desktop by default
-		
+
 		// Mock fetch to return cities and categories immediately
 		mockFetch.mockImplementation((url) => {
 			if (url.includes('/api/cities')) {
@@ -154,7 +160,7 @@ describe('NewsletterModal Component', () => {
 				json: () => Promise.resolve([]),
 			});
 		});
-		
+
 		// Mock axios responses
 		vi.mocked(axios.get).mockResolvedValue({
 			data: { isSubscribed: false, subscriber: null },
@@ -169,9 +175,11 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			expect(screen.getByText('Newsletter Subscription')).toBeInTheDocument();
-			expect(screen.getByText('Subscribe to our newsletter')).toBeInTheDocument();
+			expect(
+				screen.getByText('Subscribe to our newsletter'),
+			).toBeInTheDocument();
 			expect(screen.getByText('First Name')).toBeInTheDocument();
 			expect(screen.getByText('Last Name')).toBeInTheDocument();
 			expect(screen.getByText('Email')).toBeInTheDocument();
@@ -179,15 +187,17 @@ describe('NewsletterModal Component', () => {
 
 		it('does not render when closed', () => {
 			render(<NewsletterModal {...defaultProps} open={false} />);
-			
-			expect(screen.queryByText('Newsletter Subscription')).not.toBeInTheDocument();
+
+			expect(
+				screen.queryByText('Newsletter Subscription'),
+			).not.toBeInTheDocument();
 		});
 
 		it('renders with logged-in user email pre-filled', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			await waitFor(() => {
 				const emailInput = screen.getByDisplayValue('test@example.com');
 				expect(emailInput).toBeInTheDocument();
@@ -199,7 +209,7 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const title = screen.getByText('Newsletter Subscription');
 			expect(title).toHaveClass('mb-4', 'font-size-10');
 		});
@@ -209,7 +219,7 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const closeButton = screen.getByLabelText('Close');
 			expect(closeButton).toHaveStyle({ fontSize: '15px' });
 		});
@@ -220,12 +230,12 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const firstNameInput = screen.getByPlaceholderText('Enter first name');
 			await act(async () => {
 				fireEvent.change(firstNameInput, { target: { value: 'John' } });
 			});
-			
+
 			expect(firstNameInput.value).toBe('John');
 		});
 
@@ -233,12 +243,12 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const lastNameInput = screen.getByPlaceholderText('Enter last name');
 			await act(async () => {
 				fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
 			});
-			
+
 			expect(lastNameInput.value).toBe('Doe');
 		});
 
@@ -246,12 +256,12 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const emailInput = screen.getByPlaceholderText('Enter email');
 			await act(async () => {
 				fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
 			});
-			
+
 			// Just check that the input exists and can be interacted with
 			expect(emailInput).toBeInTheDocument();
 			expect(emailInput.type).toBe('email');
@@ -261,12 +271,12 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const subscribeButton = screen.getByText('Subscribe');
 			await act(async () => {
 				fireEvent.click(subscribeButton);
 			});
-			
+
 			// Just check that the button text changes or the component is still rendered
 			expect(subscribeButton).toBeInTheDocument();
 		});
@@ -277,128 +287,157 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				expect(screen.getByText('Получать уведомления о кандидатах:')).toBeInTheDocument();
-			}, { timeout: 2000 });
+
+			await waitFor(
+				() => {
+					expect(
+						screen.getByText('Получать уведомления о кандидатах:'),
+					).toBeInTheDocument();
+				},
+				{ timeout: 2000 },
+			);
 		});
 
 		it('renders filter options', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				expect(screen.getByText('City')).toBeInTheDocument();
-				expect(screen.getByText('Category')).toBeInTheDocument();
-				expect(screen.getByText('Employment')).toBeInTheDocument();
-			}, { timeout: 2000 });
+
+			await waitFor(
+				() => {
+					expect(screen.getByText('City')).toBeInTheDocument();
+					expect(screen.getByText('Category')).toBeInTheDocument();
+					expect(screen.getByText('Employment')).toBeInTheDocument();
+				},
+				{ timeout: 2000 },
+			);
 		});
 
 		it('handles city selection', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				const cityCheckbox = screen.queryByLabelText('Tel Aviv');
-				if (cityCheckbox) {
-					act(() => {
-						fireEvent.click(cityCheckbox);
-					});
-					expect(cityCheckbox).toBeChecked();
-				}
-			}, { timeout: 2000 });
+
+			await waitFor(
+				() => {
+					const cityCheckbox = screen.queryByLabelText('Tel Aviv');
+					if (cityCheckbox) {
+						act(() => {
+							fireEvent.click(cityCheckbox);
+						});
+						expect(cityCheckbox).toBeChecked();
+					}
+				},
+				{ timeout: 2000 },
+			);
 		});
 
 		it('handles category selection', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				const categoryCheckbox = screen.queryByLabelText('Construction');
-				if (categoryCheckbox) {
-					act(() => {
-						fireEvent.click(categoryCheckbox);
-					});
-					expect(categoryCheckbox).toBeChecked();
-				}
-			}, { timeout: 2000 });
+
+			await waitFor(
+				() => {
+					const categoryCheckbox = screen.queryByLabelText('Construction');
+					if (categoryCheckbox) {
+						act(() => {
+							fireEvent.click(categoryCheckbox);
+						});
+						expect(categoryCheckbox).toBeChecked();
+					}
+				},
+				{ timeout: 2000 },
+			);
 		});
 
 		it('handles employment type selection', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				const employmentCheckbox = screen.queryByLabelText('Full Time');
-				if (employmentCheckbox) {
-					expect(employmentCheckbox).toBeInTheDocument();
-				}
-			}, { timeout: 2000 });
+
+			await waitFor(
+				() => {
+					const employmentCheckbox = screen.queryByLabelText('Full Time');
+					if (employmentCheckbox) {
+						expect(employmentCheckbox).toBeInTheDocument();
+					}
+				},
+				{ timeout: 2000 },
+			);
 		});
 
 		it('handles document type selection', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				const documentCheckbox = screen.queryByLabelText('Visa B1');
-				if (documentCheckbox) {
-					expect(documentCheckbox).toBeInTheDocument();
-				}
-			}, { timeout: 2000 });
+
+			await waitFor(
+				() => {
+					const documentCheckbox = screen.queryByLabelText('Visa B1');
+					if (documentCheckbox) {
+						expect(documentCheckbox).toBeInTheDocument();
+					}
+				},
+				{ timeout: 2000 },
+			);
 		});
 
 		it('handles gender selection', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				const genderCheckbox = screen.queryByLabelText('Male');
-				if (genderCheckbox) {
-					act(() => {
-						fireEvent.click(genderCheckbox);
-					});
-					expect(genderCheckbox).toBeChecked();
-				}
-			}, { timeout: 2000 });
+
+			await waitFor(
+				() => {
+					const genderCheckbox = screen.queryByLabelText('Male');
+					if (genderCheckbox) {
+						act(() => {
+							fireEvent.click(genderCheckbox);
+						});
+						expect(genderCheckbox).toBeChecked();
+					}
+				},
+				{ timeout: 2000 },
+			);
 		});
 
 		it('handles language selection', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				const languageCheckbox = screen.queryByLabelText('Russian');
-				if (languageCheckbox) {
-					act(() => {
-						fireEvent.click(languageCheckbox);
-					});
-					expect(languageCheckbox).toBeChecked();
-				}
-			}, { timeout: 2000 });
+
+			await waitFor(
+				() => {
+					const languageCheckbox = screen.queryByLabelText('Russian');
+					if (languageCheckbox) {
+						act(() => {
+							fireEvent.click(languageCheckbox);
+						});
+						expect(languageCheckbox).toBeChecked();
+					}
+				},
+				{ timeout: 2000 },
+			);
 		});
 
 		it('handles demanded checkbox', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				const demandedCheckbox = screen.queryByLabelText('In Demand');
-				if (demandedCheckbox) {
-					act(() => {
-						fireEvent.click(demandedCheckbox);
-					});
-					expect(demandedCheckbox).toBeChecked();
-				}
-			}, { timeout: 2000 });
+
+			await waitFor(
+				() => {
+					const demandedCheckbox = screen.queryByLabelText('In Demand');
+					if (demandedCheckbox) {
+						act(() => {
+							fireEvent.click(demandedCheckbox);
+						});
+						expect(demandedCheckbox).toBeChecked();
+					}
+				},
+				{ timeout: 2000 },
+			);
 		});
 	});
 
@@ -407,69 +446,78 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const emailInput = screen.getByPlaceholderText('Enter email');
 			await act(async () => {
 				fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 			});
-			
+
 			const subscribeButton = screen.getByText('Subscribe');
 			await act(async () => {
 				fireEvent.click(subscribeButton);
 			});
-			
-			await waitFor(() => {
-				expect(vi.mocked(axios.post)).toHaveBeenCalledWith(
-					'http://localhost:3001/api/newsletter/send-verification',
-					expect.objectContaining({
-						email: 'test@example.com',
-					})
-				);
-			}, { timeout: 3000 });
+
+			await waitFor(
+				() => {
+					expect(vi.mocked(axios.post)).toHaveBeenCalledWith(
+						'http://localhost:3001/api/newsletter/send-verification',
+						expect.objectContaining({
+							email: 'test@example.com',
+						}),
+					);
+				},
+				{ timeout: 3000 },
+			);
 		});
 
 		it('shows verification modal after successful subscription', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const emailInput = screen.getByPlaceholderText('Enter email');
 			await act(async () => {
 				fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 			});
-			
+
 			const subscribeButton = screen.getByText('Subscribe');
 			await act(async () => {
 				fireEvent.click(subscribeButton);
 			});
-			
-			await waitFor(() => {
-				expect(screen.getByTestId('verification-modal')).toBeInTheDocument();
-			}, { timeout: 3000 });
+
+			await waitFor(
+				() => {
+					expect(screen.getByTestId('verification-modal')).toBeInTheDocument();
+				},
+				{ timeout: 3000 },
+			);
 		});
 
 		it('handles verification success', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const emailInput = screen.getByPlaceholderText('Enter email');
 			await act(async () => {
 				fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 			});
-			
+
 			const subscribeButton = screen.getByText('Subscribe');
 			await act(async () => {
 				fireEvent.click(subscribeButton);
 			});
-			
-			await waitFor(() => {
-				const verifyButton = screen.getByText('Verify');
-				act(() => {
-					fireEvent.click(verifyButton);
-				});
-			}, { timeout: 3000 });
-			
+
+			await waitFor(
+				() => {
+					const verifyButton = screen.getByText('Verify');
+					act(() => {
+						fireEvent.click(verifyButton);
+					});
+				},
+				{ timeout: 3000 },
+			);
+
 			expect(defaultProps.onClose).toHaveBeenCalled();
 		});
 
@@ -477,7 +525,7 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			// Just check that the component renders
 			expect(screen.getByText('Newsletter Subscription')).toBeInTheDocument();
 		});
@@ -486,7 +534,7 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			// Just check that the component renders
 			expect(screen.getByText('Newsletter Subscription')).toBeInTheDocument();
 		});
@@ -497,12 +545,12 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const closeButton = screen.getByLabelText('Close');
 			await act(async () => {
 				fireEvent.click(closeButton);
 			});
-			
+
 			expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
 		});
 
@@ -511,7 +559,7 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			// Just check that the component renders
 			expect(screen.getByText('Newsletter Subscription')).toBeInTheDocument();
 		});
@@ -521,12 +569,12 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			// Click outside the modal
 			await act(async () => {
 				fireEvent.mouseDown(document.body);
 			});
-			
+
 			expect(defaultProps.onClose).not.toHaveBeenCalled();
 		});
 
@@ -535,7 +583,7 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			// Just check that the component renders
 			expect(screen.getByText('Newsletter Subscription')).toBeInTheDocument();
 		});
@@ -544,41 +592,44 @@ describe('NewsletterModal Component', () => {
 	describe('Error Handling', () => {
 		it('handles subscription API errors', async () => {
 			vi.mocked(axios.post).mockRejectedValue(new Error('API Error'));
-			
+
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const emailInput = screen.getByPlaceholderText('Enter email');
 			await act(async () => {
 				fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 			});
-			
+
 			const subscribeButton = screen.getByText('Subscribe');
 			await act(async () => {
 				fireEvent.click(subscribeButton);
 			});
-			
-			await waitFor(() => {
-				expect(vi.mocked(axios.post)).toHaveBeenCalled();
-			}, { timeout: 3000 });
+
+			await waitFor(
+				() => {
+					expect(vi.mocked(axios.post)).toHaveBeenCalled();
+				},
+				{ timeout: 3000 },
+			);
 		});
 
 		it('handles email validation errors', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const emailInput = screen.getByPlaceholderText('Enter email');
 			await act(async () => {
 				fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
 			});
-			
+
 			const subscribeButton = screen.getByText('Subscribe');
 			await act(async () => {
 				fireEvent.click(subscribeButton);
 			});
-			
+
 			// Just check that the button is still enabled (validation failed)
 			expect(subscribeButton).toBeInTheDocument();
 		});
@@ -587,12 +638,12 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const subscribeButton = screen.getByText('Subscribe');
 			await act(async () => {
 				fireEvent.click(subscribeButton);
 			});
-			
+
 			// Just check that the button is still enabled (validation failed)
 			expect(subscribeButton).toBeInTheDocument();
 		});
@@ -602,7 +653,7 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			// Just check that the component renders despite potential errors
 			expect(screen.getByText('Newsletter Subscription')).toBeInTheDocument();
 		});
@@ -613,47 +664,56 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				expect(mockFetch).toHaveBeenCalledWith(
-					'http://localhost:3001/api/cities?lang=en'
-				);
-				expect(mockFetch).toHaveBeenCalledWith(
-					'http://localhost:3001/api/categories?lang=en'
-				);
-			}, { timeout: 3000 });
+
+			await waitFor(
+				() => {
+					expect(mockFetch).toHaveBeenCalledWith(
+						'http://localhost:3001/api/cities?lang=en',
+					);
+					expect(mockFetch).toHaveBeenCalledWith(
+						'http://localhost:3001/api/categories?lang=en',
+					);
+				},
+				{ timeout: 3000 },
+			);
 		});
 
 		it('checks subscription status for logged-in user', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
-			await waitFor(() => {
-				expect(vi.mocked(axios.get)).toHaveBeenCalledWith(
-					'http://localhost:3001/api/newsletter/check-subscription',
-					{ params: { email: 'test@example.com' } }
-				);
-			}, { timeout: 3000 });
+
+			await waitFor(
+				() => {
+					expect(vi.mocked(axios.get)).toHaveBeenCalledWith(
+						'http://localhost:3001/api/newsletter/check-subscription',
+						{ params: { email: 'test@example.com' } },
+					);
+				},
+				{ timeout: 3000 },
+			);
 		});
 
 		it('checks subscription status when email changes', async () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const emailInput = screen.getByPlaceholderText('Enter email');
 			await act(async () => {
 				fireEvent.change(emailInput, { target: { value: 'new@example.com' } });
 			});
-			
+
 			// Wait for the debounced API call
-			await waitFor(() => {
-				expect(vi.mocked(axios.get)).toHaveBeenCalledWith(
-					'http://localhost:3001/api/newsletter/check-subscription',
-					{ params: { email: 'new@example.com' } }
-				);
-			}, { timeout: 2000 });
+			await waitFor(
+				() => {
+					expect(vi.mocked(axios.get)).toHaveBeenCalledWith(
+						'http://localhost:3001/api/newsletter/check-subscription',
+						{ params: { email: 'new@example.com' } },
+					);
+				},
+				{ timeout: 2000 },
+			);
 		});
 	});
 
@@ -662,7 +722,7 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			expect(screen.getByText('Newsletter Subscription')).toBeInTheDocument();
 		});
 
@@ -670,7 +730,7 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			expect(screen.getByText('Newsletter Subscription')).toBeInTheDocument();
 		});
 
@@ -678,25 +738,30 @@ describe('NewsletterModal Component', () => {
 			await act(async () => {
 				render(<NewsletterModal {...defaultProps} />);
 			});
-			
+
 			const emailInput = screen.getByPlaceholderText('Enter email');
 			await act(async () => {
 				fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
 			});
-			
+
 			const subscribeButton = screen.getByText('Subscribe');
 			await act(async () => {
 				fireEvent.click(subscribeButton);
 			});
-			
-			await waitFor(() => {
-				const closeButton = screen.getByText('Close');
-				act(() => {
-					fireEvent.click(closeButton);
-				});
-			}, { timeout: 3000 });
-			
-			expect(screen.queryByTestId('verification-modal')).not.toBeInTheDocument();
+
+			await waitFor(
+				() => {
+					const closeButton = screen.getByText('Close');
+					act(() => {
+						fireEvent.click(closeButton);
+					});
+				},
+				{ timeout: 3000 },
+			);
+
+			expect(
+				screen.queryByTestId('verification-modal'),
+			).not.toBeInTheDocument();
 		});
 	});
 });

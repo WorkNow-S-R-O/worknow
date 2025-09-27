@@ -105,14 +105,16 @@ describe('UserController', () => {
 	describe('User Service Integration Logic', () => {
 		it('should call getUserByClerkIdService correctly', async () => {
 			const clerkUserId = 'user_123';
-			const result = await mockUserServiceLogic.getUserByClerkIdService(clerkUserId);
+			const result =
+				await mockUserServiceLogic.getUserByClerkIdService(clerkUserId);
 			expect(result).toBeDefined();
 			expect(result.clerkUserId).toBe('user_123');
 		});
 
 		it('should handle user not found', async () => {
 			const clerkUserId = 'nonexistent_user';
-			const result = await mockUserServiceLogic.getUserByClerkIdService(clerkUserId);
+			const result =
+				await mockUserServiceLogic.getUserByClerkIdService(clerkUserId);
 			expect(result).toBeNull();
 		});
 
@@ -135,10 +137,14 @@ describe('UserController', () => {
 		});
 
 		it('should return different user types correctly', async () => {
-			const regularUser = await mockUserServiceLogic.getUserByClerkIdService('user_123');
-			const premiumUser = await mockUserServiceLogic.getUserByClerkIdService('user_456');
-			const deluxeUser = await mockUserServiceLogic.getUserByClerkIdService('user_789');
-			const adminUser = await mockUserServiceLogic.getUserByClerkIdService('user_admin');
+			const regularUser =
+				await mockUserServiceLogic.getUserByClerkIdService('user_123');
+			const premiumUser =
+				await mockUserServiceLogic.getUserByClerkIdService('user_456');
+			const deluxeUser =
+				await mockUserServiceLogic.getUserByClerkIdService('user_789');
+			const adminUser =
+				await mockUserServiceLogic.getUserByClerkIdService('user_admin');
 
 			expect(regularUser.isPremium).toBe(false);
 			expect(premiumUser.isPremium).toBe(true);
@@ -225,59 +231,92 @@ describe('UserController', () => {
 
 	describe('Controller Logic', () => {
 		it('should process getUserByClerkId request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'user_123' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'user_123' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.successfulUserLookup);
+			mockGetUserByClerkIdService.mockResolvedValue(
+				mockServiceResponses.successfulUserLookup,
+			);
 
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
 			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('user_123');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulUserLookup);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulUserLookup,
+			);
 		});
 
 		it('should process getUserByClerkId request with premium user', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'user_456' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'user_456' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.successfulPremiumUserLookup);
+			mockGetUserByClerkIdService.mockResolvedValue(
+				mockServiceResponses.successfulPremiumUserLookup,
+			);
 
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
 			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('user_456');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulPremiumUserLookup);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulPremiumUserLookup,
+			);
 		});
 
 		it('should process getUserByClerkId request with admin user', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'user_admin' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'user_admin' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.successfulAdminUserLookup);
+			mockGetUserByClerkIdService.mockResolvedValue(
+				mockServiceResponses.successfulAdminUserLookup,
+			);
 
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
 			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('user_admin');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulAdminUserLookup);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulAdminUserLookup,
+			);
 		});
 
 		it('should process getUserByClerkId request with user not found', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'nonexistent_user' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'nonexistent_user' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.userNotFound);
+			mockGetUserByClerkIdService.mockResolvedValue(
+				mockServiceResponses.userNotFound,
+			);
 
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
-			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('nonexistent_user');
+			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith(
+				'nonexistent_user',
+			);
 			expect(res.status).toHaveBeenCalledWith(404);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Пользователь не найден' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Пользователь не найден',
+			});
 		});
 
 		it('should process getUserByClerkId request with database error', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'error_user' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'error_user' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockGetUserByClerkIdService.mockRejectedValue(mockErrors.databaseError);
@@ -285,7 +324,10 @@ describe('UserController', () => {
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
 			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('error_user');
-			expect(console.error).toHaveBeenCalledWith('Ошибка получения данных пользователя:', mockErrors.databaseError.message);
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка получения данных пользователя:',
+				mockErrors.databaseError.message,
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Ошибка получения данных пользователя',
@@ -294,15 +336,23 @@ describe('UserController', () => {
 		});
 
 		it('should process getUserByClerkId request with service error', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'service_error_user' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'service_error_user' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockGetUserByClerkIdService.mockRejectedValue(mockErrors.serviceError);
 
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
-			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('service_error_user');
-			expect(console.error).toHaveBeenCalledWith('Ошибка получения данных пользователя:', mockErrors.serviceError.message);
+			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith(
+				'service_error_user',
+			);
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка получения данных пользователя:',
+				mockErrors.serviceError.message,
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Ошибка получения данных пользователя',
@@ -311,7 +361,10 @@ describe('UserController', () => {
 		});
 
 		it('should process getUserByClerkId request with validation error', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: '' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: '' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockGetUserByClerkIdService.mockRejectedValue(mockErrors.validationError);
@@ -319,7 +372,10 @@ describe('UserController', () => {
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
 			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('');
-			expect(console.error).toHaveBeenCalledWith('Ошибка получения данных пользователя:', mockErrors.validationError.message);
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка получения данных пользователя:',
+				mockErrors.validationError.message,
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Ошибка получения данных пользователя',
@@ -328,20 +384,30 @@ describe('UserController', () => {
 		});
 
 		it('should process getUserByClerkId request with user without image', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'user_no_image' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'user_no_image' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.successfulUserWithoutImageLookup);
+			mockGetUserByClerkIdService.mockResolvedValue(
+				mockServiceResponses.successfulUserWithoutImageLookup,
+			);
 
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
 			expect(mockGetUserByClerkIdService).toHaveBeenCalledWith('user_no_image');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulUserWithoutImageLookup);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulUserWithoutImageLookup,
+			);
 		});
 
 		it('should handle controller errors', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'error_user' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'error_user' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
 			mockGetUserByClerkIdService.mockRejectedValue(mockErrors.databaseError);
@@ -356,23 +422,37 @@ describe('UserController', () => {
 		});
 
 		it('should handle controller success', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'user_123' });
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'user_123' },
+			);
 			const res = mockRequestResponseLogic.buildResponse();
 
-			mockGetUserByClerkIdService.mockResolvedValue(mockServiceResponses.successfulUserLookup);
+			mockGetUserByClerkIdService.mockResolvedValue(
+				mockServiceResponses.successfulUserLookup,
+			);
 
 			await mockControllerLogic.processGetUserByClerkId(req, res);
 
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successfulUserLookup);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successfulUserLookup,
+			);
 		});
 
 		it('should validate controller input', async () => {
-			const validRequest = mockRequestResponseLogic.buildRequest({}, { clerkUserId: 'user_123' });
+			const validRequest = mockRequestResponseLogic.buildRequest(
+				{},
+				{ clerkUserId: 'user_123' },
+			);
 			const invalidRequest = mockRequestResponseLogic.buildRequest({}, {});
 
-			expect(mockRequestResponseLogic.validateControllerInput(validRequest)).toBe(true);
-			expect(mockRequestResponseLogic.validateControllerInput(invalidRequest)).toBe(false);
+			expect(
+				mockRequestResponseLogic.validateControllerInput(validRequest),
+			).toBe(true);
+			expect(
+				mockRequestResponseLogic.validateControllerInput(invalidRequest),
+			).toBe(false);
 		});
 	});
 });

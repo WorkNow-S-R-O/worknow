@@ -70,7 +70,10 @@ export const mockUserDeletedEvent = {
 
 export const mockServiceResponses = {
 	processWebhookSuccess: { success: true },
-	processWebhookError: { error: 'Ошибка обработки вебхука', details: 'Database error' },
+	processWebhookError: {
+		error: 'Ошибка обработки вебхука',
+		details: 'Database error',
+	},
 };
 
 export const mockErrors = {
@@ -84,8 +87,6 @@ export const resetWebhookMocks = () => {
 	mockPrismaInstance.user.upsert.mockClear();
 	mockPrismaInstance.user.delete.mockClear();
 	mockProcessClerkWebhookService.mockClear();
-	
+
 	vi.clearAllMocks();
 };
-
-

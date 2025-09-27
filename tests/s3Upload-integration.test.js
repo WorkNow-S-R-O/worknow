@@ -55,18 +55,18 @@ describe('S3Upload Integration Tests - Simple', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console methods to avoid noise in tests
 		console.log = vi.fn();
 		console.error = vi.fn();
 		console.warn = vi.fn();
-		
+
 		// Mock environment variables
 		process.env.AWS_S3_BUCKET_NAME = 'test-bucket';
 		process.env.AWS_REGION = 'us-east-1';
 		process.env.AWS_ACCESS_KEY_ID = 'test-access-key';
 		process.env.AWS_SECRET_ACCESS_KEY = 'test-secret-key';
-		
+
 		// Reset all mocks
 		resetS3UploadMocks();
 	});
@@ -92,7 +92,6 @@ describe('S3Upload Integration Tests - Simple', () => {
 				// Assert
 				expect(response.body).toEqual(mockServiceResponses.testConfigSuccess);
 			});
-
 		});
 
 		describe('Error Handling', () => {
@@ -119,7 +118,9 @@ describe('S3Upload Integration Tests - Simple', () => {
 		describe('Successful Requests', () => {
 			it('should upload test image to S3', async () => {
 				// Arrange
-				mockUploadToS3.mockResolvedValue('https://s3.amazonaws.com/bucket/jobs/uuid.jpg');
+				mockUploadToS3.mockResolvedValue(
+					'https://s3.amazonaws.com/bucket/jobs/uuid.jpg',
+				);
 
 				// Act
 				const response = await request(app)
@@ -132,13 +133,13 @@ describe('S3Upload Integration Tests - Simple', () => {
 					success: true,
 					imageUrl: 'https://s3.amazonaws.com/bucket/jobs/uuid.jpg',
 					filename: 'test-image.jpg',
-					size: 1024
+					size: 1024,
 				});
 				expect(mockUploadToS3).toHaveBeenCalledWith(
 					expect.any(Buffer),
 					'test-image.jpg',
 					'image/jpeg',
-					'test'
+					'test',
 				);
 			});
 		});
@@ -177,7 +178,9 @@ describe('S3Upload Integration Tests - Simple', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.testModerationSuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.testModerationSuccess,
+				);
 				expect(mockModerateImage).toHaveBeenCalledWith(expect.any(Buffer));
 			});
 
@@ -240,12 +243,14 @@ describe('S3Upload Integration Tests - Simple', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.jobImageUploadSuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.jobImageUploadSuccess,
+				);
 				expect(mockUploadToS3WithModeration).toHaveBeenCalledWith(
 					expect.any(Buffer),
 					'test-image.jpg',
 					'image/jpeg',
-					'jobs'
+					'jobs',
 				);
 			});
 
@@ -305,7 +310,9 @@ describe('S3Upload Integration Tests - Simple', () => {
 
 				// Assert
 				expect(response.body).toEqual(mockServiceResponses.deleteImageSuccess);
-				expect(mockDeleteFromS3).toHaveBeenCalledWith('https://s3.amazonaws.com/bucket/jobs/uuid.jpg');
+				expect(mockDeleteFromS3).toHaveBeenCalledWith(
+					'https://s3.amazonaws.com/bucket/jobs/uuid.jpg',
+				);
 			});
 		});
 
@@ -361,23 +368,17 @@ describe('S3Upload Integration Tests - Simple', () => {
 	describe('HTTP Method Validation', () => {
 		it('should reject GET requests for POST endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.get('/api/s3-upload/test-upload')
-				.expect(404);
+			await request(app).get('/api/s3-upload/test-upload').expect(404);
 		});
 
 		it('should reject PUT requests for POST endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.put('/api/s3-upload/test-upload')
-				.expect(404);
+			await request(app).put('/api/s3-upload/test-upload').expect(404);
 		});
 
 		it('should reject DELETE requests for POST endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.delete('/api/s3-upload/test-upload')
-				.expect(404);
+			await request(app).delete('/api/s3-upload/test-upload').expect(404);
 		});
 	});
 

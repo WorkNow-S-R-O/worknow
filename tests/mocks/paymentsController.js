@@ -48,9 +48,15 @@ export const mockServices = {
 export const mockFetch = vi.fn();
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
-export const mockConsoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
+export const mockConsoleWarn = vi
+	.spyOn(console, 'warn')
+	.mockImplementation(() => {});
 
 // Mock request and response objects
 export const mockRequest = {
@@ -91,7 +97,7 @@ export const mockUserData = {
 		stripeCustomerId: null,
 		jobs: [],
 	},
-	
+
 	premiumUser: {
 		id: 2,
 		clerkUserId: 'user_456',
@@ -106,7 +112,7 @@ export const mockUserData = {
 		stripeCustomerId: 'cus_123',
 		jobs: [],
 	},
-	
+
 	premiumDeluxeUser: {
 		id: 3,
 		clerkUserId: 'user_789',
@@ -121,7 +127,7 @@ export const mockUserData = {
 		stripeCustomerId: 'cus_456',
 		jobs: [],
 	},
-	
+
 	userWithoutEmail: {
 		id: 4,
 		clerkUserId: 'user_000',
@@ -146,7 +152,7 @@ export const mockStripeData = {
 		currency: 'usd',
 		unit_amount: 1000,
 	},
-	
+
 	checkoutSession: {
 		id: 'cs_test_123',
 		url: 'https://checkout.stripe.com/pay/cs_test_123',
@@ -157,7 +163,7 @@ export const mockStripeData = {
 			priceId: 'price_1Qt5J0COLiDbHvw1IQNl90uU',
 		},
 	},
-	
+
 	unpaidSession: {
 		id: 'cs_test_456',
 		url: 'https://checkout.stripe.com/pay/cs_test_456',
@@ -168,12 +174,12 @@ export const mockStripeData = {
 			priceId: 'price_1Qt5J0COLiDbHvw1IQNl90uU',
 		},
 	},
-	
+
 	customer: {
 		id: 'cus_123',
 		email: 'user@example.com',
 	},
-	
+
 	invoice: {
 		id: 'in_123',
 		amount_paid: 1000,
@@ -183,9 +189,11 @@ export const mockStripeData = {
 		description: 'Premium subscription',
 		period_start: 1640995200,
 		lines: {
-			data: [{
-				description: 'Premium subscription',
-			}],
+			data: [
+				{
+					description: 'Premium subscription',
+				},
+			],
 		},
 	},
 };
@@ -200,7 +208,7 @@ export const mockPaymentData = {
 		type: 'subscription',
 		date: new Date('2024-01-01'),
 	},
-	
+
 	paymentHistory: [
 		{
 			id: 1,
@@ -226,64 +234,66 @@ export const mockServiceResponses = {
 	successCheckoutResponse: {
 		url: 'https://checkout.stripe.com/pay/cs_test_123',
 	},
-	
+
 	successActivationResponse: {
 		success: true,
 	},
-	
+
 	successCancelResponse: {
 		success: true,
 		message: 'Автопродление подписки отключено.',
 	},
-	
+
 	successAddPaymentResponse: {
 		success: true,
 		payment: mockPaymentData.validPayment,
 	},
-	
+
 	successGetPaymentHistoryResponse: {
 		payments: mockPaymentData.paymentHistory,
 	},
-	
+
 	successRenewResponse: {
 		success: true,
 		message: 'Автопродление подписки включено.',
 	},
-	
+
 	successStripePaymentHistoryResponse: {
-		payments: [{
-			id: 'in_123',
-			amount: 10,
-			currency: 'usd',
-			date: new Date('2024-01-01'),
-			status: 'paid',
-			description: 'Premium subscription',
-			period: new Date('2024-01-01'),
-			type: 'Premium',
-		}],
+		payments: [
+			{
+				id: 'in_123',
+				amount: 10,
+				currency: 'usd',
+				date: new Date('2024-01-01'),
+				status: 'paid',
+				description: 'Premium subscription',
+				period: new Date('2024-01-01'),
+				type: 'Premium',
+			},
+		],
 		total: 1,
 	},
-	
+
 	errorResponse: {
 		error: 'Ошибка при создании сессии',
 	},
-	
+
 	userNotFoundResponse: {
 		error: 'Пользователь не найден',
 	},
-	
+
 	emailRequiredResponse: {
 		error: 'Пользователь не найден или отсутствует email',
 	},
-	
+
 	paymentFailedResponse: {
 		error: 'Платеж не прошел',
 	},
-	
+
 	alreadyDisabledResponse: {
 		error: 'Автопродление уже отключено',
 	},
-	
+
 	alreadyEnabledResponse: {
 		error: 'Автопродление уже включено',
 	},
@@ -308,12 +318,12 @@ export const mockPrismaErrors = {
 		code: 'P2002',
 		message: 'Unique constraint failed',
 	},
-	
+
 	p2025Error: {
 		code: 'P2025',
 		message: 'Record not found',
 	},
-	
+
 	p2003Error: {
 		code: 'P2003',
 		message: 'Foreign key constraint failed',
@@ -325,34 +335,34 @@ export const mockValidationLogic = {
 	validateClerkUserId: (clerkUserId) => {
 		return !!(clerkUserId && clerkUserId.trim());
 	},
-	
+
 	validateSessionId: (sessionId) => {
 		return !!(sessionId && sessionId.trim());
 	},
-	
+
 	validatePaymentData: (data) => {
 		const { clerkUserId, month, amount, type, date } = data;
 		return !!(clerkUserId && month && amount && type && date);
 	},
-	
+
 	validateQueryParams: (query) => {
 		const { clerkUserId } = query;
 		return !!(clerkUserId && clerkUserId.trim());
 	},
-	
+
 	validatePriceId: (priceId) => {
 		return !!(priceId && priceId.startsWith('price_'));
 	},
-	
+
 	validateEmail: (email) => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		return emailRegex.test(email);
 	},
-	
+
 	validateAmount: (amount) => {
 		return !!(amount && amount > 0);
 	},
-	
+
 	validateDate: (date) => {
 		return !!(date && !isNaN(new Date(date).getTime()));
 	},
@@ -365,27 +375,33 @@ export const mockStripeIntegrationLogic = {
 			payment_method_types: ['card'],
 			mode: 'subscription',
 			customer_email: user.email,
-			line_items: [{
-				price: priceId,
-				quantity: 1,
-			}],
-			success_url: 'https://worknow.co.il/success?session_id={CHECKOUT_SESSION_ID}',
+			line_items: [
+				{
+					price: priceId,
+					quantity: 1,
+				},
+			],
+			success_url:
+				'https://worknow.co.il/success?session_id={CHECKOUT_SESSION_ID}',
 			cancel_url: 'https://worknow.co.il/cancel',
 			metadata: { clerkUserId: user.clerkUserId, priceId },
 		});
 		return session;
 	},
-	
+
 	retrieveCheckoutSession: async (sessionId) => {
 		const session = await mockStripe.checkout.sessions.retrieve(sessionId);
 		return session;
 	},
-	
+
 	updateSubscription: async (subscriptionId, data) => {
-		const subscription = await mockStripe.subscriptions.update(subscriptionId, data);
+		const subscription = await mockStripe.subscriptions.update(
+			subscriptionId,
+			data,
+		);
 		return subscription;
 	},
-	
+
 	listCustomers: async (email) => {
 		const customers = await mockStripe.customers.list({
 			email,
@@ -393,7 +409,7 @@ export const mockStripeIntegrationLogic = {
 		});
 		return customers;
 	},
-	
+
 	listInvoices: async (customerId, limit) => {
 		const invoices = await mockStripe.invoices.list({
 			customer: customerId,
@@ -401,7 +417,7 @@ export const mockStripeIntegrationLogic = {
 		});
 		return invoices;
 	},
-	
+
 	retrievePrice: async (priceId) => {
 		const price = await mockStripe.prices.retrieve(priceId);
 		return price;
@@ -419,11 +435,11 @@ export const mockPremiumActivationLogic = {
 		];
 		return deluxePriceIds.includes(priceId);
 	},
-	
+
 	calculatePremiumEndDate: () => {
 		return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
 	},
-	
+
 	createDeluxeMessage: (clerkUserId) => {
 		return {
 			clerkUserId,
@@ -432,7 +448,7 @@ export const mockPremiumActivationLogic = {
 			type: 'system',
 		};
 	},
-	
+
 	createProMessage: (clerkUserId) => {
 		return {
 			clerkUserId,
@@ -445,22 +461,25 @@ export const mockPremiumActivationLogic = {
 			type: 'system',
 		};
 	},
-	
+
 	updateClerkMetadata: async (clerkUserId, isPremium, premiumDeluxe) => {
 		const publicMetadata = {
 			isPremium,
 			premiumDeluxe,
 		};
-		
-		const response = await mockFetch(`https://api.clerk.com/v1/users/${clerkUserId}`, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+
+		const response = await mockFetch(
+			`https://api.clerk.com/v1/users/${clerkUserId}`,
+			{
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+				},
+				body: JSON.stringify({ public_metadata: publicMetadata }),
 			},
-			body: JSON.stringify({ public_metadata: publicMetadata }),
-		});
-		
+		);
+
 		return response;
 	},
 };
@@ -480,7 +499,7 @@ export const mockPaymentHistoryLogic = {
 		});
 		return payment;
 	},
-	
+
 	getPaymentHistory: async (clerkUserId) => {
 		const payments = await mockPrisma.payment.findMany({
 			where: { clerkUserId },
@@ -488,7 +507,7 @@ export const mockPaymentHistoryLogic = {
 		});
 		return payments;
 	},
-	
+
 	formatStripePayment: (invoice) => {
 		return {
 			id: invoice.id,
@@ -497,7 +516,9 @@ export const mockPaymentHistoryLogic = {
 			date: new Date(invoice.created * 1000),
 			status: invoice.status,
 			description: invoice.description,
-			period: invoice.period_start ? new Date(invoice.period_start * 1000) : null,
+			period: invoice.period_start
+				? new Date(invoice.period_start * 1000)
+				: null,
 			type: invoice.lines.data[0]?.description || 'Premium',
 		};
 	},
@@ -509,7 +530,7 @@ export const mockAutoRenewalLogic = {
 		if (!user.stripeSubscriptionId) {
 			// No Stripe subscription, just disable in database
 			console.warn(
-				`⚠️ У пользователя ${user.email} нет stripeSubscriptionId, но isAutoRenewal=true. Отключаем только в базе.`
+				`⚠️ У пользователя ${user.email} нет stripeSubscriptionId, но isAutoRenewal=true. Отключаем только в базе.`,
 			);
 			await mockPrisma.user.update({
 				where: { clerkUserId: user.clerkUserId },
@@ -520,30 +541,30 @@ export const mockAutoRenewalLogic = {
 				message: 'Автопродление подписки отключено (без Stripe).',
 			};
 		}
-		
+
 		// Cancel in Stripe
 		await mockStripe.subscriptions.update(user.stripeSubscriptionId, {
 			cancel_at_period_end: true,
 		});
-		
+
 		// Update database
 		await mockPrisma.user.update({
 			where: { clerkUserId: user.clerkUserId },
 			data: { isAutoRenewal: false },
 		});
-		
+
 		return {
 			success: true,
 			message: 'Автопродление подписки отключено.',
 		};
 	},
-	
+
 	renewAutoRenewal: async (user) => {
 		await mockPrisma.user.update({
 			where: { clerkUserId: user.clerkUserId },
 			data: { isAutoRenewal: true },
 		});
-		
+
 		return {
 			success: true,
 			message: 'Автопродление подписки включено.',
@@ -555,49 +576,55 @@ export const mockAutoRenewalLogic = {
 export const mockControllerLogic = {
 	processCreateCheckoutSession: async (req, res) => {
 		const { clerkUserId, priceId } = req.body;
-		
+
 		if (!clerkUserId) {
 			return res.status(400).json({ error: 'clerkUserId is required' });
 		}
-		
+
 		try {
 			const user = await mockPrisma.user.findUnique({
 				where: { clerkUserId },
 			});
-			
+
 			if (!user || !user.email) {
 				return res.status(404).json({
 					error: 'Пользователь не найден или отсутствует email',
 				});
 			}
-			
+
 			const defaultPriceId = 'price_1Qt5J0COLiDbHvw1IQNl90uU';
 			let finalPriceId = priceId || defaultPriceId;
-			
+
 			try {
 				await mockStripe.prices.retrieve(finalPriceId);
 			} catch {
 				finalPriceId = defaultPriceId;
 			}
-			
+
 			const session = await mockStripe.checkout.sessions.create({
 				payment_method_types: ['card'],
 				mode: 'subscription',
 				customer_email: user.email,
-				line_items: [{
-					price: finalPriceId,
-					quantity: 1,
-				}],
-				success_url: 'https://worknow.co.il/success?session_id={CHECKOUT_SESSION_ID}',
+				line_items: [
+					{
+						price: finalPriceId,
+						quantity: 1,
+					},
+				],
+				success_url:
+					'https://worknow.co.il/success?session_id={CHECKOUT_SESSION_ID}',
 				cancel_url: 'https://worknow.co.il/cancel',
 				metadata: { clerkUserId, priceId: finalPriceId },
 			});
-			
+
 			res.json({ url: session.url });
 		} catch (error) {
 			console.error('❌ Ошибка при создании Checkout Session:', error);
-			
-			if (error.type === 'StripeInvalidRequestError' && error.message.includes('price')) {
+
+			if (
+				error.type === 'StripeInvalidRequestError' &&
+				error.message.includes('price')
+			) {
 				res.status(400).json({
 					error: `Неверный price ID: ${priceId}. Пожалуйста, обратитесь к администратору.`,
 				});
@@ -606,18 +633,18 @@ export const mockControllerLogic = {
 			}
 		}
 	},
-	
+
 	processActivatePremium: async (req, res) => {
 		const { sessionId } = req.body;
-		
+
 		console.log('🔍 activatePremium called with sessionId:', sessionId);
-		
+
 		try {
 			const session = await mockStripe.checkout.sessions.retrieve(sessionId);
 			const clerkUserId = session.metadata.clerkUserId;
 			const subscriptionId = session.subscription;
 			const priceId = session.metadata.priceId;
-			
+
 			console.log('🔍 Activating premium with session data:', {
 				sessionId,
 				clerkUserId,
@@ -625,17 +652,18 @@ export const mockControllerLogic = {
 				priceId,
 				paymentStatus: session.payment_status,
 			});
-			
+
 			if (session.payment_status === 'paid') {
-				const premiumDeluxe = mockPremiumActivationLogic.isPremiumDeluxe(priceId);
-				
+				const premiumDeluxe =
+					mockPremiumActivationLogic.isPremiumDeluxe(priceId);
+
 				console.log('🔍 Updating user with premium data:', {
 					clerkUserId,
 					priceId,
 					premiumDeluxe,
 					willSetPremiumDeluxe: premiumDeluxe,
 				});
-				
+
 				const user = await mockPrisma.user.update({
 					where: { clerkUserId },
 					data: {
@@ -647,41 +675,57 @@ export const mockControllerLogic = {
 					},
 					include: { jobs: { include: { city: true } } },
 				});
-				
+
 				await mockServices.sendTelegramNotification(user, user.jobs);
-				
+
 				if (premiumDeluxe) {
 					await mockPrisma.message.create({
 						data: mockPremiumActivationLogic.createDeluxeMessage(clerkUserId),
 					});
-					
+
 					try {
 						const userName = user.firstName
 							? `${user.firstName} ${user.lastName || ''}`.trim()
 							: '';
-						await mockServices.sendPremiumDeluxeWelcomeEmail(user.email, userName);
-						console.log('✅ Premium Deluxe welcome email sent successfully to:', user.email);
+						await mockServices.sendPremiumDeluxeWelcomeEmail(
+							user.email,
+							userName,
+						);
+						console.log(
+							'✅ Premium Deluxe welcome email sent successfully to:',
+							user.email,
+						);
 					} catch (emailError) {
-						console.error('❌ Failed to send Premium Deluxe welcome email:', emailError);
+						console.error(
+							'❌ Failed to send Premium Deluxe welcome email:',
+							emailError,
+						);
 					}
 				} else {
 					await mockPrisma.message.create({
 						data: mockPremiumActivationLogic.createProMessage(clerkUserId),
 					});
-					
+
 					try {
 						const userName = user.firstName
 							? `${user.firstName} ${user.lastName || ''}`.trim()
 							: '';
 						await mockServices.sendProWelcomeEmail(user.email, userName);
-						console.log('✅ Pro welcome email sent successfully to:', user.email);
+						console.log(
+							'✅ Pro welcome email sent successfully to:',
+							user.email,
+						);
 					} catch (emailError) {
 						console.error('❌ Failed to send Pro welcome email:', emailError);
 					}
 				}
-				
-				await mockPremiumActivationLogic.updateClerkMetadata(clerkUserId, true, premiumDeluxe);
-				
+
+				await mockPremiumActivationLogic.updateClerkMetadata(
+					clerkUserId,
+					true,
+					premiumDeluxe,
+				);
+
 				res.json({ success: true });
 			} else {
 				res.status(400).json({ error: 'Платеж не прошел' });
@@ -691,25 +735,25 @@ export const mockControllerLogic = {
 			res.status(500).json({ error: 'Ошибка активации премиума' });
 		}
 	},
-	
+
 	processCancelAutoRenewal: async (req, res) => {
 		const { clerkUserId } = req.body;
-		
+
 		try {
 			const user = await mockPrisma.user.findUnique({
 				where: { clerkUserId },
 			});
-			
+
 			if (!user) {
 				console.error('❌ Ошибка: пользователь не найден.');
 				return res.status(404).json({ error: 'Пользователь не найден' });
 			}
-			
+
 			if (!user.isAutoRenewal) {
 				console.warn('⚠️ Автопродление уже отключено.');
 				return res.status(400).json({ error: 'Автопродление уже отключено' });
 			}
-			
+
 			const result = await mockAutoRenewalLogic.cancelAutoRenewal(user);
 			res.json(result);
 		} catch (error) {
@@ -717,10 +761,10 @@ export const mockControllerLogic = {
 			res.status(500).json({ error: 'Ошибка при отключении автообновления' });
 		}
 	},
-	
+
 	processAddPaymentHistory: async (req, res) => {
 		const { clerkUserId, month, amount, type, date } = req.body;
-		
+
 		try {
 			const payment = await mockPaymentHistoryLogic.createPayment({
 				clerkUserId,
@@ -735,26 +779,27 @@ export const mockControllerLogic = {
 			res.status(500).json({ error: 'Ошибка при добавлении платежа' });
 		}
 	},
-	
+
 	processGetPaymentHistory: async (req, res) => {
 		const { clerkUserId } = req.query;
-		
+
 		if (!clerkUserId) {
 			return res.status(400).json({ error: 'clerkUserId обязателен' });
 		}
-		
+
 		try {
-			const payments = await mockPaymentHistoryLogic.getPaymentHistory(clerkUserId);
+			const payments =
+				await mockPaymentHistoryLogic.getPaymentHistory(clerkUserId);
 			res.json({ payments });
 		} catch (error) {
 			console.error('Ошибка при получении истории платежей:', error);
 			res.status(500).json({ error: 'Ошибка при получении истории платежей' });
 		}
 	},
-	
+
 	processRenewAutoRenewal: async (req, res) => {
 		const { clerkUserId } = req.body;
-		
+
 		try {
 			const user = await mockPrisma.user.findUnique({ where: { clerkUserId } });
 			if (!user) {
@@ -763,7 +808,7 @@ export const mockControllerLogic = {
 			if (user.isAutoRenewal) {
 				return res.status(400).json({ error: 'Автопродление уже включено' });
 			}
-			
+
 			const result = await mockAutoRenewalLogic.renewAutoRenewal(user);
 			res.json(result);
 		} catch (error) {
@@ -771,19 +816,19 @@ export const mockControllerLogic = {
 			res.status(500).json({ error: 'Ошибка при включении автопродления' });
 		}
 	},
-	
+
 	processGetStripePaymentHistory: async (req, res) => {
 		const { clerkUserId, limit = 10, offset = 0 } = req.query;
-		
+
 		try {
 			const user = await mockPrisma.user.findUnique({ where: { clerkUserId } });
 			if (!user) {
 				return res.status(404).json({ error: 'Пользователь не найден' });
 			}
-			
+
 			const customerEmail = user.email;
 			let customerId = user.stripeCustomerId;
-			
+
 			if (!customerId) {
 				const customers = await mockStripe.customers.list({
 					email: customerEmail,
@@ -793,33 +838,35 @@ export const mockControllerLogic = {
 					customerId = customers.data[0].id;
 				}
 			}
-			
+
 			if (!customerId) {
 				return res.json({ payments: [], total: 0 });
 			}
-			
+
 			const invoices = await mockStripe.invoices.list({
 				customer: customerId,
 				limit: Number(limit),
 			});
-			
-			const payments = invoices.data.map(mockPaymentHistoryLogic.formatStripePayment);
+
+			const payments = invoices.data.map(
+				mockPaymentHistoryLogic.formatStripePayment,
+			);
 			res.json({ payments, total: invoices.data.length });
 		} catch (error) {
 			console.error('Ошибка при получении истории Stripe:', error);
 			res.status(500).json({ error: 'Ошибка при получении истории Stripe' });
 		}
 	},
-	
+
 	handleControllerError: (error, res, operation = 'operation') => {
 		console.error(`❌ Error ${operation}:`, error);
 		return res.status(500).json({ error: `Ошибка при ${operation}` });
 	},
-	
+
 	handleControllerSuccess: (data, res, statusCode = 200) => {
 		return res.status(statusCode).json(data);
 	},
-	
+
 	validateControllerInput: (req) => {
 		return !!(req && (req.body || req.query));
 	},
@@ -847,38 +894,38 @@ export const mockRequestResponseLogic = {
 			},
 		};
 	},
-	
+
 	buildResponse: () => {
 		return {
 			json: vi.fn(),
 			status: vi.fn().mockReturnThis(),
 		};
 	},
-	
+
 	handleSuccessResponse: (res, data, statusCode = 200) => {
 		res.status(statusCode).json(data);
 	},
-	
+
 	handleErrorResponse: (res, error, statusCode = 500) => {
 		res.status(statusCode).json({ error: error.message });
 	},
-	
+
 	handleValidationError: (res, error, statusCode = 400) => {
 		res.status(statusCode).json({ error });
 	},
-	
+
 	handleNotFoundError: (res, error, statusCode = 404) => {
 		res.status(statusCode).json({ error });
 	},
-	
+
 	validateRequest: (req) => {
 		return !!(req && (req.body || req.query));
 	},
-	
+
 	extractBodyData: (req) => {
 		return req.body;
 	},
-	
+
 	extractQueryData: (req) => {
 		return req.query;
 	},

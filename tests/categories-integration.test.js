@@ -37,10 +37,10 @@ describe('Categories Integration Tests', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console.error to avoid noise in tests
 		console.error = vi.fn();
-		
+
 		// Reset all mocks
 		resetCategoriesMocks();
 	});
@@ -57,9 +57,7 @@ describe('Categories Integration Tests', () => {
 				mockFindMany.mockResolvedValue(mockCategoriesData);
 
 				// Act
-				const response = await request(app)
-					.get('/api/categories')
-					.expect(200);
+				const response = await request(app).get('/api/categories').expect(200);
 
 				// Assert
 				expect(response.body).toHaveLength(5);
@@ -87,7 +85,10 @@ describe('Categories Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toHaveLength(5);
-				expect(response.body[0]).toEqual({ id: 1, label: 'Information Technology' });
+				expect(response.body[0]).toEqual({
+					id: 1,
+					label: 'Information Technology',
+				});
 				expect(response.body[1]).toEqual({ id: 2, label: 'Marketing' });
 				expect(response.body[2]).toEqual({ id: 3, label: 'Sales' });
 				expect(response.body[3]).toEqual({ id: 4, label: 'Design' });
@@ -123,7 +124,10 @@ describe('Categories Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toHaveLength(5);
-				expect(response.body[0]).toEqual({ id: 1, label: 'تكنولوجيا المعلومات' });
+				expect(response.body[0]).toEqual({
+					id: 1,
+					label: 'تكنولوجيا المعلومات',
+				});
 				expect(response.body[1]).toEqual({ id: 2, label: 'تسويق' });
 				expect(response.body[2]).toEqual({ id: 3, label: 'مبيعات' });
 				expect(response.body[3]).toEqual({ id: 4, label: 'تصميم' });
@@ -135,9 +139,7 @@ describe('Categories Integration Tests', () => {
 				mockFindMany.mockResolvedValue([]);
 
 				// Act
-				const response = await request(app)
-					.get('/api/categories')
-					.expect(200);
+				const response = await request(app).get('/api/categories').expect(200);
 
 				// Assert
 				expect(response.body).toEqual([]);
@@ -204,7 +206,10 @@ describe('Categories Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toHaveLength(5);
-				expect(response.body[0]).toEqual({ id: 1, label: 'Information Technology' });
+				expect(response.body[0]).toEqual({
+					id: 1,
+					label: 'Information Technology',
+				});
 			});
 		});
 
@@ -214,15 +219,16 @@ describe('Categories Integration Tests', () => {
 				mockFindMany.mockRejectedValue(mockErrors.databaseError);
 
 				// Act
-				const response = await request(app)
-					.get('/api/categories')
-					.expect(500);
+				const response = await request(app).get('/api/categories').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
 					error: 'Ошибка при получении категорий',
 				});
-				expect(console.error).toHaveBeenCalledWith('Ошибка при получении категорий:', mockErrors.databaseError);
+				expect(console.error).toHaveBeenCalledWith(
+					'Ошибка при получении категорий:',
+					mockErrors.databaseError,
+				);
 			});
 
 			it('should handle Prisma query errors', async () => {
@@ -238,7 +244,10 @@ describe('Categories Integration Tests', () => {
 				expect(response.body).toEqual({
 					error: 'Ошибка при получении категорий',
 				});
-				expect(console.error).toHaveBeenCalledWith('Ошибка при получении категорий:', mockErrors.queryError);
+				expect(console.error).toHaveBeenCalledWith(
+					'Ошибка при получении категорий:',
+					mockErrors.queryError,
+				);
 			});
 
 			it('should handle timeout errors', async () => {
@@ -246,15 +255,16 @@ describe('Categories Integration Tests', () => {
 				mockFindMany.mockRejectedValue(mockErrors.timeoutError);
 
 				// Act
-				const response = await request(app)
-					.get('/api/categories')
-					.expect(500);
+				const response = await request(app).get('/api/categories').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
 					error: 'Ошибка при получении категорий',
 				});
-				expect(console.error).toHaveBeenCalledWith('Ошибка при получении категорий:', mockErrors.timeoutError);
+				expect(console.error).toHaveBeenCalledWith(
+					'Ошибка при получении категорий:',
+					mockErrors.timeoutError,
+				);
 			});
 
 			it('should handle unexpected errors', async () => {
@@ -262,15 +272,16 @@ describe('Categories Integration Tests', () => {
 				mockFindMany.mockRejectedValue(mockErrors.unexpectedError);
 
 				// Act
-				const response = await request(app)
-					.get('/api/categories')
-					.expect(500);
+				const response = await request(app).get('/api/categories').expect(500);
 
 				// Assert
 				expect(response.body).toEqual({
 					error: 'Ошибка при получении категорий',
 				});
-				expect(console.error).toHaveBeenCalledWith('Ошибка при получении категорий:', mockErrors.unexpectedError);
+				expect(console.error).toHaveBeenCalledWith(
+					'Ошибка при получении категорий:',
+					mockErrors.unexpectedError,
+				);
 			});
 		});
 
@@ -301,7 +312,10 @@ describe('Categories Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toHaveLength(1);
-				expect(response.body[0]).toEqual({ id: 1, label: 'Information Technology' });
+				expect(response.body[0]).toEqual({
+					id: 1,
+					label: 'Information Technology',
+				});
 			});
 
 			it('should handle very long category names', async () => {
@@ -315,9 +329,9 @@ describe('Categories Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toHaveLength(1);
-				expect(response.body[0]).toEqual({ 
-					id: 1, 
-					label: 'Очень длинное название категории' 
+				expect(response.body[0]).toEqual({
+					id: 1,
+					label: 'Очень длинное название категории',
 				});
 			});
 
@@ -332,13 +346,13 @@ describe('Categories Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toHaveLength(2);
-				expect(response.body[0]).toEqual({ 
-					id: 1, 
-					label: 'IT и программное обеспечение' 
+				expect(response.body[0]).toEqual({
+					id: 1,
+					label: 'IT и программное обеспечение',
 				});
-				expect(response.body[1]).toEqual({ 
-					id: 2, 
-					label: 'Продажи/Маркетинг' 
+				expect(response.body[1]).toEqual({
+					id: 2,
+					label: 'Продажи/Маркетинг',
 				});
 			});
 		});
@@ -349,9 +363,7 @@ describe('Categories Integration Tests', () => {
 				mockFindMany.mockResolvedValue(mockCategoriesData);
 
 				// Act
-				await request(app)
-					.get('/api/categories?lang=en')
-					.expect(200);
+				await request(app).get('/api/categories?lang=en').expect(200);
 
 				// Assert
 				expect(mockFindMany).toHaveBeenCalledTimes(1);
@@ -385,30 +397,22 @@ describe('Categories Integration Tests', () => {
 		describe('HTTP Method Validation', () => {
 			it('should reject POST requests', async () => {
 				// Act & Assert
-				await request(app)
-					.post('/api/categories')
-					.expect(404); // Express will return 404 for unhandled routes
+				await request(app).post('/api/categories').expect(404); // Express will return 404 for unhandled routes
 			});
 
 			it('should reject PUT requests', async () => {
 				// Act & Assert
-				await request(app)
-					.put('/api/categories')
-					.expect(404);
+				await request(app).put('/api/categories').expect(404);
 			});
 
 			it('should reject DELETE requests', async () => {
 				// Act & Assert
-				await request(app)
-					.delete('/api/categories')
-					.expect(404);
+				await request(app).delete('/api/categories').expect(404);
 			});
 
 			it('should reject PATCH requests', async () => {
 				// Act & Assert
-				await request(app)
-					.patch('/api/categories')
-					.expect(404);
+				await request(app).patch('/api/categories').expect(404);
 			});
 		});
 
@@ -425,7 +429,7 @@ describe('Categories Integration Tests', () => {
 
 				// Assert
 				expect(Array.isArray(response.body)).toBe(true);
-				response.body.forEach(category => {
+				response.body.forEach((category) => {
 					expect(category).toHaveProperty('id');
 					expect(category).toHaveProperty('label');
 					expect(typeof category.id).toBe('number');

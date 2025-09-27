@@ -31,7 +31,7 @@ describe('JobController', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetJobControllerMocks();
-		
+
 		// Mock console methods
 		console.error = vi.fn();
 		console.log = vi.fn();
@@ -123,10 +123,10 @@ describe('JobController', () => {
 		it('should handle invalid ID response', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			mockIdValidationLogic.handleInvalidId(res);
-			
+
 			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.json).toHaveBeenCalledWith({ 
-				error: 'ID вакансии обязателен и должен быть числом' 
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'ID вакансии обязателен и должен быть числом',
 			});
 		});
 
@@ -140,13 +140,18 @@ describe('JobController', () => {
 		it('should process getJobById request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest({ id: '1' });
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobServices.getJobByIdService.mockResolvedValue(mockServiceResponses.successJobByIdResponse);
-			
+
+			mockJobServices.getJobByIdService.mockResolvedValue(
+				mockServiceResponses.successJobByIdResponse,
+			);
+
 			await mockJobProcessingLogic.processJobByIdRequest(req, res);
-			
+
 			expect(mockJobServices.getJobByIdService).toHaveBeenCalledWith(1);
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobById - Job data:', mockJobData.validJob);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobById - Job data:',
+				mockJobData.validJob,
+			);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(mockJobData.validJob);
 		});
@@ -154,111 +159,157 @@ describe('JobController', () => {
 		it('should process getJobById request with invalid ID', async () => {
 			const req = mockRequestResponseLogic.buildRequest({ id: 'abc' });
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			await mockJobProcessingLogic.processJobByIdRequest(req, res);
-			
+
 			expect(mockJobServices.getJobByIdService).not.toHaveBeenCalled();
 			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.json).toHaveBeenCalledWith({ 
-				error: 'ID вакансии обязателен и должен быть числом' 
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'ID вакансии обязателен и должен быть числом',
 			});
 		});
 
 		it('should process getJobById request with job not found', async () => {
 			const req = mockRequestResponseLogic.buildRequest({ id: '999' });
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobServices.getJobByIdService.mockResolvedValue(mockServiceResponses.errorJobNotFoundResponse);
-			
+
+			mockJobServices.getJobByIdService.mockResolvedValue(
+				mockServiceResponses.errorJobNotFoundResponse,
+			);
+
 			await mockJobProcessingLogic.processJobByIdRequest(req, res);
-			
+
 			expect(mockJobServices.getJobByIdService).toHaveBeenCalledWith(999);
 			expect(res.status).toHaveBeenCalledWith(404);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Объявление не найдено.' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Объявление не найдено.',
+			});
 		});
 
 		it('should process getJobById request with service error', async () => {
 			const req = mockRequestResponseLogic.buildRequest({ id: '1' });
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobServices.getJobByIdService.mockRejectedValue(mockErrors.databaseError);
-			
+
+			mockJobServices.getJobByIdService.mockRejectedValue(
+				mockErrors.databaseError,
+			);
+
 			await mockJobProcessingLogic.processJobByIdRequest(req, res);
-			
+
 			expect(mockJobServices.getJobByIdService).toHaveBeenCalledWith(1);
-			expect(console.error).toHaveBeenCalledWith('Ошибка получения объявления:', 'Database connection failed');
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка получения объявления:',
+				'Database connection failed',
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ 
-				error: 'Ошибка получения объявления', 
-				details: 'Database connection failed' 
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка получения объявления',
+				details: 'Database connection failed',
 			});
 		});
 
 		it('should process createJob request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, mockJobCreationData.validJobData);
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				mockJobCreationData.validJobData,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobServices.createJobService.mockResolvedValue(mockServiceResponses.successCreateJobResponse);
-			
+
+			mockJobServices.createJobService.mockResolvedValue(
+				mockServiceResponses.successCreateJobResponse,
+			);
+
 			await mockJobProcessingLogic.processCreateJobRequest(req, res);
-			
-			expect(mockJobServices.createJobService).toHaveBeenCalledWith(mockJobCreationData.validJobData);
+
+			expect(mockJobServices.createJobService).toHaveBeenCalledWith(
+				mockJobCreationData.validJobData,
+			);
 			expect(res.status).toHaveBeenCalledWith(201);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successCreateJobResponse);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successCreateJobResponse,
+			);
 		});
 
 		it('should process createJob request with validation error', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, mockJobCreationData.invalidJobData);
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				mockJobCreationData.invalidJobData,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobServices.createJobService.mockResolvedValue(mockServiceResponses.errorValidationResponse);
-			
+
+			mockJobServices.createJobService.mockResolvedValue(
+				mockServiceResponses.errorValidationResponse,
+			);
+
 			await mockJobProcessingLogic.processCreateJobRequest(req, res);
-			
-			expect(mockJobServices.createJobService).toHaveBeenCalledWith(mockJobCreationData.invalidJobData);
+
+			expect(mockJobServices.createJobService).toHaveBeenCalledWith(
+				mockJobCreationData.invalidJobData,
+			);
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({ error: 'Validation failed' });
 		});
 
 		it('should process createJob request with upgrade required', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, mockJobCreationData.jobDataWithUpgradeRequired);
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				mockJobCreationData.jobDataWithUpgradeRequired,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobServices.createJobService.mockResolvedValue(mockServiceResponses.errorUpgradeRequiredResponse);
-			
+
+			mockJobServices.createJobService.mockResolvedValue(
+				mockServiceResponses.errorUpgradeRequiredResponse,
+			);
+
 			await mockJobProcessingLogic.processCreateJobRequest(req, res);
-			
-			expect(mockJobServices.createJobService).toHaveBeenCalledWith(mockJobCreationData.jobDataWithUpgradeRequired);
+
+			expect(mockJobServices.createJobService).toHaveBeenCalledWith(
+				mockJobCreationData.jobDataWithUpgradeRequired,
+			);
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Вы уже разместили максимальное количество объявлений.',
 				upgradeRequired: true,
-				message: 'Для размещения большего количества объявлений перейдите на Premium тариф',
+				message:
+					'Для размещения большего количества объявлений перейдите на Premium тариф',
 			});
 		});
 
 		it('should process createJob request with service error', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, mockJobCreationData.validJobData);
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				mockJobCreationData.validJobData,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobServices.createJobService.mockRejectedValue(mockErrors.serverError);
-			
+
+			mockJobServices.createJobService.mockRejectedValue(
+				mockErrors.serverError,
+			);
+
 			await mockJobProcessingLogic.processCreateJobRequest(req, res);
-			
-			expect(mockJobServices.createJobService).toHaveBeenCalledWith(mockJobCreationData.validJobData);
-			expect(console.error).toHaveBeenCalledWith('Ошибка создания объявления:', 'Internal server error');
+
+			expect(mockJobServices.createJobService).toHaveBeenCalledWith(
+				mockJobCreationData.validJobData,
+			);
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка создания объявления:',
+				'Internal server error',
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ 
-				error: 'Ошибка создания объявления', 
-				details: 'Internal server error' 
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка создания объявления',
+				details: 'Internal server error',
 			});
 		});
 
 		it('should handle job by ID success', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			mockJobProcessingLogic.handleJobByIdSuccess(mockJobData.validJob, res);
-			
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobById - Job data:', mockJobData.validJob);
+
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobById - Job data:',
+				mockJobData.validJob,
+			);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(mockJobData.validJob);
 		});
@@ -266,70 +317,95 @@ describe('JobController', () => {
 		it('should handle job by ID error', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			mockJobProcessingLogic.handleJobByIdError(mockErrors.databaseError, res);
-			
-			expect(console.error).toHaveBeenCalledWith('Ошибка получения объявления:', 'Database connection failed');
+
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка получения объявления:',
+				'Database connection failed',
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ 
-				error: 'Ошибка получения объявления', 
-				details: 'Database connection failed' 
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка получения объявления',
+				details: 'Database connection failed',
 			});
 		});
 
 		it('should handle create job success', () => {
 			const res = mockRequestResponseLogic.buildResponse();
-			mockJobProcessingLogic.handleCreateJobSuccess(mockServiceResponses.successCreateJobResponse, res);
-			
+			mockJobProcessingLogic.handleCreateJobSuccess(
+				mockServiceResponses.successCreateJobResponse,
+				res,
+			);
+
 			expect(res.status).toHaveBeenCalledWith(201);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successCreateJobResponse);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successCreateJobResponse,
+			);
 		});
 
 		it('should handle create job error', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			mockJobProcessingLogic.handleCreateJobError(mockErrors.serverError, res);
-			
-			expect(console.error).toHaveBeenCalledWith('Ошибка создания объявления:', 'Internal server error');
+
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка создания объявления:',
+				'Internal server error',
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ 
-				error: 'Ошибка создания объявления', 
-				details: 'Internal server error' 
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка создания объявления',
+				details: 'Internal server error',
 			});
 		});
 
 		it('should handle upgrade required', () => {
 			const res = mockRequestResponseLogic.buildResponse();
-			mockJobProcessingLogic.handleUpgradeRequired(mockServiceResponses.errorUpgradeRequiredResponse, res);
-			
+			mockJobProcessingLogic.handleUpgradeRequired(
+				mockServiceResponses.errorUpgradeRequiredResponse,
+				res,
+			);
+
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Вы уже разместили максимальное количество объявлений.',
 				upgradeRequired: true,
-				message: 'Для размещения большего количества объявлений перейдите на Premium тариф',
+				message:
+					'Для размещения большего количества объявлений перейдите на Premium тариф',
 			});
 		});
 	});
 
 	describe('Service Integration Logic', () => {
 		it('should call getJobById service with correct ID', async () => {
-			mockJobServices.getJobByIdService.mockResolvedValue(mockServiceResponses.successJobByIdResponse);
-			
+			mockJobServices.getJobByIdService.mockResolvedValue(
+				mockServiceResponses.successJobByIdResponse,
+			);
+
 			const result = await mockServiceIntegrationLogic.callGetJobByIdService(1);
-			
+
 			expect(mockJobServices.getJobByIdService).toHaveBeenCalledWith(1);
 			expect(result).toEqual(mockServiceResponses.successJobByIdResponse);
 		});
 
 		it('should call createJob service with job data', async () => {
-			mockJobServices.createJobService.mockResolvedValue(mockServiceResponses.successCreateJobResponse);
-			
-			const result = await mockServiceIntegrationLogic.callCreateJobService(mockJobCreationData.validJobData);
-			
-			expect(mockJobServices.createJobService).toHaveBeenCalledWith(mockJobCreationData.validJobData);
+			mockJobServices.createJobService.mockResolvedValue(
+				mockServiceResponses.successCreateJobResponse,
+			);
+
+			const result = await mockServiceIntegrationLogic.callCreateJobService(
+				mockJobCreationData.validJobData,
+			);
+
+			expect(mockJobServices.createJobService).toHaveBeenCalledWith(
+				mockJobCreationData.validJobData,
+			);
 			expect(result).toEqual(mockServiceResponses.successCreateJobResponse);
 		});
 
 		it('should handle service response with success', () => {
-			const result = mockServiceIntegrationLogic.handleServiceResponse(mockServiceResponses.successJobByIdResponse);
-			
+			const result = mockServiceIntegrationLogic.handleServiceResponse(
+				mockServiceResponses.successJobByIdResponse,
+			);
+
 			expect(result).toEqual({
 				success: true,
 				data: mockJobData.validJob,
@@ -337,8 +413,10 @@ describe('JobController', () => {
 		});
 
 		it('should handle service response with error', () => {
-			const result = mockServiceIntegrationLogic.handleServiceResponse(mockServiceResponses.errorJobNotFoundResponse);
-			
+			const result = mockServiceIntegrationLogic.handleServiceResponse(
+				mockServiceResponses.errorJobNotFoundResponse,
+			);
+
 			expect(result).toEqual({
 				success: false,
 				error: 'Объявление не найдено.',
@@ -347,8 +425,10 @@ describe('JobController', () => {
 		});
 
 		it('should handle service response with upgrade required', () => {
-			const result = mockServiceIntegrationLogic.handleServiceResponse(mockServiceResponses.errorUpgradeRequiredResponse);
-			
+			const result = mockServiceIntegrationLogic.handleServiceResponse(
+				mockServiceResponses.errorUpgradeRequiredResponse,
+			);
+
 			expect(result).toEqual({
 				success: false,
 				error: 'Вы уже разместили максимальное количество объявлений.',
@@ -359,7 +439,7 @@ describe('JobController', () => {
 		it('should handle service errors', () => {
 			const error = mockErrors.databaseError;
 			const result = mockServiceIntegrationLogic.handleServiceError(error);
-			
+
 			expect(result).toEqual({
 				success: false,
 				error: error.message,
@@ -367,13 +447,23 @@ describe('JobController', () => {
 		});
 
 		it('should validate service result', () => {
-			expect(mockServiceIntegrationLogic.validateServiceResult(mockServiceResponses.successJobByIdResponse)).toBe(true);
-			expect(mockServiceIntegrationLogic.validateServiceResult(null)).toBe(false);
-			expect(mockServiceIntegrationLogic.validateServiceResult('string')).toBe(true);
+			expect(
+				mockServiceIntegrationLogic.validateServiceResult(
+					mockServiceResponses.successJobByIdResponse,
+				),
+			).toBe(true);
+			expect(mockServiceIntegrationLogic.validateServiceResult(null)).toBe(
+				false,
+			);
+			expect(mockServiceIntegrationLogic.validateServiceResult('string')).toBe(
+				true,
+			);
 		});
 
 		it('should process service result', () => {
-			const result = mockServiceIntegrationLogic.processServiceResult(mockServiceResponses.successJobByIdResponse);
+			const result = mockServiceIntegrationLogic.processServiceResult(
+				mockServiceResponses.successJobByIdResponse,
+			);
 			expect(result).toEqual(mockServiceResponses.successJobByIdResponse);
 		});
 	});
@@ -381,21 +471,24 @@ describe('JobController', () => {
 	describe('Request/Response Logic', () => {
 		it('should build request with default parameters', () => {
 			const request = mockRequestResponseLogic.buildRequest();
-			
+
 			expect(request.params.id).toBe('1');
 			expect(request.body.title).toBe('Software Engineer');
 		});
 
 		it('should build request with custom parameters', () => {
-			const request = mockRequestResponseLogic.buildRequest({ id: '123' }, { title: 'Custom Job' });
-			
+			const request = mockRequestResponseLogic.buildRequest(
+				{ id: '123' },
+				{ title: 'Custom Job' },
+			);
+
 			expect(request.params.id).toBe('123');
 			expect(request.body.title).toBe('Custom Job');
 		});
 
 		it('should build response object', () => {
 			const response = mockRequestResponseLogic.buildResponse();
-			
+
 			expect(response).toHaveProperty('json');
 			expect(response).toHaveProperty('status');
 			expect(typeof response.json).toBe('function');
@@ -405,9 +498,9 @@ describe('JobController', () => {
 		it('should handle success response with default status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const data = mockJobData.validJob;
-			
+
 			mockRequestResponseLogic.handleSuccessResponse(res, data);
-			
+
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
@@ -415,9 +508,9 @@ describe('JobController', () => {
 		it('should handle success response with custom status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const data = mockServiceResponses.successCreateJobResponse;
-			
+
 			mockRequestResponseLogic.handleSuccessResponse(res, data, 201);
-			
+
 			expect(res.status).toHaveBeenCalledWith(201);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
@@ -425,9 +518,9 @@ describe('JobController', () => {
 		it('should handle error response with default status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const error = mockErrors.databaseError;
-			
+
 			mockRequestResponseLogic.handleErrorResponse(res, error);
-			
+
 			expect(res.status).toHaveBeenCalledWith(500);
 			expect(res.json).toHaveBeenCalledWith({ error: error.message });
 		});
@@ -435,9 +528,9 @@ describe('JobController', () => {
 		it('should handle error response with custom status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const error = mockErrors.permissionError;
-			
+
 			mockRequestResponseLogic.handleErrorResponse(res, error, 403);
-			
+
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith({ error: error.message });
 		});
@@ -445,9 +538,9 @@ describe('JobController', () => {
 		it('should handle validation error', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const message = 'Validation failed';
-			
+
 			mockRequestResponseLogic.handleValidationError(res, message);
-			
+
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({ error: message });
 		});
@@ -455,9 +548,9 @@ describe('JobController', () => {
 		it('should handle not found error', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const message = 'Job not found';
-			
+
 			mockRequestResponseLogic.handleNotFoundError(res, message);
-			
+
 			expect(res.status).toHaveBeenCalledWith(404);
 			expect(res.json).toHaveBeenCalledWith({ error: message });
 		});
@@ -466,9 +559,9 @@ describe('JobController', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const error = 'Upgrade required';
 			const message = 'Please upgrade to premium';
-			
+
 			mockRequestResponseLogic.handleUpgradeRequiredError(res, error, message);
-			
+
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith({
 				error: error,
@@ -480,25 +573,33 @@ describe('JobController', () => {
 		it('should validate request object', () => {
 			const validRequest = { params: { id: '1' }, body: {} };
 			const invalidRequest = { body: {} };
-			
+
 			expect(mockRequestResponseLogic.validateRequest(validRequest)).toBe(true);
-			expect(mockRequestResponseLogic.validateRequest(invalidRequest)).toBe(false);
+			expect(mockRequestResponseLogic.validateRequest(invalidRequest)).toBe(
+				false,
+			);
 		});
 
 		it('should extract ID from request', () => {
 			const requestWithId = { params: { id: '123' } };
 			const requestWithoutId = { params: {} };
-			
+
 			expect(mockRequestResponseLogic.extractId(requestWithId)).toBe('123');
-			expect(mockRequestResponseLogic.extractId(requestWithoutId)).toBe(undefined);
+			expect(mockRequestResponseLogic.extractId(requestWithoutId)).toBe(
+				undefined,
+			);
 		});
 
 		it('should extract job data from request', () => {
 			const requestWithBody = { body: mockJobCreationData.validJobData };
 			const requestWithoutBody = { body: {} };
-			
-			expect(mockRequestResponseLogic.extractJobData(requestWithBody)).toEqual(mockJobCreationData.validJobData);
-			expect(mockRequestResponseLogic.extractJobData(requestWithoutBody)).toEqual({});
+
+			expect(mockRequestResponseLogic.extractJobData(requestWithBody)).toEqual(
+				mockJobCreationData.validJobData,
+			);
+			expect(
+				mockRequestResponseLogic.extractJobData(requestWithoutBody),
+			).toEqual({});
 		});
 	});
 
@@ -506,13 +607,18 @@ describe('JobController', () => {
 		it('should process getJobById request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest({ id: '1' });
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobServices.getJobByIdService.mockResolvedValue(mockServiceResponses.successJobByIdResponse);
-			
+
+			mockJobServices.getJobByIdService.mockResolvedValue(
+				mockServiceResponses.successJobByIdResponse,
+			);
+
 			await mockControllerLogic.processGetJobByIdRequest(req, res);
-			
+
 			expect(mockJobServices.getJobByIdService).toHaveBeenCalledWith(1);
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobById - Job data:', mockJobData.validJob);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobById - Job data:',
+				mockJobData.validJob,
+			);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(mockJobData.validJob);
 		});
@@ -520,66 +626,90 @@ describe('JobController', () => {
 		it('should process getJobById request with invalid ID', async () => {
 			const req = mockRequestResponseLogic.buildRequest({ id: 'abc' });
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			await mockControllerLogic.processGetJobByIdRequest(req, res);
-			
+
 			expect(mockJobServices.getJobByIdService).not.toHaveBeenCalled();
 			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.json).toHaveBeenCalledWith({ 
-				error: 'ID вакансии обязателен и должен быть числом' 
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'ID вакансии обязателен и должен быть числом',
 			});
 		});
 
 		it('should process createJob request successfully', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, mockJobCreationData.validJobData);
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				mockJobCreationData.validJobData,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobServices.createJobService.mockResolvedValue(mockServiceResponses.successCreateJobResponse);
-			
+
+			mockJobServices.createJobService.mockResolvedValue(
+				mockServiceResponses.successCreateJobResponse,
+			);
+
 			await mockControllerLogic.processCreateJobRequest(req, res);
-			
-			expect(mockJobServices.createJobService).toHaveBeenCalledWith(mockJobCreationData.validJobData);
+
+			expect(mockJobServices.createJobService).toHaveBeenCalledWith(
+				mockJobCreationData.validJobData,
+			);
 			expect(res.status).toHaveBeenCalledWith(201);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successCreateJobResponse);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successCreateJobResponse,
+			);
 		});
 
 		it('should process createJob request with upgrade required', async () => {
-			const req = mockRequestResponseLogic.buildRequest({}, mockJobCreationData.jobDataWithUpgradeRequired);
+			const req = mockRequestResponseLogic.buildRequest(
+				{},
+				mockJobCreationData.jobDataWithUpgradeRequired,
+			);
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobServices.createJobService.mockResolvedValue(mockServiceResponses.errorUpgradeRequiredResponse);
-			
+
+			mockJobServices.createJobService.mockResolvedValue(
+				mockServiceResponses.errorUpgradeRequiredResponse,
+			);
+
 			await mockControllerLogic.processCreateJobRequest(req, res);
-			
-			expect(mockJobServices.createJobService).toHaveBeenCalledWith(mockJobCreationData.jobDataWithUpgradeRequired);
+
+			expect(mockJobServices.createJobService).toHaveBeenCalledWith(
+				mockJobCreationData.jobDataWithUpgradeRequired,
+			);
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Вы уже разместили максимальное количество объявлений.',
 				upgradeRequired: true,
-				message: 'Для размещения большего количества объявлений перейдите на Premium тариф',
+				message:
+					'Для размещения большего количества объявлений перейдите на Premium тариф',
 			});
 		});
 
 		it('should handle controller errors', () => {
 			const error = mockErrors.databaseError;
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockControllerLogic.handleControllerError(error, res, 'получения объявления');
-			
-			expect(console.error).toHaveBeenCalledWith('Ошибка получения объявления:', 'Database connection failed');
+
+			mockControllerLogic.handleControllerError(
+				error,
+				res,
+				'получения объявления',
+			);
+
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка получения объявления:',
+				'Database connection failed',
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ 
-				error: 'Ошибка получения объявления', 
-				details: 'Database connection failed' 
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка получения объявления',
+				details: 'Database connection failed',
 			});
 		});
 
 		it('should handle controller success', () => {
 			const data = mockJobData.validJob;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.handleControllerSuccess(data, res);
-			
+
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
@@ -587,9 +717,9 @@ describe('JobController', () => {
 		it('should handle controller success with custom status code', () => {
 			const data = mockServiceResponses.successCreateJobResponse;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.handleControllerSuccess(data, res, 201);
-			
+
 			expect(res.status).toHaveBeenCalledWith(201);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
@@ -597,27 +727,41 @@ describe('JobController', () => {
 		it('should validate controller input', () => {
 			const validRequest = { params: { id: '1' }, body: {} };
 			const invalidRequest = { body: {} };
-			
-			expect(mockControllerLogic.validateControllerInput(validRequest)).toBe(true);
-			expect(mockControllerLogic.validateControllerInput(invalidRequest)).toBe(false);
+
+			expect(mockControllerLogic.validateControllerInput(validRequest)).toBe(
+				true,
+			);
+			expect(mockControllerLogic.validateControllerInput(invalidRequest)).toBe(
+				false,
+			);
 		});
 
 		it('should process controller response with success', () => {
 			const result = mockServiceResponses.successCreateJobResponse;
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockControllerLogic.processControllerResponse(result, res, 'создания объявления');
-			
+
+			mockControllerLogic.processControllerResponse(
+				result,
+				res,
+				'создания объявления',
+			);
+
 			expect(res.status).toHaveBeenCalledWith(201);
-			expect(res.json).toHaveBeenCalledWith(mockServiceResponses.successCreateJobResponse);
+			expect(res.json).toHaveBeenCalledWith(
+				mockServiceResponses.successCreateJobResponse,
+			);
 		});
 
 		it('should process controller response with error', () => {
 			const result = mockServiceResponses.errorValidationResponse;
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockControllerLogic.processControllerResponse(result, res, 'создания объявления');
-			
+
+			mockControllerLogic.processControllerResponse(
+				result,
+				res,
+				'создания объявления',
+			);
+
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({ error: 'Validation failed' });
 		});
@@ -625,28 +769,34 @@ describe('JobController', () => {
 		it('should process controller response with upgrade required', () => {
 			const result = mockServiceResponses.errorUpgradeRequiredResponse;
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockControllerLogic.processControllerResponse(result, res, 'создания объявления');
-			
+
+			mockControllerLogic.processControllerResponse(
+				result,
+				res,
+				'создания объявления',
+			);
+
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Вы уже разместили максимальное количество объявлений.',
 				upgradeRequired: true,
-				message: 'Для размещения большего количества объявлений перейдите на Premium тариф',
+				message:
+					'Для размещения большего количества объявлений перейдите на Premium тариф',
 			});
 		});
 
 		it('should handle upgrade required', () => {
 			const result = mockServiceResponses.errorUpgradeRequiredResponse;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.handleUpgradeRequired(result, res);
-			
+
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith({
 				error: 'Вы уже разместили максимальное количество объявлений.',
 				upgradeRequired: true,
-				message: 'Для размещения большего количества объявлений перейдите на Premium тариф',
+				message:
+					'Для размещения большего количества объявлений перейдите на Premium тариф',
 			});
 		});
 	});
@@ -848,7 +998,9 @@ describe('JobController', () => {
 			expect(mockServiceResponses).toHaveProperty('successCreateJobResponse');
 			expect(mockServiceResponses).toHaveProperty('errorJobNotFoundResponse');
 			expect(mockServiceResponses).toHaveProperty('errorCreateJobResponse');
-			expect(mockServiceResponses).toHaveProperty('errorUpgradeRequiredResponse');
+			expect(mockServiceResponses).toHaveProperty(
+				'errorUpgradeRequiredResponse',
+			);
 			expect(mockServiceResponses).toHaveProperty('errorValidationResponse');
 			expect(mockServiceResponses).toHaveProperty('errorServerResponse');
 		});
@@ -861,7 +1013,7 @@ describe('JobController', () => {
 			expect(errors).toHaveProperty('upgradeRequiredError');
 			expect(errors).toHaveProperty('serverError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -876,7 +1028,7 @@ describe('JobController', () => {
 			expect(errorMessages).toHaveProperty('upgradeRequiredError');
 			expect(errorMessages).toHaveProperty('serverError');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -889,7 +1041,7 @@ describe('JobController', () => {
 			expect(successMessages).toHaveProperty('operationCompleted');
 			expect(successMessages).toHaveProperty('responseSent');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -902,7 +1054,7 @@ describe('JobController', () => {
 			expect(consoleLogData).toHaveProperty('jobRetrievalError');
 			expect(consoleLogData).toHaveProperty('serviceCalled');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -983,11 +1135,17 @@ describe('JobController', () => {
 
 			expect(typeof requestResponseLogic.buildRequest).toBe('function');
 			expect(typeof requestResponseLogic.buildResponse).toBe('function');
-			expect(typeof requestResponseLogic.handleSuccessResponse).toBe('function');
+			expect(typeof requestResponseLogic.handleSuccessResponse).toBe(
+				'function',
+			);
 			expect(typeof requestResponseLogic.handleErrorResponse).toBe('function');
-			expect(typeof requestResponseLogic.handleValidationError).toBe('function');
+			expect(typeof requestResponseLogic.handleValidationError).toBe(
+				'function',
+			);
 			expect(typeof requestResponseLogic.handleNotFoundError).toBe('function');
-			expect(typeof requestResponseLogic.handleUpgradeRequiredError).toBe('function');
+			expect(typeof requestResponseLogic.handleUpgradeRequiredError).toBe(
+				'function',
+			);
 		});
 
 		it('should have valid mock controller logic', () => {

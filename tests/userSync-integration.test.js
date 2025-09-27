@@ -33,11 +33,11 @@ describe('UserSync Integration Tests', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console methods to avoid noise in tests
 		console.log = vi.fn();
 		console.error = vi.fn();
-		
+
 		// Reset all mocks
 		resetUserSyncMocks();
 	});
@@ -52,7 +52,9 @@ describe('UserSync Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should sync user successfully', async () => {
 				// Arrange
-				mockSyncUserService.mockResolvedValue(mockServiceResponses.syncUserSuccess);
+				mockSyncUserService.mockResolvedValue(
+					mockServiceResponses.syncUserSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -85,7 +87,10 @@ describe('UserSync Integration Tests', () => {
 			it('should handle user update', async () => {
 				// Arrange
 				const updatedUser = { ...mockUserData, firstName: 'Jane' };
-				mockSyncUserService.mockResolvedValue({ success: true, user: updatedUser });
+				mockSyncUserService.mockResolvedValue({
+					success: true,
+					user: updatedUser,
+				});
 
 				// Act
 				const response = await request(app)
@@ -136,7 +141,9 @@ describe('UserSync Integration Tests', () => {
 
 			it('should handle service errors', async () => {
 				// Arrange
-				mockSyncUserService.mockResolvedValue({ error: mockErrors.syncUserError });
+				mockSyncUserService.mockResolvedValue({
+					error: mockErrors.syncUserError,
+				});
 
 				// Act
 				const response = await request(app)
@@ -150,7 +157,9 @@ describe('UserSync Integration Tests', () => {
 
 			it('should handle clerk secret key missing error', async () => {
 				// Arrange
-				mockSyncUserService.mockResolvedValue({ error: mockErrors.clerkSecretKeyMissing });
+				mockSyncUserService.mockResolvedValue({
+					error: mockErrors.clerkSecretKeyMissing,
+				});
 
 				// Act
 				const response = await request(app)
@@ -159,12 +168,16 @@ describe('UserSync Integration Tests', () => {
 					.expect(500);
 
 				// Assert
-				expect(response.body).toEqual({ error: mockErrors.clerkSecretKeyMissing });
+				expect(response.body).toEqual({
+					error: mockErrors.clerkSecretKeyMissing,
+				});
 			});
 
 			it('should handle clerk API errors', async () => {
 				// Arrange
-				mockSyncUserService.mockResolvedValue({ error: mockErrors.clerkApiError });
+				mockSyncUserService.mockResolvedValue({
+					error: mockErrors.clerkApiError,
+				});
 
 				// Act
 				const response = await request(app)
@@ -180,7 +193,9 @@ describe('UserSync Integration Tests', () => {
 		describe('Input Validation', () => {
 			it('should accept valid clerkUserId', async () => {
 				// Arrange
-				mockSyncUserService.mockResolvedValue(mockServiceResponses.syncUserSuccess);
+				mockSyncUserService.mockResolvedValue(
+					mockServiceResponses.syncUserSuccess,
+				);
 
 				// Act
 				const response = await request(app)
@@ -194,15 +209,17 @@ describe('UserSync Integration Tests', () => {
 
 			it('should handle extra fields in request body', async () => {
 				// Arrange
-				mockSyncUserService.mockResolvedValue(mockServiceResponses.syncUserSuccess);
+				mockSyncUserService.mockResolvedValue(
+					mockServiceResponses.syncUserSuccess,
+				);
 
 				// Act
 				const response = await request(app)
 					.post('/api/user-sync/sync-user')
-					.send({ 
+					.send({
 						clerkUserId: 'clerk_123456789',
 						extraField: 'should be ignored',
-						anotherField: 123
+						anotherField: 123,
 					})
 					.expect(200);
 
@@ -216,37 +233,31 @@ describe('UserSync Integration Tests', () => {
 	describe('HTTP Method Validation', () => {
 		it('should reject GET requests', async () => {
 			// Act & Assert
-			await request(app)
-				.get('/api/user-sync/sync-user')
-				.expect(404);
+			await request(app).get('/api/user-sync/sync-user').expect(404);
 		});
 
 		it('should reject PUT requests', async () => {
 			// Act & Assert
-			await request(app)
-				.put('/api/user-sync/sync-user')
-				.expect(404);
+			await request(app).put('/api/user-sync/sync-user').expect(404);
 		});
 
 		it('should reject DELETE requests', async () => {
 			// Act & Assert
-			await request(app)
-				.delete('/api/user-sync/sync-user')
-				.expect(404);
+			await request(app).delete('/api/user-sync/sync-user').expect(404);
 		});
 
 		it('should reject PATCH requests', async () => {
 			// Act & Assert
-			await request(app)
-				.patch('/api/user-sync/sync-user')
-				.expect(404);
+			await request(app).patch('/api/user-sync/sync-user').expect(404);
 		});
 	});
 
 	describe('Response Format Validation', () => {
 		it('should return valid JSON responses', async () => {
 			// Arrange
-			mockSyncUserService.mockResolvedValue(mockServiceResponses.syncUserSuccess);
+			mockSyncUserService.mockResolvedValue(
+				mockServiceResponses.syncUserSuccess,
+			);
 
 			// Act
 			const response = await request(app)
@@ -279,7 +290,9 @@ describe('UserSync Integration Tests', () => {
 	describe('Service Integration', () => {
 		it('should call syncUserService with correct parameters', async () => {
 			// Arrange
-			mockSyncUserService.mockResolvedValue(mockServiceResponses.syncUserSuccess);
+			mockSyncUserService.mockResolvedValue(
+				mockServiceResponses.syncUserSuccess,
+			);
 
 			// Act
 			await request(app)

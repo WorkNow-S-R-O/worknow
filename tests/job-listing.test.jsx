@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { JobListing } from '../apps/client/src/components/JobListing';
+import { JobListing } from '@/components';
 
 // Mock react-intlayer
 vi.mock('react-intlayer', () => ({
@@ -21,12 +21,12 @@ vi.mock('react-intlayer', () => ({
 }));
 
 // Mock useLoadingProgress hook
-vi.mock('../apps/client/src/hooks/useLoadingProgress', () => ({
+vi.mock('@/hooks/useLoadingProgress', () => ({
 	default: vi.fn(() => ({ loading: false })),
 }));
 
 // Mock custom hooks
-vi.mock('../apps/client/src/hooks/useJobs', () => ({
+vi.mock('@/hooks/useJobs', () => ({
 	default: vi.fn(() => ({
 		jobs: [
 			{
@@ -53,7 +53,7 @@ vi.mock('../apps/client/src/hooks/useJobs', () => ({
 	})),
 }));
 
-vi.mock('../apps/client/src/store/filterStore', () => ({
+vi.mock('@/store/filterStore', () => ({
 	default: vi.fn(() => ({
 		filters: { category: null, salary: null },
 		setFilters: vi.fn(),
@@ -61,7 +61,7 @@ vi.mock('../apps/client/src/store/filterStore', () => ({
 }));
 
 // Mock components
-vi.mock('../apps/client/src/components/JobList', () => ({
+vi.mock('@/components/JobList', () => ({
 	default: ({ jobs, loading }) => (
 		<div data-testid="job-list">
 			{loading ? 'Loading...' : `Jobs: ${jobs.length}`}
@@ -69,16 +69,18 @@ vi.mock('../apps/client/src/components/JobList', () => ({
 	),
 }));
 
-vi.mock('../apps/client/src/components/PaginationControl', () => ({
+vi.mock('@/components/PaginationControl', () => ({
 	default: ({ currentPage, totalPages, onPageChange }) => (
 		<div data-testid="pagination-control">
-			<span>Page {currentPage} of {totalPages}</span>
+			<span>
+				Page {currentPage} of {totalPages}
+			</span>
 			<button onClick={() => onPageChange(currentPage + 1)}>Next</button>
 		</div>
 	),
 }));
 
-vi.mock('../apps/client/src/components/ui/city-dropwdown', () => ({
+vi.mock('@/components/ui/city-dropwdown', () => ({
 	default: ({ selectedCity, onCitySelect, dropdownStyle, buttonClassName }) => (
 		<div data-testid="city-dropdown">
 			<button
@@ -92,9 +94,12 @@ vi.mock('../apps/client/src/components/ui/city-dropwdown', () => ({
 	),
 }));
 
-vi.mock('../apps/client/src/components/ui/JobFilterModal', () => ({
+vi.mock('@/components/ui/JobFilterModal', () => ({
 	default: ({ open, onClose, onApply, currentFilters }) => (
-		<div data-testid="job-filter-modal" style={{ display: open ? 'block' : 'none' }}>
+		<div
+			data-testid="job-filter-modal"
+			style={{ display: open ? 'block' : 'none' }}
+		>
 			<span>Filter Modal</span>
 			<button onClick={onClose}>Close</button>
 			<button onClick={() => onApply({ category: 'IT' })}>Apply</button>
@@ -114,11 +119,7 @@ Object.defineProperty(window, 'scrollTo', {
 });
 
 const renderWithRouter = (component) => {
-	return render(
-		<BrowserRouter>
-			{component}
-		</BrowserRouter>
-	);
+	return render(<BrowserRouter>{component}</BrowserRouter>);
 };
 
 describe('JobListing Component', () => {
@@ -260,7 +261,10 @@ describe('JobListing Component', () => {
 			fireEvent.click(nextButton);
 
 			// Should call window.scrollTo
-			expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+			expect(window.scrollTo).toHaveBeenCalledWith({
+				top: 0,
+				behavior: 'smooth',
+			});
 		});
 	});
 
@@ -301,28 +305,50 @@ describe('JobListing Component', () => {
 			renderWithRouter(<JobListing />);
 
 			const container = screen.getByTestId('job-list').closest('.d-flex');
-			expect(container).toHaveClass('d-flex', 'flex-column', 'align-items-center', 'mt-40', 'min-h-screen');
+			expect(container).toHaveClass(
+				'd-flex',
+				'flex-column',
+				'align-items-center',
+				'mt-40',
+				'min-h-screen',
+			);
 		});
 
 		it('has proper board controls wrapper', () => {
 			renderWithRouter(<JobListing />);
 
-			const wrapper = screen.getByText('Board Settings').closest('.board-controls-wrapper');
+			const wrapper = screen
+				.getByText('Board Settings')
+				.closest('.board-controls-wrapper');
 			expect(wrapper).toBeInTheDocument();
 		});
 
 		it('has proper board controls scale', () => {
 			renderWithRouter(<JobListing />);
 
-			const controls = screen.getByText('Board Settings').closest('.board-controls-scale');
-			expect(controls).toHaveClass('d-flex', 'align-items-center', 'mb-3', 'gap-2');
+			const controls = screen
+				.getByText('Board Settings')
+				.closest('.board-controls-scale');
+			expect(controls).toHaveClass(
+				'd-flex',
+				'align-items-center',
+				'mb-3',
+				'gap-2',
+			);
 		});
 
 		it('has proper button styling', () => {
 			renderWithRouter(<JobListing />);
 
 			const button = screen.getByText('Board Settings');
-			expect(button).toHaveClass('btn', 'btn-outline-primary', 'd-flex', 'align-items-center', 'justify-content-center', 'board-btn');
+			expect(button).toHaveClass(
+				'btn',
+				'btn-outline-primary',
+				'd-flex',
+				'align-items-center',
+				'justify-content-center',
+				'board-btn',
+			);
 		});
 	});
 
@@ -380,7 +406,10 @@ describe('JobListing Component', () => {
 			const nextButton = screen.getByText('Next');
 			fireEvent.click(nextButton);
 
-			expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+			expect(window.scrollTo).toHaveBeenCalledWith({
+				top: 0,
+				behavior: 'smooth',
+			});
 		});
 	});
 
@@ -389,9 +418,9 @@ describe('JobListing Component', () => {
 			const { unmount } = renderWithRouter(<JobListing />);
 
 			expect(screen.getByTestId('job-list')).toBeInTheDocument();
-			
+
 			unmount();
-			
+
 			expect(screen.queryByTestId('job-list')).not.toBeInTheDocument();
 		});
 	});

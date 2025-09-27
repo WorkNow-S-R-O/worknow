@@ -93,7 +93,9 @@ export const getJobs = async (req, res) => {
 			}
 			return {
 				...job,
-				category: job.category ? { ...job.category, label: categoryLabel } : null,
+				category: job.category
+					? { ...job.category, label: categoryLabel }
+					: null,
 			};
 		});
 

@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import {
+	render,
+	screen,
+	fireEvent,
+	waitFor,
+	act,
+} from '@testing-library/react';
 import JobFilterModal from '../apps/client/src/components/ui/JobFilterModal';
 
 // Mock react-intlayer
@@ -59,7 +65,7 @@ describe('JobFilterModal Component', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		
+
 		// Mock fetch to return categories
 		mockFetch.mockResolvedValue({
 			json: () => Promise.resolve(mockCategories),
@@ -301,7 +307,7 @@ describe('JobFilterModal Component', () => {
 
 			await waitFor(() => {
 				expect(mockFetch).toHaveBeenCalledWith(
-					'http://localhost:3001/api/categories?lang=en'
+					'http://localhost:3001/api/categories?lang=en',
 				);
 			});
 
@@ -361,7 +367,7 @@ describe('JobFilterModal Component', () => {
 			});
 
 			const modal = screen.getByText('Filter Jobs').closest('div');
-			
+
 			await act(async () => {
 				fireEvent.touchStart(modal, {
 					targetTouches: [{ clientY: 100 }],
@@ -475,7 +481,9 @@ describe('JobFilterModal Component', () => {
 			});
 
 			await waitFor(() => {
-				expect(screen.getByText('Error loading categories')).toBeInTheDocument();
+				expect(
+					screen.getByText('Error loading categories'),
+				).toBeInTheDocument();
 			});
 		});
 	});

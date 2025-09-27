@@ -94,13 +94,15 @@ export const mockJobData = {
 };
 
 export const mockJobsResponse = {
-	jobs: [{
-		...mockJobData,
-		category: {
-			...mockJobData.category,
-			label: 'IT', // Default label
+	jobs: [
+		{
+			...mockJobData,
+			category: {
+				...mockJobData.category,
+				label: 'IT', // Default label
+			},
 		},
-	}],
+	],
 	totalJobs: 1,
 	totalPages: 1,
 	currentPage: 1,
@@ -132,6 +134,6 @@ export const resetUsersMocks = () => {
 	mockSyncUserService.mockClear();
 	mockGetUserByClerkIdService.mockClear();
 	mockGetUserJobsService.mockClear();
-	
+
 	vi.clearAllMocks();
 };

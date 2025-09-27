@@ -19,7 +19,7 @@ describe('GetJobService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetGetJobMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
@@ -281,8 +281,10 @@ describe('GetJobService', () => {
 			};
 
 			const dbError = mockPrismaError;
-			
-			expect(() => handleDatabaseError(dbError)).toThrow('Ошибка получения объявления');
+
+			expect(() => handleDatabaseError(dbError)).toThrow(
+				'Ошибка получения объявления',
+			);
 		});
 
 		it('should log error message before throwing', () => {
@@ -292,9 +294,12 @@ describe('GetJobService', () => {
 			};
 
 			const error = new Error('Test error message');
-			
+
 			expect(() => handleError(error)).toThrow('Ошибка получения объявления');
-			expect(console.error).toHaveBeenCalledWith('Ошибка в getJobByIdService:', 'Test error message');
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка в getJobByIdService:',
+				'Test error message',
+			);
 		});
 
 		it('should handle job not found scenarios', () => {
@@ -327,7 +332,10 @@ describe('GetJobService', () => {
 			const id = '123';
 			logFetchingJob(id);
 
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobByIdService - Fetching job with ID:', id);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobByIdService - Fetching job with ID:',
+				id,
+			);
 		});
 
 		it('should log job found information with image URL', () => {
@@ -343,12 +351,15 @@ describe('GetJobService', () => {
 			const job = mockJobData.jobWithImage;
 			logJobFound(job);
 
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobByIdService - Job found:', {
-				id: 123,
-				title: 'Software Developer Position',
-				imageUrl: 'https://example.com/image.jpg',
-				hasImageUrl: true,
-			});
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobByIdService - Job found:',
+				{
+					id: 123,
+					title: 'Software Developer Position',
+					imageUrl: 'https://example.com/image.jpg',
+					hasImageUrl: true,
+				},
+			);
 		});
 
 		it('should log job found information without image URL', () => {
@@ -364,12 +375,15 @@ describe('GetJobService', () => {
 			const job = mockJobData.jobWithoutImage;
 			logJobFound(job);
 
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobByIdService - Job found:', {
-				id: 456,
-				title: 'Marketing Manager Position',
-				imageUrl: null,
-				hasImageUrl: false,
-			});
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobByIdService - Job found:',
+				{
+					id: 456,
+					title: 'Marketing Manager Position',
+					imageUrl: null,
+					hasImageUrl: false,
+				},
+			);
 		});
 
 		it('should log job found information with empty image URL', () => {
@@ -385,12 +399,15 @@ describe('GetJobService', () => {
 			const job = mockJobData.jobWithEmptyImageUrl;
 			logJobFound(job);
 
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobByIdService - Job found:', {
-				id: 789,
-				title: 'Designer Position',
-				imageUrl: '',
-				hasImageUrl: false,
-			});
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobByIdService - Job found:',
+				{
+					id: 789,
+					title: 'Designer Position',
+					imageUrl: '',
+					hasImageUrl: false,
+				},
+			);
 		});
 
 		it('should log job not found information', () => {
@@ -406,12 +423,15 @@ describe('GetJobService', () => {
 			const job = mockJobData.nullJob;
 			logJobFound(job);
 
-			expect(console.log).toHaveBeenCalledWith('🔍 getJobByIdService - Job found:', {
-				id: undefined,
-				title: undefined,
-				imageUrl: undefined,
-				hasImageUrl: false,
-			});
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 getJobByIdService - Job found:',
+				{
+					id: undefined,
+					title: undefined,
+					imageUrl: undefined,
+					hasImageUrl: false,
+				},
+			);
 		});
 
 		it('should correctly determine hasImageUrl boolean', () => {

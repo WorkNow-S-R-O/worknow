@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import { Navbar } from '../apps/client/src/components/Navbar';
+import { BrowserRouter } from 'react-router';
+import { Navbar } from '@/components';
 
 // Mock react-router-dom
 const mockNavigate = vi.fn();
@@ -9,12 +9,13 @@ vi.mock('react-router-dom', async () => {
 	const actual = await vi.importActual('react-router-dom');
 	return {
 		...actual,
+		BrowserRouter: ({ children }) => <div data-testid="router">{children}</div>,
 		useLocation: () => ({
 			pathname: '/',
 			search: '',
 			hash: '',
 			state: null,
-			key: 'default'
+			key: 'default',
 		}),
 		useNavigate: () => mockNavigate,
 	};
@@ -35,7 +36,7 @@ vi.mock('react-intlayer', () => ({
 }));
 
 // Mock useLanguageManager hook
-vi.mock('../apps/client/src/hooks/useLanguageManager', () => ({
+vi.mock('@/hooks/useLanguageManager', () => ({
 	useLanguageManager: () => ({
 		clearLanguagePreference: vi.fn(),
 		changeLanguage: vi.fn(),
@@ -47,29 +48,33 @@ vi.mock('../apps/client/src/hooks/useLanguageManager', () => ({
 vi.mock('@clerk/clerk-react', () => ({
 	SignedIn: ({ children }) => <div data-testid="signed-in">{children}</div>,
 	SignedOut: ({ children }) => <div data-testid="signed-out">{children}</div>,
-	SignInButton: ({ children }) => <button data-testid="sign-in-button">{children}</button>,
+	SignInButton: ({ children }) => (
+		<button data-testid="sign-in-button">{children}</button>
+	),
 	UserButton: () => <div data-testid="user-button">User Button</div>,
 }));
 
 // Mock UI components
-vi.mock('../apps/client/src/components/ui/premium-button', () => ({
+vi.mock('@/components/ui/premium-button', () => ({
 	default: () => <div data-testid="premium-button">Premium Button</div>,
 }));
 
-vi.mock('../apps/client/src/components/ui/LanguageSelector', () => ({
+vi.mock('@/components/ui/LanguageSelector', () => ({
 	default: () => <div data-testid="language-selector">Language Selector</div>,
 }));
 
-vi.mock('../apps/client/src/components/ui/UserAuth', () => ({
+vi.mock('@/components/ui/UserAuth', () => ({
 	default: () => <div data-testid="user-auth">User Auth</div>,
 }));
 
-vi.mock('../apps/client/src/components/ui/MobileNavbarHeader', () => ({
+vi.mock('@/components/ui/MobileNavbarHeader', () => ({
 	default: ({ isExpanded, setIsExpanded }) => (
 		<div data-testid="mobile-navbar-header">
-			<div data-testid="mobile-expanded">{isExpanded ? 'expanded' : 'collapsed'}</div>
-			<button 
-				data-testid="mobile-toggle" 
+			<div data-testid="mobile-expanded">
+				{isExpanded ? 'expanded' : 'collapsed'}
+			</div>
+			<button
+				data-testid="mobile-toggle"
 				onClick={() => setIsExpanded(!isExpanded)}
 			>
 				Toggle Mobile
@@ -90,11 +95,7 @@ vi.mock('../apps/client/src/components/ui/MailDropdown', () => ({
 vi.mock('bootstrap/dist/js/bootstrap.bundle.min.js', () => ({}));
 
 const renderWithRouter = (component) => {
-	return render(
-		<BrowserRouter>
-			{component}
-		</BrowserRouter>
-	);
+	return render(<BrowserRouter>{component}</BrowserRouter>);
 };
 
 describe('Navbar Component', () => {
@@ -164,10 +165,15 @@ describe('Navbar Component', () => {
 			renderWithRouter(<Navbar />);
 
 			const rulesLink = screen.getByRole('link', { name: 'Rules' });
-			const supportLink = screen.getByRole('link', { name: 'Technical Support' });
+			const supportLink = screen.getByRole('link', {
+				name: 'Technical Support',
+			});
 			const billingLink = screen.getByRole('link', { name: 'Billing' });
 
-			expect(rulesLink).toHaveAttribute('href', 'https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca');
+			expect(rulesLink).toHaveAttribute(
+				'href',
+				'https://www.termsfeed.com/live/8e93e788-90eb-4c96-b48c-18d31910ddca',
+			);
 			expect(rulesLink).toHaveAttribute('target', '_blank');
 			expect(supportLink).toHaveAttribute('href', '/support');
 			expect(billingLink).toHaveAttribute('href', '/billing');
@@ -291,9 +297,9 @@ describe('Navbar Component', () => {
 			const { unmount } = renderWithRouter(<Navbar />);
 
 			expect(screen.getByTestId('logo')).toBeInTheDocument();
-			
+
 			unmount();
-			
+
 			// Should clean up properly
 			expect(screen.queryByTestId('logo')).not.toBeInTheDocument();
 		});
@@ -304,7 +310,9 @@ describe('Navbar Component', () => {
 			renderWithRouter(<Navbar />);
 
 			// All navigation links should be present
-			expect(screen.getByRole('link', { name: 'Vacancies' })).toBeInTheDocument();
+			expect(
+				screen.getByRole('link', { name: 'Vacancies' }),
+			).toBeInTheDocument();
 			expect(screen.getByRole('link', { name: 'Seekers' })).toBeInTheDocument();
 			expect(screen.getByRole('link', { name: 'My Jobs' })).toBeInTheDocument();
 		});

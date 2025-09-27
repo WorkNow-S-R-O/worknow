@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import PremiumPage from '../apps/client/src/components/PremiumPage';
+import { PremiumPage } from '@/components';
 
 // Mock axios - use global mock from setup.jsx
 import axios from 'axios';
@@ -67,7 +67,9 @@ vi.mock('react-intlayer', () => ({
 		pricingDeluxeFacebookPromotion: { value: 'Facebook promotion' },
 		pricingDeluxePersonalMailing: { value: 'Personal mailing' },
 		pricingDeluxeTelegramPublications: { value: 'Telegram publications' },
-		pricingDeluxePersonalCandidateSelection: { value: 'Personal candidate selection' },
+		pricingDeluxePersonalCandidateSelection: {
+			value: 'Personal candidate selection',
+		},
 		pricingDeluxeInterviewOrganization: { value: 'Interview organization' },
 		pricingDeluxeBuyDeluxe: { value: 'Buy Deluxe' },
 		pricingDeluxeUpgradeToDeluxe: { value: 'Upgrade to Deluxe' },
@@ -81,7 +83,7 @@ vi.mock('react-intlayer', () => ({
 }));
 
 // Mock useUserSync hook
-vi.mock('../apps/client/src/hooks/useUserSync.js', () => ({
+vi.mock('@/hooks/useUserSync', () => ({
 	useUserSync: () => ({
 		dbUser: {
 			id: 'test-user-id',
@@ -95,7 +97,7 @@ vi.mock('../apps/client/src/hooks/useUserSync.js', () => ({
 }));
 
 // Mock useLoadingProgress hook
-vi.mock('../apps/client/src/hooks/useLoadingProgress', () => ({
+vi.mock('@/hooks/useLoadingProgress', () => ({
 	useLoadingProgress: () => ({
 		startLoadingWithProgress: vi.fn(),
 		completeLoading: vi.fn(),
@@ -104,7 +106,7 @@ vi.mock('../apps/client/src/hooks/useLoadingProgress', () => ({
 }));
 
 // Mock useGoogleAnalytics hook
-vi.mock('../apps/client/src/hooks/useGoogleAnalytics.js', () => ({
+vi.mock('@/hooks/useGoogleAnalytics', () => ({
 	useGoogleAnalytics: () => ({
 		trackPremiumSubscription: vi.fn(),
 		trackButtonClick: vi.fn(),
@@ -121,17 +123,17 @@ describe('PremiumPage Component', () => {
 	beforeEach(async () => {
 		// Reset all mocks
 		vi.clearAllMocks();
-		
+
 		// Mock axios responses using the global mock
-		vi.mocked(axios.post).mockResolvedValue({ 
-			data: { url: 'https://checkout.stripe.com/test' } 
+		vi.mocked(axios.post).mockResolvedValue({
+			data: { url: 'https://checkout.stripe.com/test' },
 		});
 	});
 
 	describe('Basic Functionality', () => {
 		it('renders the component', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			// Wait for the component to render
 			await waitFor(() => {
 				expect(screen.getByText('Pricing Plans')).toBeInTheDocument();
@@ -140,7 +142,7 @@ describe('PremiumPage Component', () => {
 
 		it('displays pricing plans', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				expect(screen.getByText('Free Plan')).toBeInTheDocument();
 				expect(screen.getByText('Pro')).toBeInTheDocument();
@@ -150,7 +152,7 @@ describe('PremiumPage Component', () => {
 
 		it('shows plan features', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				expect(screen.getByText('Up to 5 ads')).toBeInTheDocument();
 				expect(screen.getByText('Up to 10 ads')).toBeInTheDocument();
@@ -160,7 +162,7 @@ describe('PremiumPage Component', () => {
 
 		it('displays pricing information', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				expect(screen.getByText('0')).toBeInTheDocument();
 				expect(screen.getByText('99₪')).toBeInTheDocument();
@@ -170,7 +172,7 @@ describe('PremiumPage Component', () => {
 
 		it('shows plan badges', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				expect(screen.getByText('⭐ Recommended')).toBeInTheDocument();
 				expect(screen.getByText('🏆 Best Results')).toBeInTheDocument();
@@ -181,7 +183,7 @@ describe('PremiumPage Component', () => {
 	describe('User Interactions', () => {
 		it('handles free plan button click', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				const freeButton = screen.getByText('Active');
 				expect(freeButton).toBeInTheDocument();
@@ -190,7 +192,7 @@ describe('PremiumPage Component', () => {
 
 		it('handles premium plan button click', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				const premiumButton = screen.getByText('Buy Premium');
 				expect(premiumButton).toBeInTheDocument();
@@ -199,7 +201,7 @@ describe('PremiumPage Component', () => {
 
 		it('handles deluxe plan button click', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				const deluxeButton = screen.getByText('Buy Deluxe');
 				expect(deluxeButton).toBeInTheDocument();
@@ -208,11 +210,11 @@ describe('PremiumPage Component', () => {
 
 		it('shows loading state during payment', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				const premiumButton = screen.getByText('Buy Premium');
 				fireEvent.click(premiumButton);
-				
+
 				// Check if loading state is shown
 				expect(vi.mocked(axios.post)).toHaveBeenCalled();
 			});
@@ -222,47 +224,47 @@ describe('PremiumPage Component', () => {
 	describe('API Integration', () => {
 		it('creates checkout session for premium plan', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				const premiumButton = screen.getByText('Buy Premium');
 				fireEvent.click(premiumButton);
-				
+
 				expect(vi.mocked(axios.post)).toHaveBeenCalledWith(
 					expect.stringContaining('/api/payments/create-checkout-session'),
 					expect.objectContaining({
 						clerkUserId: 'test-user-id',
 						priceId: 'price_1Qt5J0COLiDbHvw1IQNl90uU',
-					})
+					}),
 				);
 			});
 		});
 
 		it('creates checkout session for deluxe plan', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				const deluxeButton = screen.getByText('Buy Deluxe');
 				fireEvent.click(deluxeButton);
-				
+
 				expect(vi.mocked(axios.post)).toHaveBeenCalledWith(
 					expect.stringContaining('/api/payments/create-checkout-session'),
 					expect.objectContaining({
 						clerkUserId: 'test-user-id',
 						priceId: 'price_1RfHjiCOLiDbHvw1repgIbnK',
-					})
+					}),
 				);
 			});
 		});
 
 		it('handles API errors gracefully', async () => {
 			vi.mocked(axios.post).mockRejectedValue(new Error('API Error'));
-			
+
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				const premiumButton = screen.getByText('Buy Premium');
 				fireEvent.click(premiumButton);
-				
+
 				// Component should handle error gracefully
 				expect(vi.mocked(axios.post)).toHaveBeenCalled();
 			});
@@ -272,7 +274,7 @@ describe('PremiumPage Component', () => {
 	describe('Plan Status Logic', () => {
 		it('shows active status for free plan when user is logged in', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				const freeButton = screen.getByText('Active');
 				expect(freeButton).toBeInTheDocument();
@@ -281,7 +283,7 @@ describe('PremiumPage Component', () => {
 
 		it('shows upgrade pricing for deluxe when user has pro', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				// Just check that the component renders without errors
 				expect(screen.getByText('Deluxe')).toBeInTheDocument();
@@ -292,7 +294,7 @@ describe('PremiumPage Component', () => {
 	describe('Text Carousel', () => {
 		it('displays title variations', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				// Check if any of the title variations are displayed
 				const titleElement = screen.getByText('Pricing Plans');
@@ -304,7 +306,7 @@ describe('PremiumPage Component', () => {
 	describe('Responsive Design', () => {
 		it('renders pricing cards correctly', async () => {
 			renderWithRouter(<PremiumPage />);
-			
+
 			await waitFor(() => {
 				// Check if pricing cards are rendered
 				const cards = screen.getAllByText(/Free Plan|Pro|Deluxe/);

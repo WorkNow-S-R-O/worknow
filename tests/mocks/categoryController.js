@@ -8,8 +8,12 @@ export const mockPrisma = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock request and response objects
 export const mockRequest = {
@@ -77,7 +81,7 @@ export const mockCategoryData = {
 			],
 		},
 	],
-	
+
 	categoriesWithPartialTranslations: [
 		{
 			id: 1,
@@ -98,7 +102,7 @@ export const mockCategoryData = {
 			],
 		},
 	],
-	
+
 	categoriesWithNoTranslations: [
 		{
 			id: 1,
@@ -111,7 +115,7 @@ export const mockCategoryData = {
 			translations: [],
 		},
 	],
-	
+
 	categoriesWithNullTranslations: [
 		{
 			id: 1,
@@ -124,7 +128,7 @@ export const mockCategoryData = {
 			translations: undefined,
 		},
 	],
-	
+
 	singleCategory: {
 		id: 1,
 		name: 'IT',
@@ -135,7 +139,7 @@ export const mockCategoryData = {
 			{ lang: 'ar', name: 'تكنولوجيا المعلومات' },
 		],
 	},
-	
+
 	emptyCategories: [],
 };
 
@@ -148,7 +152,7 @@ export const mockProcessedCategoryData = {
 		{ id: 4, label: 'Дизайн' },
 		{ id: 5, label: 'Финансы' },
 	],
-	
+
 	englishCategories: [
 		{ id: 1, label: 'Information Technology' },
 		{ id: 2, label: 'Marketing' },
@@ -156,7 +160,7 @@ export const mockProcessedCategoryData = {
 		{ id: 4, label: 'Design' },
 		{ id: 5, label: 'Finance' },
 	],
-	
+
 	hebrewCategories: [
 		{ id: 1, label: 'טכנולוגיית מידע' },
 		{ id: 2, label: 'שיווק' },
@@ -164,7 +168,7 @@ export const mockProcessedCategoryData = {
 		{ id: 4, label: 'עיצוב' },
 		{ id: 5, label: 'כספים' },
 	],
-	
+
 	arabicCategories: [
 		{ id: 1, label: 'تكنولوجيا المعلومات' },
 		{ id: 2, label: 'تسويق' },
@@ -172,12 +176,12 @@ export const mockProcessedCategoryData = {
 		{ id: 4, label: 'تصميم' },
 		{ id: 5, label: 'مالية' },
 	],
-	
+
 	categoriesWithFallback: [
 		{ id: 1, label: 'IT' }, // Falls back to original name
 		{ id: 2, label: 'Marketing' }, // Falls back to original name
 	],
-	
+
 	emptyProcessedCategories: [],
 };
 
@@ -187,12 +191,12 @@ export const mockServiceResponses = {
 		categories: mockProcessedCategoryData.russianCategories,
 		status: 200,
 	},
-	
+
 	errorResponse: {
 		error: 'Ошибка при получении категорий',
 		status: 500,
 	},
-	
+
 	emptyResponse: {
 		categories: [],
 		status: 200,
@@ -255,33 +259,33 @@ export const mockDataConversions = {
 		translationName: 'IT',
 		errorMessage: 'Ошибка при получении категорий',
 	},
-	
+
 	number: {
 		categoryId: 1,
 		statusCode: 200,
 		errorStatusCode: 500,
 	},
-	
+
 	boolean: {
 		hasTranslation: true,
 		isEmpty: false,
 		hasError: false,
 		success: true,
 	},
-	
+
 	object: {
 		category: mockCategoryData.singleCategory,
 		response: mockServiceResponses.successResponse,
 		error: mockErrors.databaseError,
 		translation: { lang: 'ru', name: 'IT' },
 	},
-	
+
 	array: {
 		categories: mockCategoryData.categoriesWithTranslations,
 		translations: mockCategoryData.singleCategory.translations,
 		processedCategories: mockProcessedCategoryData.russianCategories,
 	},
-	
+
 	null: {
 		translation: null,
 		category: null,
@@ -300,48 +304,48 @@ export const mockCategoryProcessingLogic = {
 			};
 		});
 	},
-	
+
 	findTranslation: (translations, lang) => {
 		return translations?.find((t) => t.lang === lang);
 	},
-	
+
 	getFallbackName: (category) => {
 		return category.name;
 	},
-	
+
 	buildCategoryResponse: (categories) => {
 		return categories.map((category) => ({
 			id: category.id,
 			label: category.label,
 		}));
 	},
-	
+
 	handleCategoryError: (error) => {
 		return {
 			error: 'Ошибка при получении категорий',
 			details: error.message,
 		};
 	},
-	
+
 	handleCategorySuccess: (categories) => {
 		return categories;
 	},
-	
+
 	validateLanguage: (lang) => {
 		return ['ru', 'en', 'he', 'ar'].includes(lang);
 	},
-	
+
 	getDefaultLanguage: () => {
 		return 'ru';
 	},
-	
+
 	sortCategories: (categories) => {
 		return categories.sort((a, b) => a.name.localeCompare(b.name));
 	},
-	
+
 	filterCategories: (categories, filter) => {
-		return categories.filter((category) => 
-			category.name.toLowerCase().includes(filter.toLowerCase())
+		return categories.filter((category) =>
+			category.name.toLowerCase().includes(filter.toLowerCase()),
 		);
 	},
 };
@@ -354,29 +358,29 @@ export const mockDatabaseOperationsLogic = {
 			include: { translations: true },
 		};
 	},
-	
+
 	executeCategoryQuery: async (prisma) => {
 		return await prisma.category.findMany({
 			orderBy: { name: 'asc' },
 			include: { translations: true },
 		});
 	},
-	
+
 	handleDatabaseError: (error) => {
 		return {
 			error: 'Ошибка при получении категорий',
 			details: error.message,
 		};
 	},
-	
+
 	handleDatabaseSuccess: (categories) => {
 		return categories;
 	},
-	
+
 	validateDatabaseResult: (result) => {
 		return Array.isArray(result);
 	},
-	
+
 	processDatabaseResult: (result) => {
 		return result;
 	},
@@ -391,19 +395,19 @@ export const mockTranslationLogic = {
 			label: translation?.name || category.name,
 		};
 	},
-	
+
 	hasTranslation: (category, lang) => {
 		return category.translations?.some((t) => t.lang === lang);
 	},
-	
+
 	getTranslation: (translations, lang) => {
 		return translations?.find((t) => t.lang === lang);
 	},
-	
+
 	getFallbackTranslation: (category) => {
 		return category.name;
 	},
-	
+
 	processTranslations: (categories, lang) => {
 		return categories.map((category) => {
 			const translation = category.translations?.find((t) => t.lang === lang);
@@ -413,15 +417,15 @@ export const mockTranslationLogic = {
 			};
 		});
 	},
-	
+
 	validateLanguage: (lang) => {
 		return ['ru', 'en', 'he', 'ar'].includes(lang);
 	},
-	
+
 	getSupportedLanguages: () => {
 		return ['ru', 'en', 'he', 'ar'];
 	},
-	
+
 	handleTranslationError: (error) => {
 		return {
 			error: 'Translation processing failed',
@@ -440,30 +444,30 @@ export const mockRequestResponseLogic = {
 			},
 		};
 	},
-	
+
 	buildResponse: () => {
 		return {
 			json: vi.fn(),
 			status: vi.fn().mockReturnThis(),
 		};
 	},
-	
+
 	handleSuccessResponse: (res, data) => {
 		res.json(data);
 	},
-	
+
 	handleErrorResponse: (res, error, statusCode = 500) => {
 		res.status(statusCode).json({ error: error.message });
 	},
-	
+
 	validateRequest: (req) => {
 		return !!(req && req.query);
 	},
-	
+
 	extractLanguage: (req) => {
 		return req.query.lang || 'ru';
 	},
-	
+
 	handleRequestError: (error) => {
 		return {
 			error: 'Request processing failed',

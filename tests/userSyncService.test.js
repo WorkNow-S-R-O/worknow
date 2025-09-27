@@ -31,14 +31,14 @@ describe('UserSyncService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetUserSyncServiceMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
-		
+
 		// Mock environment variables
 		process.env.CLERK_SECRET_KEY = mockEnvVars.CLERK_SECRET_KEY;
-		
+
 		// Mock fetch globally
 		global.fetch = mockFetch;
 	});
@@ -100,7 +100,9 @@ describe('UserSyncService', () => {
 		it('should handle premium user Clerk API responses', () => {
 			const clerkUser = mockClerkApiResponses.premiumUserFetch;
 			expect(clerkUser.id).toBe('clerk_premium456');
-			expect(clerkUser.email_addresses[0].email_address).toBe('premium@example.com');
+			expect(clerkUser.email_addresses[0].email_address).toBe(
+				'premium@example.com',
+			);
 			expect(clerkUser.first_name).toBe('Jane');
 			expect(clerkUser.last_name).toBe('Smith');
 		});
@@ -108,7 +110,9 @@ describe('UserSyncService', () => {
 		it('should handle new user Clerk API responses', () => {
 			const clerkUser = mockClerkApiResponses.newUserFetch;
 			expect(clerkUser.id).toBe('clerk_new789');
-			expect(clerkUser.email_addresses[0].email_address).toBe('new@example.com');
+			expect(clerkUser.email_addresses[0].email_address).toBe(
+				'new@example.com',
+			);
 			expect(clerkUser.first_name).toBe('New');
 			expect(clerkUser.last_name).toBe('User');
 		});
@@ -137,8 +141,9 @@ describe('UserSyncService', () => {
 
 		it('should extract user data from Clerk response', () => {
 			const clerkUser = mockClerkApiResponses.successfulUserFetch;
-			const extractedData = mockUserSyncLogic.extractUserDataFromClerk(clerkUser);
-			
+			const extractedData =
+				mockUserSyncLogic.extractUserDataFromClerk(clerkUser);
+
 			expect(extractedData.clerkUserId).toBe('clerk_user123');
 			expect(extractedData.email).toBe('john@example.com');
 			expect(extractedData.firstName).toBe('John');
@@ -169,14 +174,22 @@ describe('UserSyncService', () => {
 		});
 
 		it('should validate Clerk API response', () => {
-			expect(mockUserSyncLogic.validateClerkApiResponse(mockFetchResponses.successfulResponse)).toBe(true);
-			expect(mockUserSyncLogic.validateClerkApiResponse(mockFetchResponses.notFoundResponse)).toBe(false);
+			expect(
+				mockUserSyncLogic.validateClerkApiResponse(
+					mockFetchResponses.successfulResponse,
+				),
+			).toBe(true);
+			expect(
+				mockUserSyncLogic.validateClerkApiResponse(
+					mockFetchResponses.notFoundResponse,
+				),
+			).toBe(false);
 		});
 
 		it('should process Clerk user data', () => {
 			const clerkUser = mockClerkApiResponses.successfulUserFetch;
 			const processedData = mockUserSyncLogic.processClerkUserData(clerkUser);
-			
+
 			expect(processedData.id).toBe('clerk_user123');
 			expect(processedData.email).toBe('john@example.com');
 			expect(processedData.firstName).toBe('John');
@@ -193,7 +206,9 @@ describe('UserSyncService', () => {
 		});
 
 		it('should check Clerk secret configuration', () => {
-			expect(mockUserSyncLogic.isClerkSecretConfigured('sk_test_valid_key')).toBe(true);
+			expect(
+				mockUserSyncLogic.isClerkSecretConfigured('sk_test_valid_key'),
+			).toBe(true);
 			expect(mockUserSyncLogic.isClerkSecretConfigured('')).toBe(false);
 			expect(mockUserSyncLogic.isClerkSecretConfigured(null)).toBe(false);
 			expect(mockUserSyncLogic.isClerkSecretConfigured(undefined)).toBe(false);
@@ -202,8 +217,11 @@ describe('UserSyncService', () => {
 		it('should build upsert data for user creation', () => {
 			const clerkUserId = 'clerk_user123';
 			const clerkUser = mockClerkApiResponses.successfulUserFetch;
-			const upsertData = mockUserSyncLogic.buildUpsertData(clerkUserId, clerkUser);
-			
+			const upsertData = mockUserSyncLogic.buildUpsertData(
+				clerkUserId,
+				clerkUser,
+			);
+
 			expect(upsertData).toHaveProperty('where');
 			expect(upsertData).toHaveProperty('update');
 			expect(upsertData).toHaveProperty('create');
@@ -251,7 +269,8 @@ describe('UserSyncService', () => {
 		});
 
 		it('should handle missing environment variable', () => {
-			const result = mockEnvVarLogic.handleMissingEnvironmentVariable('CLERK_SECRET_KEY');
+			const result =
+				mockEnvVarLogic.handleMissingEnvironmentVariable('CLERK_SECRET_KEY');
 			expect(result).toEqual({
 				error: 'CLERK_SECRET_KEY is not configured',
 			});
@@ -262,8 +281,11 @@ describe('UserSyncService', () => {
 		it('should build upsert operation', () => {
 			const clerkUserId = 'clerk_user123';
 			const clerkUser = mockClerkApiResponses.successfulUserFetch;
-			const operation = mockDatabaseOperationsLogic.buildUpsertOperation(clerkUserId, clerkUser);
-			
+			const operation = mockDatabaseOperationsLogic.buildUpsertOperation(
+				clerkUserId,
+				clerkUser,
+			);
+
 			expect(operation).toHaveProperty('where');
 			expect(operation).toHaveProperty('update');
 			expect(operation).toHaveProperty('create');
@@ -282,13 +304,23 @@ describe('UserSyncService', () => {
 		});
 
 		it('should validate database result', () => {
-			expect(mockDatabaseOperationsLogic.validateDatabaseResult(mockUserData.validUser)).toBe(true);
-			expect(mockDatabaseOperationsLogic.validateDatabaseResult(null)).toBe(false);
-			expect(mockDatabaseOperationsLogic.validateDatabaseResult({})).toBe(false);
+			expect(
+				mockDatabaseOperationsLogic.validateDatabaseResult(
+					mockUserData.validUser,
+				),
+			).toBe(true);
+			expect(mockDatabaseOperationsLogic.validateDatabaseResult(null)).toBe(
+				false,
+			);
+			expect(mockDatabaseOperationsLogic.validateDatabaseResult({})).toBe(
+				false,
+			);
 		});
 
 		it('should process database result', () => {
-			const result = mockDatabaseOperationsLogic.processDatabaseResult(mockUserData.validUser);
+			const result = mockDatabaseOperationsLogic.processDatabaseResult(
+				mockUserData.validUser,
+			);
 			expect(result).toEqual({
 				success: true,
 				user: mockUserData.validUser,
@@ -298,18 +330,25 @@ describe('UserSyncService', () => {
 
 	describe('API Integration Logic', () => {
 		it('should build API request', () => {
-			const request = mockApiIntegrationLogic.buildApiRequest('clerk_user123', 'sk_test_key');
+			const request = mockApiIntegrationLogic.buildApiRequest(
+				'clerk_user123',
+				'sk_test_key',
+			);
 			expect(request.url).toBe('https://api.clerk.com/v1/users/clerk_user123');
 			expect(request.options).toHaveProperty('headers');
 			expect(request.options.headers.Authorization).toBe('Bearer sk_test_key');
 		});
 
 		it('should handle API response', async () => {
-			const successResult = await mockApiIntegrationLogic.handleApiResponse(mockFetchResponses.successfulResponse);
+			const successResult = await mockApiIntegrationLogic.handleApiResponse(
+				mockFetchResponses.successfulResponse,
+			);
 			expect(successResult.success).toBe(true);
 			expect(successResult.data).toBeDefined();
 
-			const errorResult = await mockApiIntegrationLogic.handleApiResponse(mockFetchResponses.notFoundResponse);
+			const errorResult = await mockApiIntegrationLogic.handleApiResponse(
+				mockFetchResponses.notFoundResponse,
+			);
 			expect(errorResult.error).toBe('Ошибка Clerk API: 404 Not Found');
 		});
 
@@ -323,7 +362,11 @@ describe('UserSyncService', () => {
 		});
 
 		it('should validate API response', () => {
-			expect(mockApiIntegrationLogic.validateApiResponse(mockClerkApiResponses.successfulUserFetch)).toBe(true);
+			expect(
+				mockApiIntegrationLogic.validateApiResponse(
+					mockClerkApiResponses.successfulUserFetch,
+				),
+			).toBe(true);
 			expect(mockApiIntegrationLogic.validateApiResponse(null)).toBe(false);
 			expect(mockApiIntegrationLogic.validateApiResponse('string')).toBe(false);
 		});
@@ -331,7 +374,7 @@ describe('UserSyncService', () => {
 		it('should process API data', () => {
 			const data = mockClerkApiResponses.successfulUserFetch;
 			const processedData = mockApiIntegrationLogic.processApiData(data);
-			
+
 			expect(processedData.id).toBe('clerk_user123');
 			expect(processedData.email).toBe('john@example.com');
 			expect(processedData.firstName).toBe('John');
@@ -540,7 +583,7 @@ describe('UserSyncService', () => {
 			expect(errors).toHaveProperty('missingClerkId');
 			expect(errors).toHaveProperty('missingClerkSecret');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -555,7 +598,7 @@ describe('UserSyncService', () => {
 			expect(errorMessages).toHaveProperty('missingClerkId');
 			expect(errorMessages).toHaveProperty('missingClerkSecret');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -569,7 +612,7 @@ describe('UserSyncService', () => {
 			expect(successMessages).toHaveProperty('operationCompleted');
 			expect(successMessages).toHaveProperty('syncCompleted');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -583,7 +626,7 @@ describe('UserSyncService', () => {
 			expect(consoleLogData).toHaveProperty('userSyncServiceApiResponse');
 			expect(consoleLogData).toHaveProperty('userSyncServiceUserData');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});

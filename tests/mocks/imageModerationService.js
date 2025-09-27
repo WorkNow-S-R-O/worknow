@@ -31,7 +31,7 @@ export const mockRekognitionResponses = {
 			{ Name: 'Face', Confidence: 98.1 },
 		],
 	},
-	
+
 	inappropriateContent: {
 		moderationLabels: [
 			{ Name: 'Explicit Nudity', Confidence: 96.5 },
@@ -43,7 +43,7 @@ export const mockRekognitionResponses = {
 			{ Name: 'Nude', Confidence: 98.1 },
 		],
 	},
-	
+
 	potentiallyInappropriate: {
 		moderationLabels: [],
 		labels: [
@@ -53,17 +53,15 @@ export const mockRekognitionResponses = {
 			{ Name: 'Knife', Confidence: 96.8 },
 		],
 	},
-	
+
 	hateSymbols: {
-		moderationLabels: [
-			{ Name: 'Hate Symbols', Confidence: 96.5 },
-		],
+		moderationLabels: [{ Name: 'Hate Symbols', Confidence: 96.5 }],
 		labels: [
 			{ Name: 'Symbol', Confidence: 99.5 },
 			{ Name: 'Text', Confidence: 95.2 },
 		],
 	},
-	
+
 	lowConfidence: {
 		moderationLabels: [
 			{ Name: 'Explicit Nudity', Confidence: 50.0 },
@@ -74,12 +72,12 @@ export const mockRekognitionResponses = {
 			{ Name: 'Adult', Confidence: 70.0 },
 		],
 	},
-	
+
 	emptyResponse: {
 		moderationLabels: [],
 		labels: [],
 	},
-	
+
 	errorResponse: {
 		error: 'Invalid image format',
 		code: 'InvalidParameterException',
@@ -93,27 +91,27 @@ export const mockEnvVars = {
 		AWS_SECRET_ACCESS_KEY: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
 		AWS_REKOGNITION_REGION: 'us-east-1',
 	},
-	
+
 	missingAccessKey: {
 		AWS_SECRET_ACCESS_KEY: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
 		AWS_REKOGNITION_REGION: 'us-east-1',
 	},
-	
+
 	missingSecretKey: {
 		AWS_ACCESS_KEY_ID: 'AKIAIOSFODNN7EXAMPLE',
 		AWS_REKOGNITION_REGION: 'us-east-1',
 	},
-	
+
 	missingBoth: {
 		AWS_REKOGNITION_REGION: 'us-east-1',
 	},
-	
+
 	unsupportedRegion: {
 		AWS_ACCESS_KEY_ID: 'AKIAIOSFODNN7EXAMPLE',
 		AWS_SECRET_ACCESS_KEY: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
 		AWS_REKOGNITION_REGION: 'us-west-3',
 	},
-	
+
 	defaultRegion: {
 		AWS_ACCESS_KEY_ID: 'AKIAIOSFODNN7EXAMPLE',
 		AWS_SECRET_ACCESS_KEY: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
@@ -185,25 +183,21 @@ export const mockModerationResults = {
 			moderationConfidence: 0,
 		},
 	},
-	
+
 	rejected: {
 		isApproved: false,
 		confidence: 96.5,
 		detectedIssues: {
-			moderationLabels: [
-				{ Name: 'Explicit Nudity', Confidence: 96.5 },
-			],
+			moderationLabels: [{ Name: 'Explicit Nudity', Confidence: 96.5 }],
 			potentiallyInappropriateLabels: ['Adult', 'Nude'],
 		},
 		analysis: {
-			moderationLabels: [
-				{ Name: 'Explicit Nudity', Confidence: 96.5 },
-			],
+			moderationLabels: [{ Name: 'Explicit Nudity', Confidence: 96.5 }],
 			detectedLabels: ['Person', 'Adult', 'Nude'],
 			moderationConfidence: 96.5,
 		},
 	},
-	
+
 	errorResult: {
 		isApproved: false,
 		confidence: 0,
@@ -227,17 +221,18 @@ export const mockConfigResults = {
 		missingVars: [],
 		message: 'Rekognition configuration is valid',
 	},
-	
+
 	missingVars: {
 		isValid: false,
 		missingVars: ['AWS_ACCESS_KEY_ID'],
 		message: 'Missing Rekognition environment variables: AWS_ACCESS_KEY_ID',
 	},
-	
+
 	unsupportedRegion: {
 		isValid: false,
 		missingVars: [],
-		message: 'Rekognition not available in region: us-west-3. Supported regions: us-east-1, us-west-2, eu-west-1, ap-southeast-2',
+		message:
+			'Rekognition not available in region: us-west-3. Supported regions: us-east-1, us-west-2, eu-west-1, ap-southeast-2',
 	},
 };
 

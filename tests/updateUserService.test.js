@@ -31,7 +31,7 @@ describe('UpdateUserService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetUpdateUserServiceMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
@@ -104,104 +104,226 @@ describe('UpdateUserService', () => {
 
 	describe('Clerk ID Processing Logic', () => {
 		it('should handle valid clerk IDs', () => {
-			expect(mockClerkIdValidationLogic.isValidClerkId(mockClerkUserIds.validClerkId)).toBe(true);
-			expect(mockClerkIdValidationLogic.isValidClerkId(mockClerkUserIds.premiumClerkId)).toBe(true);
-			expect(mockClerkIdValidationLogic.isValidClerkId(mockClerkUserIds.deluxeClerkId)).toBe(true);
-			expect(mockClerkIdValidationLogic.isValidClerkId(mockClerkUserIds.adminClerkId)).toBe(true);
+			expect(
+				mockClerkIdValidationLogic.isValidClerkId(
+					mockClerkUserIds.validClerkId,
+				),
+			).toBe(true);
+			expect(
+				mockClerkIdValidationLogic.isValidClerkId(
+					mockClerkUserIds.premiumClerkId,
+				),
+			).toBe(true);
+			expect(
+				mockClerkIdValidationLogic.isValidClerkId(
+					mockClerkUserIds.deluxeClerkId,
+				),
+			).toBe(true);
+			expect(
+				mockClerkIdValidationLogic.isValidClerkId(
+					mockClerkUserIds.adminClerkId,
+				),
+			).toBe(true);
 		});
 
 		it('should handle invalid clerk IDs', () => {
-			expect(mockClerkIdValidationLogic.isValidClerkId(mockClerkUserIds.invalidClerkId)).toBe(false);
-			expect(mockClerkIdValidationLogic.isValidClerkId(mockClerkUserIds.emptyClerkId)).toBe(false);
-			expect(mockClerkIdValidationLogic.isValidClerkId(mockClerkUserIds.nullClerkId)).toBe(false);
-			expect(mockClerkIdValidationLogic.isValidClerkId(mockClerkUserIds.undefinedClerkId)).toBe(false);
+			expect(
+				mockClerkIdValidationLogic.isValidClerkId(
+					mockClerkUserIds.invalidClerkId,
+				),
+			).toBe(false);
+			expect(
+				mockClerkIdValidationLogic.isValidClerkId(
+					mockClerkUserIds.emptyClerkId,
+				),
+			).toBe(false);
+			expect(
+				mockClerkIdValidationLogic.isValidClerkId(mockClerkUserIds.nullClerkId),
+			).toBe(false);
+			expect(
+				mockClerkIdValidationLogic.isValidClerkId(
+					mockClerkUserIds.undefinedClerkId,
+				),
+			).toBe(false);
 		});
 
 		it('should normalize clerk IDs', () => {
-			expect(mockClerkIdValidationLogic.normalizeClerkId('  clerk_user123  ')).toBe('clerk_user123');
-			expect(mockClerkIdValidationLogic.normalizeClerkId('clerk_user123')).toBe('clerk_user123');
+			expect(
+				mockClerkIdValidationLogic.normalizeClerkId('  clerk_user123  '),
+			).toBe('clerk_user123');
+			expect(mockClerkIdValidationLogic.normalizeClerkId('clerk_user123')).toBe(
+				'clerk_user123',
+			);
 			expect(mockClerkIdValidationLogic.normalizeClerkId(null)).toBe(null);
 			expect(mockClerkIdValidationLogic.normalizeClerkId(undefined)).toBe(null);
 		});
 
 		it('should extract clerk ID parts', () => {
-			expect(mockClerkIdValidationLogic.extractClerkId('clerk_user123')).toBe('user123');
-			expect(mockClerkIdValidationLogic.extractClerkId('clerk_premium456')).toBe('premium456');
-			expect(mockClerkIdValidationLogic.extractClerkId('invalid_id')).toBe(null);
+			expect(mockClerkIdValidationLogic.extractClerkId('clerk_user123')).toBe(
+				'user123',
+			);
+			expect(
+				mockClerkIdValidationLogic.extractClerkId('clerk_premium456'),
+			).toBe('premium456');
+			expect(mockClerkIdValidationLogic.extractClerkId('invalid_id')).toBe(
+				null,
+			);
 			expect(mockClerkIdValidationLogic.extractClerkId(null)).toBe(null);
 		});
 
 		it('should generate clerk IDs', () => {
-			expect(mockClerkIdValidationLogic.generateClerkId('user123')).toBe('clerk_user123');
-			expect(mockClerkIdValidationLogic.generateClerkId('premium456')).toBe('clerk_premium456');
+			expect(mockClerkIdValidationLogic.generateClerkId('user123')).toBe(
+				'clerk_user123',
+			);
+			expect(mockClerkIdValidationLogic.generateClerkId('premium456')).toBe(
+				'clerk_premium456',
+			);
 		});
 	});
 
 	describe('User Validation Logic', () => {
 		it('should validate valid users', () => {
-			expect(mockUserValidationLogic.isValidUser(mockUserData.validUser)).toBe(true);
-			expect(mockUserValidationLogic.isValidUser(mockUserData.premiumUser)).toBe(true);
-			expect(mockUserValidationLogic.isValidUser(mockUserData.adminUser)).toBe(true);
+			expect(mockUserValidationLogic.isValidUser(mockUserData.validUser)).toBe(
+				true,
+			);
+			expect(
+				mockUserValidationLogic.isValidUser(mockUserData.premiumUser),
+			).toBe(true);
+			expect(mockUserValidationLogic.isValidUser(mockUserData.adminUser)).toBe(
+				true,
+			);
 		});
 
 		it('should validate invalid users', () => {
 			expect(mockUserValidationLogic.isValidUser(null)).toBe(false);
 			expect(mockUserValidationLogic.isValidUser(undefined)).toBe(false);
 			expect(mockUserValidationLogic.isValidUser({})).toBe(false);
-			expect(mockUserValidationLogic.isValidUser({ id: 'user123' })).toBe(false);
+			expect(mockUserValidationLogic.isValidUser({ id: 'user123' })).toBe(
+				false,
+			);
 		});
 
 		it('should identify premium users', () => {
-			expect(mockUserValidationLogic.isPremiumUser(mockUserData.premiumUser)).toBe(true);
-			expect(mockUserValidationLogic.isPremiumUser(mockUserData.premiumDeluxeUser)).toBe(true);
-			expect(mockUserValidationLogic.isPremiumUser(mockUserData.adminUser)).toBe(true);
-			expect(mockUserValidationLogic.isPremiumUser(mockUserData.validUser)).toBe(false);
+			expect(
+				mockUserValidationLogic.isPremiumUser(mockUserData.premiumUser),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.isPremiumUser(mockUserData.premiumDeluxeUser),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.isPremiumUser(mockUserData.adminUser),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.isPremiumUser(mockUserData.validUser),
+			).toBe(false);
 		});
 
 		it('should identify admin users', () => {
-			expect(mockUserValidationLogic.isAdminUser(mockUserData.adminUser)).toBe(true);
-			expect(mockUserValidationLogic.isAdminUser(mockUserData.premiumUser)).toBe(false);
-			expect(mockUserValidationLogic.isAdminUser(mockUserData.validUser)).toBe(false);
+			expect(mockUserValidationLogic.isAdminUser(mockUserData.adminUser)).toBe(
+				true,
+			);
+			expect(
+				mockUserValidationLogic.isAdminUser(mockUserData.premiumUser),
+			).toBe(false);
+			expect(mockUserValidationLogic.isAdminUser(mockUserData.validUser)).toBe(
+				false,
+			);
 		});
 
 		it('should check active premium status', () => {
-			expect(mockUserValidationLogic.hasActivePremium(mockUserData.premiumUser)).toBe(true);
-			expect(mockUserValidationLogic.hasActivePremium(mockUserData.premiumDeluxeUser)).toBe(true);
-			expect(mockUserValidationLogic.hasActivePremium(mockUserData.adminUser)).toBe(true);
-			expect(mockUserValidationLogic.hasActivePremium(mockUserData.validUser)).toBe(false);
-			expect(mockUserValidationLogic.hasActivePremium(mockUserData.userWithExpiredPremium)).toBe(false);
+			expect(
+				mockUserValidationLogic.hasActivePremium(mockUserData.premiumUser),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.hasActivePremium(
+					mockUserData.premiumDeluxeUser,
+				),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.hasActivePremium(mockUserData.adminUser),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.hasActivePremium(mockUserData.validUser),
+			).toBe(false);
+			expect(
+				mockUserValidationLogic.hasActivePremium(
+					mockUserData.userWithExpiredPremium,
+				),
+			).toBe(false);
 		});
 
 		it('should check expired premium status', () => {
-			expect(mockUserValidationLogic.isExpiredPremium(mockUserData.userWithExpiredPremium)).toBe(true);
-			expect(mockUserValidationLogic.isExpiredPremium(mockUserData.premiumUser)).toBe(false);
-			expect(mockUserValidationLogic.isExpiredPremium(mockUserData.validUser)).toBe(false);
+			expect(
+				mockUserValidationLogic.isExpiredPremium(
+					mockUserData.userWithExpiredPremium,
+				),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.isExpiredPremium(mockUserData.premiumUser),
+			).toBe(false);
+			expect(
+				mockUserValidationLogic.isExpiredPremium(mockUserData.validUser),
+			).toBe(false);
 		});
 
 		it('should check Stripe subscription status', () => {
-			expect(mockUserValidationLogic.hasStripeSubscription(mockUserData.premiumUser)).toBe(true);
-			expect(mockUserValidationLogic.hasStripeSubscription(mockUserData.premiumDeluxeUser)).toBe(true);
-			expect(mockUserValidationLogic.hasStripeSubscription(mockUserData.validUser)).toBe(false);
+			expect(
+				mockUserValidationLogic.hasStripeSubscription(mockUserData.premiumUser),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.hasStripeSubscription(
+					mockUserData.premiumDeluxeUser,
+				),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.hasStripeSubscription(mockUserData.validUser),
+			).toBe(false);
 		});
 
 		it('should check auto-renewal status', () => {
-			expect(mockUserValidationLogic.isAutoRenewalEnabled(mockUserData.premiumUser)).toBe(true);
-			expect(mockUserValidationLogic.isAutoRenewalEnabled(mockUserData.validUser)).toBe(true);
-			expect(mockUserValidationLogic.isAutoRenewalEnabled(mockUserData.userWithMinimalData)).toBe(false);
+			expect(
+				mockUserValidationLogic.isAutoRenewalEnabled(mockUserData.premiumUser),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.isAutoRenewalEnabled(mockUserData.validUser),
+			).toBe(true);
+			expect(
+				mockUserValidationLogic.isAutoRenewalEnabled(
+					mockUserData.userWithMinimalData,
+				),
+			).toBe(false);
 		});
 
 		it('should generate user display names', () => {
-			expect(mockUserValidationLogic.getUserDisplayName(mockUserData.validUser)).toBe('John Doe');
-			expect(mockUserValidationLogic.getUserDisplayName(mockUserData.premiumUser)).toBe('Jane Smith');
-			expect(mockUserValidationLogic.getUserDisplayName(mockUserData.userWithMinimalData)).toBe('minimal@example.com');
-			expect(mockUserValidationLogic.getUserDisplayName(null)).toBe('Unknown User');
+			expect(
+				mockUserValidationLogic.getUserDisplayName(mockUserData.validUser),
+			).toBe('John Doe');
+			expect(
+				mockUserValidationLogic.getUserDisplayName(mockUserData.premiumUser),
+			).toBe('Jane Smith');
+			expect(
+				mockUserValidationLogic.getUserDisplayName(
+					mockUserData.userWithMinimalData,
+				),
+			).toBe('minimal@example.com');
+			expect(mockUserValidationLogic.getUserDisplayName(null)).toBe(
+				'Unknown User',
+			);
 		});
 
 		it('should determine user status', () => {
-			expect(mockUserValidationLogic.getUserStatus(mockUserData.adminUser)).toBe('admin');
-			expect(mockUserValidationLogic.getUserStatus(mockUserData.premiumDeluxeUser)).toBe('premium_deluxe');
-			expect(mockUserValidationLogic.getUserStatus(mockUserData.premiumUser)).toBe('premium');
-			expect(mockUserValidationLogic.getUserStatus(mockUserData.validUser)).toBe('free');
+			expect(
+				mockUserValidationLogic.getUserStatus(mockUserData.adminUser),
+			).toBe('admin');
+			expect(
+				mockUserValidationLogic.getUserStatus(mockUserData.premiumDeluxeUser),
+			).toBe('premium_deluxe');
+			expect(
+				mockUserValidationLogic.getUserStatus(mockUserData.premiumUser),
+			).toBe('premium');
+			expect(
+				mockUserValidationLogic.getUserStatus(mockUserData.validUser),
+			).toBe('free');
 			expect(mockUserValidationLogic.getUserStatus(null)).toBe('unknown');
 		});
 	});
@@ -215,7 +337,9 @@ describe('UpdateUserService', () => {
 		});
 
 		it('should validate query results', () => {
-			expect(mockDatabaseQueryLogic.validateQueryResult(mockUserData.validUser)).toBe(true);
+			expect(
+				mockDatabaseQueryLogic.validateQueryResult(mockUserData.validUser),
+			).toBe(true);
 			expect(mockDatabaseQueryLogic.validateQueryResult(null)).toBe(false);
 			expect(mockDatabaseQueryLogic.validateQueryResult(undefined)).toBe(false);
 			expect(mockDatabaseQueryLogic.validateQueryResult('string')).toBe(false);
@@ -236,14 +360,18 @@ describe('UpdateUserService', () => {
 		});
 
 		it('should handle success cases', () => {
-			const result = mockDatabaseQueryLogic.handleSuccess(mockUserData.validUser);
+			const result = mockDatabaseQueryLogic.handleSuccess(
+				mockUserData.validUser,
+			);
 			expect(result).toEqual({ user: mockUserData.validUser });
 		});
 	});
 
 	describe('Service Logic', () => {
 		it('should process user data', () => {
-			const processedUser = mockServiceLogic.processUserData(mockUserData.validUser);
+			const processedUser = mockServiceLogic.processUserData(
+				mockUserData.validUser,
+			);
 			expect(processedUser).toHaveProperty('displayName');
 			expect(processedUser).toHaveProperty('status');
 			expect(processedUser).toHaveProperty('hasActivePremium');
@@ -258,14 +386,16 @@ describe('UpdateUserService', () => {
 		});
 
 		it('should validate service input', () => {
-			const validResult = mockServiceLogic.validateServiceInput('clerk_user123');
+			const validResult =
+				mockServiceLogic.validateServiceInput('clerk_user123');
 			expect(validResult.isValid).toBe(true);
 
 			const invalidResult = mockServiceLogic.validateServiceInput('');
 			expect(invalidResult.isValid).toBe(false);
 			expect(invalidResult.error).toBe('Clerk ID is required');
 
-			const invalidFormatResult = mockServiceLogic.validateServiceInput('invalid_id');
+			const invalidFormatResult =
+				mockServiceLogic.validateServiceInput('invalid_id');
 			expect(invalidFormatResult.isValid).toBe(false);
 			expect(invalidFormatResult.error).toBe('Invalid Clerk ID format');
 		});
@@ -280,14 +410,18 @@ describe('UpdateUserService', () => {
 		});
 
 		it('should handle service success', () => {
-			const result = mockServiceLogic.handleServiceSuccess(mockUserData.validUser);
+			const result = mockServiceLogic.handleServiceSuccess(
+				mockUserData.validUser,
+			);
 			expect(result).toEqual({ user: mockUserData.validUser });
 		});
 	});
 
 	describe('Response Format Logic', () => {
 		it('should format success responses', () => {
-			const response = mockResponseFormatLogic.formatSuccessResponse(mockUserData.validUser);
+			const response = mockResponseFormatLogic.formatSuccessResponse(
+				mockUserData.validUser,
+			);
 			expect(response).toHaveProperty('success');
 			expect(response).toHaveProperty('user');
 			expect(response).toHaveProperty('timestamp');
@@ -296,7 +430,10 @@ describe('UpdateUserService', () => {
 		});
 
 		it('should format error responses', () => {
-			const response = mockResponseFormatLogic.formatErrorResponse('Test error', 'Test details');
+			const response = mockResponseFormatLogic.formatErrorResponse(
+				'Test error',
+				'Test details',
+			);
 			expect(response).toHaveProperty('success');
 			expect(response).toHaveProperty('error');
 			expect(response).toHaveProperty('details');
@@ -316,9 +453,21 @@ describe('UpdateUserService', () => {
 		});
 
 		it('should validate responses', () => {
-			expect(mockResponseFormatLogic.validateResponse(mockServiceResponses.getUserByClerkIdSuccess)).toBe(true);
-			expect(mockResponseFormatLogic.validateResponse(mockServiceResponses.getUserByClerkIdNotFound)).toBe(true);
-			expect(mockResponseFormatLogic.validateResponse(mockServiceResponses.getUserByClerkIdError)).toBe(true);
+			expect(
+				mockResponseFormatLogic.validateResponse(
+					mockServiceResponses.getUserByClerkIdSuccess,
+				),
+			).toBe(true);
+			expect(
+				mockResponseFormatLogic.validateResponse(
+					mockServiceResponses.getUserByClerkIdNotFound,
+				),
+			).toBe(true);
+			expect(
+				mockResponseFormatLogic.validateResponse(
+					mockServiceResponses.getUserByClerkIdError,
+				),
+			).toBe(true);
 			expect(mockResponseFormatLogic.validateResponse(null)).toBe(false);
 			expect(mockResponseFormatLogic.validateResponse({})).toBe(false);
 		});
@@ -364,43 +513,87 @@ describe('UpdateUserService', () => {
 		it('should log errors', () => {
 			const error = mockErrors.databaseError;
 			mockErrorHandlingLogic.logError(error, 'test context');
-			expect(console.error).toHaveBeenCalledWith('Error in test context:', error);
+			expect(console.error).toHaveBeenCalledWith(
+				'Error in test context:',
+				error,
+			);
 		});
 
 		it('should log success messages', () => {
 			mockErrorHandlingLogic.logSuccess('test message', 'test context');
-			expect(console.log).toHaveBeenCalledWith('Success in test context:', 'test message');
+			expect(console.log).toHaveBeenCalledWith(
+				'Success in test context:',
+				'test message',
+			);
 		});
 	});
 
 	describe('User Status Logic', () => {
 		it('should determine user premium status', () => {
-			expect(mockUserStatusLogic.getUserPremiumStatus(mockUserData.adminUser)).toBe('admin');
-			expect(mockUserStatusLogic.getUserPremiumStatus(mockUserData.premiumDeluxeUser)).toBe('premium_deluxe');
-			expect(mockUserStatusLogic.getUserPremiumStatus(mockUserData.premiumUser)).toBe('premium_active');
-			expect(mockUserStatusLogic.getUserPremiumStatus(mockUserData.userWithExpiredPremium)).toBe('premium_expired');
-			expect(mockUserStatusLogic.getUserPremiumStatus(mockUserData.validUser)).toBe('free');
+			expect(
+				mockUserStatusLogic.getUserPremiumStatus(mockUserData.adminUser),
+			).toBe('admin');
+			expect(
+				mockUserStatusLogic.getUserPremiumStatus(
+					mockUserData.premiumDeluxeUser,
+				),
+			).toBe('premium_deluxe');
+			expect(
+				mockUserStatusLogic.getUserPremiumStatus(mockUserData.premiumUser),
+			).toBe('premium_active');
+			expect(
+				mockUserStatusLogic.getUserPremiumStatus(
+					mockUserData.userWithExpiredPremium,
+				),
+			).toBe('premium_expired');
+			expect(
+				mockUserStatusLogic.getUserPremiumStatus(mockUserData.validUser),
+			).toBe('free');
 			expect(mockUserStatusLogic.getUserPremiumStatus(null)).toBe('unknown');
 		});
 
 		it('should determine user subscription status', () => {
-			expect(mockUserStatusLogic.getUserSubscriptionStatus(mockUserData.premiumUser)).toBe('active');
-			expect(mockUserStatusLogic.getUserSubscriptionStatus(mockUserData.userWithExpiredPremium)).toBe('expired');
-			expect(mockUserStatusLogic.getUserSubscriptionStatus(mockUserData.validUser)).toBe('none');
+			expect(
+				mockUserStatusLogic.getUserSubscriptionStatus(mockUserData.premiumUser),
+			).toBe('active');
+			expect(
+				mockUserStatusLogic.getUserSubscriptionStatus(
+					mockUserData.userWithExpiredPremium,
+				),
+			).toBe('expired');
+			expect(
+				mockUserStatusLogic.getUserSubscriptionStatus(mockUserData.validUser),
+			).toBe('none');
 			expect(mockUserStatusLogic.getUserSubscriptionStatus(null)).toBe('none');
 		});
 
 		it('should determine user renewal status', () => {
-			expect(mockUserStatusLogic.getUserRenewalStatus(mockUserData.premiumUser)).toBe('enabled');
-			expect(mockUserStatusLogic.getUserRenewalStatus(mockUserData.userWithMinimalData)).toBe('disabled');
+			expect(
+				mockUserStatusLogic.getUserRenewalStatus(mockUserData.premiumUser),
+			).toBe('enabled');
+			expect(
+				mockUserStatusLogic.getUserRenewalStatus(
+					mockUserData.userWithMinimalData,
+				),
+			).toBe('disabled');
 			expect(mockUserStatusLogic.getUserRenewalStatus(null)).toBe('unknown');
 		});
 
 		it('should determine user account status', () => {
-			expect(mockUserStatusLogic.getUserAccountStatus(mockUserData.adminUser)).toBe('admin');
-			expect(mockUserStatusLogic.getUserAccountStatus(mockUserData.premiumDeluxeUser)).toBe('premium_deluxe');
-			expect(mockUserStatusLogic.getUserAccountStatus(mockUserData.premiumUser)).toBe('premium');
-			expect(mockUserStatusLogic.getUserAccountStatus(mockUserData.validUser)).toBe('free');
+			expect(
+				mockUserStatusLogic.getUserAccountStatus(mockUserData.adminUser),
+			).toBe('admin');
+			expect(
+				mockUserStatusLogic.getUserAccountStatus(
+					mockUserData.premiumDeluxeUser,
+				),
+			).toBe('premium_deluxe');
+			expect(
+				mockUserStatusLogic.getUserAccountStatus(mockUserData.premiumUser),
+			).toBe('premium');
+			expect(
+				mockUserStatusLogic.getUserAccountStatus(mockUserData.validUser),
+			).toBe('free');
 			expect(mockUserStatusLogic.getUserAccountStatus(null)).toBe('inactive');
 		});
 	});
@@ -587,7 +780,7 @@ describe('UpdateUserService', () => {
 			expect(errors).toHaveProperty('prismaError');
 			expect(errors).toHaveProperty('networkError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -602,7 +795,7 @@ describe('UpdateUserService', () => {
 			expect(errorMessages).toHaveProperty('prismaError');
 			expect(errorMessages).toHaveProperty('userRetrievalError');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -616,7 +809,7 @@ describe('UpdateUserService', () => {
 			expect(successMessages).toHaveProperty('operationCompleted');
 			expect(successMessages).toHaveProperty('serviceAvailable');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -630,7 +823,7 @@ describe('UpdateUserService', () => {
 			expect(consoleLogData).toHaveProperty('serviceError');
 			expect(consoleLogData).toHaveProperty('operationStarted');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});

@@ -9,6 +9,7 @@ export default defineConfig({
 	plugins: [react()],
 	test: {
 		environment: 'jsdom',
+		globalSetup: ['./tests/global-setup.js'],
 		globals: true,
 		setupFiles: ['./tests/setup.jsx'],
 		css: true,
@@ -51,9 +52,8 @@ export default defineConfig({
 			'@css': resolve(__dirname, './apps/client/src/css'),
 			'@mocks': resolve(__dirname, './tests/mocks'),
 			'@services': resolve(__dirname, './apps/client/src/services'),
-			'bootstrap-icons': resolve(__dirname, './tests/mocks/bootstrap-icons.js'),
-			'libs/jobs': resolve(__dirname, './tests/mocks/libs-jobs.js'),
-			'libs/utils': resolve(__dirname, './tests/mocks/libs-utils.js'),
+			'bootstrap-icons': resolve(__dirname, './tests/mocks/bootstrap-icons'),
+			'@libs': resolve(__dirname, './apps/client/src/libs'),
 		},
 	},
 	// Add mocks for problematic imports

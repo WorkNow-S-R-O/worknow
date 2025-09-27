@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import {
+	render,
+	screen,
+	fireEvent,
+	waitFor,
+	act,
+} from '@testing-library/react';
 import { useState, useEffect } from 'react';
 
 // Mock CSS imports
@@ -111,7 +117,10 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
 									<li
 										className="list-group-item"
 										onClick={() => {
-											onCitySelect({ value: null, label: content.cityAll.value });
+											onCitySelect({
+												value: null,
+												label: content.cityAll.value,
+											});
 											setOpen(false);
 										}}
 									>
@@ -174,7 +183,7 @@ describe('CityDropdown Component', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		
+
 		// Mock axios to return cities
 		vi.mocked(axios.get).mockResolvedValue({
 			data: mockCities,
@@ -227,7 +236,7 @@ describe('CityDropdown Component', () => {
 
 			await waitFor(() => {
 				expect(axios.get).toHaveBeenCalledWith(
-					'http://localhost:3001/api/cities?lang=en'
+					'http://localhost:3001/api/cities?lang=en',
 				);
 			});
 		});

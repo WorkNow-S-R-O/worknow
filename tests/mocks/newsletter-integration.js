@@ -58,7 +58,8 @@ export const mockSendFilteredCandidatesToSubscribers = vi.fn();
 
 // Mock service modules
 vi.mock('../../apps/api/services/candidateNotificationService.js', () => ({
-	sendInitialCandidatesToNewSubscriber: mockSendInitialCandidatesToNewSubscriber,
+	sendInitialCandidatesToNewSubscriber:
+		mockSendInitialCandidatesToNewSubscriber,
 }));
 
 vi.mock('../../apps/api/services/snsService.js', () => ({

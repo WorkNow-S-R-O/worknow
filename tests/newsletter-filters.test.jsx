@@ -164,7 +164,7 @@ describe('NewsletterFilters Component', () => {
 
 			expect(defaultProps.onCityChange).toHaveBeenCalledWith(
 				{ id: 1, name: 'Tel Aviv', label: 'Tel Aviv' },
-				true
+				true,
 			);
 		});
 
@@ -180,7 +180,7 @@ describe('NewsletterFilters Component', () => {
 
 			expect(defaultProps.onCategoryChange).toHaveBeenCalledWith(
 				{ id: 1, name: 'Construction', label: 'Construction' },
-				true
+				true,
 			);
 		});
 
@@ -196,7 +196,7 @@ describe('NewsletterFilters Component', () => {
 
 			expect(defaultProps.onEmploymentChange).toHaveBeenCalledWith(
 				{ value: 'полная', label: 'Full-time' },
-				true
+				true,
 			);
 		});
 
@@ -212,7 +212,7 @@ describe('NewsletterFilters Component', () => {
 
 			expect(defaultProps.onDocumentTypeChange).toHaveBeenCalledWith(
 				{ value: 'Виза Б1', label: 'Visa B1' },
-				true
+				true,
 			);
 		});
 
@@ -239,7 +239,10 @@ describe('NewsletterFilters Component', () => {
 				fireEvent.click(russianCheckbox);
 			});
 
-			expect(defaultProps.onLanguageChange).toHaveBeenCalledWith('русский', true);
+			expect(defaultProps.onLanguageChange).toHaveBeenCalledWith(
+				'русский',
+				true,
+			);
 		});
 
 		it('handles only demanded checkbox', async () => {
@@ -574,12 +577,30 @@ describe('NewsletterFilters Component', () => {
 
 			// Check that checkboxes have proper IDs
 			expect(screen.getByLabelText('Tel Aviv')).toHaveAttribute('id', 'city-1');
-			expect(screen.getByLabelText('Construction')).toHaveAttribute('id', 'cat-1');
-			expect(screen.getByLabelText('Full-time')).toHaveAttribute('id', 'emp-полная');
-			expect(screen.getByLabelText('Visa B1')).toHaveAttribute('id', 'doc-Виза Б1');
-			expect(screen.getByLabelText('Male')).toHaveAttribute('id', 'gender-мужчина');
-			expect(screen.getByLabelText('Russian')).toHaveAttribute('id', 'lang-русский');
-			expect(screen.getByLabelText('Only demanded')).toHaveAttribute('id', 'onlyDemanded');
+			expect(screen.getByLabelText('Construction')).toHaveAttribute(
+				'id',
+				'cat-1',
+			);
+			expect(screen.getByLabelText('Full-time')).toHaveAttribute(
+				'id',
+				'emp-полная',
+			);
+			expect(screen.getByLabelText('Visa B1')).toHaveAttribute(
+				'id',
+				'doc-Виза Б1',
+			);
+			expect(screen.getByLabelText('Male')).toHaveAttribute(
+				'id',
+				'gender-мужчина',
+			);
+			expect(screen.getByLabelText('Russian')).toHaveAttribute(
+				'id',
+				'lang-русский',
+			);
+			expect(screen.getByLabelText('Only demanded')).toHaveAttribute(
+				'id',
+				'onlyDemanded',
+			);
 		});
 	});
 });

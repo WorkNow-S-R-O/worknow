@@ -26,33 +26,35 @@ export const mockJobCreationData = {
 		meals: false,
 		imageUrl: 'https://example.com/job-image.jpg',
 	},
-	
+
 	jobDataWithBadWords: {
 		title: 'Software Developer with bad words',
 		salary: '120000',
 		cityId: '1',
 		categoryId: '2',
 		phone: '123-456-7890',
-		description: 'Develop and maintain software applications with inappropriate content.',
+		description:
+			'Develop and maintain software applications with inappropriate content.',
 		userId: 'clerk_user123',
 		shuttle: true,
 		meals: false,
 		imageUrl: 'https://example.com/job-image.jpg',
 	},
-	
+
 	jobDataWithLinks: {
 		title: 'Software Developer - Visit our website',
 		salary: '120000',
 		cityId: '1',
 		categoryId: '2',
 		phone: '123-456-7890',
-		description: 'Develop and maintain software applications. Check out https://example.com for more info.',
+		description:
+			'Develop and maintain software applications. Check out https://example.com for more info.',
 		userId: 'clerk_user123',
 		shuttle: true,
 		meals: false,
 		imageUrl: 'https://example.com/job-image.jpg',
 	},
-	
+
 	jobDataWithoutImage: {
 		title: 'Marketing Manager',
 		salary: '80000',
@@ -65,7 +67,7 @@ export const mockJobCreationData = {
 		meals: true,
 		imageUrl: null,
 	},
-	
+
 	jobDataWithMinimalFields: {
 		title: 'Designer',
 		salary: '75000',
@@ -92,7 +94,7 @@ export const mockUserData = {
 		premiumDeluxe: false,
 		jobs: [],
 	},
-	
+
 	premiumUser: {
 		id: 'user456',
 		email: 'premium@example.com',
@@ -103,7 +105,7 @@ export const mockUserData = {
 		premiumDeluxe: false,
 		jobs: [],
 	},
-	
+
 	premiumDeluxeUser: {
 		id: 'user789',
 		email: 'premiumdeluxe@example.com',
@@ -114,7 +116,7 @@ export const mockUserData = {
 		premiumDeluxe: true,
 		jobs: [],
 	},
-	
+
 	userAtFreeLimit: {
 		id: 'user_limit',
 		email: 'limit@example.com',
@@ -131,7 +133,7 @@ export const mockUserData = {
 			{ id: 5, title: 'Job 5', createdAt: new Date('2024-01-05') },
 		],
 	},
-	
+
 	userAtPremiumLimit: {
 		id: 'user_premium_limit',
 		email: 'premiumlimit@example.com',
@@ -146,7 +148,7 @@ export const mockUserData = {
 			createdAt: new Date(`2024-01-${String(i + 1).padStart(2, '0')}`),
 		})),
 	},
-	
+
 	userWithDuplicateJobs: {
 		id: 'user_duplicate',
 		email: 'duplicate@example.com',
@@ -157,7 +159,7 @@ export const mockUserData = {
 		premiumDeluxe: false,
 		jobs: [],
 	},
-	
+
 	nonexistentUser: null,
 };
 
@@ -173,7 +175,7 @@ export const mockExistingJobs = {
 			description: 'Develop and maintain complex software applications.',
 		},
 	],
-	
+
 	differentJobs: [
 		{
 			title: 'Marketing Manager',
@@ -184,7 +186,7 @@ export const mockExistingJobs = {
 			description: 'Create visual concepts.',
 		},
 	],
-	
+
 	emptyJobs: [],
 };
 
@@ -257,8 +259,10 @@ export const mockErrors = {
 // Mock error messages
 export const mockErrorMessages = {
 	userNotFound: 'Пользователь не найден',
-	duplicateJob: 'Ваше объявление похоже на уже существующее. Измените заголовок или описание.',
-	freeUserLimit: 'Вы уже разместили 5 объявлений. Для размещения большего количества объявлений перейдите на Premium тариф.',
+	duplicateJob:
+		'Ваше объявление похоже на уже существующее. Измените заголовок или описание.',
+	freeUserLimit:
+		'Вы уже разместили 5 объявлений. Для размещения большего количества объявлений перейдите на Premium тариф.',
 	premiumUserLimit: 'Вы уже разместили 10 объявлений.',
 	badWordsTitle: 'Заголовок содержит нецензурные слова.',
 	badWordsDescription: 'Описание содержит нецензурные слова.',
@@ -283,27 +287,27 @@ export const mockServiceResponses = {
 	success: {
 		job: mockCreatedJob,
 	},
-	
+
 	validationErrors: {
 		errors: [
 			'Заголовок содержит нецензурные слова.',
 			'Описание содержит запрещенные ссылки.',
 		],
 	},
-	
+
 	userNotFound: {
 		error: mockErrorMessages.userNotFound,
 	},
-	
+
 	duplicateJob: {
 		error: mockErrorMessages.duplicateJob,
 	},
-	
+
 	freeUserLimit: {
 		error: mockErrorMessages.freeUserLimit,
 		upgradeRequired: true,
 	},
-	
+
 	premiumUserLimit: {
 		error: mockErrorMessages.premiumUserLimit,
 	},
@@ -315,16 +319,16 @@ export const mockPrismaQueryOptions = {
 		where: { clerkUserId: 'clerk_user123' },
 		include: { jobs: { orderBy: { createdAt: 'desc' }, take: 1 } },
 	},
-	
+
 	findMany: {
 		where: { userId: 'user123' },
 		select: { title: true, description: true },
 	},
-	
+
 	count: {
 		where: { userId: 'user123' },
 	},
-	
+
 	create: {
 		data: {
 			title: 'Software Developer',
@@ -348,12 +352,12 @@ export const mockDataConversions = {
 		cityId: 1,
 		categoryId: 2,
 	},
-	
+
 	boolean: {
 		shuttle: true,
 		meals: false,
 	},
-	
+
 	string: {
 		title: 'Software Developer',
 		salary: '120000',

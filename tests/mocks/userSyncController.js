@@ -179,7 +179,7 @@ export const mockUserSyncServiceLogic = {
 		if (!clerkUserId) {
 			throw mockErrors.missingClerkUserId;
 		}
-		
+
 		if (clerkUserId === 'user_123') {
 			return mockServiceResponses.successfulSync;
 		}
@@ -204,7 +204,7 @@ export const mockUserSyncServiceLogic = {
 		if (clerkUserId === 'user_not_found') {
 			throw mockErrors.userNotFound;
 		}
-		
+
 		// Default case
 		return mockServiceResponses.successfulSync;
 	},
@@ -243,7 +243,7 @@ export const mockRequestResponseLogic = {
 	},
 	validateControllerInput: (req) => {
 		// Basic validation logic
-		return !!(req.body?.clerkUserId);
+		return !!req.body?.clerkUserId;
 	},
 };
 

@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useIntlayer, useLocale } from 'react-intlayer';
 import { toast } from 'react-hot-toast';
 import { useUser } from '@clerk/clerk-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
-import { useUserSync } from '../hooks/useUserSync.js';
-import VerificationModal from '../components/ui/VerificationModal.jsx';
+import { useUserSync } from '@/hooks';
+import { VerificationModal } from '@/components/ui';
 
 const API_URL = import.meta.env.VITE_API_URL;
 

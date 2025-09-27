@@ -25,8 +25,12 @@ export const mockPrisma = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock sendEmail function
 export const mockSendEmail = vi.fn();
@@ -65,7 +69,7 @@ export const mockMessageData = {
 		fromAdminId: null,
 		createdAt: '2024-01-01T00:00:00Z',
 	},
-	
+
 	adminMessage: {
 		id: 'msg456',
 		clerkUserId: 'user123',
@@ -76,7 +80,7 @@ export const mockMessageData = {
 		fromAdminId: 'admin456',
 		createdAt: '2024-01-02T00:00:00Z',
 	},
-	
+
 	readMessage: {
 		id: 'msg789',
 		clerkUserId: 'user123',
@@ -87,7 +91,7 @@ export const mockMessageData = {
 		fromAdminId: null,
 		createdAt: '2024-01-03T00:00:00Z',
 	},
-	
+
 	messageWithHtml: {
 		id: 'msg101',
 		clerkUserId: 'user123',
@@ -98,7 +102,7 @@ export const mockMessageData = {
 		fromAdminId: null,
 		createdAt: '2024-01-04T00:00:00Z',
 	},
-	
+
 	emptyMessage: {},
 };
 
@@ -112,7 +116,7 @@ export const mockUserData = {
 		lastName: 'Doe',
 		isPremium: false,
 	},
-	
+
 	userWithoutEmail: {
 		id: 'user456',
 		clerkUserId: 'user456',
@@ -121,7 +125,7 @@ export const mockUserData = {
 		lastName: 'Smith',
 		isPremium: true,
 	},
-	
+
 	premiumUser: {
 		id: 'user789',
 		clerkUserId: 'user789',
@@ -130,7 +134,7 @@ export const mockUserData = {
 		lastName: 'User',
 		isPremium: true,
 	},
-	
+
 	adminUser: {
 		id: 'admin123',
 		clerkUserId: 'admin123',
@@ -150,7 +154,7 @@ export const mockMessageCreationData = {
 		type: 'system',
 		fromAdminId: null,
 	},
-	
+
 	adminMessageData: {
 		clerkUserId: 'user123',
 		title: 'Admin Message',
@@ -158,7 +162,7 @@ export const mockMessageCreationData = {
 		type: 'admin',
 		fromAdminId: 'admin456',
 	},
-	
+
 	messageDataWithHtml: {
 		clerkUserId: 'user123',
 		title: 'HTML Message',
@@ -166,19 +170,19 @@ export const mockMessageCreationData = {
 		type: 'system',
 		fromAdminId: null,
 	},
-	
+
 	invalidMessageData: {
 		// Missing required fields
 		title: 'Invalid Message',
 		body: 'This message is missing clerkUserId.',
 	},
-	
+
 	messageDataMissingTitle: {
 		clerkUserId: 'user123',
 		body: 'This message is missing title.',
 		type: 'system',
 	},
-	
+
 	messageDataMissingBody: {
 		clerkUserId: 'user123',
 		title: 'This message is missing body.',
@@ -193,29 +197,29 @@ export const mockBroadcastData = {
 		body: 'This is a broadcast message to all users.',
 		clerkUserIds: ['user123', 'user456', 'user789'],
 	},
-	
+
 	broadcastToAllUsers: {
 		title: 'Broadcast to All',
 		body: 'This is a broadcast message to all users.',
 		clerkUserIds: [],
 	},
-	
+
 	broadcastToSpecificUsers: {
 		title: 'Specific Broadcast',
 		body: 'This is a broadcast message to specific users.',
 		clerkUserIds: ['user123', 'user456'],
 	},
-	
+
 	invalidBroadcastData: {
 		// Missing required fields
 		clerkUserIds: ['user123', 'user456'],
 	},
-	
+
 	broadcastDataMissingTitle: {
 		body: 'This broadcast is missing title.',
 		clerkUserIds: ['user123'],
 	},
-	
+
 	broadcastDataMissingBody: {
 		title: 'This broadcast is missing body.',
 		clerkUserIds: ['user123'],
@@ -228,66 +232,70 @@ export const mockServiceResponses = {
 		success: true,
 		message: mockMessageData.validMessage,
 	},
-	
+
 	successGetUserMessagesResponse: {
-		messages: [mockMessageData.validMessage, mockMessageData.adminMessage, mockMessageData.readMessage],
+		messages: [
+			mockMessageData.validMessage,
+			mockMessageData.adminMessage,
+			mockMessageData.readMessage,
+		],
 	},
-	
+
 	successMarkMessageReadResponse: {
 		success: true,
 		message: mockMessageData.readMessage,
 	},
-	
+
 	successBroadcastMessageResponse: {
 		success: true,
 		count: 3,
 	},
-	
+
 	successDeleteMessageResponse: {
 		success: true,
 		message: 'Сообщение удалено',
 	},
-	
+
 	errorCreateMessageResponse: {
 		error: 'Ошибка создания сообщения',
 	},
-	
+
 	errorGetUserMessagesResponse: {
 		error: 'Ошибка получения сообщений',
 	},
-	
+
 	errorMarkMessageReadResponse: {
 		error: 'Ошибка отметки сообщения',
 	},
-	
+
 	errorBroadcastMessageResponse: {
 		error: 'Ошибка рассылки',
 	},
-	
+
 	errorDeleteMessageResponse: {
 		error: 'Ошибка удаления сообщения',
 	},
-	
+
 	errorValidationResponse: {
 		error: 'clerkUserId, title и body обязательны',
 	},
-	
+
 	errorMissingClerkUserIdResponse: {
 		error: 'clerkUserId обязателен',
 	},
-	
+
 	errorMessageNotFoundResponse: {
 		error: 'Сообщение не найдено',
 	},
-	
+
 	errorInvalidMessageIdResponse: {
 		error: 'Invalid message ID format',
 	},
-	
+
 	errorMissingMessageIdResponse: {
 		error: 'Message ID is required',
 	},
-	
+
 	errorMissingTitleResponse: {
 		error: 'title и body обязательны',
 	},
@@ -318,17 +326,17 @@ export const mockPrismaErrors = {
 		code: 'P2025',
 		message: 'Record not found',
 	},
-	
+
 	p2002Error: {
 		code: 'P2002',
 		message: 'Unique constraint failed',
 	},
-	
+
 	p2003Error: {
 		code: 'P2003',
 		message: 'Foreign key constraint failed',
 	},
-	
+
 	p2014Error: {
 		code: 'P2014',
 		message: 'Required relation missing',
@@ -401,14 +409,14 @@ export const mockDataConversions = {
 		email: 'user@example.com',
 		errorMessage: 'Ошибка создания сообщения',
 	},
-	
+
 	number: {
 		count: 3,
 		statusCode: 200,
 		errorStatusCode: 500,
 		successStatusCode: 201,
 	},
-	
+
 	boolean: {
 		isValid: true,
 		isEmpty: false,
@@ -418,21 +426,21 @@ export const mockDataConversions = {
 		isAdmin: false,
 		isPremium: false,
 	},
-	
+
 	object: {
 		message: mockMessageData.validMessage,
 		user: mockUserData.validUser,
 		response: mockServiceResponses.successCreateMessageResponse,
 		error: mockErrors.messageNotFoundError,
 	},
-	
+
 	array: {
 		messages: [mockMessageData.validMessage, mockMessageData.adminMessage],
 		users: [mockUserData.validUser, mockUserData.premiumUser],
 		clerkUserIds: ['user123', 'user456', 'user789'],
 		errors: [mockErrors.validationError, mockErrors.databaseError],
 	},
-	
+
 	null: {
 		message: null,
 		user: null,
@@ -454,7 +462,7 @@ export const mockValidationLogic = {
 		}
 		return { isValid: true };
 	},
-	
+
 	validateGetUserMessagesData: (query) => {
 		const { clerkUserId } = query;
 		if (!clerkUserId) {
@@ -465,7 +473,7 @@ export const mockValidationLogic = {
 		}
 		return { isValid: true };
 	},
-	
+
 	validateBroadcastData: (data) => {
 		const { title, body } = data;
 		if (!title || !body) {
@@ -476,7 +484,7 @@ export const mockValidationLogic = {
 		}
 		return { isValid: true };
 	},
-	
+
 	validateDeleteMessageData: (params) => {
 		const { id } = params;
 		if (!id) {
@@ -487,27 +495,31 @@ export const mockValidationLogic = {
 		}
 		return { isValid: true };
 	},
-	
+
 	validateMessageId: (id) => {
 		return !!(id && typeof id === 'string' && id.length > 0);
 	},
-	
+
 	validateClerkUserId: (clerkUserId) => {
-		return !!(clerkUserId && typeof clerkUserId === 'string' && clerkUserId.length > 0);
+		return !!(
+			clerkUserId &&
+			typeof clerkUserId === 'string' &&
+			clerkUserId.length > 0
+		);
 	},
-	
+
 	validateTitle: (title) => {
 		return !!(title && typeof title === 'string' && title.length > 0);
 	},
-	
+
 	validateBody: (body) => {
 		return !!(body && typeof body === 'string' && body.length > 0);
 	},
-	
+
 	validateEmail: (email) => {
 		return !!(email && typeof email === 'string' && email.includes('@'));
 	},
-	
+
 	validateMessageType: (type) => {
 		return ['system', 'admin'].includes(type);
 	},
@@ -518,23 +530,23 @@ export const mockEmailProcessingLogic = {
 	processEmailContent: (title, body) => {
 		return `<h2>${title}</h2><p>${body}</p>`;
 	},
-	
+
 	processHtmlEmailContent: (title, body) => {
 		return `<h2>${title}</h2><p>${body}</p>`;
 	},
-	
+
 	validateEmailContent: (content) => {
 		return !!(content && typeof content === 'string' && content.length > 0);
 	},
-	
+
 	formatEmailSubject: (title) => {
 		return title || 'No Subject';
 	},
-	
+
 	formatEmailBody: (body) => {
 		return body || 'No Content';
 	},
-	
+
 	handleEmailError: (error) => {
 		console.error('Ошибка отправки email:', error);
 		return {
@@ -542,7 +554,7 @@ export const mockEmailProcessingLogic = {
 			error: error.message,
 		};
 	},
-	
+
 	handleEmailSuccess: (email) => {
 		return {
 			success: true,
@@ -559,7 +571,7 @@ export const mockBroadcastProcessingLogic = {
 		}
 		return { specificUsers: false, userIds: [] };
 	},
-	
+
 	processBroadcastMessage: (title, body) => {
 		return {
 			title: title || 'No Title',
@@ -567,7 +579,7 @@ export const mockBroadcastProcessingLogic = {
 			type: 'admin',
 		};
 	},
-	
+
 	handleBroadcastError: (error) => {
 		console.error('Ошибка рассылки:', error);
 		return {
@@ -575,14 +587,14 @@ export const mockBroadcastProcessingLogic = {
 			error: error.message,
 		};
 	},
-	
+
 	handleBroadcastSuccess: (count) => {
 		return {
 			success: true,
 			count: count || 0,
 		};
 	},
-	
+
 	validateBroadcastData: (data) => {
 		const { title, body, clerkUserIds } = data;
 		if (!title || !body) {
@@ -599,51 +611,61 @@ export const mockBroadcastProcessingLogic = {
 export const mockControllerLogic = {
 	processCreateMessageRequest: async (req, res) => {
 		try {
-			const { clerkUserId, title, body, type = 'system', fromAdminId } = req.body;
+			const {
+				clerkUserId,
+				title,
+				body,
+				type = 'system',
+				fromAdminId,
+			} = req.body;
 			if (!clerkUserId || !title || !body) {
 				return res
 					.status(400)
 					.json({ error: 'clerkUserId, title и body обязательны' });
 			}
-			
+
 			const message = await mockPrisma.message.create({
 				data: { clerkUserId, title, body, type, fromAdminId },
 			});
-			
+
 			const user = await mockPrisma.user.findUnique({ where: { clerkUserId } });
 			if (user && user.email) {
 				try {
-					await mockSendEmail(user.email, title, `<h2>${title}</h2><p>${body}</p>`);
+					await mockSendEmail(
+						user.email,
+						title,
+						`<h2>${title}</h2><p>${body}</p>`,
+					);
 				} catch (e) {
 					console.error('Ошибка отправки email:', e);
 				}
 			}
-			
+
 			return res.json({ success: true, message });
 		} catch (error) {
 			console.error('Ошибка создания сообщения:', error);
 			return res.status(500).json({ error: 'Ошибка создания сообщения' });
 		}
 	},
-	
+
 	processGetUserMessagesRequest: async (req, res) => {
 		try {
 			const { clerkUserId } = req.query;
 			if (!clerkUserId)
 				return res.status(400).json({ error: 'clerkUserId обязателен' });
-			
+
 			const messages = await mockPrisma.message.findMany({
 				where: { clerkUserId },
 				orderBy: { createdAt: 'desc' },
 			});
-			
+
 			return res.json({ messages });
 		} catch (error) {
 			console.error('Ошибка получения сообщений:', error);
 			return res.status(500).json({ error: 'Ошибка получения сообщений' });
 		}
 	},
-	
+
 	processMarkMessageReadRequest: async (req, res) => {
 		try {
 			const { id } = req.params;
@@ -651,21 +673,21 @@ export const mockControllerLogic = {
 				where: { id },
 				data: { isRead: true },
 			});
-			
+
 			return res.json({ success: true, message });
 		} catch (error) {
 			console.error('Ошибка отметки сообщения как прочитанного:', error);
 			return res.status(500).json({ error: 'Ошибка отметки сообщения' });
 		}
 	},
-	
+
 	processBroadcastMessageRequest: async (req, res) => {
 		try {
 			const { title, body, clerkUserIds } = req.body;
 			if (!title || !body) {
 				return res.status(400).json({ error: 'title и body обязательны' });
 			}
-			
+
 			let users;
 			if (Array.isArray(clerkUserIds) && clerkUserIds.length > 0) {
 				users = await mockPrisma.user.findMany({
@@ -674,7 +696,7 @@ export const mockControllerLogic = {
 			} else {
 				users = await mockPrisma.user.findMany();
 			}
-			
+
 			let sent = 0;
 			for (const user of users) {
 				await mockPrisma.message.create({
@@ -685,7 +707,7 @@ export const mockControllerLogic = {
 						type: 'admin',
 					},
 				});
-				
+
 				if (user.email) {
 					try {
 						await mockSendEmail(user.email, title, body);
@@ -695,69 +717,69 @@ export const mockControllerLogic = {
 				}
 				sent++;
 			}
-			
+
 			return res.json({ success: true, count: sent });
 		} catch (error) {
 			console.error('Ошибка рассылки:', error);
 			return res.status(500).json({ error: 'Ошибка рассылки' });
 		}
 	},
-	
+
 	processDeleteMessageRequest: async (req, res) => {
 		try {
 			const { id } = req.params;
 			console.log('Attempting to delete message with ID:', id);
-			
+
 			if (!id) {
 				console.log('No message ID provided');
 				return res.status(400).json({ error: 'Message ID is required' });
 			}
-			
+
 			const message = await mockPrisma.message.findUnique({
 				where: { id },
 			});
-			
+
 			console.log('Message found:', message ? 'Yes' : 'No');
-			
+
 			if (!message) {
 				console.log('Message not found for ID:', id);
 				return res.status(404).json({ error: 'Сообщение не найдено' });
 			}
-			
+
 			const deletedMessage = await mockPrisma.message.delete({
 				where: { id },
 			});
-			
+
 			console.log('Message deleted successfully:', deletedMessage.id);
-			
+
 			return res.json({ success: true, message: 'Сообщение удалено' });
 		} catch (error) {
 			console.error('Error in deleteMessage:', error);
-			
+
 			if (error.code === 'P2025') {
 				return res.status(404).json({ error: 'Сообщение не найдено' });
 			}
-			
+
 			if (error.code === 'P2002') {
 				return res.status(400).json({ error: 'Invalid message ID format' });
 			}
-			
+
 			return res.status(500).json({ error: 'Ошибка удаления сообщения' });
 		}
 	},
-	
+
 	handleControllerError: (error, res, operation = 'operation') => {
 		console.error(`Ошибка ${operation}:`, error.message);
-		return res.status(500).json({ 
-			error: `Ошибка ${operation}`, 
-			details: error.message 
+		return res.status(500).json({
+			error: `Ошибка ${operation}`,
+			details: error.message,
 		});
 	},
-	
+
 	handleControllerSuccess: (data, res, statusCode = 200) => {
 		return res.status(statusCode).json(data);
 	},
-	
+
 	validateControllerInput: (req) => {
 		return !!(req && req.body && Object.keys(req.body).length > 0);
 	},
@@ -770,21 +792,21 @@ export const mockServiceIntegrationLogic = {
 			data: messageData,
 		});
 	},
-	
+
 	callGetUserMessagesService: async (clerkUserId) => {
 		return await mockPrisma.message.findMany({
 			where: { clerkUserId },
 			orderBy: { createdAt: 'desc' },
 		});
 	},
-	
+
 	callMarkMessageReadService: async (id) => {
 		return await mockPrisma.message.update({
 			where: { id },
 			data: { isRead: true },
 		});
 	},
-	
+
 	callBroadcastMessageService: async (broadcastData) => {
 		const { title, body, clerkUserIds } = broadcastData;
 		let users;
@@ -795,7 +817,7 @@ export const mockServiceIntegrationLogic = {
 		} else {
 			users = await mockPrisma.user.findMany();
 		}
-		
+
 		let sent = 0;
 		for (const user of users) {
 			await mockPrisma.message.create({
@@ -808,16 +830,16 @@ export const mockServiceIntegrationLogic = {
 			});
 			sent++;
 		}
-		
+
 		return { success: true, count: sent };
 	},
-	
+
 	callDeleteMessageService: async (id) => {
 		return await mockPrisma.message.delete({
 			where: { id },
 		});
 	},
-	
+
 	handleServiceResponse: (result) => {
 		if (result.error) {
 			return {
@@ -830,18 +852,18 @@ export const mockServiceIntegrationLogic = {
 			data: result,
 		};
 	},
-	
+
 	handleServiceError: (error) => {
 		return {
 			success: false,
 			error: error.message,
 		};
 	},
-	
+
 	validateServiceResult: (result) => {
 		return result !== null && result !== undefined;
 	},
-	
+
 	processServiceResult: (result) => {
 		return result;
 	},
@@ -869,42 +891,42 @@ export const mockRequestResponseLogic = {
 			},
 		};
 	},
-	
+
 	buildResponse: () => {
 		return {
 			json: vi.fn(),
 			status: vi.fn().mockReturnThis(),
 		};
 	},
-	
+
 	handleSuccessResponse: (res, data, statusCode = 200) => {
 		res.status(statusCode).json(data);
 	},
-	
+
 	handleErrorResponse: (res, error, statusCode = 500) => {
 		res.status(statusCode).json({ error: error.message });
 	},
-	
+
 	handleValidationError: (res, error, statusCode = 400) => {
 		res.status(statusCode).json({ error });
 	},
-	
+
 	handleNotFoundError: (res, error, statusCode = 404) => {
 		res.status(statusCode).json({ error });
 	},
-	
+
 	validateRequest: (req) => {
 		return !!(req && (req.body || req.params || req.query));
 	},
-	
+
 	extractMessageData: (req) => {
 		return req.body;
 	},
-	
+
 	extractQueryParameters: (req) => {
 		return req.query;
 	},
-	
+
 	extractParams: (req) => {
 		return req.params;
 	},

@@ -23,7 +23,7 @@ describe('ImageModerationService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetImageModerationMocks();
-		
+
 		// Mock console methods
 		console.error = vi.fn();
 	});
@@ -63,16 +63,9 @@ describe('ImageModerationService', () => {
 		});
 
 		it('should reject non-buffer inputs', () => {
-			const nonBufferInputs = [
-				'string',
-				123,
-				null,
-				undefined,
-				{},
-				[],
-			];
+			const nonBufferInputs = ['string', 123, null, undefined, {}, []];
 
-			nonBufferInputs.forEach(input => {
+			nonBufferInputs.forEach((input) => {
 				expect(Buffer.isBuffer(input)).toBe(false);
 			});
 		});
@@ -124,7 +117,8 @@ describe('ImageModerationService', () => {
 	describe('Inappropriate Content Detection Logic', () => {
 		it('should detect explicit inappropriate content', () => {
 			const inappropriateLabels = mockInappropriateLabels;
-			const moderationLabels = mockRekognitionResponses.inappropriateContent.moderationLabels;
+			const moderationLabels =
+				mockRekognitionResponses.inappropriateContent.moderationLabels;
 
 			const detectedInappropriate = moderationLabels.filter(
 				(label) =>
@@ -138,9 +132,10 @@ describe('ImageModerationService', () => {
 
 		it('should detect potentially inappropriate content', () => {
 			const potentiallyInappropriate = mockPotentiallyInappropriateLabels;
-			const detectedLabels = mockRekognitionResponses.potentiallyInappropriate.labels.map(
-				(label) => label.Name,
-			);
+			const detectedLabels =
+				mockRekognitionResponses.potentiallyInappropriate.labels.map(
+					(label) => label.Name,
+				);
 
 			const detectedPotentiallyInappropriate = detectedLabels.filter((label) =>
 				potentiallyInappropriate.some((inappropriate) =>
@@ -156,7 +151,8 @@ describe('ImageModerationService', () => {
 
 		it('should handle hate symbols detection', () => {
 			const inappropriateLabels = mockInappropriateLabels;
-			const moderationLabels = mockRekognitionResponses.hateSymbols.moderationLabels;
+			const moderationLabels =
+				mockRekognitionResponses.hateSymbols.moderationLabels;
 
 			const detectedInappropriate = moderationLabels.filter(
 				(label) =>
@@ -169,7 +165,8 @@ describe('ImageModerationService', () => {
 
 		it('should filter out low confidence detections', () => {
 			const inappropriateLabels = mockInappropriateLabels;
-			const moderationLabels = mockRekognitionResponses.lowConfidence.moderationLabels;
+			const moderationLabels =
+				mockRekognitionResponses.lowConfidence.moderationLabels;
 
 			const detectedInappropriate = moderationLabels.filter(
 				(label) =>
@@ -181,7 +178,8 @@ describe('ImageModerationService', () => {
 
 		it('should handle empty moderation results', () => {
 			const inappropriateLabels = mockInappropriateLabels;
-			const moderationLabels = mockRekognitionResponses.emptyResponse.moderationLabels || [];
+			const moderationLabels =
+				mockRekognitionResponses.emptyResponse.moderationLabels || [];
 
 			const detectedInappropriate = moderationLabels.filter(
 				(label) =>
@@ -238,7 +236,9 @@ describe('ImageModerationService', () => {
 			expect(result.isApproved).toBe(true);
 			expect(result.confidence).toBe(0);
 			expect(result.detectedIssues.moderationLabels).toHaveLength(0);
-			expect(result.detectedIssues.potentiallyInappropriateLabels).toHaveLength(0);
+			expect(result.detectedIssues.potentiallyInappropriateLabels).toHaveLength(
+				0,
+			);
 		});
 
 		it('should return rejected result for inappropriate content', () => {
@@ -247,7 +247,9 @@ describe('ImageModerationService', () => {
 			expect(result.isApproved).toBe(false);
 			expect(result.confidence).toBe(96.5);
 			expect(result.detectedIssues.moderationLabels).toHaveLength(1);
-			expect(result.detectedIssues.potentiallyInappropriateLabels).toHaveLength(2);
+			expect(result.detectedIssues.potentiallyInappropriateLabels).toHaveLength(
+				2,
+			);
 		});
 
 		it('should return error result for failed moderation', () => {
@@ -573,7 +575,10 @@ describe('ImageModerationService', () => {
 
 		it('should log configuration error message correctly', () => {
 			const logConfigError = (missingVars) => {
-				console.error('❌ Missing Rekognition environment variables:', missingVars);
+				console.error(
+					'❌ Missing Rekognition environment variables:',
+					missingVars,
+				);
 			};
 
 			const missingVars = ['AWS_ACCESS_KEY_ID'];
@@ -615,13 +620,15 @@ describe('ImageModerationService', () => {
 				const detectedInappropriate =
 					moderationLabels?.filter(
 						(label) =>
-							inappropriateLabels.includes(label.Name) && label.Confidence >= 95,
+							inappropriateLabels.includes(label.Name) &&
+							label.Confidence >= 95,
 					) || [];
 
-				const detectedPotentiallyInappropriate = detectedLabels.filter((label) =>
-					potentiallyInappropriate.some((inappropriate) =>
-						label.toLowerCase().includes(inappropriate.toLowerCase()),
-					),
+				const detectedPotentiallyInappropriate = detectedLabels.filter(
+					(label) =>
+						potentiallyInappropriate.some((inappropriate) =>
+							label.toLowerCase().includes(inappropriate.toLowerCase()),
+						),
 				);
 
 				const isInappropriate =
@@ -653,13 +660,15 @@ describe('ImageModerationService', () => {
 				const detectedInappropriate =
 					moderationLabels?.filter(
 						(label) =>
-							inappropriateLabels.includes(label.Name) && label.Confidence >= 95,
+							inappropriateLabels.includes(label.Name) &&
+							label.Confidence >= 95,
 					) || [];
 
-				const detectedPotentiallyInappropriate = detectedLabels.filter((label) =>
-					potentiallyInappropriate.some((inappropriate) =>
-						label.toLowerCase().includes(inappropriate.toLowerCase()),
-					),
+				const detectedPotentiallyInappropriate = detectedLabels.filter(
+					(label) =>
+						potentiallyInappropriate.some((inappropriate) =>
+							label.toLowerCase().includes(inappropriate.toLowerCase()),
+						),
 				);
 
 				const isInappropriate =
@@ -675,7 +684,9 @@ describe('ImageModerationService', () => {
 
 			const result = analyzeContent(
 				mockRekognitionResponses.inappropriateContent.moderationLabels,
-				mockRekognitionResponses.inappropriateContent.labels.map((label) => label.Name),
+				mockRekognitionResponses.inappropriateContent.labels.map(
+					(label) => label.Name,
+				),
 			);
 
 			expect(result.isApproved).toBe(false);
@@ -691,13 +702,15 @@ describe('ImageModerationService', () => {
 				const detectedInappropriate =
 					moderationLabels?.filter(
 						(label) =>
-							inappropriateLabels.includes(label.Name) && label.Confidence >= 95,
+							inappropriateLabels.includes(label.Name) &&
+							label.Confidence >= 95,
 					) || [];
 
-				const detectedPotentiallyInappropriate = detectedLabels.filter((label) =>
-					potentiallyInappropriate.some((inappropriate) =>
-						label.toLowerCase().includes(inappropriate.toLowerCase()),
-					),
+				const detectedPotentiallyInappropriate = detectedLabels.filter(
+					(label) =>
+						potentiallyInappropriate.some((inappropriate) =>
+							label.toLowerCase().includes(inappropriate.toLowerCase()),
+						),
 				);
 
 				const isInappropriate =
@@ -713,7 +726,9 @@ describe('ImageModerationService', () => {
 
 			const result = analyzeContent(
 				mockRekognitionResponses.potentiallyInappropriate.moderationLabels,
-				mockRekognitionResponses.potentiallyInappropriate.labels.map((label) => label.Name),
+				mockRekognitionResponses.potentiallyInappropriate.labels.map(
+					(label) => label.Name,
+				),
 			);
 
 			expect(result.isApproved).toBe(false);

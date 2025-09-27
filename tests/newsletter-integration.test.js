@@ -43,11 +43,11 @@ describe('Newsletter Integration Tests', () => {
 	beforeEach(() => {
 		// Create fresh app instance
 		app = createTestApp();
-		
+
 		// Mock console methods to avoid noise in tests
 		console.log = vi.fn();
 		console.error = vi.fn();
-		
+
 		// Reset all mocks
 		resetNewsletterMocks();
 	});
@@ -76,8 +76,12 @@ describe('Newsletter Integration Tests', () => {
 					preferredDocumentTypes: ['Passport', 'ID'],
 					onlyDemanded: false,
 				};
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(null);
-				mockPrismaInstance.newsletterSubscriber.create.mockResolvedValue(mockSubscriberData);
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(
+					null,
+				);
+				mockPrismaInstance.newsletterSubscriber.create.mockResolvedValue(
+					mockSubscriberData,
+				);
 				mockSendInitialCandidatesToNewSubscriber.mockResolvedValue();
 
 				// Act
@@ -88,10 +92,14 @@ describe('Newsletter Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toEqual(mockServiceResponses.subscribeSuccess);
-				expect(mockPrismaInstance.newsletterSubscriber.findUnique).toHaveBeenCalledWith({
+				expect(
+					mockPrismaInstance.newsletterSubscriber.findUnique,
+				).toHaveBeenCalledWith({
 					where: { email: 'test@example.com' },
 				});
-				expect(mockPrismaInstance.newsletterSubscriber.create).toHaveBeenCalledWith({
+				expect(
+					mockPrismaInstance.newsletterSubscriber.create,
+				).toHaveBeenCalledWith({
 					data: {
 						email: 'test@example.com',
 						firstName: 'John',
@@ -108,7 +116,9 @@ describe('Newsletter Integration Tests', () => {
 						onlyDemanded: false,
 					},
 				});
-				expect(mockSendInitialCandidatesToNewSubscriber).toHaveBeenCalledWith(mockSubscriberData);
+				expect(mockSendInitialCandidatesToNewSubscriber).toHaveBeenCalledWith(
+					mockSubscriberData,
+				);
 			});
 
 			it('should subscribe user with minimal data', async () => {
@@ -116,7 +126,9 @@ describe('Newsletter Integration Tests', () => {
 				const subscriptionData = {
 					email: 'minimal@example.com',
 				};
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(null);
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(
+					null,
+				);
 				mockPrismaInstance.newsletterSubscriber.create.mockResolvedValue({
 					...mockSubscriberData,
 					email: 'minimal@example.com',
@@ -133,7 +145,9 @@ describe('Newsletter Integration Tests', () => {
 
 				// Assert
 				expect(response.body.success).toBe(true);
-				expect(response.body.message).toBe('Successfully subscribed to newsletter');
+				expect(response.body.message).toBe(
+					'Successfully subscribed to newsletter',
+				);
 			});
 
 			it('should handle email sending errors gracefully', async () => {
@@ -143,9 +157,15 @@ describe('Newsletter Integration Tests', () => {
 					firstName: 'John',
 					lastName: 'Doe',
 				};
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(null);
-				mockPrismaInstance.newsletterSubscriber.create.mockResolvedValue(mockSubscriberData);
-				mockSendInitialCandidatesToNewSubscriber.mockRejectedValue(new Error('Email service down'));
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(
+					null,
+				);
+				mockPrismaInstance.newsletterSubscriber.create.mockResolvedValue(
+					mockSubscriberData,
+				);
+				mockSendInitialCandidatesToNewSubscriber.mockRejectedValue(
+					new Error('Email service down'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -190,7 +210,9 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle already subscribed email', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(mockSubscriberData);
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(
+					mockSubscriberData,
+				);
 
 				// Act
 				const response = await request(app)
@@ -199,12 +221,16 @@ describe('Newsletter Integration Tests', () => {
 					.expect(409);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.subscribeAlreadyExists);
+				expect(response.body).toEqual(
+					mockServiceResponses.subscribeAlreadyExists,
+				);
 			});
 
 			it('should handle database errors', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -225,8 +251,12 @@ describe('Newsletter Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should unsubscribe user from newsletter', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(mockSubscriberData);
-				mockPrismaInstance.newsletterSubscriber.delete.mockResolvedValue(mockSubscriberData);
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(
+					mockSubscriberData,
+				);
+				mockPrismaInstance.newsletterSubscriber.delete.mockResolvedValue(
+					mockSubscriberData,
+				);
 
 				// Act
 				const response = await request(app)
@@ -236,10 +266,14 @@ describe('Newsletter Integration Tests', () => {
 
 				// Assert
 				expect(response.body).toEqual(mockServiceResponses.unsubscribeSuccess);
-				expect(mockPrismaInstance.newsletterSubscriber.findUnique).toHaveBeenCalledWith({
+				expect(
+					mockPrismaInstance.newsletterSubscriber.findUnique,
+				).toHaveBeenCalledWith({
 					where: { email: 'test@example.com' },
 				});
-				expect(mockPrismaInstance.newsletterSubscriber.delete).toHaveBeenCalledWith({
+				expect(
+					mockPrismaInstance.newsletterSubscriber.delete,
+				).toHaveBeenCalledWith({
 					where: { id: mockSubscriberData.id },
 				});
 			});
@@ -262,7 +296,9 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle subscriber not found', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(null);
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(
+					null,
+				);
 
 				// Act
 				const response = await request(app)
@@ -276,7 +312,9 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle database errors', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -297,7 +335,9 @@ describe('Newsletter Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should return all newsletter subscribers', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findMany.mockResolvedValue(mockSubscribersList);
+				mockPrismaInstance.newsletterSubscriber.findMany.mockResolvedValue(
+					mockSubscribersList,
+				);
 
 				// Act
 				const response = await request(app)
@@ -305,8 +345,12 @@ describe('Newsletter Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.getSubscribersSuccess);
-				expect(mockPrismaInstance.newsletterSubscriber.findMany).toHaveBeenCalledWith({
+				expect(response.body).toEqual(
+					mockServiceResponses.getSubscribersSuccess,
+				);
+				expect(
+					mockPrismaInstance.newsletterSubscriber.findMany,
+				).toHaveBeenCalledWith({
 					orderBy: { createdAt: 'desc' },
 					select: {
 						id: true,
@@ -340,7 +384,9 @@ describe('Newsletter Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should handle database errors', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findMany.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.newsletterSubscriber.findMany.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -360,7 +406,9 @@ describe('Newsletter Integration Tests', () => {
 		describe('Successful Requests', () => {
 			it('should return subscription status for subscribed user', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(mockSubscriberData);
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(
+					mockSubscriberData,
+				);
 
 				// Act
 				const response = await request(app)
@@ -368,8 +416,12 @@ describe('Newsletter Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.checkSubscriptionSubscribed);
-				expect(mockPrismaInstance.newsletterSubscriber.findUnique).toHaveBeenCalledWith({
+				expect(response.body).toEqual(
+					mockServiceResponses.checkSubscriptionSubscribed,
+				);
+				expect(
+					mockPrismaInstance.newsletterSubscriber.findUnique,
+				).toHaveBeenCalledWith({
 					where: { email: 'test@example.com' },
 					select: {
 						id: true,
@@ -391,15 +443,21 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should return not subscribed status for non-subscribed user', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(null);
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(
+					null,
+				);
 
 				// Act
 				const response = await request(app)
-					.get('/api/newsletter/check-subscription?email=nonexistent@example.com')
+					.get(
+						'/api/newsletter/check-subscription?email=nonexistent@example.com',
+					)
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.checkSubscriptionNotSubscribed);
+				expect(response.body).toEqual(
+					mockServiceResponses.checkSubscriptionNotSubscribed,
+				);
 			});
 		});
 
@@ -419,7 +477,9 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle database errors', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -448,7 +508,9 @@ describe('Newsletter Integration Tests', () => {
 					preferredDocumentTypes: ['Driver License'],
 					onlyDemanded: true,
 				};
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(mockSubscriberData);
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(
+					mockSubscriberData,
+				);
 				mockPrismaInstance.newsletterSubscriber.update.mockResolvedValue({
 					...mockSubscriberData,
 					...updatedPreferences,
@@ -462,11 +524,17 @@ describe('Newsletter Integration Tests', () => {
 
 				// Assert
 				expect(response.body.success).toBe(true);
-				expect(response.body.message).toBe('Newsletter preferences updated successfully');
-				expect(mockPrismaInstance.newsletterSubscriber.findUnique).toHaveBeenCalledWith({
+				expect(response.body.message).toBe(
+					'Newsletter preferences updated successfully',
+				);
+				expect(
+					mockPrismaInstance.newsletterSubscriber.findUnique,
+				).toHaveBeenCalledWith({
 					where: { email: 'test@example.com' },
 				});
-				expect(mockPrismaInstance.newsletterSubscriber.update).toHaveBeenCalledWith({
+				expect(
+					mockPrismaInstance.newsletterSubscriber.update,
+				).toHaveBeenCalledWith({
 					where: { id: mockSubscriberData.id },
 					data: updatedPreferences,
 				});
@@ -476,7 +544,9 @@ describe('Newsletter Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should handle subscriber not found', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(null);
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockResolvedValue(
+					null,
+				);
 
 				// Act
 				const response = await request(app)
@@ -493,7 +563,9 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle database errors', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findUnique.mockRejectedValue(new Error('Database error'));
+				mockPrismaInstance.newsletterSubscriber.findUnique.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -522,9 +594,13 @@ describe('Newsletter Integration Tests', () => {
 					preferredCities: ['Tel Aviv'],
 					preferredCategories: ['IT'],
 				};
-				mockPrismaInstance.newsletterSubscriber.findFirst.mockResolvedValue(null);
+				mockPrismaInstance.newsletterSubscriber.findFirst.mockResolvedValue(
+					null,
+				);
 				mockStoreVerificationCode.mockResolvedValue(true);
-				mockSendVerificationCode.mockResolvedValue(mockVerificationResponses.success);
+				mockSendVerificationCode.mockResolvedValue(
+					mockVerificationResponses.success,
+				);
 
 				// Act
 				const response = await request(app)
@@ -533,8 +609,12 @@ describe('Newsletter Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.sendVerificationSuccess);
-				expect(mockPrismaInstance.newsletterSubscriber.findFirst).toHaveBeenCalledWith({
+				expect(response.body).toEqual(
+					mockServiceResponses.sendVerificationSuccess,
+				);
+				expect(
+					mockPrismaInstance.newsletterSubscriber.findFirst,
+				).toHaveBeenCalledWith({
 					where: {
 						email: 'test@example.com',
 						isActive: true,
@@ -546,7 +626,9 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle already subscribed email', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findFirst.mockResolvedValue(mockSubscriberData);
+				mockPrismaInstance.newsletterSubscriber.findFirst.mockResolvedValue(
+					mockSubscriberData,
+				);
 
 				// Act
 				const response = await request(app)
@@ -593,8 +675,12 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle verification service errors', async () => {
 				// Arrange
-				mockPrismaInstance.newsletterSubscriber.findFirst.mockResolvedValue(null);
-				mockStoreVerificationCode.mockRejectedValue(new Error('Verification service error'));
+				mockPrismaInstance.newsletterSubscriber.findFirst.mockResolvedValue(
+					null,
+				);
+				mockStoreVerificationCode.mockRejectedValue(
+					new Error('Verification service error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -627,8 +713,12 @@ describe('Newsletter Integration Tests', () => {
 						preferredCategories: ['IT'],
 					},
 				};
-				mockVerifyCode.mockResolvedValue(mockServiceResponses.verifyCodeSuccess);
-				mockPrismaInstance.newsletterSubscriber.create.mockResolvedValue(mockSubscriberData);
+				mockVerifyCode.mockResolvedValue(
+					mockServiceResponses.verifyCodeSuccess,
+				);
+				mockPrismaInstance.newsletterSubscriber.create.mockResolvedValue(
+					mockSubscriberData,
+				);
 				mockSendInitialCandidatesToNewSubscriber.mockResolvedValue();
 
 				// Act
@@ -639,9 +729,16 @@ describe('Newsletter Integration Tests', () => {
 
 				// Assert
 				expect(response.body.success).toBe(true);
-				expect(response.body.message).toBe('Successfully subscribed to newsletter');
-				expect(mockVerifyCode).toHaveBeenCalledWith('test@example.com', '123456');
-				expect(mockPrismaInstance.newsletterSubscriber.create).toHaveBeenCalled();
+				expect(response.body.message).toBe(
+					'Successfully subscribed to newsletter',
+				);
+				expect(mockVerifyCode).toHaveBeenCalledWith(
+					'test@example.com',
+					'123456',
+				);
+				expect(
+					mockPrismaInstance.newsletterSubscriber.create,
+				).toHaveBeenCalled();
 				expect(mockSendInitialCandidatesToNewSubscriber).toHaveBeenCalled();
 			});
 		});
@@ -663,7 +760,9 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle invalid verification code', async () => {
 				// Arrange
-				mockVerifyCode.mockResolvedValue(mockServiceResponses.verifyCodeInvalid);
+				mockVerifyCode.mockResolvedValue(
+					mockServiceResponses.verifyCodeInvalid,
+				);
 
 				// Act
 				const response = await request(app)
@@ -680,7 +779,9 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle expired verification code', async () => {
 				// Arrange
-				mockVerifyCode.mockResolvedValue(mockServiceResponses.verifyCodeExpired);
+				mockVerifyCode.mockResolvedValue(
+					mockServiceResponses.verifyCodeExpired,
+				);
 
 				// Act
 				const response = await request(app)
@@ -697,7 +798,9 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle too many attempts', async () => {
 				// Arrange
-				mockVerifyCode.mockResolvedValue(mockServiceResponses.verifyCodeTooManyAttempts);
+				mockVerifyCode.mockResolvedValue(
+					mockServiceResponses.verifyCodeTooManyAttempts,
+				);
 
 				// Act
 				const response = await request(app)
@@ -714,13 +817,21 @@ describe('Newsletter Integration Tests', () => {
 
 			it('should handle database errors', async () => {
 				// Arrange
-				mockVerifyCode.mockResolvedValue(mockServiceResponses.verifyCodeSuccess);
-				mockPrismaInstance.newsletterSubscriber.create.mockRejectedValue(new Error('Database error'));
+				mockVerifyCode.mockResolvedValue(
+					mockServiceResponses.verifyCodeSuccess,
+				);
+				mockPrismaInstance.newsletterSubscriber.create.mockRejectedValue(
+					new Error('Database error'),
+				);
 
 				// Act
 				const response = await request(app)
 					.post('/api/newsletter/verify-code')
-					.send({ email: 'test@example.com', code: '123456', subscriptionData: {} })
+					.send({
+						email: 'test@example.com',
+						code: '123456',
+						subscriptionData: {},
+					})
 					.expect(500);
 
 				// Assert
@@ -745,7 +856,9 @@ describe('Newsletter Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.sendCandidatesSuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.sendCandidatesSuccess,
+				);
 				expect(mockSendCandidatesToSubscribers).toHaveBeenCalledWith(undefined);
 			});
 
@@ -760,15 +873,22 @@ describe('Newsletter Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.sendCandidatesSuccess);
-				expect(mockSendCandidatesToSubscribers).toHaveBeenCalledWith(['sub_123', 'sub_456']);
+				expect(response.body).toEqual(
+					mockServiceResponses.sendCandidatesSuccess,
+				);
+				expect(mockSendCandidatesToSubscribers).toHaveBeenCalledWith([
+					'sub_123',
+					'sub_456',
+				]);
 			});
 		});
 
 		describe('Error Handling', () => {
 			it('should handle service errors', async () => {
 				// Arrange
-				mockSendCandidatesToSubscribers.mockRejectedValue(new Error('Service error'));
+				mockSendCandidatesToSubscribers.mockRejectedValue(
+					new Error('Service error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -798,7 +918,9 @@ describe('Newsletter Integration Tests', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body).toEqual(mockServiceResponses.sendFilteredCandidatesSuccess);
+				expect(response.body).toEqual(
+					mockServiceResponses.sendFilteredCandidatesSuccess,
+				);
 				expect(mockSendFilteredCandidatesToSubscribers).toHaveBeenCalled();
 			});
 		});
@@ -806,7 +928,9 @@ describe('Newsletter Integration Tests', () => {
 		describe('Error Handling', () => {
 			it('should handle service errors', async () => {
 				// Arrange
-				mockSendFilteredCandidatesToSubscribers.mockRejectedValue(new Error('Service error'));
+				mockSendFilteredCandidatesToSubscribers.mockRejectedValue(
+					new Error('Service error'),
+				);
 
 				// Act
 				const response = await request(app)
@@ -826,30 +950,26 @@ describe('Newsletter Integration Tests', () => {
 	describe('HTTP Method Validation', () => {
 		it('should reject GET requests for POST endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.get('/api/newsletter/subscribe')
-				.expect(404);
+			await request(app).get('/api/newsletter/subscribe').expect(404);
 		});
 
 		it('should reject PUT requests for POST endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.put('/api/newsletter/subscribe')
-				.expect(404);
+			await request(app).put('/api/newsletter/subscribe').expect(404);
 		});
 
 		it('should reject DELETE requests for POST endpoints', async () => {
 			// Act & Assert
-			await request(app)
-				.delete('/api/newsletter/subscribe')
-				.expect(404);
+			await request(app).delete('/api/newsletter/subscribe').expect(404);
 		});
 	});
 
 	describe('Response Format Validation', () => {
 		it('should return valid JSON responses', async () => {
 			// Arrange
-			mockPrismaInstance.newsletterSubscriber.findMany.mockResolvedValue(mockSubscribersList);
+			mockPrismaInstance.newsletterSubscriber.findMany.mockResolvedValue(
+				mockSubscribersList,
+			);
 
 			// Act
 			const response = await request(app)
@@ -868,21 +988,21 @@ describe('Newsletter Integration Tests', () => {
 	describe('Performance and Caching', () => {
 		it('should handle concurrent subscription requests', async () => {
 			// Arrange
-			mockPrismaInstance.newsletterSubscriber.findUnique.mockImplementation(() => 
-				Promise.resolve(null)
+			mockPrismaInstance.newsletterSubscriber.findUnique.mockImplementation(
+				() => Promise.resolve(null),
 			);
-			mockPrismaInstance.newsletterSubscriber.create.mockImplementation(() => 
-				Promise.resolve(mockSubscriberData)
+			mockPrismaInstance.newsletterSubscriber.create.mockImplementation(() =>
+				Promise.resolve(mockSubscriberData),
 			);
-			mockSendInitialCandidatesToNewSubscriber.mockImplementation(() => 
-				Promise.resolve()
+			mockSendInitialCandidatesToNewSubscriber.mockImplementation(() =>
+				Promise.resolve(),
 			);
 
 			// Act - Make multiple concurrent requests
 			const promises = Array.from({ length: 3 }).map((_, index) =>
 				request(app)
 					.post('/api/newsletter/subscribe')
-					.send({ email: `test${index}@example.com` })
+					.send({ email: `test${index}@example.com` }),
 			);
 
 			const responses = await Promise.all(promises);
@@ -896,14 +1016,14 @@ describe('Newsletter Integration Tests', () => {
 
 		it('should handle concurrent verification requests', async () => {
 			// Arrange
-			mockVerifyCode.mockImplementation(() => 
-				Promise.resolve(mockServiceResponses.verifyCodeSuccess)
+			mockVerifyCode.mockImplementation(() =>
+				Promise.resolve(mockServiceResponses.verifyCodeSuccess),
 			);
-			mockPrismaInstance.newsletterSubscriber.create.mockImplementation(() => 
-				Promise.resolve(mockSubscriberData)
+			mockPrismaInstance.newsletterSubscriber.create.mockImplementation(() =>
+				Promise.resolve(mockSubscriberData),
 			);
-			mockSendInitialCandidatesToNewSubscriber.mockImplementation(() => 
-				Promise.resolve()
+			mockSendInitialCandidatesToNewSubscriber.mockImplementation(() =>
+				Promise.resolve(),
 			);
 
 			// Act - Make multiple concurrent requests
@@ -914,7 +1034,7 @@ describe('Newsletter Integration Tests', () => {
 						email: `test${index}@example.com`,
 						code: '123456',
 						subscriptionData: {},
-					})
+					}),
 			);
 
 			const responses = await Promise.all(promises);
@@ -927,5 +1047,3 @@ describe('Newsletter Integration Tests', () => {
 		});
 	});
 });
-
-

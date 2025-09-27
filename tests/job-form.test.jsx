@@ -135,20 +135,15 @@ vi.mock('react-hook-form', () => ({
 	}),
 }));
 
-// Mock the job creation functions
+// Mock the job creation and utility functions
 const mockCreateJob = vi.fn();
 const mockCreateJobWithImage = vi.fn();
-
-vi.mock('libs/jobs', () => ({
-	createJob: mockCreateJob,
-	createJobWithImage: mockCreateJobWithImage,
-}));
-
-// Mock the utility functions
 const mockShowToastError = vi.fn();
 const mockShowToastSuccess = vi.fn();
 
-vi.mock('libs/utils', () => ({
+vi.mock('libs', () => ({
+	createJob: mockCreateJob,
+	createJobWithImage: mockCreateJobWithImage,
 	showToastError: mockShowToastError,
 	showToastSuccess: mockShowToastSuccess,
 }));

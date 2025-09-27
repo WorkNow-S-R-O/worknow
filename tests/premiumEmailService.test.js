@@ -34,7 +34,7 @@ describe('PremiumEmailService', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetPremiumEmailServiceMocks();
-		
+
 		// Mock console methods
 		console.log = vi.fn();
 		console.error = vi.fn();
@@ -141,7 +141,10 @@ describe('PremiumEmailService', () => {
 		it('should replace greeting placeholder in template', () => {
 			const template = 'Hello {{greeting}}!';
 			const greeting = 'Дорогой John Doe,';
-			const result = mockEmailGenerationLogic.replaceGreeting(template, greeting);
+			const result = mockEmailGenerationLogic.replaceGreeting(
+				template,
+				greeting,
+			);
 
 			expect(result).toBe('Hello Дорогой John Doe,!');
 		});
@@ -149,7 +152,10 @@ describe('PremiumEmailService', () => {
 		it('should handle multiple greeting placeholders', () => {
 			const template = '{{greeting}} Welcome {{greeting}}!';
 			const greeting = 'Дорогой John Doe,';
-			const result = mockEmailGenerationLogic.replaceGreeting(template, greeting);
+			const result = mockEmailGenerationLogic.replaceGreeting(
+				template,
+				greeting,
+			);
 
 			expect(result).toBe('Дорогой John Doe, Welcome Дорогой John Doe,!');
 		});
@@ -157,7 +163,10 @@ describe('PremiumEmailService', () => {
 		it('should handle empty greeting', () => {
 			const template = 'Hello {{greeting}}!';
 			const greeting = '';
-			const result = mockEmailGenerationLogic.replaceGreeting(template, greeting);
+			const result = mockEmailGenerationLogic.replaceGreeting(
+				template,
+				greeting,
+			);
 
 			expect(result).toBe('Hello !');
 		});
@@ -165,7 +174,10 @@ describe('PremiumEmailService', () => {
 		it('should handle null greeting', () => {
 			const template = 'Hello {{greeting}}!';
 			const greeting = null;
-			const result = mockEmailGenerationLogic.replaceGreeting(template, greeting);
+			const result = mockEmailGenerationLogic.replaceGreeting(
+				template,
+				greeting,
+			);
 
 			expect(result).toBe('Hello null!');
 		});
@@ -213,19 +225,28 @@ describe('PremiumEmailService', () => {
 		});
 
 		it('should validate HTML structure', () => {
-			const validHtml = '<!DOCTYPE html><html><head></head><body>WorkNow</body></html>';
+			const validHtml =
+				'<!DOCTYPE html><html><head></head><body>WorkNow</body></html>';
 			const invalidHtml = '<div>WorkNow</div>';
 
-			expect(mockHtmlGenerationLogic.validateHtmlStructure(validHtml)).toBe(true);
-			expect(mockHtmlGenerationLogic.validateHtmlStructure(invalidHtml)).toBe(false);
+			expect(mockHtmlGenerationLogic.validateHtmlStructure(validHtml)).toBe(
+				true,
+			);
+			expect(mockHtmlGenerationLogic.validateHtmlStructure(invalidHtml)).toBe(
+				false,
+			);
 		});
 
 		it('should validate text structure', () => {
 			const validText = 'WorkNow\nДобро пожаловать\n© 2025 WorkNow';
 			const invalidText = 'Some random text';
 
-			expect(mockHtmlGenerationLogic.validateTextStructure(validText)).toBe(true);
-			expect(mockHtmlGenerationLogic.validateTextStructure(invalidText)).toBe(false);
+			expect(mockHtmlGenerationLogic.validateTextStructure(validText)).toBe(
+				true,
+			);
+			expect(mockHtmlGenerationLogic.validateTextStructure(invalidText)).toBe(
+				false,
+			);
 		});
 
 		it('should handle special characters in HTML', () => {
@@ -279,12 +300,18 @@ describe('PremiumEmailService', () => {
 		});
 
 		it('should validate API key correctly', () => {
-			expect(mockResendInitializationLogic.validateApiKey('valid-key')).toBe(true);
+			expect(mockResendInitializationLogic.validateApiKey('valid-key')).toBe(
+				true,
+			);
 			expect(mockResendInitializationLogic.validateApiKey('')).toBe(false);
 			expect(mockResendInitializationLogic.validateApiKey(null)).toBe(false);
-			expect(mockResendInitializationLogic.validateApiKey(undefined)).toBe(false);
+			expect(mockResendInitializationLogic.validateApiKey(undefined)).toBe(
+				false,
+			);
 			expect(mockResendInitializationLogic.validateApiKey('null')).toBe(false);
-			expect(mockResendInitializationLogic.validateApiKey('undefined')).toBe(false);
+			expect(mockResendInitializationLogic.validateApiKey('undefined')).toBe(
+				false,
+			);
 		});
 	});
 
@@ -381,7 +408,9 @@ describe('PremiumEmailService', () => {
 			expect(response).toHaveProperty('success');
 			expect(response).toHaveProperty('error');
 			expect(response.success).toBe(false);
-			expect(response.error).toContain('Failed to send Premium Deluxe welcome email');
+			expect(response.error).toContain(
+				'Failed to send Premium Deluxe welcome email',
+			);
 		});
 
 		it('should return Pro failure response', () => {
@@ -457,35 +486,45 @@ describe('PremiumEmailService', () => {
 			const logMessage = mockConsoleLogData.premiumDeluxeResendAttempt;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('📧 Attempting to send Premium Deluxe welcome email via Resend...');
+			expect(logMessage).toContain(
+				'📧 Attempting to send Premium Deluxe welcome email via Resend...',
+			);
 		});
 
 		it('should log Premium Deluxe Resend success', () => {
 			const logMessage = mockConsoleLogData.premiumDeluxeResendSuccess;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('✅ Premium Deluxe welcome email sent via Resend:');
+			expect(logMessage).toContain(
+				'✅ Premium Deluxe welcome email sent via Resend:',
+			);
 		});
 
 		it('should log Premium Deluxe Gmail attempt', () => {
 			const logMessage = mockConsoleLogData.premiumDeluxeGmailAttempt;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('📧 Attempting to send Premium Deluxe welcome email via Gmail...');
+			expect(logMessage).toContain(
+				'📧 Attempting to send Premium Deluxe welcome email via Gmail...',
+			);
 		});
 
 		it('should log Premium Deluxe Gmail success', () => {
 			const logMessage = mockConsoleLogData.premiumDeluxeGmailSuccess;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('✅ Premium Deluxe welcome email sent via Gmail:');
+			expect(logMessage).toContain(
+				'✅ Premium Deluxe welcome email sent via Gmail:',
+			);
 		});
 
 		it('should log Pro Resend attempt', () => {
 			const logMessage = mockConsoleLogData.proResendAttempt;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('📧 Attempting to send Pro welcome email via Resend...');
+			expect(logMessage).toContain(
+				'📧 Attempting to send Pro welcome email via Resend...',
+			);
 		});
 
 		it('should log Pro Resend success', () => {
@@ -499,7 +538,9 @@ describe('PremiumEmailService', () => {
 			const logMessage = mockConsoleLogData.proGmailAttempt;
 
 			expect(typeof logMessage).toBe('string');
-			expect(logMessage).toContain('📧 Attempting to send Pro welcome email via Gmail...');
+			expect(logMessage).toContain(
+				'📧 Attempting to send Pro welcome email via Gmail...',
+			);
 		});
 
 		it('should log Pro Gmail success', () => {
@@ -560,7 +601,9 @@ describe('PremiumEmailService', () => {
 			expect(config).toHaveProperty('premiumDeluxeSubject');
 			expect(config).toHaveProperty('proSubject');
 			expect(config.from).toBe('WorkNow <onboarding@resend.dev>');
-			expect(config.premiumDeluxeSubject).toBe('🎉 Добро пожаловать в Premium Deluxe! - WorkNow');
+			expect(config.premiumDeluxeSubject).toBe(
+				'🎉 Добро пожаловать в Premium Deluxe! - WorkNow',
+			);
 			expect(config.proSubject).toBe('🚀 Добро пожаловать в Pro! - WorkNow');
 		});
 	});
@@ -571,7 +614,9 @@ describe('PremiumEmailService', () => {
 
 			expect(config).toHaveProperty('premiumDeluxeSubject');
 			expect(config).toHaveProperty('proSubject');
-			expect(config.premiumDeluxeSubject).toBe('🎉 Добро пожаловать в Premium Deluxe! - WorkNow');
+			expect(config.premiumDeluxeSubject).toBe(
+				'🎉 Добро пожаловать в Premium Deluxe! - WorkNow',
+			);
 			expect(config.proSubject).toBe('🚀 Добро пожаловать в Pro! - WorkNow');
 		});
 	});
@@ -658,7 +703,7 @@ describe('PremiumEmailService', () => {
 			expect(errors).toHaveProperty('networkError');
 			expect(errors).toHaveProperty('timeoutError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -673,7 +718,7 @@ describe('PremiumEmailService', () => {
 			expect(errorMessages).toHaveProperty('failedToSendPremiumDeluxe');
 			expect(errorMessages).toHaveProperty('failedToSendPro');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -687,7 +732,7 @@ describe('PremiumEmailService', () => {
 			expect(successMessages).toHaveProperty('premiumDeluxeGmailAttempt');
 			expect(successMessages).toHaveProperty('premiumDeluxeGmailSuccess');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -701,7 +746,7 @@ describe('PremiumEmailService', () => {
 			expect(consoleLogData).toHaveProperty('premiumDeluxeGmailAttempt');
 			expect(consoleLogData).toHaveProperty('premiumDeluxeGmailSuccess');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});

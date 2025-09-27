@@ -21,7 +21,13 @@ export const mockProcess = {
 };
 
 // Mock request and response objects
-export const mockRequest = (body = {}, params = {}, query = {}, headers = {}, rawBody = '') => ({
+export const mockRequest = (
+	body = {},
+	params = {},
+	query = {},
+	headers = {},
+	rawBody = '',
+) => ({
 	body,
 	params,
 	query,
@@ -193,7 +199,7 @@ export const mockWebhookServiceLogic = {
 		if (!event || !event.type) {
 			throw mockErrors.invalidEventType;
 		}
-		
+
 		if (event.type === 'user.created') {
 			return mockServiceResponses.userCreatedSuccess;
 		}
@@ -212,7 +218,7 @@ export const mockWebhookServiceLogic = {
 		if (event.type === 'error_event') {
 			throw mockErrors.processingError;
 		}
-		
+
 		// Default case
 		return mockServiceResponses.successfulProcessing;
 	},
@@ -238,7 +244,7 @@ export const mockSvixWebhookLogic = {
 		if (headers['svix-signature'] === 'invalid_signature') {
 			throw mockErrors.invalidSignature;
 		}
-		
+
 		// Return parsed event
 		try {
 			return JSON.parse(rawBody);
@@ -279,7 +285,13 @@ export const mockControllerLogic = {
 
 // Mock request/response logic
 export const mockRequestResponseLogic = {
-	buildRequest: (body = {}, params = {}, query = {}, headers = {}, rawBody = '') => ({
+	buildRequest: (
+		body = {},
+		params = {},
+		query = {},
+		headers = {},
+		rawBody = '',
+	) => ({
 		body,
 		params,
 		query,

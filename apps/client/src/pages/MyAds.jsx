@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { useIntlayer } from 'react-intlayer';
-import { Button } from '../components/ui/button';
+import { Button } from '@/components/ui';
 
 function MyAds() {
 	const content = useIntlayer('myAdsPage');
@@ -17,4 +17,3 @@ function MyAds() {
 }
 
 export default MyAds;
-

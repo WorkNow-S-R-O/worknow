@@ -64,7 +64,9 @@ const NewsletterFilters = ({
 						className="form-check-input"
 						type="checkbox"
 						id={`${prefix}-${item.id || item.value}`}
-						checked={checkedItems.includes(item.name || item.label || item.value)}
+						checked={checkedItems.includes(
+							item.name || item.label || item.value,
+						)}
 						onChange={(e) => onChange(item, e.target.checked)}
 						disabled={isSubscribing || isUnsubscribing}
 						style={{
@@ -174,7 +176,11 @@ const NewsletterFilters = ({
 		</div>
 	);
 
-	const renderFilterSection = (title, children, marginBottom = isMobile ? '20px' : '16px') => (
+	const renderFilterSection = (
+		title,
+		children,
+		marginBottom = isMobile ? '20px' : '16px',
+	) => (
 		<div style={{ marginBottom }}>
 			<label
 				style={{
@@ -194,12 +200,42 @@ const NewsletterFilters = ({
 		// Mobile layout - single column
 		return (
 			<>
-				{renderFilterSection(content.city.value, renderCheckboxGrid(cities, selectedCities, onCityChange, 'city'))}
-				{renderFilterSection(content.category.value, renderCheckboxGrid(categories, selectedCategories, onCategoryChange, 'cat'))}
-				{renderFilterSection(content.employment.value, renderCheckboxGrid(employmentOptions, selectedEmployment, onEmploymentChange, 'emp'))}
-				{renderFilterSection(content.documentType.value, renderCheckboxGrid(documentTypeOptions, selectedDocumentTypes, onDocumentTypeChange, 'doc'))}
+				{renderFilterSection(
+					content.city.value,
+					renderCheckboxGrid(cities, selectedCities, onCityChange, 'city'),
+				)}
+				{renderFilterSection(
+					content.category.value,
+					renderCheckboxGrid(
+						categories,
+						selectedCategories,
+						onCategoryChange,
+						'cat',
+					),
+				)}
+				{renderFilterSection(
+					content.employment.value,
+					renderCheckboxGrid(
+						employmentOptions,
+						selectedEmployment,
+						onEmploymentChange,
+						'emp',
+					),
+				)}
+				{renderFilterSection(
+					content.documentType.value,
+					renderCheckboxGrid(
+						documentTypeOptions,
+						selectedDocumentTypes,
+						onDocumentTypeChange,
+						'doc',
+					),
+				)}
 				{renderFilterSection(content.gender.value, renderGenderCheckboxes())}
-				{renderFilterSection(content.languages.value, renderLanguageCheckboxes())}
+				{renderFilterSection(
+					content.languages.value,
+					renderLanguageCheckboxes(),
+				)}
 				{renderFilterSection('', renderOnlyDemandedCheckbox())}
 			</>
 		);
@@ -216,16 +252,46 @@ const NewsletterFilters = ({
 		>
 			{/* Left Column */}
 			<div>
-				{renderFilterSection(content.city.value, renderCheckboxGrid(cities, selectedCities, onCityChange, 'city'))}
-				{renderFilterSection(content.category.value, renderCheckboxGrid(categories, selectedCategories, onCategoryChange, 'cat'))}
-				{renderFilterSection(content.employment.value, renderCheckboxGrid(employmentOptions, selectedEmployment, onEmploymentChange, 'emp'))}
-				{renderFilterSection(content.documentType.value, renderCheckboxGrid(documentTypeOptions, selectedDocumentTypes, onDocumentTypeChange, 'doc'))}
+				{renderFilterSection(
+					content.city.value,
+					renderCheckboxGrid(cities, selectedCities, onCityChange, 'city'),
+				)}
+				{renderFilterSection(
+					content.category.value,
+					renderCheckboxGrid(
+						categories,
+						selectedCategories,
+						onCategoryChange,
+						'cat',
+					),
+				)}
+				{renderFilterSection(
+					content.employment.value,
+					renderCheckboxGrid(
+						employmentOptions,
+						selectedEmployment,
+						onEmploymentChange,
+						'emp',
+					),
+				)}
+				{renderFilterSection(
+					content.documentType.value,
+					renderCheckboxGrid(
+						documentTypeOptions,
+						selectedDocumentTypes,
+						onDocumentTypeChange,
+						'doc',
+					),
+				)}
 			</div>
 
 			{/* Right Column */}
 			<div>
 				{renderFilterSection(content.gender.value, renderGenderCheckboxes())}
-				{renderFilterSection(content.languages.value, renderLanguageCheckboxes())}
+				{renderFilterSection(
+					content.languages.value,
+					renderLanguageCheckboxes(),
+				)}
 				{renderFilterSection('', renderOnlyDemandedCheckbox())}
 			</div>
 		</div>

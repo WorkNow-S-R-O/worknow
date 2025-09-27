@@ -15,7 +15,7 @@ export const mockJobData = {
 		zero: '0',
 		large: '999999',
 	},
-	
+
 	invalidJobIds: {
 		null: null,
 		undefined: undefined,
@@ -27,14 +27,15 @@ export const mockJobData = {
 		object: {},
 		array: [],
 	},
-	
+
 	jobWithImage: {
 		id: 123,
 		title: 'Software Developer Position',
 		salary: 6000,
 		cityId: 2,
 		phone: '+972-50-987-6543',
-		description: 'Looking for an experienced software developer with React skills',
+		description:
+			'Looking for an experienced software developer with React skills',
 		categoryId: 3,
 		shuttle: true,
 		meals: false,
@@ -58,7 +59,7 @@ export const mockJobData = {
 		createdAt: new Date('2024-01-01T10:00:00Z'),
 		updatedAt: new Date('2024-01-01T12:00:00Z'),
 	},
-	
+
 	jobWithoutImage: {
 		id: 456,
 		title: 'Marketing Manager Position',
@@ -89,7 +90,7 @@ export const mockJobData = {
 		createdAt: new Date('2024-01-02T09:00:00Z'),
 		updatedAt: new Date('2024-01-02T11:00:00Z'),
 	},
-	
+
 	jobWithEmptyImageUrl: {
 		id: 789,
 		title: 'Designer Position',
@@ -120,7 +121,7 @@ export const mockJobData = {
 		createdAt: new Date('2024-01-03T08:00:00Z'),
 		updatedAt: new Date('2024-01-03T10:00:00Z'),
 	},
-	
+
 	jobWithMinimalUserData: {
 		id: 999,
 		title: 'Test Job',
@@ -151,7 +152,7 @@ export const mockJobData = {
 		createdAt: new Date('2024-01-04T07:00:00Z'),
 		updatedAt: new Date('2024-01-04T09:00:00Z'),
 	},
-	
+
 	nullJob: null,
 };
 

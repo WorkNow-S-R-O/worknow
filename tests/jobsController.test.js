@@ -33,7 +33,7 @@ describe('JobsController', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		resetJobsControllerMocks();
-		
+
 		// Mock console methods
 		console.error = vi.fn();
 		console.log = vi.fn();
@@ -113,9 +113,9 @@ describe('JobsController', () => {
 				shuttle: 'true',
 				meals: 'false',
 			};
-			
+
 			const result = mockQueryProcessingLogic.processQueryParameters(query);
-			
+
 			expect(result).toEqual({
 				page: 2,
 				limit: 20,
@@ -129,9 +129,9 @@ describe('JobsController', () => {
 
 		it('should handle missing query parameters with defaults', () => {
 			const query = {};
-			
+
 			const result = mockQueryProcessingLogic.processQueryParameters(query);
-			
+
 			expect(result).toEqual({
 				page: 1,
 				limit: 10,
@@ -177,15 +177,19 @@ describe('JobsController', () => {
 				limit: '10',
 				salary: '100000',
 			};
-			
+
 			const invalidQuery = {
 				page: 'abc',
 				limit: 'def',
 				salary: 'ghi',
 			};
-			
-			expect(mockQueryProcessingLogic.validateQueryParameters(validQuery)).toBe(true);
-			expect(mockQueryProcessingLogic.validateQueryParameters(invalidQuery)).toBe(false);
+
+			expect(mockQueryProcessingLogic.validateQueryParameters(validQuery)).toBe(
+				true,
+			);
+			expect(
+				mockQueryProcessingLogic.validateQueryParameters(invalidQuery),
+			).toBe(false);
 		});
 
 		it('should build filters from query parameters', () => {
@@ -198,9 +202,9 @@ describe('JobsController', () => {
 				shuttle: 'true',
 				meals: 'false',
 			};
-			
+
 			const filters = mockQueryProcessingLogic.buildFilters(query);
-			
+
 			expect(filters).toEqual({
 				page: 2,
 				limit: 20,
@@ -215,9 +219,15 @@ describe('JobsController', () => {
 
 	describe('Translation Processing Logic', () => {
 		it('should process job translations correctly', () => {
-			const jobs = [mockJobData.jobWithTranslations, mockJobData.jobWithoutTranslations];
-			const processed = mockTranslationProcessingLogic.processJobTranslations(jobs, 'ru');
-			
+			const jobs = [
+				mockJobData.jobWithTranslations,
+				mockJobData.jobWithoutTranslations,
+			];
+			const processed = mockTranslationProcessingLogic.processJobTranslations(
+				jobs,
+				'ru',
+			);
+
 			expect(processed).toHaveLength(2);
 			expect(processed[0].category.label).toBe('Маркетинг');
 			expect(processed[1].category.label).toBe('Design');
@@ -225,69 +235,102 @@ describe('JobsController', () => {
 
 		it('should process job translations with English language', () => {
 			const jobs = [mockJobData.jobWithTranslations];
-			const processed = mockTranslationProcessingLogic.processJobTranslations(jobs, 'en');
-			
+			const processed = mockTranslationProcessingLogic.processJobTranslations(
+				jobs,
+				'en',
+			);
+
 			expect(processed).toHaveLength(1);
 			expect(processed[0].category.label).toBe('Marketing');
 		});
 
 		it('should process job translations with Hebrew language', () => {
 			const jobs = [mockJobData.jobWithTranslations];
-			const processed = mockTranslationProcessingLogic.processJobTranslations(jobs, 'he');
-			
+			const processed = mockTranslationProcessingLogic.processJobTranslations(
+				jobs,
+				'he',
+			);
+
 			expect(processed).toHaveLength(1);
 			expect(processed[0].category.label).toBe('שיווק');
 		});
 
 		it('should process job translations with Arabic language', () => {
 			const jobs = [mockJobData.jobWithTranslations];
-			const processed = mockTranslationProcessingLogic.processJobTranslations(jobs, 'ar');
-			
+			const processed = mockTranslationProcessingLogic.processJobTranslations(
+				jobs,
+				'ar',
+			);
+
 			expect(processed).toHaveLength(1);
 			expect(processed[0].category.label).toBe('تسويق');
 		});
 
 		it('should fallback to original name when translation is missing', () => {
 			const jobs = [mockJobData.jobWithoutTranslations];
-			const processed = mockTranslationProcessingLogic.processJobTranslations(jobs, 'ru');
-			
+			const processed = mockTranslationProcessingLogic.processJobTranslations(
+				jobs,
+				'ru',
+			);
+
 			expect(processed).toHaveLength(1);
 			expect(processed[0].category.label).toBe('Design');
 		});
 
 		it('should find translation by language', () => {
-			const translations = mockJobData.jobWithTranslations.category.translations;
-			
-			expect(mockTranslationProcessingLogic.findTranslation(translations, 'ru')).toEqual({
+			const translations =
+				mockJobData.jobWithTranslations.category.translations;
+
+			expect(
+				mockTranslationProcessingLogic.findTranslation(translations, 'ru'),
+			).toEqual({
 				lang: 'ru',
 				name: 'Маркетинг',
 			});
-			expect(mockTranslationProcessingLogic.findTranslation(translations, 'en')).toEqual({
+			expect(
+				mockTranslationProcessingLogic.findTranslation(translations, 'en'),
+			).toEqual({
 				lang: 'en',
 				name: 'Marketing',
 			});
-			expect(mockTranslationProcessingLogic.findTranslation(translations, 'fr')).toBeUndefined();
+			expect(
+				mockTranslationProcessingLogic.findTranslation(translations, 'fr'),
+			).toBeUndefined();
 		});
 
 		it('should get category label with translation', () => {
 			const category = mockJobData.jobWithTranslations.category;
-			
-			expect(mockTranslationProcessingLogic.getCategoryLabel(category, 'ru')).toBe('Маркетинг');
-			expect(mockTranslationProcessingLogic.getCategoryLabel(category, 'en')).toBe('Marketing');
-			expect(mockTranslationProcessingLogic.getCategoryLabel(category, 'fr')).toBe('Marketing');
+
+			expect(
+				mockTranslationProcessingLogic.getCategoryLabel(category, 'ru'),
+			).toBe('Маркетинг');
+			expect(
+				mockTranslationProcessingLogic.getCategoryLabel(category, 'en'),
+			).toBe('Marketing');
+			expect(
+				mockTranslationProcessingLogic.getCategoryLabel(category, 'fr'),
+			).toBe('Marketing');
 		});
 
 		it('should get category label without translation', () => {
 			const category = mockJobData.jobWithoutTranslations.category;
-			
-			expect(mockTranslationProcessingLogic.getCategoryLabel(category, 'ru')).toBe('Design');
-			expect(mockTranslationProcessingLogic.getCategoryLabel(category, 'en')).toBe('Design');
+
+			expect(
+				mockTranslationProcessingLogic.getCategoryLabel(category, 'ru'),
+			).toBe('Design');
+			expect(
+				mockTranslationProcessingLogic.getCategoryLabel(category, 'en'),
+			).toBe('Design');
 		});
 
 		it('should process category translation', () => {
 			const category = mockJobData.jobWithTranslations.category;
-			const processed = mockTranslationProcessingLogic.processCategoryTranslation(category, 'ru');
-			
+			const processed =
+				mockTranslationProcessingLogic.processCategoryTranslation(
+					category,
+					'ru',
+				);
+
 			expect(processed.label).toBe('Маркетинг');
 			expect(processed.id).toBe(category.id);
 			expect(processed.name).toBe(category.name);
@@ -311,22 +354,26 @@ describe('JobsController', () => {
 		it('should extract user from request', () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const userId = mockAuthenticationLogic.extractUserFromRequest(req);
-			
+
 			expect(userId).toBe('user123');
 		});
 
 		it('should validate authentication', () => {
 			const authenticatedReq = mockRequestResponseLogic.buildRequest();
 			const unauthenticatedReq = { user: {} };
-			
-			expect(mockAuthenticationLogic.validateAuthentication(authenticatedReq)).toBe(true);
-			expect(mockAuthenticationLogic.validateAuthentication(unauthenticatedReq)).toBe(false);
+
+			expect(
+				mockAuthenticationLogic.validateAuthentication(authenticatedReq),
+			).toBe(true);
+			expect(
+				mockAuthenticationLogic.validateAuthentication(unauthenticatedReq),
+			).toBe(false);
 		});
 
 		it('should build job data with user', () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const jobData = mockAuthenticationLogic.buildJobDataWithUser(req);
-			
+
 			expect(jobData.userId).toBe('user123');
 			expect(jobData.title).toBe('Software Engineer');
 		});
@@ -334,7 +381,7 @@ describe('JobsController', () => {
 		it('should build update data with user', () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const updateData = mockAuthenticationLogic.buildUpdateDataWithUser(req);
-			
+
 			expect(updateData.userId).toBe('user123');
 			expect(updateData.title).toBe('Software Engineer');
 		});
@@ -342,16 +389,21 @@ describe('JobsController', () => {
 		it('should handle unauthenticated request', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			mockAuthenticationLogic.handleUnauthenticatedRequest(res);
-			
+
 			expect(res.status).toHaveBeenCalledWith(401);
-			expect(res.json).toHaveBeenCalledWith({ error: 'Authentication required' });
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Authentication required',
+			});
 		});
 
 		it('should log user info', () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			mockAuthenticationLogic.logUserInfo(req, 'createJob');
-			
-			expect(console.log).toHaveBeenCalledWith('🔍 createJob controller - Authenticated user:', req.user);
+
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 createJob controller - Authenticated user:',
+				req.user,
+			);
 		});
 	});
 
@@ -364,9 +416,12 @@ describe('JobsController', () => {
 				totalItems: 1,
 				itemsPerPage: 10,
 			};
-			
-			const response = mockPaginationLogic.buildPaginationResponse(jobs, pagination);
-			
+
+			const response = mockPaginationLogic.buildPaginationResponse(
+				jobs,
+				pagination,
+			);
+
 			expect(response).toEqual({
 				jobs,
 				pagination,
@@ -380,8 +435,10 @@ describe('JobsController', () => {
 				totalItems: 1,
 				itemsPerPage: 10,
 			};
-			
-			expect(mockPaginationLogic.validatePagination(validPagination)).toBe(true);
+
+			expect(mockPaginationLogic.validatePagination(validPagination)).toBe(
+				true,
+			);
 			expect(mockPaginationLogic.validatePagination(null)).toBe(false);
 			expect(mockPaginationLogic.validatePagination(undefined)).toBe(false);
 		});
@@ -393,9 +450,9 @@ describe('JobsController', () => {
 				totalItems: 50,
 				itemsPerPage: 10,
 			};
-			
+
 			const processed = mockPaginationLogic.processPaginationData(pagination);
-			
+
 			expect(processed).toEqual({
 				currentPage: 2,
 				totalPages: 5,
@@ -406,9 +463,9 @@ describe('JobsController', () => {
 
 		it('should process pagination data with defaults', () => {
 			const pagination = {};
-			
+
 			const processed = mockPaginationLogic.processPaginationData(pagination);
-			
+
 			expect(processed).toEqual({
 				currentPage: 1,
 				totalPages: 1,
@@ -422,19 +479,33 @@ describe('JobsController', () => {
 		it('should process createJob request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.createJobService.mockResolvedValue(mockServiceResponses.successCreateJobResponse);
-			
+
+			mockJobsServices.createJobService.mockResolvedValue(
+				mockServiceResponses.successCreateJobResponse,
+			);
+
 			await mockControllerLogic.processCreateJobRequest(req, res);
-			
+
 			expect(mockJobsServices.createJobService).toHaveBeenCalledWith({
 				...req.body,
 				userId: 'user123',
 			});
-			expect(console.log).toHaveBeenCalledWith('🔍 createJob controller - Request body:', req.body);
-			expect(console.log).toHaveBeenCalledWith('🔍 createJob controller - imageUrl in request:', req.body.imageUrl);
-			expect(console.log).toHaveBeenCalledWith('🔍 createJob controller - Authenticated user:', req.user);
-			expect(console.log).toHaveBeenCalledWith('🔍 createJob controller - Job created:', mockJobData.validJob);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 createJob controller - Request body:',
+				req.body,
+			);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 createJob controller - imageUrl in request:',
+				req.body.imageUrl,
+			);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 createJob controller - Authenticated user:',
+				req.user,
+			);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 createJob controller - Job created:',
+				mockJobData.validJob,
+			);
 			expect(res.status).toHaveBeenCalledWith(201);
 			expect(res.json).toHaveBeenCalledWith(mockJobData.validJob);
 		});
@@ -442,30 +513,34 @@ describe('JobsController', () => {
 		it('should process createJob request with validation errors', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.createJobService.mockResolvedValue(mockServiceResponses.errorCreateJobWithErrorsResponse);
-			
+
+			mockJobsServices.createJobService.mockResolvedValue(
+				mockServiceResponses.errorCreateJobWithErrorsResponse,
+			);
+
 			await mockControllerLogic.processCreateJobRequest(req, res);
-			
+
 			expect(mockJobsServices.createJobService).toHaveBeenCalledWith({
 				...req.body,
 				userId: 'user123',
 			});
 			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.json).toHaveBeenCalledWith({ 
-				success: false, 
-				errors: ['Title is required', 'Description is required'] 
+			expect(res.json).toHaveBeenCalledWith({
+				success: false,
+				errors: ['Title is required', 'Description is required'],
 			});
 		});
 
 		it('should process createJob request with single error', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.createJobService.mockResolvedValue(mockServiceResponses.errorCreateJobResponse);
-			
+
+			mockJobsServices.createJobService.mockResolvedValue(
+				mockServiceResponses.errorCreateJobResponse,
+			);
+
 			await mockControllerLogic.processCreateJobRequest(req, res);
-			
+
 			expect(mockJobsServices.createJobService).toHaveBeenCalledWith({
 				...req.body,
 				userId: 'user123',
@@ -477,19 +552,33 @@ describe('JobsController', () => {
 		it('should process updateJob request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.updateJobService.mockResolvedValue(mockServiceResponses.successUpdateJobResponse);
-			
+
+			mockJobsServices.updateJobService.mockResolvedValue(
+				mockServiceResponses.successUpdateJobResponse,
+			);
+
 			await mockControllerLogic.processUpdateJobRequest(req, res);
-			
+
 			expect(mockJobsServices.updateJobService).toHaveBeenCalledWith('1', {
 				...req.body,
 				userId: 'user123',
 			});
-			expect(console.log).toHaveBeenCalledWith('🔍 updateJob controller - Request body:', req.body);
-			expect(console.log).toHaveBeenCalledWith('🔍 updateJob controller - imageUrl in request:', req.body.imageUrl);
-			expect(console.log).toHaveBeenCalledWith('🔍 updateJob controller - Authenticated user:', req.user);
-			expect(console.log).toHaveBeenCalledWith('🔍 updateJob controller - Job updated:', mockJobData.updatedJob);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 updateJob controller - Request body:',
+				req.body,
+			);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 updateJob controller - imageUrl in request:',
+				req.body.imageUrl,
+			);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 updateJob controller - Authenticated user:',
+				req.user,
+			);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 updateJob controller - Job updated:',
+				mockJobData.updatedJob,
+			);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(mockJobData.updatedJob);
 		});
@@ -497,11 +586,13 @@ describe('JobsController', () => {
 		it('should process updateJob request with error', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.updateJobService.mockResolvedValue(mockServiceResponses.errorUpdateJobResponse);
-			
+
+			mockJobsServices.updateJobService.mockResolvedValue(
+				mockServiceResponses.errorUpdateJobResponse,
+			);
+
 			await mockControllerLogic.processUpdateJobRequest(req, res);
-			
+
 			expect(mockJobsServices.updateJobService).toHaveBeenCalledWith('1', {
 				...req.body,
 				userId: 'user123',
@@ -513,32 +604,42 @@ describe('JobsController', () => {
 		it('should process updateJob request with validation errors', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.updateJobService.mockResolvedValue(mockServiceResponses.errorUpdateJobWithErrorsResponse);
-			
+
+			mockJobsServices.updateJobService.mockResolvedValue(
+				mockServiceResponses.errorUpdateJobWithErrorsResponse,
+			);
+
 			await mockControllerLogic.processUpdateJobRequest(req, res);
-			
+
 			expect(mockJobsServices.updateJobService).toHaveBeenCalledWith('1', {
 				...req.body,
 				userId: 'user123',
 			});
 			expect(res.status).toHaveBeenCalledWith(400);
-			expect(res.json).toHaveBeenCalledWith({ 
-				success: false, 
-				errors: ['Title is required', 'Salary must be a number'] 
+			expect(res.json).toHaveBeenCalledWith({
+				success: false,
+				errors: ['Title is required', 'Salary must be a number'],
 			});
 		});
 
 		it('should process deleteJob request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.deleteJobService.mockResolvedValue(mockServiceResponses.successDeleteJobResponse);
-			
+
+			mockJobsServices.deleteJobService.mockResolvedValue(
+				mockServiceResponses.successDeleteJobResponse,
+			);
+
 			await mockControllerLogic.processDeleteJobRequest(req, res);
-			
-			expect(mockJobsServices.deleteJobService).toHaveBeenCalledWith('1', 'user123');
-			expect(console.log).toHaveBeenCalledWith('🔍 deleteJob controller - Authenticated user:', req.user);
+
+			expect(mockJobsServices.deleteJobService).toHaveBeenCalledWith(
+				'1',
+				'user123',
+			);
+			expect(console.log).toHaveBeenCalledWith(
+				'🔍 deleteJob controller - Authenticated user:',
+				req.user,
+			);
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith({ message: 'Объявление удалено' });
 		});
@@ -546,12 +647,17 @@ describe('JobsController', () => {
 		it('should process deleteJob request with error', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.deleteJobService.mockResolvedValue(mockServiceResponses.errorDeleteJobResponse);
-			
+
+			mockJobsServices.deleteJobService.mockResolvedValue(
+				mockServiceResponses.errorDeleteJobResponse,
+			);
+
 			await mockControllerLogic.processDeleteJobRequest(req, res);
-			
-			expect(mockJobsServices.deleteJobService).toHaveBeenCalledWith('1', 'user123');
+
+			expect(mockJobsServices.deleteJobService).toHaveBeenCalledWith(
+				'1',
+				'user123',
+			);
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({ error: 'Failed to delete job' });
 		});
@@ -559,11 +665,13 @@ describe('JobsController', () => {
 		it('should process getJobs request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.getJobsService.mockResolvedValue(mockServiceResponses.successGetJobsResponse);
-			
+
+			mockJobsServices.getJobsService.mockResolvedValue(
+				mockServiceResponses.successGetJobsResponse,
+			);
+
 			await mockControllerLogic.processGetJobsRequest(req, res);
-			
+
 			expect(mockJobsServices.getJobsService).toHaveBeenCalledWith({
 				page: 1,
 				limit: 10,
@@ -583,11 +691,13 @@ describe('JobsController', () => {
 		it('should process getJobs request with error', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.getJobsService.mockResolvedValue(mockServiceResponses.errorGetJobsResponse);
-			
+
+			mockJobsServices.getJobsService.mockResolvedValue(
+				mockServiceResponses.errorGetJobsResponse,
+			);
+
 			await mockControllerLogic.processGetJobsRequest(req, res);
-			
+
 			expect(mockJobsServices.getJobsService).toHaveBeenCalledWith({
 				page: 1,
 				limit: 10,
@@ -604,11 +714,13 @@ describe('JobsController', () => {
 		it('should process boostJob request successfully', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.boostJobService.mockResolvedValue(mockServiceResponses.successBoostJobResponse);
-			
+
+			mockJobsServices.boostJobService.mockResolvedValue(
+				mockServiceResponses.successBoostJobResponse,
+			);
+
 			await mockControllerLogic.processBoostJobRequest(req, res);
-			
+
 			expect(mockJobsServices.boostJobService).toHaveBeenCalledWith('1');
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(mockJobData.boostedJob);
@@ -617,11 +729,13 @@ describe('JobsController', () => {
 		it('should process boostJob request with error', async () => {
 			const req = mockRequestResponseLogic.buildRequest();
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockJobsServices.boostJobService.mockResolvedValue(mockServiceResponses.errorBoostJobResponse);
-			
+
+			mockJobsServices.boostJobService.mockResolvedValue(
+				mockServiceResponses.errorBoostJobResponse,
+			);
+
 			await mockControllerLogic.processBoostJobRequest(req, res);
-			
+
 			expect(mockJobsServices.boostJobService).toHaveBeenCalledWith('1');
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({ error: 'Failed to boost job' });
@@ -630,23 +744,30 @@ describe('JobsController', () => {
 		it('should handle controller errors', () => {
 			const error = mockErrors.databaseError;
 			const res = mockRequestResponseLogic.buildResponse();
-			
-			mockControllerLogic.handleControllerError(error, res, 'создания объявления');
-			
-			expect(console.error).toHaveBeenCalledWith('Ошибка создания объявления:', 'Database connection failed');
+
+			mockControllerLogic.handleControllerError(
+				error,
+				res,
+				'создания объявления',
+			);
+
+			expect(console.error).toHaveBeenCalledWith(
+				'Ошибка создания объявления:',
+				'Database connection failed',
+			);
 			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.json).toHaveBeenCalledWith({ 
-				error: 'Ошибка создания объявления', 
-				details: 'Database connection failed' 
+			expect(res.json).toHaveBeenCalledWith({
+				error: 'Ошибка создания объявления',
+				details: 'Database connection failed',
 			});
 		});
 
 		it('should handle controller success', () => {
 			const data = mockJobData.validJob;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.handleControllerSuccess(data, res);
-			
+
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
@@ -654,72 +775,109 @@ describe('JobsController', () => {
 		it('should handle controller success with custom status code', () => {
 			const data = mockServiceResponses.successCreateJobResponse;
 			const res = mockRequestResponseLogic.buildResponse();
-			
+
 			mockControllerLogic.handleControllerSuccess(data, res, 201);
-			
+
 			expect(res.status).toHaveBeenCalledWith(201);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
 
 		it('should validate controller input', () => {
-			const validRequest = { body: { title: 'Test Job' }, params: {}, query: {} };
+			const validRequest = {
+				body: { title: 'Test Job' },
+				params: {},
+				query: {},
+			};
 			const invalidRequest = { body: {} };
-			
-			expect(mockControllerLogic.validateControllerInput(validRequest)).toBe(true);
-			expect(mockControllerLogic.validateControllerInput(invalidRequest)).toBe(false);
+
+			expect(mockControllerLogic.validateControllerInput(validRequest)).toBe(
+				true,
+			);
+			expect(mockControllerLogic.validateControllerInput(invalidRequest)).toBe(
+				false,
+			);
 		});
 	});
 
 	describe('Service Integration Logic', () => {
 		it('should call createJob service with job data', async () => {
-			mockJobsServices.createJobService.mockResolvedValue(mockServiceResponses.successCreateJobResponse);
-			
-			const result = await mockServiceIntegrationLogic.callCreateJobService(mockJobCreationData.validJobData);
-			
-			expect(mockJobsServices.createJobService).toHaveBeenCalledWith(mockJobCreationData.validJobData);
+			mockJobsServices.createJobService.mockResolvedValue(
+				mockServiceResponses.successCreateJobResponse,
+			);
+
+			const result = await mockServiceIntegrationLogic.callCreateJobService(
+				mockJobCreationData.validJobData,
+			);
+
+			expect(mockJobsServices.createJobService).toHaveBeenCalledWith(
+				mockJobCreationData.validJobData,
+			);
 			expect(result).toEqual(mockServiceResponses.successCreateJobResponse);
 		});
 
 		it('should call updateJob service with ID and update data', async () => {
-			mockJobsServices.updateJobService.mockResolvedValue(mockServiceResponses.successUpdateJobResponse);
-			
-			const result = await mockServiceIntegrationLogic.callUpdateJobService('1', mockJobCreationData.validJobData);
-			
-			expect(mockJobsServices.updateJobService).toHaveBeenCalledWith('1', mockJobCreationData.validJobData);
+			mockJobsServices.updateJobService.mockResolvedValue(
+				mockServiceResponses.successUpdateJobResponse,
+			);
+
+			const result = await mockServiceIntegrationLogic.callUpdateJobService(
+				'1',
+				mockJobCreationData.validJobData,
+			);
+
+			expect(mockJobsServices.updateJobService).toHaveBeenCalledWith(
+				'1',
+				mockJobCreationData.validJobData,
+			);
 			expect(result).toEqual(mockServiceResponses.successUpdateJobResponse);
 		});
 
 		it('should call deleteJob service with ID and user ID', async () => {
-			mockJobsServices.deleteJobService.mockResolvedValue(mockServiceResponses.successDeleteJobResponse);
-			
-			const result = await mockServiceIntegrationLogic.callDeleteJobService('1', 'user123');
-			
-			expect(mockJobsServices.deleteJobService).toHaveBeenCalledWith('1', 'user123');
+			mockJobsServices.deleteJobService.mockResolvedValue(
+				mockServiceResponses.successDeleteJobResponse,
+			);
+
+			const result = await mockServiceIntegrationLogic.callDeleteJobService(
+				'1',
+				'user123',
+			);
+
+			expect(mockJobsServices.deleteJobService).toHaveBeenCalledWith(
+				'1',
+				'user123',
+			);
 			expect(result).toEqual(mockServiceResponses.successDeleteJobResponse);
 		});
 
 		it('should call getJobs service with filters', async () => {
-			mockJobsServices.getJobsService.mockResolvedValue(mockServiceResponses.successGetJobsResponse);
-			
+			mockJobsServices.getJobsService.mockResolvedValue(
+				mockServiceResponses.successGetJobsResponse,
+			);
+
 			const filters = { page: 1, limit: 10, category: '1' };
-			const result = await mockServiceIntegrationLogic.callGetJobsService(filters);
-			
+			const result =
+				await mockServiceIntegrationLogic.callGetJobsService(filters);
+
 			expect(mockJobsServices.getJobsService).toHaveBeenCalledWith(filters);
 			expect(result).toEqual(mockServiceResponses.successGetJobsResponse);
 		});
 
 		it('should call boostJob service with ID', async () => {
-			mockJobsServices.boostJobService.mockResolvedValue(mockServiceResponses.successBoostJobResponse);
-			
+			mockJobsServices.boostJobService.mockResolvedValue(
+				mockServiceResponses.successBoostJobResponse,
+			);
+
 			const result = await mockServiceIntegrationLogic.callBoostJobService('1');
-			
+
 			expect(mockJobsServices.boostJobService).toHaveBeenCalledWith('1');
 			expect(result).toEqual(mockServiceResponses.successBoostJobResponse);
 		});
 
 		it('should handle service response with success', () => {
-			const result = mockServiceIntegrationLogic.handleServiceResponse(mockServiceResponses.successCreateJobResponse);
-			
+			const result = mockServiceIntegrationLogic.handleServiceResponse(
+				mockServiceResponses.successCreateJobResponse,
+			);
+
 			expect(result).toEqual({
 				success: true,
 				data: mockJobData.validJob,
@@ -727,8 +885,10 @@ describe('JobsController', () => {
 		});
 
 		it('should handle service response with error', () => {
-			const result = mockServiceIntegrationLogic.handleServiceResponse(mockServiceResponses.errorCreateJobResponse);
-			
+			const result = mockServiceIntegrationLogic.handleServiceResponse(
+				mockServiceResponses.errorCreateJobResponse,
+			);
+
 			expect(result).toEqual({
 				success: false,
 				error: 'Failed to create job',
@@ -736,8 +896,10 @@ describe('JobsController', () => {
 		});
 
 		it('should handle service response with errors array', () => {
-			const result = mockServiceIntegrationLogic.handleServiceResponse(mockServiceResponses.errorCreateJobWithErrorsResponse);
-			
+			const result = mockServiceIntegrationLogic.handleServiceResponse(
+				mockServiceResponses.errorCreateJobWithErrorsResponse,
+			);
+
 			expect(result).toEqual({
 				success: false,
 				errors: ['Title is required', 'Description is required'],
@@ -747,7 +909,7 @@ describe('JobsController', () => {
 		it('should handle service errors', () => {
 			const error = mockErrors.databaseError;
 			const result = mockServiceIntegrationLogic.handleServiceError(error);
-			
+
 			expect(result).toEqual({
 				success: false,
 				error: error.message,
@@ -755,13 +917,23 @@ describe('JobsController', () => {
 		});
 
 		it('should validate service result', () => {
-			expect(mockServiceIntegrationLogic.validateServiceResult(mockServiceResponses.successCreateJobResponse)).toBe(true);
-			expect(mockServiceIntegrationLogic.validateServiceResult(null)).toBe(false);
-			expect(mockServiceIntegrationLogic.validateServiceResult('string')).toBe(true);
+			expect(
+				mockServiceIntegrationLogic.validateServiceResult(
+					mockServiceResponses.successCreateJobResponse,
+				),
+			).toBe(true);
+			expect(mockServiceIntegrationLogic.validateServiceResult(null)).toBe(
+				false,
+			);
+			expect(mockServiceIntegrationLogic.validateServiceResult('string')).toBe(
+				true,
+			);
 		});
 
 		it('should process service result', () => {
-			const result = mockServiceIntegrationLogic.processServiceResult(mockServiceResponses.successCreateJobResponse);
+			const result = mockServiceIntegrationLogic.processServiceResult(
+				mockServiceResponses.successCreateJobResponse,
+			);
 			expect(result).toEqual(mockServiceResponses.successCreateJobResponse);
 		});
 	});
@@ -769,7 +941,7 @@ describe('JobsController', () => {
 	describe('Request/Response Logic', () => {
 		it('should build request with default parameters', () => {
 			const request = mockRequestResponseLogic.buildRequest();
-			
+
 			expect(request.body.title).toBe('Software Engineer');
 			expect(request.params.id).toBe('1');
 			expect(request.query.lang).toBe('ru');
@@ -781,9 +953,9 @@ describe('JobsController', () => {
 				{ title: 'Custom Job' },
 				{ id: '123' },
 				{ lang: 'en' },
-				{ clerkUserId: 'customUser' }
+				{ clerkUserId: 'customUser' },
 			);
-			
+
 			expect(request.body.title).toBe('Custom Job');
 			expect(request.params.id).toBe('123');
 			expect(request.query.lang).toBe('en');
@@ -792,7 +964,7 @@ describe('JobsController', () => {
 
 		it('should build response object', () => {
 			const response = mockRequestResponseLogic.buildResponse();
-			
+
 			expect(response).toHaveProperty('json');
 			expect(response).toHaveProperty('status');
 			expect(typeof response.json).toBe('function');
@@ -802,9 +974,9 @@ describe('JobsController', () => {
 		it('should handle success response with default status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const data = mockJobData.validJob;
-			
+
 			mockRequestResponseLogic.handleSuccessResponse(res, data);
-			
+
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
@@ -812,9 +984,9 @@ describe('JobsController', () => {
 		it('should handle success response with custom status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const data = mockServiceResponses.successCreateJobResponse;
-			
+
 			mockRequestResponseLogic.handleSuccessResponse(res, data, 201);
-			
+
 			expect(res.status).toHaveBeenCalledWith(201);
 			expect(res.json).toHaveBeenCalledWith(data);
 		});
@@ -822,9 +994,9 @@ describe('JobsController', () => {
 		it('should handle error response with default status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const error = mockErrors.databaseError;
-			
+
 			mockRequestResponseLogic.handleErrorResponse(res, error);
-			
+
 			expect(res.status).toHaveBeenCalledWith(500);
 			expect(res.json).toHaveBeenCalledWith({ error: error.message });
 		});
@@ -832,9 +1004,9 @@ describe('JobsController', () => {
 		it('should handle error response with custom status code', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const error = mockErrors.permissionError;
-			
+
 			mockRequestResponseLogic.handleErrorResponse(res, error, 403);
-			
+
 			expect(res.status).toHaveBeenCalledWith(403);
 			expect(res.json).toHaveBeenCalledWith({ error: error.message });
 		});
@@ -842,9 +1014,9 @@ describe('JobsController', () => {
 		it('should handle validation error', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const errors = ['Title is required', 'Description is required'];
-			
+
 			mockRequestResponseLogic.handleValidationError(res, errors);
-			
+
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({ success: false, errors });
 		});
@@ -852,51 +1024,73 @@ describe('JobsController', () => {
 		it('should handle single error', () => {
 			const res = mockRequestResponseLogic.buildResponse();
 			const error = 'Validation failed';
-			
+
 			mockRequestResponseLogic.handleSingleError(res, error);
-			
+
 			expect(res.status).toHaveBeenCalledWith(400);
 			expect(res.json).toHaveBeenCalledWith({ error });
 		});
 
 		it('should validate request object', () => {
-			const validRequest = { body: { title: 'Test Job' }, params: {}, query: {} };
+			const validRequest = {
+				body: { title: 'Test Job' },
+				params: {},
+				query: {},
+			};
 			const invalidRequest = { body: {} };
-			
+
 			expect(mockRequestResponseLogic.validateRequest(validRequest)).toBe(true);
-			expect(mockRequestResponseLogic.validateRequest(invalidRequest)).toBe(false);
+			expect(mockRequestResponseLogic.validateRequest(invalidRequest)).toBe(
+				false,
+			);
 		});
 
 		it('should extract job data from request', () => {
 			const requestWithBody = { body: mockJobCreationData.validJobData };
 			const requestWithoutBody = { body: {} };
-			
-			expect(mockRequestResponseLogic.extractJobData(requestWithBody)).toEqual(mockJobCreationData.validJobData);
-			expect(mockRequestResponseLogic.extractJobData(requestWithoutBody)).toEqual({});
+
+			expect(mockRequestResponseLogic.extractJobData(requestWithBody)).toEqual(
+				mockJobCreationData.validJobData,
+			);
+			expect(
+				mockRequestResponseLogic.extractJobData(requestWithoutBody),
+			).toEqual({});
 		});
 
 		it('should extract update data from request', () => {
 			const requestWithBody = { body: mockJobCreationData.validJobData };
 			const requestWithoutBody = { body: {} };
-			
-			expect(mockRequestResponseLogic.extractUpdateData(requestWithBody)).toEqual(mockJobCreationData.validJobData);
-			expect(mockRequestResponseLogic.extractUpdateData(requestWithoutBody)).toEqual({});
+
+			expect(
+				mockRequestResponseLogic.extractUpdateData(requestWithBody),
+			).toEqual(mockJobCreationData.validJobData);
+			expect(
+				mockRequestResponseLogic.extractUpdateData(requestWithoutBody),
+			).toEqual({});
 		});
 
 		it('should extract query parameters from request', () => {
 			const requestWithQuery = { query: { page: '1', limit: '10' } };
 			const requestWithoutQuery = { query: {} };
-			
-			expect(mockRequestResponseLogic.extractQueryParameters(requestWithQuery)).toEqual({ page: '1', limit: '10' });
-			expect(mockRequestResponseLogic.extractQueryParameters(requestWithoutQuery)).toEqual({});
+
+			expect(
+				mockRequestResponseLogic.extractQueryParameters(requestWithQuery),
+			).toEqual({ page: '1', limit: '10' });
+			expect(
+				mockRequestResponseLogic.extractQueryParameters(requestWithoutQuery),
+			).toEqual({});
 		});
 
 		it('should extract user ID from request', () => {
 			const requestWithUser = { user: { clerkUserId: 'user123' } };
 			const requestWithoutUser = { user: {} };
-			
-			expect(mockRequestResponseLogic.extractUserId(requestWithUser)).toBe('user123');
-			expect(mockRequestResponseLogic.extractUserId(requestWithoutUser)).toBe(undefined);
+
+			expect(mockRequestResponseLogic.extractUserId(requestWithUser)).toBe(
+				'user123',
+			);
+			expect(mockRequestResponseLogic.extractUserId(requestWithoutUser)).toBe(
+				undefined,
+			);
 		});
 	});
 
@@ -943,7 +1137,10 @@ describe('JobsController', () => {
 			const response = mockServiceResponses.errorCreateJobWithErrorsResponse;
 			expect(response).toHaveProperty('errors');
 			expect(Array.isArray(response.errors)).toBe(true);
-			expect(response.errors).toEqual(['Title is required', 'Description is required']);
+			expect(response.errors).toEqual([
+				'Title is required',
+				'Description is required',
+			]);
 		});
 
 		it('should return error update job response', () => {
@@ -1171,7 +1368,7 @@ describe('JobsController', () => {
 			expect(errors).toHaveProperty('authenticationError');
 			expect(errors).toHaveProperty('authorizationError');
 
-			Object.values(errors).forEach(error => {
+			Object.values(errors).forEach((error) => {
 				expect(error).toBeInstanceOf(Error);
 				expect(error.message).toBeDefined();
 				expect(typeof error.message).toBe('string');
@@ -1188,7 +1385,7 @@ describe('JobsController', () => {
 			expect(errorMessages).toHaveProperty('authenticationError');
 			expect(errorMessages).toHaveProperty('authorizationError');
 
-			Object.values(errorMessages).forEach(message => {
+			Object.values(errorMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -1204,7 +1401,7 @@ describe('JobsController', () => {
 			expect(successMessages).toHaveProperty('operationCompleted');
 			expect(successMessages).toHaveProperty('responseSent');
 
-			Object.values(successMessages).forEach(message => {
+			Object.values(successMessages).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -1222,7 +1419,7 @@ describe('JobsController', () => {
 			expect(consoleLogData).toHaveProperty('updateJobUpdated');
 			expect(consoleLogData).toHaveProperty('deleteJobUser');
 
-			Object.values(consoleLogData).forEach(message => {
+			Object.values(consoleLogData).forEach((message) => {
 				expect(typeof message).toBe('string');
 				expect(message.length).toBeGreaterThan(0);
 			});
@@ -1269,7 +1466,9 @@ describe('JobsController', () => {
 			expect(typeof translationLogic.processJobTranslations).toBe('function');
 			expect(typeof translationLogic.findTranslation).toBe('function');
 			expect(typeof translationLogic.getCategoryLabel).toBe('function');
-			expect(typeof translationLogic.processCategoryTranslation).toBe('function');
+			expect(typeof translationLogic.processCategoryTranslation).toBe(
+				'function',
+			);
 			expect(typeof translationLogic.validateLanguage).toBe('function');
 			expect(typeof translationLogic.getDefaultLanguage).toBe('function');
 		});
@@ -1362,14 +1561,20 @@ describe('JobsController', () => {
 
 			expect(typeof requestResponseLogic.buildRequest).toBe('function');
 			expect(typeof requestResponseLogic.buildResponse).toBe('function');
-			expect(typeof requestResponseLogic.handleSuccessResponse).toBe('function');
+			expect(typeof requestResponseLogic.handleSuccessResponse).toBe(
+				'function',
+			);
 			expect(typeof requestResponseLogic.handleErrorResponse).toBe('function');
-			expect(typeof requestResponseLogic.handleValidationError).toBe('function');
+			expect(typeof requestResponseLogic.handleValidationError).toBe(
+				'function',
+			);
 			expect(typeof requestResponseLogic.handleSingleError).toBe('function');
 			expect(typeof requestResponseLogic.validateRequest).toBe('function');
 			expect(typeof requestResponseLogic.extractJobData).toBe('function');
 			expect(typeof requestResponseLogic.extractUpdateData).toBe('function');
-			expect(typeof requestResponseLogic.extractQueryParameters).toBe('function');
+			expect(typeof requestResponseLogic.extractQueryParameters).toBe(
+				'function',
+			);
 			expect(typeof requestResponseLogic.extractUserId).toBe('function');
 		});
 	});

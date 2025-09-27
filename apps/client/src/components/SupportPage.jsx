@@ -269,7 +269,9 @@ const SupportPage = () => {
 						{features.map((feature, index) => (
 							<div key={index} className="text-center">
 								<div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-primary bg-opacity-10 mb-4">
-									<i className={`bi bi-${feature.icon} text-primary text-2xl`}></i>
+									<i
+										className={`bi bi-${feature.icon} text-primary text-2xl`}
+									></i>
 								</div>
 								<h3 className="text-xl font-semibold text-gray-900 mb-2">
 									{feature.title}
@@ -318,7 +320,9 @@ const SupportPage = () => {
 						<p className="text-white text-opacity-80 mb-4">
 							{content.support_hours_weekdays}
 						</p>
-						<p className="text-white text-opacity-80">{content.support_hours_weekend}</p>
+						<p className="text-white text-opacity-80">
+							{content.support_hours_weekend}
+						</p>
 					</div>
 				</div>
 			</div>
@@ -365,7 +369,9 @@ const SupportPage = () => {
 							<div
 								className={`mx-auto flex items-center justify-center h-20 w-20 rounded-full ${selectedMethod.color} mb-6`}
 							>
-								<i className={`bi bi-${selectedMethod.icon} text-white text-3xl`}></i>
+								<i
+									className={`bi bi-${selectedMethod.icon} text-white text-3xl`}
+								></i>
 							</div>
 
 							<h3 className="text-2xl font-semibold text-gray-900 mb-4">

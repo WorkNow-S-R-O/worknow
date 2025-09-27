@@ -7,8 +7,12 @@ export const mockJobServices = {
 };
 
 // Mock console methods
-export const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
-export const mockConsoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+export const mockConsoleLog = vi
+	.spyOn(console, 'log')
+	.mockImplementation(() => {});
+export const mockConsoleError = vi
+	.spyOn(console, 'error')
+	.mockImplementation(() => {});
 
 // Mock request and response objects
 export const mockRequest = {
@@ -46,7 +50,7 @@ export const mockJobData = {
 		city: { id: 1, name: 'Tel Aviv' },
 		category: { id: 2, name: 'IT' },
 	},
-	
+
 	anotherValidJob: {
 		id: 2,
 		title: 'Marketing Manager',
@@ -60,7 +64,7 @@ export const mockJobData = {
 		city: { id: 3, name: 'Jerusalem' },
 		category: { id: 4, name: 'Marketing' },
 	},
-	
+
 	jobWithNullRelations: {
 		id: 3,
 		title: 'Designer',
@@ -74,7 +78,7 @@ export const mockJobData = {
 		city: null,
 		category: null,
 	},
-	
+
 	jobWithMissingFields: {
 		id: 4,
 		title: 'Incomplete Job',
@@ -83,7 +87,7 @@ export const mockJobData = {
 		city: null,
 		category: null,
 	},
-	
+
 	emptyJob: {},
 };
 
@@ -98,7 +102,7 @@ export const mockJobCreationData = {
 		userId: 'user123',
 		phone: '123-456-7890',
 	},
-	
+
 	jobDataWithStringNumbers: {
 		title: 'Marketing Manager',
 		description: 'Manage marketing campaigns.',
@@ -108,7 +112,7 @@ export const mockJobCreationData = {
 		userId: 'user456',
 		phone: '098-765-4321',
 	},
-	
+
 	jobDataWithNumericValues: {
 		title: 'Designer',
 		description: 'Create visual concepts.',
@@ -118,7 +122,7 @@ export const mockJobCreationData = {
 		userId: 'user789',
 		phone: '111-222-3333',
 	},
-	
+
 	invalidJobData: {
 		title: 'Invalid Job',
 		description: 'This is an invalid job description.',
@@ -128,7 +132,7 @@ export const mockJobCreationData = {
 		userId: 'user101',
 		phone: '444-555-6666',
 	},
-	
+
 	jobDataMissingFields: {
 		title: 'Missing Fields Job',
 		description: 'This job is missing some fields.',
@@ -137,7 +141,7 @@ export const mockJobCreationData = {
 		categoryId: '8',
 		// userId and phone are missing
 	},
-	
+
 	jobDataWithUpgradeRequired: {
 		title: 'Premium Job',
 		description: 'This job requires premium upgrade.',
@@ -154,7 +158,7 @@ export const mockServiceResponses = {
 	successJobByIdResponse: {
 		job: mockJobData.validJob,
 	},
-	
+
 	successCreateJobResponse: {
 		id: 1,
 		title: 'Software Developer',
@@ -168,24 +172,24 @@ export const mockServiceResponses = {
 		city: { id: 1, name: 'Tel Aviv' },
 		category: { id: 2, name: 'IT' },
 	},
-	
+
 	errorJobNotFoundResponse: {
 		error: 'Объявление не найдено.',
 	},
-	
+
 	errorCreateJobResponse: {
 		error: 'Failed to create job',
 	},
-	
+
 	errorUpgradeRequiredResponse: {
 		error: 'Вы уже разместили максимальное количество объявлений.',
 		upgradeRequired: true,
 	},
-	
+
 	errorValidationResponse: {
 		error: 'Validation failed',
 	},
-	
+
 	errorServerResponse: {
 		error: 'Server error occurred',
 	},
@@ -223,7 +227,8 @@ export const mockErrorMessages = {
 	jobCreationErrorRussian: 'Ошибка создания объявления',
 	jobRetrievalErrorRussian: 'Ошибка получения объявления',
 	invalidIdRussian: 'ID вакансии обязателен и должен быть числом',
-	upgradeRequiredRussian: 'Для размещения большего количества объявлений перейдите на Premium тариф',
+	upgradeRequiredRussian:
+		'Для размещения большего количества объявлений перейдите на Premium тариф',
 };
 
 // Mock success messages
@@ -255,7 +260,7 @@ export const mockDataConversions = {
 		phone: '123-456-7890',
 		errorMessage: 'Ошибка получения объявления',
 	},
-	
+
 	number: {
 		id: 1,
 		salary: 120000,
@@ -264,7 +269,7 @@ export const mockDataConversions = {
 		statusCode: 200,
 		errorStatusCode: 500,
 	},
-	
+
 	boolean: {
 		isValid: true,
 		isEmpty: false,
@@ -272,7 +277,7 @@ export const mockDataConversions = {
 		success: true,
 		upgradeRequired: false,
 	},
-	
+
 	object: {
 		job: mockJobData.validJob,
 		response: mockServiceResponses.successJobByIdResponse,
@@ -280,12 +285,12 @@ export const mockDataConversions = {
 		city: { id: 1, name: 'Tel Aviv' },
 		category: { id: 2, name: 'IT' },
 	},
-	
+
 	array: {
 		jobs: [mockJobData.validJob, mockJobData.anotherValidJob],
 		errors: [mockErrors.validationError, mockErrors.databaseError],
 	},
-	
+
 	null: {
 		job: null,
 		city: null,
@@ -299,25 +304,25 @@ export const mockIdValidationLogic = {
 	validateId: (id) => {
 		return !!(id && !isNaN(Number(id)) && Number(id) > 0);
 	},
-	
+
 	parseId: (id) => {
 		return Number(id);
 	},
-	
+
 	isValidId: (id) => {
 		return typeof id === 'string' && !isNaN(Number(id)) && Number(id) > 0;
 	},
-	
+
 	isInvalidId: (id) => {
 		return !id || isNaN(Number(id)) || Number(id) <= 0;
 	},
-	
+
 	handleInvalidId: (res) => {
-		return res.status(400).json({ 
-			error: 'ID вакансии обязателен и должен быть числом' 
+		return res.status(400).json({
+			error: 'ID вакансии обязателен и должен быть числом',
 		});
 	},
-	
+
 	handleValidId: (id) => {
 		return Number(id);
 	},
@@ -329,8 +334,8 @@ export const mockJobProcessingLogic = {
 		const { id } = req.params;
 
 		if (!id || isNaN(Number(id))) {
-			return res.status(400).json({ 
-				error: 'ID вакансии обязателен и должен быть числом' 
+			return res.status(400).json({
+				error: 'ID вакансии обязателен и должен быть числом',
 			});
 		}
 
@@ -345,13 +350,13 @@ export const mockJobProcessingLogic = {
 			res.status(200).json(result.job);
 		} catch (error) {
 			console.error('Ошибка получения объявления:', error.message);
-			res.status(500).json({ 
-				error: 'Ошибка получения объявления', 
-				details: error.message 
+			res.status(500).json({
+				error: 'Ошибка получения объявления',
+				details: error.message,
 			});
 		}
 	},
-	
+
 	processCreateJobRequest: async (req, res) => {
 		const jobData = req.body;
 
@@ -363,7 +368,8 @@ export const mockJobProcessingLogic = {
 					return res.status(403).json({
 						error: result.error,
 						upgradeRequired: true,
-						message: 'Для размещения большего количества объявлений перейдите на Premium тариф',
+						message:
+							'Для размещения большего количества объявлений перейдите на Premium тариф',
 					});
 				}
 				return res.status(400).json({ error: result.error });
@@ -372,43 +378,44 @@ export const mockJobProcessingLogic = {
 			res.status(201).json(result);
 		} catch (error) {
 			console.error('Ошибка создания объявления:', error.message);
-			res.status(500).json({ 
-				error: 'Ошибка создания объявления', 
-				details: error.message 
+			res.status(500).json({
+				error: 'Ошибка создания объявления',
+				details: error.message,
 			});
 		}
 	},
-	
+
 	handleJobByIdSuccess: (job, res) => {
 		console.log('🔍 getJobById - Job data:', job);
 		return res.status(200).json(job);
 	},
-	
+
 	handleJobByIdError: (error, res) => {
 		console.error('Ошибка получения объявления:', error.message);
-		return res.status(500).json({ 
-			error: 'Ошибка получения объявления', 
-			details: error.message 
+		return res.status(500).json({
+			error: 'Ошибка получения объявления',
+			details: error.message,
 		});
 	},
-	
+
 	handleCreateJobSuccess: (result, res) => {
 		return res.status(201).json(result);
 	},
-	
+
 	handleCreateJobError: (error, res) => {
 		console.error('Ошибка создания объявления:', error.message);
-		return res.status(500).json({ 
-			error: 'Ошибка создания объявления', 
-			details: error.message 
+		return res.status(500).json({
+			error: 'Ошибка создания объявления',
+			details: error.message,
 		});
 	},
-	
+
 	handleUpgradeRequired: (result, res) => {
 		return res.status(403).json({
 			error: result.error,
 			upgradeRequired: true,
-			message: 'Для размещения большего количества объявлений перейдите на Premium тариф',
+			message:
+				'Для размещения большего количества объявлений перейдите на Premium тариф',
 		});
 	},
 };
@@ -418,11 +425,11 @@ export const mockServiceIntegrationLogic = {
 	callGetJobByIdService: async (id) => {
 		return await mockJobServices.getJobByIdService(id);
 	},
-	
+
 	callCreateJobService: async (jobData) => {
 		return await mockJobServices.createJobService(jobData);
 	},
-	
+
 	handleServiceResponse: (result) => {
 		if (result.error) {
 			return {
@@ -436,18 +443,18 @@ export const mockServiceIntegrationLogic = {
 			data: result.job || result,
 		};
 	},
-	
+
 	handleServiceError: (error) => {
 		return {
 			success: false,
 			error: error.message,
 		};
 	},
-	
+
 	validateServiceResult: (result) => {
 		return result !== null && result !== undefined;
 	},
-	
+
 	processServiceResult: (result) => {
 		return result;
 	},
@@ -473,30 +480,30 @@ export const mockRequestResponseLogic = {
 			},
 		};
 	},
-	
+
 	buildResponse: () => {
 		return {
 			json: vi.fn(),
 			status: vi.fn().mockReturnThis(),
 		};
 	},
-	
+
 	handleSuccessResponse: (res, data, statusCode = 200) => {
 		res.status(statusCode).json(data);
 	},
-	
+
 	handleErrorResponse: (res, error, statusCode = 500) => {
 		res.status(statusCode).json({ error: error.message });
 	},
-	
+
 	handleValidationError: (res, message, statusCode = 400) => {
 		res.status(statusCode).json({ error: message });
 	},
-	
+
 	handleNotFoundError: (res, message, statusCode = 404) => {
 		res.status(statusCode).json({ error: message });
 	},
-	
+
 	handleUpgradeRequiredError: (res, error, message, statusCode = 403) => {
 		res.status(statusCode).json({
 			error: error,
@@ -504,15 +511,15 @@ export const mockRequestResponseLogic = {
 			message: message,
 		});
 	},
-	
+
 	validateRequest: (req) => {
 		return !!(req && req.params && req.params.id);
 	},
-	
+
 	extractId: (req) => {
 		return req.params?.id;
 	},
-	
+
 	extractJobData: (req) => {
 		return req.body;
 	},
@@ -524,8 +531,8 @@ export const mockControllerLogic = {
 		const { id } = req.params;
 
 		if (!id || isNaN(Number(id))) {
-			return res.status(400).json({ 
-				error: 'ID вакансии обязателен и должен быть числом' 
+			return res.status(400).json({
+				error: 'ID вакансии обязателен и должен быть числом',
 			});
 		}
 
@@ -540,13 +547,13 @@ export const mockControllerLogic = {
 			res.status(200).json(result.job);
 		} catch (error) {
 			console.error('Ошибка получения объявления:', error.message);
-			res.status(500).json({ 
-				error: 'Ошибка получения объявления', 
-				details: error.message 
+			res.status(500).json({
+				error: 'Ошибка получения объявления',
+				details: error.message,
 			});
 		}
 	},
-	
+
 	processCreateJobRequest: async (req, res) => {
 		const jobData = req.body;
 
@@ -558,7 +565,8 @@ export const mockControllerLogic = {
 					return res.status(403).json({
 						error: result.error,
 						upgradeRequired: true,
-						message: 'Для размещения большего количества объявлений перейдите на Premium тариф',
+						message:
+							'Для размещения большего количества объявлений перейдите на Premium тариф',
 					});
 				}
 				return res.status(400).json({ error: result.error });
@@ -567,29 +575,29 @@ export const mockControllerLogic = {
 			res.status(201).json(result);
 		} catch (error) {
 			console.error('Ошибка создания объявления:', error.message);
-			res.status(500).json({ 
-				error: 'Ошибка создания объявления', 
-				details: error.message 
+			res.status(500).json({
+				error: 'Ошибка создания объявления',
+				details: error.message,
 			});
 		}
 	},
-	
+
 	handleControllerError: (error, res, operation = 'operation') => {
 		console.error(`Ошибка ${operation}:`, error.message);
-		return res.status(500).json({ 
-			error: `Ошибка ${operation}`, 
-			details: error.message 
+		return res.status(500).json({
+			error: `Ошибка ${operation}`,
+			details: error.message,
 		});
 	},
-	
+
 	handleControllerSuccess: (data, res, statusCode = 200) => {
 		return res.status(statusCode).json(data);
 	},
-	
+
 	validateControllerInput: (req) => {
 		return !!(req && req.params && req.params.id);
 	},
-	
+
 	processControllerResponse: (result, res, operation = 'operation') => {
 		if (result.error) {
 			if (result.upgradeRequired) {
@@ -599,12 +607,13 @@ export const mockControllerLogic = {
 		}
 		return mockControllerLogic.handleControllerSuccess(result, res, 201);
 	},
-	
+
 	handleUpgradeRequired: (result, res) => {
 		return res.status(403).json({
 			error: result.error,
 			upgradeRequired: true,
-			message: 'Для размещения большего количества объявлений перейдите на Premium тариф',
+			message:
+				'Для размещения большего количества объявлений перейдите на Premium тариф',
 		});
 	},
 };
