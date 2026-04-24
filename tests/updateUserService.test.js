@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
 
 // Import mock data
 import {
@@ -22,6 +22,16 @@ import {
 	mockUserStatusLogic,
 	resetUpdateUserServiceMocks,
 } from './mocks/updateUserService.js';
+
+const mockUserFindUnique = vi.fn();
+vi.mock('@prisma/client', () => ({
+  PrismaClient: vi.fn(() => ({ user: { findUnique: mockUserFindUnique } })),
+}));
+
+let getUserByClerkIdService;
+beforeAll(async () => {
+  ({ getUserByClerkIdService } = await import('../apps/api/services/updateUserService.js'));
+});
 
 // Mock console methods to avoid noise in tests
 const originalConsoleLog = console.log;
@@ -941,4 +951,27 @@ describe('UpdateUserService', () => {
 			expect(typeof statusLogic.getUserAccountStatus).toBe('function');
 		});
 	});
+});
+
+describe('getUserByClerkIdService (real service)', () => {
+  beforeEach(() => { mockUserFindUnique.mockReset(); });
+
+  it('returns user when found', async () => {
+    const user = { id: 'u1', clerkUserId: 'clerk_1', email: 'a@b.com' };
+    mockUserFindUnique.mockResolvedValue(user);
+    const result = await getUserByClerkIdService('clerk_1');
+    expect(result).toEqual({ user });
+  });
+
+  it('returns error when user not found', async () => {
+    mockUserFindUnique.mockResolvedValue(null);
+    const result = await getUserByClerkIdService('clerk_missing');
+    expect(result).toHaveProperty('error');
+  });
+
+  it('returns error on prisma failure', async () => {
+    mockUserFindUnique.mockRejectedValue(new Error('DB'));
+    const result = await getUserByClerkIdService('clerk_1');
+    expect(result).toHaveProperty('error');
+  });
 });
