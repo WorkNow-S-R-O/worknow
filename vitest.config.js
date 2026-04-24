@@ -65,6 +65,7 @@ export default defineConfig({
 			'@services': resolve(__dirname, './apps/client/src/services'),
 			'bootstrap-icons': resolve(__dirname, './tests/mocks/bootstrap-icons'),
 			'@libs': resolve(__dirname, './apps/client/src/libs'),
+			'libs': resolve(__dirname, './libs'),
 		},
 	},
 	// Add mocks for problematic imports
