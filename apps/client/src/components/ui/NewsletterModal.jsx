@@ -10,8 +10,11 @@ import NewsletterStatus from './NewsletterStatus.jsx';
 import NewsletterForm from './NewsletterForm.jsx';
 import NewsletterFilters from './NewsletterFilters.jsx';
 import NewsletterActions from './NewsletterActions.jsx';
+import { API_URL } from '@/config';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useSwipeToClose } from '@/hooks/useSwipeToClose';
+import { getModalOverlayStyle, getModalContentStyle } from './modalStyles';
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 const NewsletterModal = ({ open, onClose }) => {
 	const [email, setEmail] = useState('');
@@ -21,9 +24,6 @@ const NewsletterModal = ({ open, onClose }) => {
 	const [isUnsubscribing, setIsUnsubscribing] = useState(false);
 	const [isAlreadySubscribed, setIsAlreadySubscribed] = useState(false);
 	const [subscriberData, setSubscriberData] = useState(null);
-	const [touchStart, setTouchStart] = useState(null);
-	const [touchEnd, setTouchEnd] = useState(null);
-
 	// Verification state
 	const [showVerification, setShowVerification] = useState(false);
 	const [subscriptionData, setSubscriptionData] = useState(null);
@@ -44,30 +44,8 @@ const NewsletterModal = ({ open, onClose }) => {
 	const { locale } = useLocale();
 	const { user, isLoaded } = useUser();
 
-	// Determine if mobile
-	const isMobile = window.innerWidth <= 768;
-
-	// Minimum swipe distance (in px)
-	const minSwipeDistance = 50;
-
-	const onTouchStart = (e) => {
-		setTouchEnd(null);
-		setTouchStart(e.targetTouches[0].clientY);
-	};
-
-	const onTouchMove = (e) => {
-		setTouchEnd(e.targetTouches[0].clientY);
-	};
-
-	const onTouchEnd = () => {
-		if (!touchStart || !touchEnd) return;
-		const distance = touchStart - touchEnd;
-		const isUpSwipe = distance > minSwipeDistance;
-
-		if (isUpSwipe) {
-			onClose();
-		}
-	};
+	const isMobile = useIsMobile();
+	const { onTouchStart, onTouchMove, onTouchEnd } = useSwipeToClose({ onClose });
 
 	// Handle outside click for desktop
 	const handleOutsideClick = (event) => {
@@ -345,62 +323,15 @@ const NewsletterModal = ({ open, onClose }) => {
 		}
 	};
 
-	// Fullscreen modal for mobile, original overlay for desktop
-	const modalStyle = isMobile
-		? {
-				position: 'fixed',
-				top: 0,
-				left: 0,
-				right: 0,
-				bottom: 0,
-				width: '100vw',
-				height: '100vh',
-				background: '#fff',
-				zIndex: 9999,
-				display: 'flex',
-				flexDirection: 'column',
-			}
-		: {
-				position: 'fixed',
-				top: 0,
-				left: 0,
-				width: '100vw',
-				height: '100vh',
-				background: 'rgba(0,0,0,0.3)',
-				zIndex: 1000,
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-			};
-
-	const contentStyle = isMobile
-		? {
-				background: '#fff',
-				borderRadius: 0,
-				height: '100vh',
-				width: '100vw',
-				padding: '16px 16px',
-				display: 'flex',
-				flexDirection: 'column',
-				boxShadow: 'none',
-				border: 'none',
-				position: 'absolute',
-				top: 0,
-				left: 0,
-			}
-		: {
-				background: '#fff',
-				borderRadius: 18,
-				padding: 40,
-				width: 900,
-				height: 900,
-				maxWidth: '95vw',
-				maxHeight: '95vh',
-				boxShadow: '0 4px 32px rgba(0,0,0,0.15)',
-				position: 'relative',
-				display: 'flex',
-				flexDirection: 'column',
-			};
+	const modalStyle = getModalOverlayStyle(isMobile);
+	const contentStyle = getModalContentStyle(isMobile, {
+		desktopWidth: 900,
+		desktopHeight: 900,
+		desktopBorderRadius: 18,
+		desktopPadding: 40,
+		desktopMaxWidth: '95vw',
+		desktopMaxHeight: '95vh',
+	});
 
 	if (!open) return null;
 

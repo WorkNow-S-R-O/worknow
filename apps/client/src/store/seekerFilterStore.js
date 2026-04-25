@@ -1,28 +1,13 @@
-import { create } from 'zustand';
+import { createFilterStore } from './createFilterStore';
 
-const useSeekerFilterStore = create((set) => ({
-	filters: {
-		city: undefined,
-		category: undefined,
-		employment: undefined,
-		documentType: undefined,
-		languages: undefined,
-		gender: undefined,
-		isDemanded: undefined,
-	},
-	setFilters: (newFilters) => set({ filters: newFilters }),
-	resetFilters: () =>
-		set({
-			filters: {
-				city: undefined,
-				category: undefined,
-				employment: undefined,
-				documentType: undefined,
-				languages: undefined,
-				gender: undefined,
-				isDemanded: undefined,
-			},
-		}),
-}));
+const useSeekerFilterStore = createFilterStore({
+	city: undefined,
+	category: undefined,
+	employment: undefined,
+	documentType: undefined,
+	languages: undefined,
+	gender: undefined,
+	isDemanded: undefined,
+});
 
 export default useSeekerFilterStore;

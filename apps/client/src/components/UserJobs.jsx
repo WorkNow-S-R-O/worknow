@@ -14,8 +14,8 @@ import { PaginationControl } from '@/components';
 import { useLoadingProgress } from '@/hooks';
 import { useTranslationHelpers } from '@/utils';
 import { ImageModal } from './ui';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL; // Берем API из .env
 
 const UserJobs = () => {
 	const content = useIntlayer('userJobs');

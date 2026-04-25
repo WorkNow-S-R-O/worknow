@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_URL } from '@/config';
 
 export const createJob = async (jobData) => {
 	const response = await axios.post(`${API_URL}/api/jobs`, jobData);

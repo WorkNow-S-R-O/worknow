@@ -4,8 +4,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useIntlayer } from 'react-intlayer';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL;
 const PAGE_SIZE = 10;
 
 const BillingPage = () => {

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocale } from 'react-intlayer';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL; // ✅ Используем переменную окружения
 
 const useFetchCities = () => {
 	const [cities, setCities] = useState([]);

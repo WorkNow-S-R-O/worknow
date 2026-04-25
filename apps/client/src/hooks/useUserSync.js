@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 export const useUserSync = () => {
 	const { user: clerkUser } = useUser();

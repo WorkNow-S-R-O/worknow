@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import axios from 'axios';
 import { useIntlayer } from 'react-intlayer';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_URL } from '@/config';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useSwipeToClose } from '@/hooks/useSwipeToClose';
 
 export default function MailDropdown() {
 	const { user } = useUser();
@@ -16,31 +17,7 @@ export default function MailDropdown() {
 	const mailRef = useRef();
 	const content = useIntlayer('mailDropdown');
 
-	// Determine if mobile
-	const isMobile = window.innerWidth <= 768;
-	const [touchStart, setTouchStart] = useState(null);
-	const [touchEnd, setTouchEnd] = useState(null);
-	const minSwipeDistance = 50;
-
-	// Touch handlers for mobile modal
-	const onTouchStart = (e) => {
-		setTouchEnd(null);
-		setTouchStart(e.targetTouches[0].clientY);
-	};
-
-	const onTouchMove = (e) => {
-		setTouchEnd(e.targetTouches[0].clientY);
-	};
-
-	const onTouchEnd = () => {
-		if (!touchStart || !touchEnd) return;
-		const distance = touchStart - touchEnd;
-		const isUpSwipe = distance > minSwipeDistance;
-
-		if (isUpSwipe) {
-			closeMailDropdown();
-		}
-	};
+	const isMobile = useIsMobile();
 
 	const closeMailDropdown = () => {
 		setShowMailDropdown(false);
@@ -51,6 +28,8 @@ export default function MailDropdown() {
 			document.body.style.width = '';
 		}
 	};
+
+	const { onTouchStart, onTouchMove, onTouchEnd } = useSwipeToClose({ onClose: closeMailDropdown });
 
 	const openMailDropdown = async () => {
 		if (isMobile) {

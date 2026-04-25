@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { useAuth } from '@clerk/clerk-react';
 import { useIntlayer } from 'react-intlayer';
+import { API_URL } from '@/config';
 
 const ImageUploadContext = createContext();
 
@@ -43,10 +44,6 @@ export const ImageUploadProvider = ({ children }) => {
 		try {
 			const formData = new FormData();
 			formData.append('image', file);
-
-			let API_URL = import.meta.env.VITE_API_URL;
-
-			// ImageUploadContext initialized
 
 			const token = await getToken();
 			// Token received for image upload

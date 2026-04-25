@@ -3,8 +3,8 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useLoadingProgress } from './useLoadingProgress';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 const useFetchJob = (id, setValue) => {
 	const [loading, setLoading] = useState(true);

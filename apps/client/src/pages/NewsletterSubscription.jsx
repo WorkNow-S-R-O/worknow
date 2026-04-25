@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { useUserSync } from '@/hooks';
 import { VerificationModal } from '@/components/ui';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 const NewsletterSubscription = () => {
 	const content = useIntlayer('newsletterSubscription');

@@ -7,8 +7,8 @@ import { useLoadingProgress } from '@/hooks';
 import { useTranslationHelpers } from '@/utils';
 import '../css/seeker-details-mobile.css';
 import '../css/ripple.css';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 // Helper function to parse contact field and extract Facebook link
 const parseContactField = (contact) => {

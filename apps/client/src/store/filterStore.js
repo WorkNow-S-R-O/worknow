@@ -1,22 +1,10 @@
-import { create } from 'zustand';
+import { createFilterStore } from './createFilterStore';
 
-const useFilterStore = create((set) => ({
-	filters: {
-		salary: undefined,
-		categoryId: undefined,
-		shuttleOnly: false,
-		mealsOnly: false,
-	},
-	setFilters: (newFilters) => set({ filters: newFilters }),
-	resetFilters: () =>
-		set({
-			filters: {
-				salary: undefined,
-				categoryId: undefined,
-				shuttleOnly: false,
-				mealsOnly: false,
-			},
-		}),
-}));
+const useFilterStore = createFilterStore({
+	salary: undefined,
+	categoryId: undefined,
+	shuttleOnly: false,
+	mealsOnly: false,
+});
 
 export default useFilterStore;

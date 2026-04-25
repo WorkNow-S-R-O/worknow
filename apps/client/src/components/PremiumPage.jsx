@@ -3,8 +3,8 @@ import { useUser, useClerk } from '@clerk/clerk-react';
 import axios from 'axios';
 import { useIntlayer } from 'react-intlayer';
 import { useGoogleAnalytics, useLoadingProgress, useUserSync } from '@/hooks';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 const PremiumPage = () => {
 	const { user } = useUser();

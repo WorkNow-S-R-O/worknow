@@ -10,8 +10,8 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { useUser } from '@clerk/clerk-react';
 import { JobCard, PaginationControl } from '@/components';
 import { useLoadingProgress } from '@/hooks';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 const UserProfile = () => {
 	const content = useIntlayer('userProfile');

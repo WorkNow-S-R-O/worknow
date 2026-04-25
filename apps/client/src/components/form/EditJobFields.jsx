@@ -3,6 +3,7 @@ import Select from 'react-select';
 import Skeleton from 'react-loading-skeleton';
 import { useIntlayer } from 'react-intlayer';
 import { ImageUpload } from '@/components/ui';
+import { sortCitiesWithRegionsFirst } from '@/utils/regionSort';
 
 const EditJobFields = ({
 	register,
@@ -19,20 +20,7 @@ const EditJobFields = ({
 	currentImageUrl,
 }) => {
 	const content = useIntlayer('editJobFields');
-
-	// Сортировка: регионы в начале, остальные города после
-	const regionOrder = [
-		['Центр страны', 'מרכז הארץ', 'Center'],
-		['Юг страны', 'דרום הארץ', 'South'],
-		['Север страны', 'צפון הארץ', 'North'],
-	];
-	const regions = regionOrder
-		.map((labels) =>
-			cities.find((city) => labels.includes(city.label || city.name)),
-		)
-		.filter(Boolean);
-	const otherCities = cities.filter((city) => !regions.includes(city));
-	const sortedCities = [...regions, ...otherCities];
+	const { sortedCities } = sortCitiesWithRegionsFirst(cities);
 
 	return (
 		<>

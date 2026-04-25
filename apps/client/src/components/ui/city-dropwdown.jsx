@@ -4,8 +4,18 @@ import PropTypes from 'prop-types';
 import { useIntlayer, useLocale } from 'react-intlayer';
 import '../../index.css';
 import { createPortal } from 'react-dom';
+import { API_URL } from '@/config';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useSwipeToClose } from '@/hooks/useSwipeToClose';
+import { sortCitiesWithRegionsFirst } from '@/utils/regionSort';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const isHeaderOrCloseButton = (e) => {
+	const target = e.target;
+	const isHeaderText = target.tagName === 'H5' || target.closest('h5');
+	const isCloseButton =
+		target.classList.contains('btn-close') || target.closest('.btn-close');
+	return isHeaderText || isCloseButton;
+};
 
 function MobileCityModal({
 	show,
@@ -16,50 +26,13 @@ function MobileCityModal({
 }) {
 	const content = useIntlayer('cityDropdown');
 	const [search, setSearch] = useState('');
-	const [touchStart, setTouchStart] = useState(null);
-	const [touchEnd, setTouchEnd] = useState(null);
 
-	// Определяем десктоп или мобилка - moved to top
-	const isMobile = window.innerWidth <= 768;
-
-	// Minimum swipe distance (in px) - increased to prevent accidental closing
-	const minSwipeDistance = 100;
-
-	const onTouchStart = (e) => {
-		// Only handle touch events if we're directly touching the header text or close button
-		const target = e.target;
-		const isHeaderText = target.tagName === 'H5' || target.closest('h5');
-		const isCloseButton =
-			target.classList.contains('btn-close') || target.closest('.btn-close');
-
-		if (isHeaderText || isCloseButton) {
-			setTouchEnd(null);
-			setTouchStart(e.targetTouches[0].clientY);
-		}
-	};
-
-	const onTouchMove = (e) => {
-		// Only handle touch events if we're directly touching the header text or close button
-		const target = e.target;
-		const isHeaderText = target.tagName === 'H5' || target.closest('h5');
-		const isCloseButton =
-			target.classList.contains('btn-close') || target.closest('.btn-close');
-
-		if (isHeaderText || isCloseButton) {
-			setTouchEnd(e.targetTouches[0].clientY);
-		}
-	};
-
-	const onTouchEnd = () => {
-		// Only handle touch events if we were touching the header
-		if (!touchStart || !touchEnd) return;
-		const distance = touchStart - touchEnd;
-		const isUpSwipe = distance > minSwipeDistance;
-
-		if (isUpSwipe) {
-			onClose();
-		}
-	};
+	const isMobile = useIsMobile();
+	const { onTouchStart, onTouchMove, onTouchEnd } = useSwipeToClose({
+		onClose,
+		minSwipeDistance: 100,
+		shouldHandleTouch: isHeaderOrCloseButton,
+	});
 
 	useEffect(() => {
 		if (show) {
@@ -358,22 +331,7 @@ const CityDropdown = ({ selectedCity, onCitySelect, buttonClassName = '' }) => {
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, [open]);
 
-	// Явно сортируем регионы в нужном порядке по label
-	const regionOrder = [
-		['Центр страны', 'מרכז הארץ', 'Center'],
-		['Юг страны', 'דרום הארץ', 'South'],
-		['Север страны', 'צפון הארץ', 'North'],
-	];
-
-	// Ensure cities is an array before processing
-	const citiesArray = Array.isArray(cities) ? cities : [];
-
-	const regions = regionOrder
-		.map((labels) =>
-			citiesArray.find((city) => labels.includes(city.label || city.name)),
-		)
-		.filter(Boolean);
-	const otherCities = citiesArray.filter((city) => !regions.includes(city));
+	const { regions, otherCities } = sortCitiesWithRegionsFirst(cities);
 
 	return (
 		<>

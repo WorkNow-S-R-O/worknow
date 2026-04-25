@@ -18,8 +18,8 @@ import { SeekerFilterModal } from '@/components/ui';
 import { useLoadingProgress, useSeekers } from '@/hooks';
 import { useSeekerFilterStore } from '@/store';
 import { downloadSeekersCSV } from '@/utils';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 // Helper function to parse contact field and extract Facebook link
 const parseContactField = (contact) => {

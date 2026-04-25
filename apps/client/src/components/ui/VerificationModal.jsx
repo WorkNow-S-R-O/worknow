@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { useIntlayer } from 'react-intlayer';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 const VerificationModal = ({
 	open,

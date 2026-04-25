@@ -1,6 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useIntlayer, useLocale } from 'react-intlayer';
+import { API_URL } from '@/config';
+import { useIsMobile } from '@/hooks/useIsMobile';
+import { useSwipeToClose } from '@/hooks/useSwipeToClose';
+import { useModalBodyLock } from '@/hooks/useModalBodyLock';
+import { useOutsideClick } from '@/hooks/useOutsideClick';
+import { getModalOverlayStyle, getModalContentStyle } from './modalStyles';
 
 const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
 	const [salary, setSalary] = useState(currentFilters.salary || '');
@@ -12,38 +18,14 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
 		currentFilters.shuttleOnly || false,
 	);
 	const [mealsOnly, setMealsOnly] = useState(currentFilters.mealsOnly || false);
-	const [touchStart, setTouchStart] = useState(null);
-	const [touchEnd, setTouchEnd] = useState(null);
 	const modalRef = useRef();
 	const { locale } = useLocale();
 	const content = useIntlayer('jobFilterModal');
 
-	const API_URL = import.meta.env.VITE_API_URL;
-
-	// Определяем десктоп или мобилка
-	const isMobile = window.innerWidth <= 768;
-
-	// Minimum swipe distance (in px)
-	const minSwipeDistance = 50;
-
-	const onTouchStart = (e) => {
-		setTouchEnd(null);
-		setTouchStart(e.targetTouches[0].clientY);
-	};
-
-	const onTouchMove = (e) => {
-		setTouchEnd(e.targetTouches[0].clientY);
-	};
-
-	const onTouchEnd = () => {
-		if (!touchStart || !touchEnd) return;
-		const distance = touchStart - touchEnd;
-		const isUpSwipe = distance > minSwipeDistance;
-
-		if (isUpSwipe) {
-			onClose();
-		}
-	};
+	const isMobile = useIsMobile();
+	const { onTouchStart, onTouchMove, onTouchEnd } = useSwipeToClose({ onClose });
+	useModalBodyLock({ isOpen: open, isMobile });
+	useOutsideClick({ ref: modalRef, isOpen: open, onClose, isMobile });
 
 	useEffect(() => {
 		if (open) {
@@ -52,62 +34,11 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
 			setShuttleOnly(currentFilters.shuttleOnly || false);
 			setMealsOnly(currentFilters.mealsOnly || false);
 
-			document.body.style.overflow = 'hidden';
-			// Prevent iOS Safari from bouncing when modal is open
-			if (isMobile) {
-				document.body.style.position = 'fixed';
-				document.body.style.width = '100%';
-				// Hide any fixed elements like navbar
-				const navbar = document.querySelector('nav, .navbar, header');
-				if (navbar) {
-					navbar.style.display = 'none';
-				}
-			}
-
 			fetch(`${API_URL}/api/categories?lang=${locale}`)
 				.then((res) => res.json())
 				.then((data) => setCategories(data));
-		} else {
-			document.body.style.overflow = '';
-			if (isMobile) {
-				document.body.style.position = '';
-				document.body.style.width = '';
-				// Show navbar again
-				const navbar = document.querySelector('nav, .navbar, header');
-				if (navbar) {
-					navbar.style.display = '';
-				}
-			}
 		}
-		return () => {
-			document.body.style.overflow = '';
-			if (isMobile) {
-				document.body.style.position = '';
-				document.body.style.width = '';
-				// Show navbar again
-				const navbar = document.querySelector('nav, .navbar, header');
-				if (navbar) {
-					navbar.style.display = '';
-				}
-			}
-		};
-	}, [open, currentFilters, locale, API_URL, isMobile]);
-
-	useEffect(() => {
-		const handleOutsideClick = (event) => {
-			if (modalRef.current && !modalRef.current.contains(event.target)) {
-				onClose();
-			}
-		};
-
-		if (open && !isMobile) {
-			document.addEventListener('mousedown', handleOutsideClick);
-		}
-
-		return () => {
-			document.removeEventListener('mousedown', handleOutsideClick);
-		};
-	}, [open, onClose, isMobile]);
+	}, [open, currentFilters, locale]);
 
 	if (!open) return null;
 
@@ -130,60 +61,8 @@ const JobFilterModal = ({ open, onClose, onApply, currentFilters = {} }) => {
 		onClose();
 	};
 
-	// Fullscreen modal for mobile, original overlay for desktop
-	const modalStyle = isMobile
-		? {
-				position: 'fixed',
-				top: 0,
-				left: 0,
-				right: 0,
-				bottom: 0,
-				width: '100vw',
-				height: '100vh',
-				background: '#fff',
-				zIndex: 9999,
-				display: 'flex',
-				flexDirection: 'column',
-			}
-		: {
-				position: 'fixed',
-				top: 0,
-				left: 0,
-				width: '100vw',
-				height: '100vh',
-				background: 'rgba(0,0,0,0.3)',
-				zIndex: 1000,
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-			};
-
-	const contentStyle = isMobile
-		? {
-				background: '#fff',
-				borderRadius: 0,
-				height: '100vh',
-				width: '100vw',
-				padding: '16px 16px',
-				display: 'flex',
-				flexDirection: 'column',
-				boxShadow: 'none',
-				border: 'none',
-				position: 'absolute',
-				top: 0,
-				left: 0,
-			}
-		: {
-				background: '#fff',
-				borderRadius: 10,
-				padding: 20,
-				width: 550,
-				height: 550,
-				boxShadow: '0 4px 32px rgba(0,0,0,0.15)',
-				position: 'relative',
-				display: 'flex',
-				flexDirection: 'column',
-			};
+	const modalStyle = getModalOverlayStyle(isMobile);
+	const contentStyle = getModalContentStyle(isMobile);
 
 	return (
 		<div

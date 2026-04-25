@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from '@clerk/clerk-react';
 import { useIntlayer } from 'react-intlayer';
+import { API_URL } from '@/config';
 
-const API_URL = import.meta.env.VITE_API_URL; // Используем переменную окружения
 
 const Cancel = () => {
 	const content = useIntlayer('cancelPage');
