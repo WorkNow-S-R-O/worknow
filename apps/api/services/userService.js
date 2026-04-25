@@ -1,12 +1,11 @@
 /* eslint-disable no-undef */
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import { Webhook } from 'svix';
 
 dotenv.config({ path: '.env.local' });
 dotenv.config();
-const prisma = new PrismaClient();
 const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
 

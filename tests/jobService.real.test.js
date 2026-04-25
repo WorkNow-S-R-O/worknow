@@ -5,15 +5,18 @@ const mockFindMany = vi.fn();
 const mockFindUnique = vi.fn();
 const mockCreate = vi.fn();
 
-vi.mock('@prisma/client', () => ({
-  PrismaClient: vi.fn(() => ({
+vi.mock('../apps/api/lib/prisma.js', () => ({
+  default: {
     job: {
       count: mockCount,
       findMany: mockFindMany,
       findUnique: mockFindUnique,
       create: mockCreate,
     },
-  })),
+    user: {
+      findUnique: (...args) => mockUserFindUnique(...args),
+    },
+  },
 }));
 
 const mockRedisGet = vi.fn();
@@ -27,6 +30,22 @@ vi.mock('../apps/api/services/redisService.js', () => ({
     invalidateJobsCache: mockRedisInvalidate,
   },
 }));
+
+const mockContainsBadWords = vi.fn(() => false);
+const mockContainsLinks = vi.fn(() => false);
+vi.mock('../apps/api/middlewares/validation.js', () => ({
+  containsBadWords: (...args) => mockContainsBadWords(...args),
+  containsLinks: (...args) => mockContainsLinks(...args),
+}));
+
+const mockSendTelegram = vi.fn();
+vi.mock('../apps/api/utils/telegram.js', () => ({
+  sendNewJobNotificationToTelegram: mockSendTelegram,
+}));
+
+const mockUserFindUnique = vi.fn();
+const mockJobFindManyForUser = vi.fn();
+const mockJobCountForUser = vi.fn();
 
 let getJobsService, getJobByIdService, createJobService;
 
@@ -205,7 +224,7 @@ describe('jobService', () => {
 
       const result = await getJobByIdService(999);
 
-      expect(result).toHaveProperty('error', 'Вакансия не найдена');
+      expect(result).toHaveProperty('error', 'Объявление не найдено');
     });
 
     it('returns error when DB throws', async () => {
@@ -220,24 +239,65 @@ describe('jobService', () => {
   });
 
   describe('createJobService', () => {
-    it('creates a job and invalidates cache', async () => {
-      const jobData = {
-        title: 'New Job',
-        salary: '50 шек/час',
-        city: { connect: { id: 1 } },
-      };
-      mockCreate.mockResolvedValue({ ...jobData, id: 1 });
+    const validJobData = {
+      title: 'New Job',
+      salary: '50',
+      cityId: '1',
+      categoryId: '1',
+      phone: '+972501234567',
+      description: 'Job description',
+      userId: 'clerk_user_123',
+      shuttle: false,
+      meals: false,
+      imageUrl: null,
+    };
 
-      const result = await createJobService(jobData);
+    const mockUser = {
+      id: 1,
+      clerkUserId: 'clerk_user_123',
+      isPremium: false,
+      premiumDeluxe: false,
+      jobs: [],
+    };
 
-      expect(result).toHaveProperty('id', 1);
+    it('creates a job when valid data provided', async () => {
+      mockUserFindUnique.mockResolvedValue(mockUser);
+      mockFindMany.mockResolvedValue([]); // no existing jobs (for duplicate check)
+      mockCount.mockResolvedValue(0); // no jobs count
+      mockCreate.mockResolvedValue({ ...validJobData, id: 1 });
+
+      const result = await createJobService(validJobData);
+
+      expect(result).toHaveProperty('job');
       expect(mockRedisInvalidate).toHaveBeenCalledOnce();
     });
 
-    it('throws when DB throws on create', async () => {
-      mockCreate.mockRejectedValue(new Error('DB error'));
+    it('returns error when user not found', async () => {
+      mockUserFindUnique.mockResolvedValue(null);
 
-      await expect(createJobService({})).rejects.toThrow('DB error');
+      const result = await createJobService(validJobData);
+
+      expect(result).toHaveProperty('error', 'Пользователь не найден');
+    });
+
+    it('returns errors when title contains bad words', async () => {
+      mockContainsBadWords.mockReturnValueOnce(true);
+
+      const result = await createJobService(validJobData);
+
+      expect(result).toHaveProperty('errors');
+      expect(result.errors).toContain('Заголовок содержит нецензурные слова.');
+    });
+
+    it('returns error when job limit reached for free user', async () => {
+      mockUserFindUnique.mockResolvedValue(mockUser);
+      mockFindMany.mockResolvedValue([]);
+      mockCount.mockResolvedValue(5);
+
+      const result = await createJobService(validJobData);
+
+      expect(result).toHaveProperty('error');
+      expect(result).toHaveProperty('upgradeRequired', true);
     });
   });
 });

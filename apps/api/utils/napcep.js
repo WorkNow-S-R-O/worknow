@@ -1,10 +1,8 @@
 import puppeteer from 'puppeteer';
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import prisma from '../lib/prisma.js';
 import { fakerRU as faker } from '@faker-js/faker';
 import AIJobTitleService from '../services/aiJobTitleService.js';
 
-const prisma = new PrismaClient();
 const MAX_JOBS = 200;
 
 // Function to extract and validate price from description

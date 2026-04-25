@@ -1,9 +1,7 @@
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import prisma from '../lib/prisma.js';
 import { createFakeUser } from './fakeUsers.js';
 import { faker } from '@faker-js/faker';
 
-const prisma = new PrismaClient();
 
 /**
  * Функция для распределения вакансий среди фейковых пользователей

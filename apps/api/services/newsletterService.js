@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { Resend } from 'resend';
 import { sendEmail } from '../utils/mailer.js';
 import process from 'process';
 
-const prisma = new PrismaClient();
 
 // Debug: Check if RESEND_API_KEY is available
 console.log('🔍 RESEND_API_KEY available:', !!process.env.RESEND_API_KEY);

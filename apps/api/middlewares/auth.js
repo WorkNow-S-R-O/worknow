@@ -1,9 +1,5 @@
-import pkg from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { Buffer } from 'buffer';
-
-const { PrismaClient } = pkg;
-
-const prisma = new PrismaClient();
 
 export const requireAuth = async (req, res, next) => {
 	try {

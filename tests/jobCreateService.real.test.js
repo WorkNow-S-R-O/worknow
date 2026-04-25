@@ -5,15 +5,15 @@ const mockJobFindMany = vi.fn();
 const mockJobCount = vi.fn();
 const mockJobCreate = vi.fn();
 
-vi.mock('@prisma/client', () => ({
-  PrismaClient: vi.fn(() => ({
+vi.mock('../apps/api/lib/prisma.js', () => ({
+  default: {
     user: { findUnique: mockUserFindUnique },
     job: {
       findMany: mockJobFindMany,
       count: mockJobCount,
       create: mockJobCreate,
     },
-  })),
+  },
 }));
 
 const mockSendTelegram = vi.fn();
@@ -30,7 +30,7 @@ let createJobService;
 let containsBadWords, containsLinks;
 
 beforeAll(async () => {
-  ({ createJobService } = await import('../apps/api/services/jobCreateService.js'));
+  ({ createJobService } = await import('../apps/api/services/jobService.js'));
   ({ containsBadWords, containsLinks } = await import('../apps/api/middlewares/validation.js'));
 });
 

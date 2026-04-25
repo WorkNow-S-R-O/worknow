@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { sendEmail } from '../utils/mailer.js';
 
-const prisma = new PrismaClient();
 
 /**
  * Send notifications to all users when new candidates are added

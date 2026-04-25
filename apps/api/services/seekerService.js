@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { sendSingleCandidateNotification } from './notificationService.js';
 
-const prisma = new PrismaClient();
 
 // Helper function to translate city names
 async function translateCityName(cityName, lang = 'ru') {

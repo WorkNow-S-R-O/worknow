@@ -1,9 +1,8 @@
 import AWS from 'aws-sdk';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { sendEmail } from '../utils/mailer.js';
 import { Resend } from 'resend';
 
-const prisma = new PrismaClient();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Configure AWS

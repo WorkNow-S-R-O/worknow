@@ -1,14 +1,12 @@
 import cron from 'node-cron';
 import stripe from './stripe.js';
 import nodemailer from 'nodemailer';
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import prisma from '../lib/prisma.js';
 import dotenv from 'dotenv';
 import { Resend } from 'resend';
 import { checkAndSendFilteredNewsletter } from '../services/newsletterService.js';
 
 dotenv.config();
-const prisma = new PrismaClient();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Настраиваем транспорт для отправки email

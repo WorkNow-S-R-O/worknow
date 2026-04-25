@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { containsBadWords, containsLinks } from '../middlewares/validation.js';
 import { sendUpdatedJobListToTelegram } from '../utils/telegram.js';
 
-const prisma = new PrismaClient();
 
 export const updateJobService = async (
 	id,

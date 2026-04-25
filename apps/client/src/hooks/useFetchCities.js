@@ -1,43 +1,15 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useLocale } from 'react-intlayer';
-import { API_URL } from '@/config';
+import { useCallback } from 'react';
+import useFetchLocalized from './useFetchLocalized';
 
+const transformCities = (data) =>
+	data.map((city) => ({
+		value: city.id,
+		label: city.name,
+	}));
 
 const useFetchCities = () => {
-	const [cities, setCities] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const { locale } = useLocale();
-
-	useEffect(() => {
-		const loadCities = async () => {
-			try {
-				const url = `${API_URL}/api/cities?lang=${locale}`;
-				const response = await axios.get(url);
-
-				if (!Array.isArray(response.data)) {
-					console.error('❌ API вернул не массив! Данные:', response.data);
-					setCities([]);
-					return;
-				}
-
-				const formattedCities = response.data.map((city) => ({
-					value: city.id,
-					label: city.name,
-				}));
-				setCities(formattedCities);
-			} catch (error) {
-				if (!(error?.code === 'ECONNABORTED')) {
-					console.error('Ошибка загрузки городов:', error);
-				}
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		loadCities();
-	}, [locale]);
-
+	const transform = useCallback(transformCities, []);
+	const { data: cities, loading } = useFetchLocalized('cities', transform);
 	return { cities, loading };
 };
 

@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 
-const prisma = new PrismaClient();
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
 export const boostJobService = async (id) => {

@@ -1,325 +1,91 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useIntlayer, useLocale } from 'react-intlayer';
-import { toast } from 'react-hot-toast';
-import { useUser } from '@clerk/clerk-react';
-import axios from 'axios';
+import { useIntlayer } from 'react-intlayer';
 import VerificationModal from './VerificationModal.jsx';
 import NewsletterHeader from './NewsletterHeader.jsx';
 import NewsletterStatus from './NewsletterStatus.jsx';
 import NewsletterForm from './NewsletterForm.jsx';
 import NewsletterFilters from './NewsletterFilters.jsx';
 import NewsletterActions from './NewsletterActions.jsx';
-import { API_URL } from '@/config';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { useSwipeToClose } from '@/hooks/useSwipeToClose';
 import { getModalOverlayStyle, getModalContentStyle } from './modalStyles';
+import useNewsletterForm from '@/hooks/useNewsletterForm';
 
 
 const NewsletterModal = ({ open, onClose }) => {
-	const [email, setEmail] = useState('');
-	const [firstName, setFirstName] = useState('');
-	const [lastName, setLastName] = useState('');
-	const [isSubscribing, setIsSubscribing] = useState(false);
-	const [isUnsubscribing, setIsUnsubscribing] = useState(false);
-	const [isAlreadySubscribed, setIsAlreadySubscribed] = useState(false);
-	const [subscriberData, setSubscriberData] = useState(null);
-	// Verification state
-	const [showVerification, setShowVerification] = useState(false);
-	const [subscriptionData, setSubscriptionData] = useState(null);
-
-	// Filter preferences state
-	const [cities, setCities] = useState([]);
-	const [categories, setCategories] = useState([]);
-	const [selectedCities, setSelectedCities] = useState([]);
-	const [selectedCategories, setSelectedCategories] = useState([]);
-	const [selectedEmployment, setSelectedEmployment] = useState([]);
-	const [selectedDocumentTypes, setSelectedDocumentTypes] = useState([]);
-	const [selectedLanguages, setSelectedLanguages] = useState([]);
-	const [selectedGender, setSelectedGender] = useState([]);
-	const [onlyDemanded, setOnlyDemanded] = useState(false);
-
 	const modalRef = useRef();
 	const content = useIntlayer('newsletterModal');
-	const { locale } = useLocale();
-	const { user, isLoaded } = useUser();
 
 	const isMobile = useIsMobile();
 	const { onTouchStart, onTouchMove, onTouchEnd } = useSwipeToClose({ onClose });
 
-	// Handle outside click for desktop
+	const form = useNewsletterForm({ content, onSuccess: onClose });
+
+	useEffect(() => {
+		if (open) {
+			form.initForm();
+		}
+	}, [open]);
+
 	const handleOutsideClick = (event) => {
 		if (modalRef.current && !modalRef.current.contains(event.target)) {
 			onClose();
 		}
 	};
 
-	// Check subscription status for an email
-	const checkSubscriptionStatus = useCallback(async (email) => {
-		if (!email || !email.trim() || !email.includes('@')) {
-			setIsAlreadySubscribed(false);
-			setSubscriberData(null);
-			return;
-		}
-
-		try {
-			const response = await axios.get(
-				`${API_URL}/api/newsletter/check-subscription`,
-				{
-					params: { email: email.trim() },
-				},
-			);
-
-			if (response.data.isSubscribed) {
-				setIsAlreadySubscribed(true);
-				setSubscriberData(response.data.subscriber);
-				// Pre-fill the form with existing data
-				if (response.data.subscriber) {
-					setFirstName(response.data.subscriber.firstName || '');
-					setLastName(response.data.subscriber.lastName || '');
-					// Pre-fill filter preferences
-					setSelectedCities(response.data.subscriber.preferredCities || []);
-					setSelectedCategories(
-						response.data.subscriber.preferredCategories || [],
-					);
-					setSelectedEmployment(
-						response.data.subscriber.preferredEmployment || [],
-					);
-					setSelectedLanguages(
-						response.data.subscriber.preferredLanguages || [],
-					);
-					setSelectedGender(response.data.subscriber.preferredGender || []);
-					setSelectedDocumentTypes(
-						response.data.subscriber.preferredDocumentTypes || [],
-					);
-					setOnlyDemanded(response.data.subscriber.onlyDemanded || false);
-				}
-			} else {
-				setIsAlreadySubscribed(false);
-				setSubscriberData(null);
-			}
-		} catch (error) {
-			console.error('Error checking subscription status:', error);
-			setIsAlreadySubscribed(false);
-			setSubscriberData(null);
-		}
-	}, []);
-
-	// Check for logged-in user's email when modal opens
-	useEffect(() => {
-		if (open && isLoaded) {
-			if (user && user.primaryEmailAddress?.emailAddress) {
-				const userEmail = user.primaryEmailAddress.emailAddress;
-				setEmail(userEmail);
-				checkSubscriptionStatus(userEmail);
-			} else {
-				// If no user is logged in, clear the form
-				setEmail('');
-				setFirstName('');
-				setLastName('');
-				setIsAlreadySubscribed(false);
-				setSubscriberData(null);
-			}
-
-			// Fetch cities and categories for filter options
-			Promise.all([
-				fetch(`${API_URL}/api/cities?lang=${locale}`).then((res) => res.json()),
-				fetch(`${API_URL}/api/categories?lang=${locale}`).then((res) =>
-					res.json(),
-				),
-			])
-				.then(([citiesData, categoriesData]) => {
-					setCities(citiesData);
-					setCategories(categoriesData);
-				})
-				.catch((error) => {
-					console.error('Error fetching filter data:', error);
-					setCities([]);
-					setCategories([]);
-				});
-		}
-	}, [open, isLoaded, user, locale, checkSubscriptionStatus]);
-
-	const handleSubscribe = async () => {
-		if (!email || !email.trim()) {
-			toast.error(content.newsletterEmailRequired.value);
-			return;
-		}
-
-		// Basic email validation
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(email)) {
-			toast.error(content.newsletterInvalidEmail.value);
-			return;
-		}
-
-		setIsSubscribing(true);
-
-		try {
-			const response = await axios.post(
-				`${API_URL}/api/newsletter/send-verification`,
-				{
-					email: email.trim(),
-					firstName: firstName.trim() || null,
-					lastName: lastName.trim() || null,
-					language: 'ru', // Default to Russian
-					preferences: {},
-					// Filter preferences
-					preferredCities: selectedCities,
-					preferredCategories: selectedCategories,
-					preferredEmployment: selectedEmployment,
-					preferredLanguages: selectedLanguages,
-					preferredGender: selectedGender.length > 0 ? selectedGender[0] : null,
-					preferredDocumentTypes: selectedDocumentTypes,
-					onlyDemanded,
-				},
-			);
-
-			if (response.data.success) {
-				toast.success(content.verificationCodeSent.value);
-				// Store subscription data and show verification modal
-				setSubscriptionData(response.data.subscriptionData);
-				setShowVerification(true);
-			} else {
-				toast.error(response.data.message || content.newsletterError.value);
-			}
-		} catch (error) {
-			console.error('Newsletter verification error:', error);
-			if (error.response?.status === 409) {
-				toast.error('Этот email уже подписан на рассылку');
-			} else if (error.response?.data?.message) {
-				toast.error(error.response.data.message);
-			} else {
-				toast.error(content.newsletterError.value);
-			}
-		} finally {
-			setIsSubscribing(false);
-		}
-	};
-
-	// Handle unsubscribe
-	const handleUnsubscribe = async () => {
-		if (!email || !email.trim()) {
-			toast.error(content.newsletterEmailRequired.value);
-			return;
-		}
-
-		setIsUnsubscribing(true);
-
-		try {
-			const response = await axios.post(
-				`${API_URL}/api/newsletter/unsubscribe`,
-				{
-					email: email.trim(),
-				},
-			);
-
-			if (response.data.success) {
-				toast.success(content.newsletterUnsubscribeSuccess.value);
-				setIsAlreadySubscribed(false);
-				setSubscriberData(null);
-				setEmail('');
-				setFirstName('');
-				setLastName('');
-				onClose();
-			} else {
-				toast.error(
-					response.data.message || content.newsletterUnsubscribeError.value,
-				);
-			}
-		} catch (error) {
-			console.error('Newsletter unsubscribe error:', error);
-			if (error.response?.data?.message) {
-				toast.error(error.response.data.message);
-			} else {
-				toast.error(content.newsletterUnsubscribeError.value);
-			}
-		} finally {
-			setIsUnsubscribing(false);
-		}
-	};
-
-	// Handle verification success
-	const handleVerificationSuccess = (subscriber) => {
-		setIsAlreadySubscribed(true);
-		setSubscriberData(subscriber);
-		setShowVerification(false);
-		onClose();
-	};
-
-	// Handle verification modal close
-	const handleVerificationClose = () => {
-		setShowVerification(false);
-		setSubscriptionData(null);
-	};
-
-	// Handle email change (only for new subscriptions or when user is not logged in)
-	const handleEmailChange = (e) => {
-		const newEmail = e.target.value;
-		setEmail(newEmail);
-
-		// Only check subscription status if user is not already subscribed
-		if (!isAlreadySubscribed && newEmail && newEmail.includes('@')) {
-			// Add a small delay to avoid too many API calls
-			setTimeout(() => {
-				checkSubscriptionStatus(newEmail);
-			}, 500);
-		}
-	};
-
-	// Filter change handlers
 	const handleCityChange = (city, checked) => {
 		if (checked) {
-			setSelectedCities([...selectedCities, city.name]);
+			form.setSelectedCities((prev) => [...prev, city.name]);
 		} else {
-			setSelectedCities(selectedCities.filter((c) => c !== city.name));
+			form.setSelectedCities((prev) => prev.filter((c) => c !== city.name));
 		}
 	};
 
 	const handleCategoryChange = (category, checked) => {
 		const value = category.label || category.name;
 		if (checked) {
-			setSelectedCategories([...selectedCategories, value]);
+			form.setSelectedCategories((prev) => [...prev, value]);
 		} else {
-			setSelectedCategories(selectedCategories.filter((c) => c !== value));
+			form.setSelectedCategories((prev) => prev.filter((c) => c !== value));
 		}
 	};
 
 	const handleEmploymentChange = (option, checked) => {
 		if (checked) {
-			setSelectedEmployment([...selectedEmployment, option.value]);
+			form.setSelectedEmployment((prev) => [...prev, option.value]);
 		} else {
-			setSelectedEmployment(
-				selectedEmployment.filter((emp) => emp !== option.value),
+			form.setSelectedEmployment((prev) =>
+				prev.filter((emp) => emp !== option.value),
 			);
 		}
 	};
 
 	const handleDocumentTypeChange = (option, checked) => {
 		if (checked) {
-			setSelectedDocumentTypes([...selectedDocumentTypes, option.value]);
+			form.setSelectedDocumentTypes((prev) => [...prev, option.value]);
 		} else {
-			setSelectedDocumentTypes(
-				selectedDocumentTypes.filter((doc) => doc !== option.value),
+			form.setSelectedDocumentTypes((prev) =>
+				prev.filter((doc) => doc !== option.value),
 			);
 		}
 	};
 
 	const handleLanguageChange = (languageValue, checked) => {
 		if (checked) {
-			setSelectedLanguages([...selectedLanguages, languageValue]);
+			form.setSelectedLanguages((prev) => [...prev, languageValue]);
 		} else {
-			setSelectedLanguages(
-				selectedLanguages.filter((lang) => lang !== languageValue),
+			form.setSelectedLanguages((prev) =>
+				prev.filter((lang) => lang !== languageValue),
 			);
 		}
 	};
 
 	const handleGenderChange = (genderValue, checked) => {
 		if (checked) {
-			setSelectedGender([...selectedGender, genderValue]);
+			form.setSelectedGender((prev) => [...prev, genderValue]);
 		} else {
-			setSelectedGender(selectedGender.filter((g) => g !== genderValue));
+			form.setSelectedGender((prev) => prev.filter((g) => g !== genderValue));
 		}
 	};
 
@@ -357,27 +123,26 @@ const NewsletterModal = ({ open, onClose }) => {
 					>
 						<div style={{ marginBottom: '24px' }}>
 							<NewsletterStatus
-								isAlreadySubscribed={isAlreadySubscribed}
-								subscriberData={subscriberData}
-								email={email}
+								isAlreadySubscribed={form.isAlreadySubscribed}
+								subscriberData={form.subscriberData}
+								email={form.email}
 								isMobile={isMobile}
 							/>
 
 							<NewsletterForm
-								email={email}
-								firstName={firstName}
-								lastName={lastName}
-								onEmailChange={handleEmailChange}
-								onFirstNameChange={(e) => setFirstName(e.target.value)}
-								onLastNameChange={(e) => setLastName(e.target.value)}
-								isSubscribing={isSubscribing}
-								isUnsubscribing={isUnsubscribing}
-								isAlreadySubscribed={isAlreadySubscribed}
+								email={form.email}
+								firstName={form.firstName}
+								lastName={form.lastName}
+								onEmailChange={form.handleEmailChange}
+								onFirstNameChange={(e) => form.setFirstName(e.target.value)}
+								onLastNameChange={(e) => form.setLastName(e.target.value)}
+								isSubscribing={form.isSubscribing}
+								isUnsubscribing={form.isUnsubscribing}
+								isAlreadySubscribed={form.isAlreadySubscribed}
 								isMobile={isMobile}
 							/>
 
-							{/* Filter Preferences Section */}
-							{!isAlreadySubscribed && (
+							{!form.isAlreadySubscribed && (
 								<div style={{ marginBottom: '20px' }}>
 									<h6
 										style={{
@@ -391,24 +156,24 @@ const NewsletterModal = ({ open, onClose }) => {
 									</h6>
 
 									<NewsletterFilters
-										cities={cities}
-										categories={categories}
-										selectedCities={selectedCities}
-										selectedCategories={selectedCategories}
-										selectedEmployment={selectedEmployment}
-										selectedDocumentTypes={selectedDocumentTypes}
-										selectedLanguages={selectedLanguages}
-										selectedGender={selectedGender}
-										onlyDemanded={onlyDemanded}
+										cities={form.cities}
+										categories={form.categories}
+										selectedCities={form.selectedCities}
+										selectedCategories={form.selectedCategories}
+										selectedEmployment={form.selectedEmployment}
+										selectedDocumentTypes={form.selectedDocumentTypes}
+										selectedLanguages={form.selectedLanguages}
+										selectedGender={form.selectedGender}
+										onlyDemanded={form.onlyDemanded}
 										onCityChange={handleCityChange}
 										onCategoryChange={handleCategoryChange}
 										onEmploymentChange={handleEmploymentChange}
 										onDocumentTypeChange={handleDocumentTypeChange}
 										onLanguageChange={handleLanguageChange}
 										onGenderChange={handleGenderChange}
-										onOnlyDemandedChange={setOnlyDemanded}
-										isSubscribing={isSubscribing}
-										isUnsubscribing={isUnsubscribing}
+										onOnlyDemandedChange={form.setOnlyDemanded}
+										isSubscribing={form.isSubscribing}
+										isUnsubscribing={form.isUnsubscribing}
 										isMobile={isMobile}
 									/>
 								</div>
@@ -416,7 +181,6 @@ const NewsletterModal = ({ open, onClose }) => {
 						</div>
 					</div>
 
-					{/* Action Buttons */}
 					<div
 						className="d-flex justify-content-between mt-4"
 						style={{
@@ -426,24 +190,23 @@ const NewsletterModal = ({ open, onClose }) => {
 						}}
 					>
 						<NewsletterActions
-							isAlreadySubscribed={isAlreadySubscribed}
-							isSubscribing={isSubscribing}
-							isUnsubscribing={isUnsubscribing}
-							onSubscribe={handleSubscribe}
-							onUnsubscribe={handleUnsubscribe}
+							isAlreadySubscribed={form.isAlreadySubscribed}
+							isSubscribing={form.isSubscribing}
+							isUnsubscribing={form.isUnsubscribing}
+							onSubscribe={form.handleSubscribe}
+							onUnsubscribe={form.handleUnsubscribe}
 							isMobile={isMobile}
 						/>
 					</div>
 				</div>
 			</div>
 
-			{/* Verification Modal */}
 			<VerificationModal
-				open={showVerification}
-				onClose={handleVerificationClose}
-				email={email}
-				subscriptionData={subscriptionData}
-				onVerificationSuccess={handleVerificationSuccess}
+				open={form.showVerification}
+				onClose={form.handleVerificationClose}
+				email={form.email}
+				subscriptionData={form.subscriptionData}
+				onVerificationSuccess={form.handleVerificationSuccess}
 			/>
 		</>
 	);

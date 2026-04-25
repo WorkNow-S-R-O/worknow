@@ -9,8 +9,10 @@ export const mockGetJobByIdService = vi.fn();
 export const mockBoostJobService = vi.fn();
 
 // Mock service modules
-vi.mock('../../apps/api/services/jobCreateService.js', () => ({
+vi.mock('../../apps/api/services/jobService.js', () => ({
 	createJobService: mockCreateJobService,
+	getJobsService: mockGetJobsService,
+	getJobByIdService: mockGetJobByIdService,
 }));
 
 vi.mock('../../apps/api/services/editFormService.js', () => ({
@@ -19,14 +21,6 @@ vi.mock('../../apps/api/services/editFormService.js', () => ({
 
 vi.mock('../../apps/api/services/jobDeleteService.js', () => ({
 	deleteJobService: mockDeleteJobService,
-}));
-
-vi.mock('../../apps/api/services/jobService.js', () => ({
-	getJobsService: mockGetJobsService,
-}));
-
-vi.mock('../../apps/api/services/getJobById.js', () => ({
-	getJobByIdService: mockGetJobByIdService,
 }));
 
 vi.mock('../../apps/api/services/jobBoostService.js', () => ({

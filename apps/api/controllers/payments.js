@@ -1,5 +1,5 @@
 import stripe from '../utils/stripe.js';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { sendTelegramNotification } from '../utils/telegram.js';
 import { CLERK_SECRET_KEY } from '../config/clerkConfig.js';
 import {
@@ -7,7 +7,6 @@ import {
 	sendProWelcomeEmail,
 } from '../services/premiumEmailService.js';
 import fetch from 'node-fetch';
-const prisma = new PrismaClient();
 
 export const createCheckoutSession = async (req, res) => {
 	const { clerkUserId, priceId } = req.body;

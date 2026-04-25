@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
 
 const mockFindUnique = vi.fn();
-vi.mock('@prisma/client', () => ({
-  PrismaClient: vi.fn(() => ({ job: { findUnique: mockFindUnique } })),
+vi.mock('../apps/api/lib/prisma.js', () => ({
+  default: { job: { findUnique: mockFindUnique } },
 }));
 
 let getJobByIdService;
 beforeAll(async () => {
-  ({ getJobByIdService } = await import('../apps/api/services/getJobById.js'));
+  ({ getJobByIdService } = await import('../apps/api/services/jobService.js'));
 });
 
 beforeEach(() => {

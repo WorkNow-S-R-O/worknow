@@ -1,9 +1,7 @@
 import OpenAI from 'openai';
-import pkg from '@prisma/client';
+import prisma from '../lib/prisma.js';
 
-const { PrismaClient } = pkg;
 
-const prisma = new PrismaClient();
 
 // Initialize OpenAI client
 const openai = new OpenAI({

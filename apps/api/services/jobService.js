@@ -1,7 +1,12 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
+import stringSimilarity from 'string-similarity';
 import redisService from './redisService.js';
+import { containsBadWords, containsLinks } from '../middlewares/validation.js';
+import { sendNewJobNotificationToTelegram } from '../utils/telegram.js';
 
-const prisma = new PrismaClient();
+
+const MAX_JOBS_FREE_USER = 5;
+const MAX_JOBS_PREMIUM_USER = 10;
 
 export const getJobsService = async (filters = {}) => {
 	const {
@@ -15,33 +20,16 @@ export const getJobsService = async (filters = {}) => {
 	} = filters;
 
 	try {
-		// Try to get from cache first
-		// const cacheKey = `jobs:${category || 'all'}:${city || 'all'}:${salary || 'all'}:${shuttle || 'all'}:${meals || 'all'}:${page}:${limit}`;
-		// const cachedJobs = await redisService.get(cacheKey);
-
-		// if (cachedJobs) {
-		// Jobs served from Redis cache
-		//   return cachedJobs;
-		// }
-
-		// Fetching jobs from database
-
-		// Build query with filters
 		const where = {};
 		if (category) where.categoryId = parseInt(category);
 		if (city) where.cityId = parseInt(city);
 		if (shuttle) where.shuttle = true;
 		if (meals) where.meals = true;
 
-		// For salary filtering, we'll need to handle it differently since salary is stored as string
-		// We'll filter in JavaScript after fetching the jobs
-
 		const skip = (page - 1) * limit;
 
-		// Get total count first (without pagination)
 		const total = await prisma.job.count({ where });
 
-		// Get jobs with pagination
 		const jobs = await prisma.job.findMany({
 			where,
 			include: {
@@ -58,12 +46,10 @@ export const getJobsService = async (filters = {}) => {
 			take: limit,
 		});
 
-		// Filter by salary if specified (since salary is stored as string)
 		let filteredJobs = jobs;
 		if (salary) {
 			const minSalary = parseInt(salary);
 			filteredJobs = jobs.filter((job) => {
-				// Extract numeric value from salary string (e.g., "45" from "45 шек/час")
 				const salaryMatch = job.salary.match(/(\d+)/);
 				if (salaryMatch) {
 					const jobSalary = parseInt(salaryMatch[1]);
@@ -73,7 +59,7 @@ export const getJobsService = async (filters = {}) => {
 			});
 		}
 
-		const result = {
+		return {
 			jobs: filteredJobs,
 			pagination: {
 				page: parseInt(page),
@@ -82,12 +68,6 @@ export const getJobsService = async (filters = {}) => {
 				pages: Math.ceil(total / limit),
 			},
 		};
-
-		// Cache the result for 5 minutes
-		// await redisService.set(cacheKey, result, 300);
-		// Jobs cached in Redis for 5 minutes
-
-		return result;
 	} catch (error) {
 		console.error('❌ Error fetching jobs:', error);
 		return { error: 'Ошибка получения объявлений', details: error.message };
@@ -96,33 +76,39 @@ export const getJobsService = async (filters = {}) => {
 
 export const getJobByIdService = async (id) => {
 	try {
-		// Try to get from cache first
+		if (!id || isNaN(id)) {
+			throw new Error('ID вакансии не передан или имеет неверный формат');
+		}
+
 		const cacheKey = `job:${id}`;
 		const cachedJob = await redisService.get(cacheKey);
 
 		if (cachedJob) {
-			// Job served from Redis cache
 			return cachedJob;
 		}
 
-		// Fetching job from database
-
 		const job = await prisma.job.findUnique({
-			where: { id: parseInt(id) },
+			where: { id: Number(id) },
 			include: {
 				city: true,
-				user: true,
 				category: { include: { translations: true } },
+				user: {
+					select: {
+						id: true,
+						isPremium: true,
+						firstName: true,
+						lastName: true,
+						clerkUserId: true,
+					},
+				},
 			},
 		});
 
 		if (!job) {
-			return { error: 'Вакансия не найдена' };
+			return { error: 'Объявление не найдено' };
 		}
 
-		// Cache the job for 10 minutes
 		await redisService.set(cacheKey, { job }, 600);
-		// Job cached in Redis for 10 minutes
 
 		return { job };
 	} catch (error) {
@@ -131,24 +117,95 @@ export const getJobByIdService = async (id) => {
 	}
 };
 
-export const createJobService = async (jobData) => {
-	try {
-		const job = await prisma.job.create({
-			data: jobData,
-			include: {
-				city: true,
-				user: true,
-				category: { include: { translations: true } },
-			},
-		});
+export const createJobService = async ({
+	title,
+	salary,
+	cityId,
+	categoryId,
+	phone,
+	description,
+	userId,
+	shuttle,
+	meals,
+	imageUrl,
+}) => {
+	let errors = [];
 
-		// Invalidate related caches when new job is created
-		await redisService.invalidateJobsCache();
-		// Job caches invalidated after new job creation
+	if (containsBadWords(title))
+		errors.push('Заголовок содержит нецензурные слова.');
+	if (containsBadWords(description))
+		errors.push('Описание содержит нецензурные слова.');
+	if (containsLinks(title))
+		errors.push('Заголовок содержит запрещенные ссылки.');
+	if (containsLinks(description))
+		errors.push('Описание содержит запрещенные ссылки.');
 
-		return job;
-	} catch (error) {
-		console.error('❌ Error creating job:', error);
-		throw error;
+	if (errors.length > 0) return { errors };
+
+	const existingUser = await prisma.user.findUnique({
+		where: { clerkUserId: userId },
+		include: { jobs: { orderBy: { createdAt: 'desc' }, take: 1 } },
+	});
+
+	if (!existingUser) return { error: 'Пользователь не найден' };
+
+	const existingJobs = await prisma.job.findMany({
+		where: { userId: existingUser.id },
+		select: { title: true, description: true },
+	});
+
+	const isDuplicate = existingJobs.some(
+		(job) =>
+			stringSimilarity.compareTwoStrings(job.title, title) > 0.9 &&
+			stringSimilarity.compareTwoStrings(job.description, description) > 0.9,
+	);
+
+	if (isDuplicate)
+		return {
+			error:
+				'Ваше объявление похоже на уже существующее. Измените заголовок или описание.',
+		};
+
+	const jobCount = await prisma.job.count({
+		where: { userId: existingUser.id },
+	});
+
+	const isPremium = existingUser.isPremium || existingUser.premiumDeluxe;
+	const maxJobs = isPremium ? MAX_JOBS_PREMIUM_USER : MAX_JOBS_FREE_USER;
+
+	if (jobCount >= maxJobs) {
+		if (isPremium) {
+			return {
+				error: `Вы уже разместили ${MAX_JOBS_PREMIUM_USER} объявлений.`,
+			};
+		}
+		return {
+			error: `Вы уже разместили ${MAX_JOBS_FREE_USER} объявлений. Для размещения большего количества объявлений перейдите на Premium тариф.`,
+			upgradeRequired: true,
+		};
 	}
+
+	const job = await prisma.job.create({
+		data: {
+			title,
+			salary,
+			phone,
+			description,
+			shuttle,
+			meals,
+			imageUrl,
+			city: { connect: { id: parseInt(cityId) } },
+			category: { connect: { id: parseInt(categoryId) } },
+			user: { connect: { id: existingUser.id } },
+		},
+		include: { city: true, user: true, category: true },
+	});
+
+	await redisService.invalidateJobsCache();
+
+	if (existingUser.isPremium) {
+		await sendNewJobNotificationToTelegram(existingUser, job);
+	}
+
+	return { job };
 };

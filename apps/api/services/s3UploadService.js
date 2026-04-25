@@ -3,9 +3,8 @@ import {
 	deleteFromS3,
 	validateS3Config,
 } from '../utils/s3Upload.js';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 
-const prisma = new PrismaClient();
 
 // Job posting limits
 const MAX_JOBS_FREE_USER = 5;

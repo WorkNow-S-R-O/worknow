@@ -7,10 +7,9 @@ import {
 	validateS3Config,
 } from '../utils/s3Upload.js';
 import { requireAuth } from '../middlewares/auth.js';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import process from 'process';
 
-const prisma = new PrismaClient();
 const router = express.Router();
 
 // Validate S3 configuration on startup
@@ -387,7 +386,7 @@ router.post(
 
 			// Create job using the service to ensure all validation and business logic is applied
 			const { createJobService } = await import(
-				'../services/jobCreateService.js'
+				'../services/jobService.js'
 			);
 
 			const jobData = {

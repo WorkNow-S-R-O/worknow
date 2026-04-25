@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { sendEmail } from '../utils/mailer.js';
 // import nodemailer from 'nodemailer'; // Для реальной отправки email
 
-const prisma = new PrismaClient();
 
 // Создать сообщение (и отправить email)
 export const createMessage = async (req, res) => {

@@ -1,6 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import axios from 'axios';
 
 const mockUseLocale = vi.fn(() => ({ locale: 'ru' }));
 const mockApiUrl = 'https://api.example.com';
@@ -12,6 +11,9 @@ const loadHook = async () => {
 	});
 	vi.doMock('@hooks/useFetchCities.js', async () => {
 		return vi.importActual('../apps/client/src/hooks/useFetchCities.js');
+	});
+	vi.doMock('../apps/client/src/hooks/useFetchLocalized.js', async () => {
+		return vi.importActual('../apps/client/src/hooks/useFetchLocalized.js');
 	});
 	vi.doMock('react-intlayer', () => ({
 		useLocale: mockUseLocale,
@@ -43,13 +45,13 @@ describe('useFetchCities', () => {
 	it('fetches and formats city data', async () => {
 		const useFetchCities = await loadHook();
 
-		const apiResponse = {
-			data: [
-				{ id: 1, name: 'Tel Aviv' },
-				{ id: 2, name: 'Haifa' },
-			],
-		};
-		vi.mocked(axios.get).mockResolvedValueOnce(apiResponse);
+		const citiesData = [
+			{ id: 1, name: 'Tel Aviv' },
+			{ id: 2, name: 'Haifa' },
+		];
+		global.fetch = vi.fn().mockResolvedValueOnce({
+			json: () => Promise.resolve(citiesData),
+		});
 
 		const { result } = renderHook(() => useFetchCities());
 
@@ -57,7 +59,7 @@ describe('useFetchCities', () => {
 			expect(result.current.loading).toBe(false);
 		});
 
-		expect(axios.get).toHaveBeenCalledWith(
+		expect(global.fetch).toHaveBeenCalledWith(
 			`${mockApiUrl}/api/cities?lang=ru`,
 		);
 		expect(result.current.cities).toEqual([
@@ -70,8 +72,10 @@ describe('useFetchCities', () => {
 	it('logs error when API returns non-array data', async () => {
 		const useFetchCities = await loadHook();
 
-		const invalidData = { data: { invalid: true } };
-		vi.mocked(axios.get).mockResolvedValueOnce(invalidData);
+		const invalidData = { invalid: true };
+		global.fetch = vi.fn().mockResolvedValueOnce({
+			json: () => Promise.resolve(invalidData),
+		});
 
 		const { result } = renderHook(() => useFetchCities());
 
@@ -81,8 +85,8 @@ describe('useFetchCities', () => {
 
 		expect(result.current.cities).toEqual([]);
 		expect(consoleErrorSpy).toHaveBeenCalledWith(
-			'❌ API вернул не массив! Данные:',
-			invalidData.data,
+			expect.stringContaining('API returned non-array'),
+			invalidData,
 		);
 	});
 
@@ -90,7 +94,7 @@ describe('useFetchCities', () => {
 		const useFetchCities = await loadHook();
 
 		const abortedError = Object.assign(new Error('timeout'), { code: 'ECONNABORTED' });
-		vi.mocked(axios.get).mockRejectedValueOnce(abortedError);
+		global.fetch = vi.fn().mockRejectedValueOnce(abortedError);
 
 		const { result } = renderHook(() => useFetchCities());
 
@@ -106,7 +110,7 @@ describe('useFetchCities', () => {
 		const useFetchCities = await loadHook();
 
 		const apiError = new Error('network');
-		vi.mocked(axios.get).mockRejectedValueOnce(apiError);
+		global.fetch = vi.fn().mockRejectedValueOnce(apiError);
 
 		const { result } = renderHook(() => useFetchCities());
 
@@ -116,7 +120,7 @@ describe('useFetchCities', () => {
 
 		expect(result.current.cities).toEqual([]);
 		expect(consoleErrorSpy).toHaveBeenCalledWith(
-			'Ошибка загрузки городов:',
+			expect.stringContaining('Error fetching'),
 			apiError,
 		);
 	});

@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { sendUpdatedJobListToTelegram } from '../utils/telegram.js';
 import { deleteFromS3 } from '../utils/s3Upload.js';
 
-const prisma = new PrismaClient();
 
 export const deleteJobService = async (id, userId) => {
 	try {

@@ -1,8 +1,10 @@
 // controllers/jobsController.js
-import { createJobService } from '../services/jobCreateService.js';
+import {
+	createJobService,
+	getJobsService,
+} from '../services/jobService.js';
 import { updateJobService } from '../services/editFormService.js';
 import { deleteJobService } from '../services/jobDeleteService.js';
-import { getJobsService } from '../services/jobService.js';
 import { boostJobService } from '../services/jobBoostService.js';
 
 export const createJob = async (req, res) => {

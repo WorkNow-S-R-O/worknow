@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma.js';
 import { sendInitialCandidatesToNewSubscriber } from '../services/candidateNotificationService.js';
 import {
 	sendVerificationCode,
@@ -6,7 +6,6 @@ import {
 	verifyCode,
 } from '../services/snsService.js';
 
-const prisma = new PrismaClient();
 
 /**
  * Subscribe a user to the newsletter

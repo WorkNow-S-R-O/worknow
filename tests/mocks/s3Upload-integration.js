@@ -83,7 +83,7 @@ vi.mock('../../apps/api/services/imageModerationService.js', () => ({
 	validateRekognitionConfig: mockValidateRekognitionConfig,
 }));
 
-vi.mock('../../apps/api/services/jobCreateService.js', () => ({
+vi.mock('../../apps/api/services/jobService.js', () => ({
 	createJobService: mockCreateJobService,
 }));
 

@@ -1,35 +1,18 @@
-import { useState, useEffect } from 'react';
-import { useLocale } from 'react-intlayer';
-import { API_URL } from '@/config';
+import { useCallback } from 'react';
+import useFetchLocalized from './useFetchLocalized';
 
+const transformCategories = (data) =>
+	data.map((category) => ({
+		value: category.id,
+		label: category.label || category.name,
+	}));
 
 const useFetchCategories = () => {
-	const [categories, setCategories] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const { locale } = useLocale();
-
-	useEffect(() => {
-		const fetchCategories = async () => {
-			try {
-				const response = await fetch(
-					`${API_URL}/api/categories?lang=${locale}`,
-				);
-				const data = await response.json();
-				const formattedCategories = data.map((category) => ({
-					value: category.id,
-					label: category.label || category.name,
-				}));
-				setCategories(formattedCategories);
-			} catch (error) {
-				console.error('Error fetching categories:', error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchCategories();
-	}, [locale]);
-
+	const transform = useCallback(transformCategories, []);
+	const { data: categories, loading } = useFetchLocalized(
+		'categories',
+		transform,
+	);
 	return { categories, loading };
 };
 
